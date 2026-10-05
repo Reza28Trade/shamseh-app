@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: shamseh-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: shamseh
+      POSTGRES_USER: shamseh
+      POSTGRES_PASSWORD: change-me
+    ports:
+      - "5432:5432"
+    volumes:
+      - shamseh-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  shamseh-postgres-data:
