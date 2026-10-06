@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import type { Student, Course } from '../../types';
-import { UserPlus, Trash2, Users, CheckCircle, Pencil, X } from 'lucide-react';
+import { UserPlus, Trash2, Users, CheckCircle, Pencil, X, Download } from 'lucide-react';
 
 interface ManageStudentsProps {
   students: Student[];
@@ -79,6 +79,19 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
     void loadStudents();
   }, []);
 
+
+  const exportStudents = async () => {
+    const response = await fetch('/api/admin/students/export', { credentials: 'include' });
+    if (!response.ok) { setError('خروجی Excel دانشجویان دریافت نشد.'); return; }
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = 'students.xlsx';
+    anchor.click();
+    URL.revokeObjectURL(url);
+  };
+
   const resetForm = () => {
     setFullName('');
     setNationalId('');
@@ -153,9 +166,9 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
       
       {/* هدر صفحه */}
       <div style={{ background: 'linear-gradient(135deg, rgba(109, 0, 26, 0.2) 0%, rgba(10, 10, 10, 0.8) 100%)', border: '1px solid rgba(109, 0, 26, 0.4)', padding: '24px 32px', borderRadius: '20px', backdropFilter: 'blur(12px)', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 900, color: '#fff', margin: '0 0 6px 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}><h2 style={{ fontSize: '20px', fontWeight: 900, color: '#fff', margin: '0 0 6px 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
           <Users size={20} color="#ff3366" /> مدیریت دانشجویان و دسترسی دوره‌ها
-        </h2>
+        </h2><button type="button" onClick={() => void exportStudents()} style={{ padding: '10px 14px', background: 'rgba(255,255,255,.06)', color: '#fff', border: '1px solid rgba(255,255,255,.1)', borderRadius: 10, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, fontSize: 11 }}><Download size={14} /> خروجی Excel</button></div>
         <p style={{ fontSize: '12px', color: '#94a3b8', margin: 0 }}>ثبت‌نام دانشجویان جدید و تخصیص دسترسی به دوره‌های ارشد و دکتری</p>
       </div>
 
