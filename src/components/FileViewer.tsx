@@ -21,7 +21,7 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
   const objectUrlRef = useRef('');
   const fileUrl = `/api/files/${file.id}/view`;
   const isPdfViewer = file.type === 'PDF' || file.type === 'POWERPOINT' || file.type === 'DOCUMENT';
-  const pdfSrc = viewUrl ? `${viewUrl}#toolbar=0&navpanes=0&scrollbar=0&${zoom === null ? 'view=fith' : `zoom=${Math.round(zoom * 100)}`}` : '';
+  const pdfSrc = viewUrl ? `${viewUrl}#toolbar=0&navpanes=0&scrollbar=0&${zoom === null ? 'zoom=page-width' : `zoom=${Math.round(zoom * 100)}`}` : '';
 
   useEffect(() => {
     if (!isPdfViewer) return;
