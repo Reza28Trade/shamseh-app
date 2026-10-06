@@ -423,8 +423,9 @@ export const ManageCourses: React.FC = () => {
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 10 }}>
                             {courseSessions.map(session => (
                               <div key={session.id} style={{ background: '#0e0e11', border: '1px solid #25252b', borderRadius: 12, padding: 13 }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, alignItems: 'center' }}>
                                   <strong style={{ color: '#fff', fontSize: 12 }}>جلسه {session.sessionNumber}</strong>
+                                </div>
                                 <div style={{ display: 'flex', gap: 6, marginTop: 10, flexWrap: 'wrap' }}>
                                   <button type="button" onClick={() => editSession(session)} style={button('rgba(56,189,248,.1)', '#38bdf8')}><Pencil size={11} /> ویرایش شماره</button>
                                   <button type="button" onClick={() => openFileForm(course.id, session.id)} style={button('rgba(109,0,26,.35)')}><FileText size={11} /> افزودن فایل</button>
@@ -445,8 +446,6 @@ export const ManageCourses: React.FC = () => {
                                 )}
                               </div>
                             ))}
-                          </div>
-
                           {showSessionForm && (
                             <div style={{ marginTop: 14, padding: 15, background: '#111116', border: '1px solid #2b2b32', borderRadius: 12 }}>
                               <h4 style={{ color: '#fff', fontSize: 12, margin: '0 0 10px' }}>ویرایش جلسه</h4>
@@ -528,17 +527,7 @@ type SessionFormProps = {
 
 const SessionForm: React.FC<SessionFormProps> = ({ form, setForm, saving, onSave, onCancel }) => (
   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-    <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 10 }}>
-      <input placeholder="عنوان جلسه" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} style={input} />
-      <input type="number" min="1" placeholder="شماره جلسه" value={form.sessionNumber} onChange={e => setForm({ ...form, sessionNumber: e.target.value })} style={input} />
-    </div>
-    <input type="datetime-local" value={form.sessionDate} onChange={e => setForm({ ...form, sessionDate: e.target.value })} style={input} />
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-      <input type="time" value={form.startTime} onChange={e => setForm({ ...form, startTime: e.target.value })} style={input} />
-      <input type="time" value={form.endTime} onChange={e => setForm({ ...form, endTime: e.target.value })} style={input} />
-    </div>
-    <input placeholder="لینک کلاس / Adobe Connect / Zoom" value={form.meetingLink} onChange={e => setForm({ ...form, meetingLink: e.target.value })} style={input} />
-    <textarea rows={3} placeholder="توضیحات جلسه" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} style={{ ...input, resize: 'vertical' }} />
+    <input type="number" min="1" placeholder="شماره جلسه" value={form.sessionNumber} onChange={e => setForm({ ...form, sessionNumber: e.target.value })} style={input} />
     <div style={{ display: 'flex', gap: 7 }}>
       <button type="button" disabled={saving} onClick={onSave} style={button('#6D001A')}>{saving ? 'در حال ذخیره...' : 'ذخیره جلسه'}</button>
       <button type="button" onClick={onCancel} style={button('transparent', '#94a3b8')}>انصراف</button>
