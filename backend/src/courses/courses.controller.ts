@@ -95,6 +95,11 @@ export class CoursesController {
     return this.coursesService.createCourseFile(req.user, courseId, dto);
   }
 
+  @Get('files/:fileId/view')
+  viewFile(@Req() req: AuthenticatedRequest, @Param('fileId') fileId: string, @Res() res: Response) {
+    return this.coursesService.viewFile(req.user, fileId, res);
+  }
+
   @Get('files/:fileId/stream')
   downloadFile(@Req() req: AuthenticatedRequest, @Param('fileId') fileId: string, @Res() res: Response) {
     return this.coursesService.streamFile(req.user, fileId, res);
