@@ -203,7 +203,7 @@ export const ManageCourses: React.FC = () => {
     setSessionForm(emptySession);
   };
 
-  const editSession = (session: Session) => {
+  const cancelSessionForm = () => {\n    setEditingSessionId(null);\n    setSessionForm(emptySession);\n    setShowSessionForm(false);\n  };\n\n  const editSession = (session: Session) => {
     setEditingSessionId(session.id);
     setSessionForm({
       title: session.title,
@@ -430,7 +430,7 @@ export const ManageCourses: React.FC = () => {
                           {showSessionForm && (
                             <div style={{ marginTop: 14, padding: 15, background: '#111116', border: '1px solid #2b2b32', borderRadius: 12 }}>
                               <h4 style={{ color: '#fff', fontSize: 12, margin: '0 0 10px' }}>ویرایش جلسه</h4>
-                              <SessionForm form={sessionForm} setForm={setSessionForm} saving={sessionSaving} onSave={() => void saveSession(course.id)} onCancel={startNewSession} />
+                              <SessionForm form={sessionForm} setForm={setSessionForm} saving={sessionSaving} onSave={() => void saveSession(course.id)} onCancel={cancelSessionForm} />
                             </div>
                           )}
 
