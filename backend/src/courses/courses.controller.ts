@@ -92,7 +92,7 @@ export class CoursesController {
   @Post('admin/sessions/:sessionId/files')
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
-      destination: (_req, _file, cb) => cb(null, ensureUploadDirectory()),
+      destination: (_req: any, _file: any, cb: (error: Error | null, destination: string) => void) => cb(null, ensureUploadDirectory()),
       filename: uploadedFilename,
     }),
     limits: { fileSize: 100 * 1024 * 1024 },
