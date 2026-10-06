@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
 import { randomUUID } from 'crypto';
-import { createReadStream, existsSync, mkdirSync, unlinkSync, writeFileSync } from 'fs';
+import { createReadStream, existsSync, mkdirSync, unlinkSync, writeFileSync, statSync } from 'fs';
 import { basename, extname, join } from 'path';
 import { PrismaService } from '../database/prisma.service';
 import { AuthenticatedUser } from '../auth/auth.types';
@@ -198,7 +198,7 @@ export class CoursesService {
     }
   }
 
-  async viewFile(user: AuthenticatedUser, fileId: string, res: Response) {
+  async viewFile(user: AuthenticatedUser, fileId: string, res: Response, range?: string) {
     console.log('[FileViewer] request:', fileId, user.role, user.studentId ?? 'no-student');
     const file = await this.prisma.courseFile.findUnique({ where: { id: fileId } });
     if (!file) {
@@ -246,9 +246,33 @@ export class CoursesService {
     }
 
     console.log('[FileViewer] serving:', viewPath, contentType);
+
+    const isStreamableMedia = contentType.startsWith('audio/') || contentType.startsWith('video/');
+    const fileSize = statSync(viewPath).size;
+
     res.setHeader('Content-Type', contentType);
     res.setHeader('Content-Disposition', 'inline');
     res.setHeader('X-Content-Type-Options', 'nosniff');
+
+    if (isStreamableMedia) {
+      res.setHeader('Accept-Ranges', 'bytes');
+      if (range) {
+        const match = /^bytes=(\\d*)-(\\d*)$/.exec(range);
+        if (match) {
+          const start = match[1] ? Number(match[1]) : Math.max(fileSize - Number(match[2]), 0);
+          const end = match[2] ? Number(match[2]) : fileSize - 1;
+          if (start <= end && start < fileSize) {
+            const safeEnd = Math.min(end, fileSize - 1);
+            res.status(206);
+            res.setHeader('Content-Range', `bytes ${start}-${safeEnd}/${fileSize}`);
+            res.setHeader('Content-Length', safeEnd - start + 1);
+            return createReadStream(viewPath, { start, end: safeEnd }).pipe(res);
+          }
+        }
+      }
+      res.setHeader('Content-Length', fileSize);
+    }
+
     return createReadStream(viewPath).pipe(res);
   }
 
