@@ -225,19 +225,31 @@ export class CoursesService {
     if (officeExtensions.has(extension)) {
       const cacheDirectory = join(storageDirectory, '.viewer-cache');
       mkdirSync(cacheDirectory, { recursive: true });
-      const cachedPath = join(cacheDirectory, `${basename(file.storageKey, extension)}.pdf`);
+      const isExcel = extension === '.xls' || extension === '.xlsx';
+      const baseName = basename(file.storageKey, extension);
+      const cacheBaseName = isExcel ? `${baseName}-v2` : baseName;
+      const cachedPath = join(cacheDirectory, `${cacheBaseName}.pdf`);
 
       if (!existsSync(cachedPath)) {
+        const pdfFilter = isExcel
+          ? 'pdf:calc_pdf_Export:{"SinglePageSheets":{"type":"boolean","value":"true"}}'
+          : 'pdf';
+
         await execFileAsync('/usr/bin/libreoffice', [
           '--headless',
-          '--convert-to', 'pdf',
+          '--convert-to', pdfFilter,
           '--outdir', cacheDirectory,
           sourcePath,
         ], { timeout: 120000 });
 
-        const generatedPath = join(cacheDirectory, `${basename(file.storageKey, extension)}.pdf`);
+        const generatedPath = join(cacheDirectory, `${baseName}.pdf`);
         if (!existsSync(generatedPath)) {
           throw new BadRequestException('تبدیل فایل برای نمایش انجام نشد.');
+        }
+
+        if (isExcel && generatedPath !== cachedPath) {
+          const { renameSync } = await import('fs');
+          renameSync(generatedPath, cachedPath);
         }
       }
 
