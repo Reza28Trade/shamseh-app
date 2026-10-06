@@ -30,7 +30,6 @@ type Session = {
 type CourseFile = {
   id: string;
   courseId: string;
-  sessionId: string | null;
   title: string;
   type: FileType;
   mimeType: string | null;
@@ -82,7 +81,6 @@ export const ManageCourses: React.FC = () => {
   const [expandedCourseId, setExpandedCourseId] = useState<string | null>(null);
   const [sessions, setSessions] = useState<Record<string, Session[]>>({});
   const [courseFiles, setCourseFiles] = useState<Record<string, CourseFile[]>>({});
-  const [sessionFiles, setSessionFiles] = useState<Record<string, CourseFile[]>>({});
   const [contentLoading, setContentLoading] = useState<Record<string, boolean>>({});
   const [sessionForm, setSessionForm] = useState(emptySession);
   const [showSessionForm, setShowSessionForm] = useState(false);
@@ -132,13 +130,6 @@ export const ManageCourses: React.FC = () => {
       const [sessionData, fileData] = await Promise.all([sessionsResponse.json(), filesResponse.json()]);
       setSessions(current => ({ ...current, [courseId]: sessionData }));
       setCourseFiles(current => ({ ...current, [courseId]: fileData }));
-      const sessionDataArray = sessionData as Session[];
-      await Promise.all(sessionDataArray.map(async session => {
-        const response = await fetch(`/api/sessions/${session.id}/files`, { credentials: 'include' });
-        if (!response.ok) throw new Error(`دریافت فایل‌های جلسه «${session.title}» انجام نشد.`);
-        const data = await response.json();
-        setSessionFiles(current => ({ ...current, [session.id]: data }));
-      }));
     } catch (e) {
       setError(e instanceof Error ? e.message : 'دریافت محتوای دوره انجام نشد.');
     } finally {
@@ -276,12 +267,8 @@ export const ManageCourses: React.FC = () => {
     if (!fileTarget || !fileForm.title.trim() || fileSaving) return;
     setFileSaving(true); setError('');
     try {
-      const uploadUrl = fileTarget.sessionId
-        ? `/api/admin/sessions/${fileTarget.sessionId}/files`
-        : `/api/admin/courses/${fileTarget.courseId}/files`;
-      const linkUrl = fileTarget.sessionId
-        ? `/api/admin/sessions/${fileTarget.sessionId}/files/link`
-        : `/api/admin/courses/${fileTarget.courseId}/files/link`;
+      const uploadUrl = `/api/admin/courses/${fileTarget.courseId}/files`;
+      const linkUrl = `/api/admin/courses/${fileTarget.courseId}/files/link`;
 
       let response: Response;
       if (selectedFile) {
@@ -311,10 +298,7 @@ export const ManageCourses: React.FC = () => {
       const data = await response.json().catch(() => null);
       if (!response.ok) throw new Error(data?.message || 'افزودن فایل انجام نشد.');
       const created = data as CourseFile;
-      if (created.sessionId) {
-        setSessionFiles(current => ({ ...current, [created.sessionId as string]: [created, ...(current[created.sessionId as string] || [])] }));
-      } else {
-        setCourseFiles(current => ({ ...current, [fileTarget.courseId]: [created, ...(current[fileTarget.courseId] || [])] }));
+      setCourseFiles((current => ({ ...current, [fileTarget.courseId]: [created, ...(current[fileTarget.courseId] || [])] }));
       }
       setFileTarget(null);
       setFileForm(emptyFile);
@@ -428,22 +412,8 @@ export const ManageCourses: React.FC = () => {
                                 </div>
                                 <div style={{ display: 'flex', gap: 6, marginTop: 10, flexWrap: 'wrap' }}>
                                   <button type="button" onClick={() => editSession(session)} style={button('rgba(56,189,248,.1)', '#38bdf8')}><Pencil size={11} /> ویرایش شماره</button>
-                                  <button type="button" onClick={() => openFileForm(course.id, session.id)} style={button('rgba(109,0,26,.35)')}><FileText size={11} /> افزودن فایل</button>
                                   <button type="button" onClick={() => void deleteSession(course.id, session.id)} style={button('rgba(239,68,68,.1)', '#f87171')}><Trash2 size={11} /></button>
                                 </div>
-                                {(sessionFiles[session.id] || []).length > 0 && (
-                                  <div style={{ marginTop: 10, borderTop: '1px solid #25252b', paddingTop: 9 }}>
-                                    {(sessionFiles[session.id] || []).map(file => (
-                                      <div key={file.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, padding: '5px 0' }}>
-                                        <span style={{ color: '#cbd5e1', fontSize: 10 }}><FileText size={10} style={{ verticalAlign: 'middle', marginLeft: 4 }} />{file.title} · {fileLabel(file.type)}</span>
-                                        <div style={{ display: 'flex', gap: 5 }}>
-                                          {(file.downloadUrl || file.externalUrl) && <a href={file.downloadUrl || file.externalUrl || '#'} target="_blank" rel="noreferrer" style={{ color: '#38bdf8', fontSize: 9 }}>{file.downloadUrl ? 'دانلود' : 'باز کردن'}</a>}
-                                          <button type="button" onClick={() => void deleteFile(course.id, file)} style={{ background: 'transparent', border: 0, color: '#f87171', cursor: 'pointer' }}><Trash2 size={11} /></button>
-                                        </div>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
                               </div>
                             ))}
                           {showSessionForm && editingSessionId && (
