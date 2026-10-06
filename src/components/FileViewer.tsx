@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { getDocument, type PDFDocumentProxy } from 'pdfjs-dist';
+import { GlobalWorkerOptions, getDocument, type PDFDocumentProxy } from 'pdfjs-dist';
+
+GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
 type ViewerFile = {
   id: string;
