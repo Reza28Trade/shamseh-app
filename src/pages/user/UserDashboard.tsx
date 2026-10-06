@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { Student, Course } from '../../types';
 import { useStore } from '../../store/useStore';
 import { BookOpen, LogOut, Video, FileText, Send, Sun, Moon, CheckCircle, Bell, Volume2, Presentation, Link as LinkIcon, AlertCircle } from 'lucide-react';
@@ -35,8 +35,70 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   const [successMsg, setSuccessMsg] = useState(false);
   
   const [offlineMsg, setOfflineMsg] = useState<{ courseId: string; text: string; success: boolean } | null>(null);
+  const [enrolledCourses, setEnrolledCourses] = useState<Course[]>([]);
+  const [coursesLoading, setCoursesLoading] = useState(true);
+  const [coursesError, setCoursesError] = useState('');
 
-  const enrolledCourses = courses.filter(c => student.enrolledCourseIds.includes(c.id));
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadEnrollments = async () => {
+      setCoursesLoading(true);
+      setCoursesError('');
+
+      try {
+        const response = await fetch('/api/student/enrollments', {
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          throw new Error('دریافت دوره‌های هنرجو انجام نشد.');
+        }
+
+        const enrollments = await response.json();
+
+        const mappedCourses: Course[] = enrollments.map((enrollment: any) => {
+          const course = enrollment.course;
+          return {
+            id: course.id,
+            title: course.title,
+            professor: course.professor ?? '',
+            level: course.level ?? '',
+            schedule: '',
+            startDate: '',
+            description: course.description ?? '',
+            term: course.term,
+            price: course.price == null ? undefined : Number(course.price),
+            category: course.category,
+            coverImage: course.coverImage,
+            syllabus: [],
+          };
+        });
+
+        if (!cancelled) {
+          setEnrolledCourses(mappedCourses);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setCoursesError(error instanceof Error ? error.message : 'دریافت دوره‌های هنرجو انجام نشد.');
+          setEnrolledCourses([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setCoursesLoading(false);
+        }
+      }
+    };
+
+    void loadEnrollments();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [student.id]);
+
+  void courses;
+
   const studentMessages = messages.filter(m => m.studentId === student.id);
   const studentOfflineRequests = offlineRequestsList ? offlineRequestsList.filter(r => r.studentId === student.id) : [];
 
@@ -154,7 +216,15 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
               <BookOpen size={18} color="#ff3366" /> دوره‌های آموزشی من ({enrolledCourses.length})
             </h2>
 
-            {enrolledCourses.length > 0 ? (
+            {coursesLoading ? (
+              <div style={{ textAlign: 'center', padding: '40px 0', color: subText, fontSize: '13px' }}>
+                در حال دریافت دوره‌های شما...
+              </div>
+            ) : coursesError ? (
+              <div style={{ textAlign: 'center', padding: '40px 0', color: '#f87171', fontSize: '13px' }}>
+                {coursesError}
+              </div>
+            ) : enrolledCourses.length > 0 ? (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '20px' }}>
                 {enrolledCourses.map(course => {
                   const files = courseFiles[course.id] || [];
