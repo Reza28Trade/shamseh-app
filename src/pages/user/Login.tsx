@@ -2,11 +2,19 @@ import React, { useState, useEffect } from 'react';
 import type { Student, Admin } from '../../types';
 import { User, Shield, Lock, ArrowRight, Send, Globe, Camera, Play } from 'lucide-react';
 
+interface AuthUser {
+  id: string;
+  username: string;
+  role: 'SUPER_ADMIN' | 'STAFF' | 'STUDENT';
+  studentId: string | null;
+  student?: { fullName: string; nationalId: string } | null;
+}
+
 interface LoginProps {
   students: Student[];
   admins: Admin[];
-  onLoginSuccess: (student: Student) => void;
-  onAdminLoginSuccess: (admin: Admin) => void;
+  onLoginSuccess: (user: AuthUser) => void;
+  onAdminLoginSuccess: (user: AuthUser) => void;
   rulesText?: string;
 }
 
@@ -39,23 +47,45 @@ export const Login: React.FC<LoginProps> = ({
   const handleStudentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    const student = students.find(s => s.nationalId === studentNationalId.trim());
-    if (student) {
-      onLoginSuccess(student);
-    } else {
-      setError('کد ملی وارد شده در سیستم ثبت نشده است.');
-    }
+    void students;
+    void (async () => {
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ username: studentNationalId.trim(), password: studentNationalId.trim() }),
+        });
+        if (!response.ok) throw new Error('login');
+        const data = await response.json();
+        if (data.user?.role !== 'STUDENT') throw new Error('role');
+        onLoginSuccess(data.user);
+      } catch {
+        setError('کد ملی وارد شده در سیستم ثبت نشده است.');
+      }
+    })();
   };
 
   const handleAdminSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    const admin = admins.find(a => a.username.trim() === adminUsername.trim() && a.password === adminPassword);
-    if (admin) {
-      onAdminLoginSuccess(admin);
-    } else {
-      setError('نام کاربری یا رمز عبور ادمین اشتباه است.');
-    }
+    void admins;
+    void (async () => {
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ username: adminUsername.trim(), password: adminPassword }),
+        });
+        if (!response.ok) throw new Error('login');
+        const data = await response.json();
+        if (data.user?.role !== 'SUPER_ADMIN' && data.user?.role !== 'STAFF') throw new Error('role');
+        onAdminLoginSuccess(data.user);
+      } catch {
+        setError('نام کاربری یا رمز عبور ادمین اشتباه است.');
+      }
+    })();
   };
 
   return (
