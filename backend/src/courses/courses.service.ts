@@ -1,5 +1,7 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { Response } from 'express';
+import { execFile } from 'child_process';
+import { promisify } from 'util';
 import { randomUUID } from 'crypto';
 import { createReadStream, existsSync, mkdirSync, unlinkSync, writeFileSync } from 'fs';
 import { basename, extname, join } from 'path';
@@ -11,6 +13,7 @@ import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
 import { CreateFileDto } from './dto/create-file.dto';
 const ExcelJS = require('exceljs');
+const execFileAsync = promisify(execFile);
 
 @Injectable()
 export class CoursesService {
@@ -193,6 +196,52 @@ export class CoursesService {
       if (existsSync(filePath)) unlinkSync(filePath);
       throw error;
     }
+  }
+
+  async viewFile(user: AuthenticatedUser, fileId: string, res: Response) {
+    const file = await this.prisma.courseFile.findUnique({ where: { id: fileId } });
+    if (!file) throw new NotFoundException('File not found');
+    await this.ensureCourseAccess(user, file.courseId);
+
+    if (file.externalUrl) return res.redirect(file.externalUrl);
+    if (!file.storageKey) throw new NotFoundException('Stored file not found');
+
+    const storageDirectory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
+    const sourcePath = join(storageDirectory, basename(file.storageKey));
+    if (!existsSync(sourcePath)) throw new NotFoundException('Stored file not found');
+
+    const extension = extname(file.storageKey).toLowerCase();
+    const officeExtensions = new Set(['.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.odt', '.ods', '.odp']);
+    let viewPath = sourcePath;
+    let contentType = file.mimeType || 'application/octet-stream';
+
+    if (officeExtensions.has(extension)) {
+      const cacheDirectory = join(storageDirectory, '.viewer-cache');
+      mkdirSync(cacheDirectory, { recursive: true });
+      const cachedPath = join(cacheDirectory, `${basename(file.storageKey, extension)}.pdf`);
+
+      if (!existsSync(cachedPath)) {
+        await execFileAsync('/usr/bin/libreoffice', [
+          '--headless',
+          '--convert-to', 'pdf',
+          '--outdir', cacheDirectory,
+          sourcePath,
+        ], { timeout: 120000 });
+
+        const generatedPath = join(cacheDirectory, `${basename(file.storageKey, extension)}.pdf`);
+        if (!existsSync(generatedPath)) {
+          throw new BadRequestException('تبدیل فایل برای نمایش انجام نشد.');
+        }
+      }
+
+      viewPath = cachedPath;
+      contentType = 'application/pdf';
+    }
+
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Content-Disposition', 'inline');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    return createReadStream(viewPath).pipe(res);
   }
 
   async streamFile(user: AuthenticatedUser, fileId: string, res: Response) {
