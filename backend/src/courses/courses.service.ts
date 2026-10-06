@@ -154,7 +154,7 @@ export class CoursesService {
   async createUploadedCourseFile(user: AuthenticatedUser, courseId: string, dto: CreateFileDto, file: any) {
     this.requireAdmin(user);
     await this.ensureCourse(courseId);
-    return this.createStoredFile(courseId, null, dto, file);
+    return this.createStoredFile(courseId, dto, file);
   }
 
   private async createStoredFile(
