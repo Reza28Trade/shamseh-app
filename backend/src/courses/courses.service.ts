@@ -104,7 +104,7 @@ export class CoursesService {
     this.requireAdmin(user);
     await this.ensureCourse(courseId);
 
-    return this.prisma.courseFile.create({
+    const file = await this.prisma.courseFile.create({
       data: {
         courseId,
         title: dto.title,
@@ -115,6 +115,8 @@ export class CoursesService {
         externalUrl: dto.externalUrl,
       },
     });
+
+    return this.publicFile(file);
   }
 
   async createSessionFile(user: AuthenticatedUser, sessionId: string, dto: CreateFileDto) {
@@ -125,7 +127,7 @@ export class CoursesService {
     });
     if (!session) throw new NotFoundException('Session not found');
 
-    return this.prisma.courseFile.create({
+    const file = await this.prisma.courseFile.create({
       data: {
         courseId: session.courseId,
         sessionId,
@@ -137,6 +139,8 @@ export class CoursesService {
         externalUrl: dto.externalUrl,
       },
     });
+
+    return this.publicFile(file);
   }
 
   async deleteFile(user: AuthenticatedUser, fileId: string) {
