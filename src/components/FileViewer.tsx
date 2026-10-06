@@ -32,23 +32,37 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
     setLoading(true);
     setError('');
     setPdf(null);
-    const task = getDocument({ url: viewUrl, withCredentials: true });
-    task.promise.then(document => {
-      if (!cancelled) {
-        setPdf(document);
-        setLoading(false);
-      } else {
-        void document.destroy();
-      }
-    }).catch(() => {
-      if (!cancelled) {
-        setError('نمایش فایل انجام نشد.');
-        setLoading(false);
-      }
-    });
+    let task: ReturnType<typeof getDocument> | null = null;
+    let objectUrl = '';
+    fetch(viewUrl, { credentials: 'include' })
+      .then(async response => {
+        if (!response.ok) {
+          const message = await response.text().catch(() => '');
+          throw new Error(`HTTP ${response.status}${message ? `: ${message.slice(0, 160)}` : ''}`);
+        }
+        const blob = await response.blob();
+        objectUrl = URL.createObjectURL(blob);
+        task = getDocument(objectUrl);
+        return task.promise;
+      })
+      .then(document => {
+        if (!cancelled) {
+          setPdf(document);
+          setLoading(false);
+        } else {
+          void document.destroy();
+        }
+      })
+      .catch(error => {
+        if (!cancelled) {
+          setError(error instanceof Error ? `نمایش فایل انجام نشد: ${error.message}` : 'نمایش فایل انجام نشد.');
+          setLoading(false);
+        }
+      });
     return () => {
       cancelled = true;
-      void task.destroy();
+      if (task) void task.destroy();
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
   }, [file.id, isPdfViewer, viewUrl]);
 
