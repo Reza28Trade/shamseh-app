@@ -3,6 +3,28 @@ import type { Student, Course } from '../../types';
 import { useStore } from '../../store/useStore';
 import { BookOpen, LogOut, Video, FileText, Send, Sun, Moon, CheckCircle, Bell, Volume2, Presentation, Link as LinkIcon, AlertCircle } from 'lucide-react';
 
+interface BackendSession {
+  id: string;
+  title: string;
+  sessionNumber: number;
+  sessionDate: string;
+  startTime: string | null;
+  endTime: string | null;
+  meetingLink: string | null;
+  status: string;
+}
+
+interface BackendFile {
+  id: string;
+  courseId: string;
+  sessionId: string | null;
+  title: string;
+  type: 'PDF' | 'POWERPOINT' | 'AUDIO' | 'VIDEO' | 'DOCUMENT' | 'LINK';
+  mimeType: string | null;
+  fileSize: string | null;
+  externalUrl: string | null;
+}
+
 interface UserDashboardProps {
   student: Student;
   courses: Course[];
@@ -19,7 +41,6 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
     toggleTheme, 
     sendStudentMessage, 
     messages, 
-    courseFiles, 
     notifications, 
     offlineRequests, 
     offlineRequestsList,
@@ -38,6 +59,9 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   const [enrolledCourses, setEnrolledCourses] = useState<Course[]>([]);
   const [coursesLoading, setCoursesLoading] = useState(true);
   const [coursesError, setCoursesError] = useState('');
+  const [courseSessions, setCourseSessions] = useState<Record<string, BackendSession[]>>({});
+  const [courseFiles, setCourseFiles] = useState<Record<string, BackendFile[]>>({});
+  const [contentLoading, setContentLoading] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -77,15 +101,67 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
 
         if (!cancelled) {
           setEnrolledCourses(mappedCourses);
+          setContentLoading(true);
+
+          const contentResults = await Promise.all(
+            mappedCourses.map(async (course) => {
+              const [sessionsResponse, filesResponse] = await Promise.all([
+                fetch(`/api/courses/${course.id}/sessions`, { credentials: 'include' }),
+                fetch(`/api/courses/${course.id}/files`, { credentials: 'include' }),
+              ]);
+
+              if (!sessionsResponse.ok || !filesResponse.ok) {
+                throw new Error(`دریافت محتوای دوره «${course.title}» انجام نشد.`);
+              }
+
+              const sessions = await sessionsResponse.json();
+              const files = await filesResponse.json();
+
+              const sessionFiles = await Promise.all(
+                sessions.map(async (session: BackendSession) => {
+                  const response = await fetch(`/api/sessions/${session.id}/files`, {
+                    credentials: 'include',
+                  });
+                  if (!response.ok) {
+                    throw new Error(`دریافت فایل‌های جلسه «${session.title}» انجام نشد.`);
+                  }
+                  return [session.id, await response.json()] as const;
+                }),
+              );
+
+              return {
+                courseId: course.id,
+                sessions: sessions as BackendSession[],
+                files: [
+                  ...(files as BackendFile[]),
+                  ...sessionFiles.flatMap(([sessionId, sessionFiles]) =>
+                    (sessionFiles as BackendFile[]).map(file => ({ ...file, sessionId })),
+                  ),
+                ],
+              };
+            }),
+          );
+
+          if (!cancelled) {
+            setCourseSessions(
+              Object.fromEntries(contentResults.map(result => [result.courseId, result.sessions])),
+            );
+            setCourseFiles(
+              Object.fromEntries(contentResults.map(result => [result.courseId, result.files])),
+            );
+          }
         }
       } catch (error) {
         if (!cancelled) {
           setCoursesError(error instanceof Error ? error.message : 'دریافت دوره‌های هنرجو انجام نشد.');
           setEnrolledCourses([]);
+          setCourseSessions({});
+          setCourseFiles({});
         }
       } finally {
         if (!cancelled) {
           setCoursesLoading(false);
+          setContentLoading(false);
         }
       }
     };
@@ -228,6 +304,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '20px' }}>
                 {enrolledCourses.map(course => {
                   const files = courseFiles[course.id] || [];
+                  const sessions = courseSessions[course.id] || [];
                   const usedOffline = offlineRequests[student.id]?.[course.id] || 0;
                   const remainingOffline = Math.max(0, 3 - usedOffline);
 
@@ -239,7 +316,27 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                       </div>
 
                       <p style={{ fontSize: '12px', color: subText, margin: 0 }}>استاد مدرس: <strong>{course.professor}</strong></p>
-                      <p style={{ fontSize: '11px', color: subText, margin: 0 }}>زمان برگزاری: {course.schedule} | شروع: {course.startDate}</p>
+                                            {sessions.length > 0 && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                          <span style={{ fontSize: '11px', color: subText, fontWeight: 700 }}>
+                            جلسات دوره: {sessions.length} جلسه
+                          </span>
+                          {sessions.slice(0, 3).map(session => (
+                            <span key={session.id} style={{ fontSize: '10px', color: subText }}>
+                              جلسه {session.sessionNumber}: {session.title}
+                              {session.startTime ? ` — ${session.startTime}` : ''}
+                            </span>
+                          ))}
+                          {sessions.length > 3 && (
+                            <span style={{ fontSize: '10px', color: '#ff3366' }}>
+                              + {sessions.length - 3} جلسه دیگر
+                            </span>
+                          )}
+                        </div>
+                      )}
+                      {contentLoading && (
+                        <span style={{ fontSize: '10px', color: subText }}>در حال دریافت محتوای دوره...</span>
+                      )}
                       <p style={{ fontSize: '12px', color: textColor, margin: 0, lineHeight: 1.5 }}>{course.description}</p>
 
                       {course.adobeConnectUrl && (
@@ -263,16 +360,14 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                           style={{ width: '100%', backgroundColor: cardBg, border: `1px solid ${borderColor}`, color: textColor, padding: '10px 12px', borderRadius: '10px', fontSize: '11px', outline: 'none' }}
                         >
                           <option value="">انتخاب جلسه مربوطه...</option>
-                          {course.syllabus && course.syllabus.length > 0 ? (
-                            course.syllabus.map((syl, idx) => (
-                              <option key={idx} value={syl}>جلسه {idx + 1}: {syl}</option>
+                          {sessions.length > 0 ? (
+                            sessions.map(session => (
+                              <option key={session.id} value={session.title}>
+                                جلسه {session.sessionNumber}: {session.title}
+                              </option>
                             ))
                           ) : (
-                            <>
-                              <option value="جلسه اول: کلیات و مبانی">جلسه اول: کلیات و مبانی</option>
-                              <option value="جلسه دوم: تحلیل منابع و تست">جلسه دوم: تحلیل منابع و تست</option>
-                              <option value="جلسه سوم: رفع اشکال تخصصی">جلسه سوم: رفع اشکال تخصصی</option>
-                            </>
+                            <option value="" disabled>هنوز جلسه‌ای برای این دوره ثبت نشده است.</option>
                           )}
                         </select>
 
@@ -354,21 +449,24 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                               <div 
                                 key={file.id}
                                 onClick={() => {
-                                  if (file.type === 'class_link' || file.type === 'video_link') {
-                                    window.open(file.url, '_blank');
+                                  if (file.externalUrl) {
+                                    window.open(file.externalUrl, '_blank', 'noopener,noreferrer');
                                   }
                                 }}
-                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: cardBg, padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', border: `1px solid ${borderColor}` }}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: cardBg, padding: '8px 12px', borderRadius: '8px', cursor: file.externalUrl ? 'pointer' : 'default', border: `1px solid ${borderColor}` }}
                               >
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                  {file.type === 'pdf' && <FileText size={14} color="#ef4444" />}
-                                  {file.type === 'powerpoint' && <Presentation size={14} color="#f59e0b" />}
-                                  {file.type === 'audio' && <Volume2 size={14} color="#10b981" />}
-                                  {file.type === 'video_link' && <Video size={14} color="#3b82f6" />}
-                                  {file.type === 'class_link' && <LinkIcon size={14} color="#a855f7" />}
+                                  {file.type === 'PDF' && <FileText size={14} color="#ef4444" />}
+                                  {file.type === 'POWERPOINT' && <Presentation size={14} color="#f59e0b" />}
+                                  {file.type === 'AUDIO' && <Volume2 size={14} color="#10b981" />}
+                                  {file.type === 'VIDEO' && <Video size={14} color="#3b82f6" />}
+                                  {file.type === 'LINK' && <LinkIcon size={14} color="#a855f7" />}
+                                  {file.type === 'DOCUMENT' && <FileText size={14} color="#64748b" />}
                                   <span style={{ fontSize: '11px', fontWeight: 700, color: textColor }}>{file.title}</span>
                                 </div>
-                                <span style={{ fontSize: '9px', color: '#ff3366', fontWeight: 700 }}>مشاهده امن</span>
+                                <span style={{ fontSize: '9px', color: file.externalUrl ? '#ff3366' : subText, fontWeight: 700 }}>
+                                  {file.externalUrl ? 'مشاهده' : 'فایل داخلی'}
+                                </span>
                               </div>
                             ))}
                           </div>
