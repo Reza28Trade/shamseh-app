@@ -236,6 +236,7 @@ export class CoursesService {
       mimeType: file.mimeType,
       fileSize: file.fileSize?.toString() ?? null,
       externalUrl: file.externalUrl,
+      downloadUrl: file.storageKey ? `/api/files/${file.id}/download` : null,
       createdAt: file.createdAt,
       updatedAt: file.updatedAt,
     };
