@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import type { Student, Course } from '../../types';
-import { UserPlus, Trash2, Users, CheckCircle } from 'lucide-react';
+import { UserPlus, Trash2, Users, CheckCircle, Pencil, X } from 'lucide-react';
 
 interface ManageStudentsProps {
   students: Student[];
@@ -23,6 +23,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
+  const [editingStudentId, setEditingStudentId] = useState<string | null>(null);
 
   const handleCheckboxChange = (courseId: string) => {
     if (selectedCourses.includes(courseId)) {
@@ -58,44 +59,71 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
     void loadStudents();
   }, []);
 
+  const resetForm = () => {
+    setFullName('');
+    setNationalId('');
+    setPhone('');
+    setSelectedCourses([]);
+    setEditingStudentId(null);
+  };
+
+  const handleEdit = (student: Student) => {
+    setEditingStudentId(student.id);
+    setFullName(student.fullName);
+    setNationalId(student.nationalId);
+    setSelectedCourses(student.enrolledCourseIds);
+    setPhone('');
+    setError('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fullName || !nationalId || !phone) return;
+    if (!fullName || !nationalId || (!editingStudentId && !phone)) return;
 
     void (async () => {
       setError('');
       try {
-        const response = await fetch('/api/admin/students', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ fullName, nationalId, phone }),
-        });
-        if (!response.ok) {
-          const body = await response.json().catch(() => null);
-          throw new Error(body?.message || 'create');
-        }
+        if (editingStudentId) {
+          const response = await fetch(`/api/admin/students/${editingStudentId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ fullName, nationalId, ...(phone ? { phone } : {}), courseIds: selectedCourses }),
+          });
+          if (!response.ok) {
+            const body = await response.json().catch(() => null);
+            throw new Error(body?.message || 'ویرایش هنرجو انجام نشد.');
+          }
+        } else {
+          const response = await fetch('/api/admin/students', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ fullName, nationalId, phone }),
+          });
+          if (!response.ok) {
+            const body = await response.json().catch(() => null);
+            throw new Error(body?.message || 'ثبت هنرجو انجام نشد.');
+          }
 
-        const created = await response.json();
-
-        for (const courseId of selectedCourses) {
-          const enrollmentResponse = await fetch(
-            `/api/admin/students/${created.student.id}/enrollments/${courseId}`,
-            { method: 'POST', credentials: 'include' },
-          );
-          if (!enrollmentResponse.ok) {
-            const body = await enrollmentResponse.json().catch(() => null);
-            throw new Error(body?.message || 'ثبت دسترسی دوره برای هنرجو انجام نشد.');
+          const created = await response.json();
+          for (const courseId of selectedCourses) {
+            const enrollmentResponse = await fetch(
+              `/api/admin/students/${created.student.id}/enrollments/${courseId}`,
+              { method: 'POST', credentials: 'include' },
+            );
+            if (!enrollmentResponse.ok) {
+              const body = await enrollmentResponse.json().catch(() => null);
+              throw new Error(body?.message || 'ثبت دسترسی دوره برای هنرجو انجام نشد.');
+            }
           }
         }
 
-        setFullName('');
-        setNationalId('');
-        setPhone('');
-        setSelectedCourses([]);
+        resetForm();
         await loadStudents();
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'ثبت هنرجو انجام نشد.');
+        setError(err instanceof Error ? err.message : 'عملیات هنرجو انجام نشد.');
       }
     })();
   };
@@ -114,7 +142,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
       {/* فرم ثبت‌نام شیشه‌ای */}
       <form onSubmit={handleSubmit} style={{ backgroundColor: 'rgba(14, 14, 17, 0.75)', border: '1px solid rgba(255, 255, 255, 0.08)', backdropFilter: 'blur(16px)', padding: '32px', borderRadius: '24px', display: 'flex', flexDirection: 'column', gap: '20px', boxShadow: '0 16px 40px rgba(0,0,0,0.5)' }}>
         <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#fff', margin: '0 0 10px 0', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <UserPlus size={18} color="#ff3366" /> ثبت دانشجو جدید
+          <UserPlus size={18} color="#ff3366" /> {editingStudentId ? 'ویرایش هنرجو' : 'ثبت هنرجو جدید'}
         </h3>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
@@ -146,7 +174,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
             <label style={{ fontSize: '11px', color: '#94a3b8', display: 'block', marginBottom: '8px', fontWeight: 700 }}>شماره موبایل (رمز عبور) *</label>
             <input
               type="tel"
-              placeholder="مثال: 09121234567"
+              placeholder={editingStudentId ? "برای تغییر رمز عبور، شماره موبایل جدید را وارد کنید" : "مثال: 09121234567"}
               value={phone}
               onChange={e => setPhone(e.target.value)}
               required
@@ -175,8 +203,13 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
         </div>
 
         <button type="submit" style={{ padding: '14px', background: 'linear-gradient(135deg, #6D001A 0%, #a21c3a 100%)', color: '#fff', border: 'none', borderRadius: '14px', fontWeight: 800, fontSize: '13px', cursor: 'pointer', boxShadow: '0 8px 20px rgba(109, 0, 26, 0.4)' }}>
-          ثبت هنرجو در سیستم
+          {editingStudentId ? 'ذخیره تغییرات' : 'ثبت هنرجو در سیستم'}
         </button>
+        {editingStudentId && (
+          <button type="button" onClick={resetForm} style={{ padding: '12px', backgroundColor: 'transparent', color: '#94a3b8', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '14px', fontWeight: 700, fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+            <X size={14} /> انصراف از ویرایش
+          </button>
+        )}
       </form>
 
       {/* لیست دانشجویان */}
@@ -193,9 +226,14 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
                   <h4 style={{ fontSize: '13px', fontWeight: 800, color: '#fff', margin: '0 0 4px 0' }}>{st.fullName}</h4>
                   <span style={{ fontSize: '11px', color: '#94a3b8' }}>کد ملی: {st.nationalId} | دوره‌های فعال: {st.enrolledCourseIds.length} دوره</span>
                 </div>
-                <button onClick={() => void _onDeleteStudent(st.id)} style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <Trash2 size={12} /> حذف
-                </button>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button onClick={() => handleEdit(st)} style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#93c5fd', border: '1px solid rgba(59, 130, 246, 0.2)', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <Pencil size={12} /> ویرایش
+                  </button>
+                  <button onClick={() => void _onDeleteStudent(st.id)} style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <Trash2 size={12} /> حذف
+                  </button>
+                </div>
               </div>
             ))}
           </div>
