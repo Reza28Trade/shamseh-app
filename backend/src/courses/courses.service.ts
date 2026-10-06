@@ -109,11 +109,18 @@ export class CoursesService {
 
   async listSessions(user: AuthenticatedUser, courseId: string) {
     await this.ensureCourseAccess(user, courseId);
-    return this.prisma.courseSession.findMany({
+    const sessions = await this.prisma.courseSession.findMany({
       where: { courseId },
       orderBy: [{ sessionNumber: 'asc' }],
-      include: { _count: { select: { files: true } } },
     });
+    return sessions.map((session) => ({
+      id: session.id,
+      courseId: session.courseId,
+      sessionNumber: session.sessionNumber,
+      title: `جلسه ${session.sessionNumber}`,
+      createdAt: session.createdAt,
+      updatedAt: session.updatedAt,
+    }));
   }
 
   async listCourseFiles(user: AuthenticatedUser, courseId: string) {
