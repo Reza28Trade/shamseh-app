@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import { randomUUID } from 'crypto';
 import { extname } from 'path';
 import { mkdirSync } from 'fs';
-const { diskStorage } = require('multer');
+const { memoryStorage } = require('multer');
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { CoursesService } from './courses.service';
@@ -77,10 +77,7 @@ export class CoursesController {
 
   @Post('admin/courses/:courseId/files')
   @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: (_req: any, _file: any, cb: (error: Error | null, destination: string) => void) => cb(null, ensureUploadDirectory()),
-      filename: uploadedFilename,
-    }),
+    storage: memoryStorage(),
     limits: { fileSize: 100 * 1024 * 1024 },
   }))
   createCourseFile(
