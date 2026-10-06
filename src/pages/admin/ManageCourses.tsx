@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BookOpen, Plus, Pencil, Trash2, RefreshCw, ChevronDown, ChevronUp, FileText, Link as LinkIcon, CalendarDays, X } from 'lucide-react';
+import { BookOpen, Plus, Pencil, Trash2, RefreshCw, Download, ChevronDown, ChevronUp, FileText, Link as LinkIcon, CalendarDays, X } from 'lucide-react';
 
 type CourseStatus = 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
 type FileType = 'PDF' | 'POWERPOINT' | 'AUDIO' | 'VIDEO' | 'DOCUMENT' | 'LINK';
@@ -97,6 +97,19 @@ export const ManageCourses: React.FC = () => {
   const [fileTarget, setFileTarget] = useState<{ courseId: string; sessionId?: string } | null>(null);
   const [fileSaving, setFileSaving] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+
+  const exportCourses = async () => {
+    const response = await fetch('/api/admin/courses/export', { credentials: 'include' });
+    if (!response.ok) { setError('خروجی Excel دوره‌ها دریافت نشد.'); return; }
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = 'courses.xlsx';
+    anchor.click();
+    URL.revokeObjectURL(url);
+  };
 
   const loadCourses = async () => {
     setLoading(true); setError('');
@@ -363,7 +376,7 @@ export const ManageCourses: React.FC = () => {
           </h2>
           <p style={{ fontSize: 12, color: '#94a3b8', margin: 0 }}>دوره، جلسات و محتوای هر دوره از PostgreSQL مدیریت می‌شود</p>
         </div>
-        <button onClick={() => void loadCourses()} style={button('rgba(255,255,255,.06)')}><RefreshCw size={14} /></button>
+        <div style={{ display: 'flex', gap: 8 }}><button type="button" onClick={() => void exportCourses()} style={button('rgba(255,255,255,.06)')}><Download size={14} /> خروجی Excel</button><button onClick={() => void loadCourses()} style={button('rgba(255,255,255,.06)')}><RefreshCw size={14} /></button></div>
       </div>
 
       {error && <div style={{ background: 'rgba(239,68,68,.1)', color: '#f87171', padding: 12, borderRadius: 10, fontSize: 12 }}>{error}</div>}
