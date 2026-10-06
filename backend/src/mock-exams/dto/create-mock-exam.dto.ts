@@ -27,20 +27,8 @@ export class CreateMockExamDto {
   @IsString()
   description?: string;
 
-  @IsOptional()
-  @IsDateString()
-  registrationStartsAt?: string;
-
-  @IsOptional()
-  @IsDateString()
-  registrationEndsAt?: string;
-
   @IsDateString()
   examDate!: string;
-
-  @IsOptional()
-  @IsUrl()
-  registrationUrl?: string;
 
   @IsOptional()
   @IsUrl()
