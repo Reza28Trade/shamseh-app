@@ -35,8 +35,71 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   const [successMsg, setSuccessMsg] = useState(false);
   
   const [offlineMsg, setOfflineMsg] = useState<{ courseId: string; text: string; success: boolean } | null>(null);
+  const [enrolledCourses, setEnrolledCourses] = useState<Course[]>([]);
+  const [coursesLoading, setCoursesLoading] = useState(true);
+  const [coursesError, setCoursesError] = useState('');
 
-  const enrolledCourses = courses.filter(c => student.enrolledCourseIds.includes(c.id));
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadEnrollments = async () => {
+      setCoursesLoading(true);
+      setCoursesError('');
+
+      try {
+        const response = await fetch('/api/student/enrollments', {
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          throw new Error('دریافت دوره‌های هنرجو انجام نشد.');
+        }
+
+        const enrollments = await response.json();
+
+        const mappedCourses: Course[] = enrollments.map((enrollment: any) => {
+          const course = enrollment.course;
+          return {
+            id: course.id,
+            title: course.title,
+            professor: course.professor ?? '',
+            level: course.level ?? '',
+            schedule: '',
+            startDate: '',
+            description: course.description ?? '',
+            term: course.term,
+            price: course.price == null ? undefined : Number(course.price),
+            category: course.category,
+            coverImage: course.coverImage,
+            syllabus: [],
+          };
+        });
+
+        if (!cancelled) {
+          setEnrolledCourses(mappedCourses);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setCoursesError(error instanceof Error ? error.message : 'دریافت دوره‌های هنرجو انجام نشد.');
+          setEnrolledCourses([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setCoursesLoading(false);
+        }
+      }
+    };
+
+    void loadEnrollments();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [student.id]);
+
+  void courses;
+
+  const studentMessages = messages.filter(m => m.studentId === student.id);
   const studentOfflineRequests = offlineRequestsList ? offlineRequestsList.filter(r => r.studentId === student.id) : [];
 
   const studentNotifications = notifications.filter(n => 
