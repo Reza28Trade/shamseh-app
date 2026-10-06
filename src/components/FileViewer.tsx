@@ -24,6 +24,13 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
   const pdfSrc = viewUrl ? `${viewUrl}#toolbar=0&navpanes=0&scrollbar=0&${zoom === null ? 'zoom=page-width' : `zoom=${Math.round(zoom * 100)}`}` : '';
 
   useEffect(() => {
+    if (isPdfViewer) return;
+    setViewUrl(fileUrl);
+    setError('');
+    setLoading(false);
+  }, [file.id, fileUrl, isPdfViewer]);
+
+  useEffect(() => {
     if (!isPdfViewer) return;
     let cancelled = false;
     setLoading(true);
