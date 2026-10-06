@@ -83,7 +83,10 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
             `/api/admin/students/${created.student.id}/enrollments/${courseId}`,
             { method: 'POST', credentials: 'include' },
           );
-          if (!enrollmentResponse.ok) throw new Error('enroll');
+          if (!enrollmentResponse.ok) {
+            const body = await enrollmentResponse.json().catch(() => null);
+            throw new Error(body?.message || 'ثبت دسترسی دوره برای هنرجو انجام نشد.');
+          }
         }
 
         setFullName('');
@@ -92,9 +95,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
         setSelectedCourses([]);
         await loadStudents();
       } catch (err) {
-        setError(err instanceof Error && err.message !== 'create' && err.message !== 'enroll'
-          ? err.message
-          : 'ثبت هنرجو انجام نشد. کد ملی یا اطلاعات واردشده ممکن است تکراری باشد.');
+        setError(err instanceof Error ? err.message : 'ثبت هنرجو انجام نشد.');
       }
     })();
   };
