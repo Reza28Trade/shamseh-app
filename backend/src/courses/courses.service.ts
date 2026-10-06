@@ -208,7 +208,7 @@ export class CoursesService {
     if (!existsSync(filePath)) throw new NotFoundException('Stored file not found');
 
     res.setHeader('Content-Type', file.mimeType || 'application/octet-stream');
-    res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(file.title)}`);
+    res.setHeader('Content-Disposition', `inline; filename*=UTF-8''${encodeURIComponent(file.title)}`);
     return createReadStream(filePath).pipe(res);
   }
 
