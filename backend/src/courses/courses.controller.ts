@@ -1,5 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
-import { Request } from 'express';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Request, Response } from 'express';
+import { randomUUID } from 'crypto';
+import { extname } from 'path';
+import { mkdirSync } from 'fs';
+import { diskStorage } from 'multer';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { CoursesService } from './courses.service';
@@ -10,6 +15,17 @@ import { UpdateSessionDto } from './dto/update-session.dto';
 import { CreateFileDto } from './dto/create-file.dto';
 
 type AuthenticatedRequest = Request & { user: AuthenticatedUser };
+
+const uploadDirectory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
+
+function ensureUploadDirectory() {
+  mkdirSync(uploadDirectory, { recursive: true });
+  return uploadDirectory;
+}
+
+function uploadedFilename(_req: Request, file: Express.Multer.File) {
+  return `${randomUUID()}${extname(file.originalname).toLowerCase()}`;
+}
 
 @Controller()
 @UseGuards(AuthGuard)
@@ -57,13 +73,52 @@ export class CoursesController {
   }
 
   @Post('admin/courses/:courseId/files')
-  createCourseFile(@Req() req: AuthenticatedRequest, @Param('courseId') courseId: string, @Body() dto: CreateFileDto) {
-    return this.coursesService.createCourseFile(req.user, courseId, dto);
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: (_req, _file, cb) => cb(null, ensureUploadDirectory()),
+      filename: uploadedFilename,
+    }),
+    limits: { fileSize: 100 * 1024 * 1024 },
+  }))
+  createCourseFile(
+    @Req() req: AuthenticatedRequest,
+    @Param('courseId') courseId: string,
+    @Body() dto: CreateFileDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.coursesService.createUploadedCourseFile(req.user, courseId, dto, file);
   }
 
   @Post('admin/sessions/:sessionId/files')
-  createSessionFile(@Req() req: AuthenticatedRequest, @Param('sessionId') sessionId: string, @Body() dto: CreateFileDto) {
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: (_req, _file, cb) => cb(null, ensureUploadDirectory()),
+      filename: uploadedFilename,
+    }),
+    limits: { fileSize: 100 * 1024 * 1024 },
+  }))
+  createSessionFile(
+    @Req() req: AuthenticatedRequest,
+    @Param('sessionId') sessionId: string,
+    @Body() dto: CreateFileDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.coursesService.createUploadedSessionFile(req.user, sessionId, dto, file);
+  }
+
+  @Post('admin/courses/:courseId/files/link')
+  createCourseLink(@Req() req: AuthenticatedRequest, @Param('courseId') courseId: string, @Body() dto: CreateFileDto) {
+    return this.coursesService.createCourseFile(req.user, courseId, dto);
+  }
+
+  @Post('admin/sessions/:sessionId/files/link')
+  createSessionLink(@Req() req: AuthenticatedRequest, @Param('sessionId') sessionId: string, @Body() dto: CreateFileDto) {
     return this.coursesService.createSessionFile(req.user, sessionId, dto);
+  }
+
+  @Get('files/:fileId/download')
+  downloadFile(@Req() req: AuthenticatedRequest, @Param('fileId') fileId: string, @Res() res: Response) {
+    return this.coursesService.downloadFile(req.user, fileId, res);
   }
 
   @Delete('admin/files/:fileId')
