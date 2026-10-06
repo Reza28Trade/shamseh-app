@@ -50,6 +50,9 @@ enum NotificationType {
   CLASS_POSTPONED
   NEW_FILE
   IMPORTANT
+  MOCK_EXAM
+  MOCK_EXAM_DATE_CHANGED
+  MOCK_EXAM_LINK_AVAILABLE
 }
 
 enum NotificationTargetType {
@@ -68,6 +71,22 @@ enum OfflineRequestStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+enum MockExamStatus {
+  DRAFT
+  OPEN_FOR_REGISTRATION
+  REGISTRATION_CLOSED
+  SCHEDULED
+  LINK_AVAILABLE
+  LIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum MockExamRegistrationStatus {
+  ACTIVE
+  CANCELLED
 }
 
 model User {
@@ -113,6 +132,7 @@ model Student {
   notificationReads NotificationRead[]
   supportTickets SupportTicket[]
   offlineRequests OfflineRequest[]
+  mockExamRegistrations MockExamRegistration[]
 }
 
 model Course {
@@ -133,6 +153,7 @@ model Course {
   files CourseFile[]
   notifications Notification[]
   offlineRequests OfflineRequest[]
+  mockExams MockExamCourse[]
 }
 
 model Enrollment {
@@ -261,6 +282,48 @@ model OfflineRequest {
   session CourseSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   reviewer User? @relation("OfflineRequestReviewer", fields: [reviewedBy], references: [id], onDelete: SetNull)
   @@index([studentId, courseId, status])
+}
+
+model MockExam {
+  id String @id @default(cuid())
+  title String
+  level String
+  field String
+  description String?
+  registrationStartsAt DateTime?
+  registrationEndsAt DateTime?
+  examDate DateTime
+  registrationUrl String?
+  examUrl String?
+  status MockExamStatus @default(DRAFT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  courses MockExamCourse[]
+  registrations MockExamRegistration[]
+  @@index([status, examDate])
+  @@index([level, field])
+}
+
+model MockExamCourse {
+  mockExamId String
+  courseId String
+  mockExam MockExam @relation(fields: [mockExamId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  @@id([mockExamId, courseId])
+  @@index([courseId])
+}
+
+model MockExamRegistration {
+  id String @id @default(cuid())
+  mockExamId String
+  studentId String
+  status MockExamRegistrationStatus @default(ACTIVE)
+  registeredAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  mockExam MockExam @relation(fields: [mockExamId], references: [id], onDelete: Cascade)
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  @@unique([mockExamId, studentId])
+  @@index([studentId, status])
 }
 
 model AuditLog {
