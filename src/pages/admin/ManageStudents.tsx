@@ -20,6 +20,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
   const [nationalId, setNationalId] = useState('');
   const [phone, setPhone] = useState('');
   const [apiStudents, setApiStudents] = useState<Student[]>([]);
+  const [apiCourses, setApiCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
@@ -37,9 +38,28 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
     setLoading(true);
     setError('');
     try {
-      const response = await fetch('/api/admin/students', { credentials: 'include' });
-      if (!response.ok) throw new Error('load');
-      const data = await response.json();
+      const [studentsResponse, coursesResponse] = await Promise.all([
+        fetch('/api/admin/students', { credentials: 'include' }),
+        fetch('/api/courses', { credentials: 'include' }),
+      ]);
+      if (!studentsResponse.ok || !coursesResponse.ok) throw new Error('load');
+      const [data, courseData] = await Promise.all([
+        studentsResponse.json(),
+        coursesResponse.json(),
+      ]);
+      setApiCourses(courseData.map((course: any) => ({
+        id: course.id,
+        title: course.title,
+        professor: course.professor ?? '',
+        level: course.level ?? '',
+        schedule: '',
+        startDate: '',
+        description: course.description ?? '',
+        term: course.term,
+        price: course.price ? Number(course.price) : 0,
+        category: course.category,
+        coverImage: course.coverImage,
+      })));
       setApiStudents(data.map((student: any) => ({
         id: student.id,
         fullName: student.fullName,
@@ -186,7 +206,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
         <div>
           <label style={{ fontSize: '11px', color: '#ff3366', display: 'block', marginBottom: '10px', fontWeight: 700 }}>انتخاب دوره‌های مجاز برای هنرجو</label>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '10px' }}>
-            {courses.map(course => {
+            {apiCourses.map(course => {
               const isSelected = selectedCourses.includes(course.id);
               return (
                 <div 
