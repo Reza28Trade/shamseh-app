@@ -25,7 +25,8 @@
     "argon2": "^0.44.0",
     "cookie-parser": "^1.4.7",
     "dotenv": "^16.4.7",
-    "@nestjs/mapped-types": "^2.1.0"
+    "@nestjs/mapped-types": "^2.1.0",
+    "exceljs": "^4.4.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.0",
