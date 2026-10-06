@@ -152,7 +152,7 @@ export class CoursesService {
     return this.createStoredFile(courseId, null, dto, file);
   }
 
-  async createUploadedSessionFile(user: AuthenticatedUser, sessionId: string, dto: CreateFileDto, file: Express.Multer.File) {
+  async createUploadedSessionFile(user: AuthenticatedUser, sessionId: string, dto: CreateFileDto, file: any) {
     this.requireAdmin(user);
     const session = await this.prisma.courseSession.findUnique({
       where: { id: sessionId },
@@ -224,6 +224,7 @@ export class CoursesService {
     mimeType: string | null;
     fileSize: bigint | null;
     externalUrl: string | null;
+    storageKey: string | null;
     createdAt: Date;
     updatedAt: Date;
   }) {
