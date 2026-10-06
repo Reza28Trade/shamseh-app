@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useStore } from '../store/useStore';
 
 export const ManageRules: React.FC = () => {
-  const { rulesText, setRulesText, currentAdmin } = useStore();
+  const { rulesText, setRulesText } = useStore();
   const [text, setText] = useState(rulesText);
   const [success, setSuccess] = useState(false);
 
