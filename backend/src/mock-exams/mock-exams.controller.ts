@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   Patch,
@@ -36,18 +35,6 @@ export class MockExamsController {
   @Get('student/mock-exams')
   listForStudent(@Req() req: AuthenticatedRequest) {
     return this.mockExamsService.listForStudent(req.user);
-  }
-
-  @UseGuards(AuthGuard)
-  @Post('mock-exams/:mockExamId/register')
-  register(@Req() req: AuthenticatedRequest, @Param('mockExamId') mockExamId: string) {
-    return this.mockExamsService.register(req.user, mockExamId);
-  }
-
-  @UseGuards(AuthGuard)
-  @Delete('mock-exams/:mockExamId/register')
-  cancelRegistration(@Req() req: AuthenticatedRequest, @Param('mockExamId') mockExamId: string) {
-    return this.mockExamsService.cancelRegistration(req.user, mockExamId);
   }
 
   @UseGuards(AuthGuard)
