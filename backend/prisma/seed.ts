@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import * as argon2 from 'argon2';
 import { PrismaClient, UserRole } from '@prisma/client';
 
