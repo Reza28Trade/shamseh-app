@@ -39,7 +39,6 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   const { 
     theme, 
     toggleTheme, 
-    sendStudentMessage, 
     messages, offlineRequests, 
     offlineRequestsList,
     requestOfflineClass, 
@@ -68,6 +67,10 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
     readAt: string | null;
   }>>([]);
   const [notificationsLoading, setNotificationsLoading] = useState(false);
+  const [supportTickets, setSupportTickets] = useState<Array<{ id: string; subject: string; status: 'OPEN' | 'ANSWERED' | 'CLOSED'; createdAt: string; messages: Array<{ id: string; content: string; createdAt: string; senderUserId: string }> }>>([]);
+  const [supportLoading, setSupportLoading] = useState(false);
+  const [supportSubmitting, setSupportSubmitting] = useState(false);
+  const [supportError, setSupportError] = useState('');
 
   useEffect(() => {
     let cancelled = false;
@@ -215,26 +218,62 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
 
   void courses;
 
-  const studentMessages = messages.filter(m => m.studentId === student.id);
+  const studentMessages = supportTickets;
   const studentOfflineRequests = offlineRequestsList ? offlineRequestsList.filter(r => r.studentId === student.id) : [];
 
   const unreadCount = studentNotifications.filter(n => !n.readAt).length;
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (activeTab !== 'messages') return;
+    let cancelled = false;
+    const loadSupportTickets = async () => {
+      setSupportLoading(true);
+      setSupportError('');
+      try {
+        const response = await fetch('/api/support/tickets', { credentials: 'include' });
+        if (!response.ok) throw new Error('دریافت تیکت‌های پشتیبانی انجام نشد.');
+        const data = await response.json();
+        if (!cancelled) setSupportTickets(data);
+      } catch (error) {
+        if (!cancelled) {
+          setSupportError(error instanceof Error ? error.message : 'دریافت تیکت‌های پشتیبانی انجام نشد.');
+          setSupportTickets([]);
+        }
+      } finally {
+        if (!cancelled) setSupportLoading(false);
+      }
+    };
+    void loadSupportTickets();
+    return () => { cancelled = true; };
+  }, [activeTab, student.id]);
+
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!subject || !content) return;
-
-    sendStudentMessage({
-      studentId: student.id,
-      studentName: student.fullName,
-      subject,
-      content,
-    });
-
-    setSubject('');
-    setContent('');
-    setSuccessMsg(true);
-    setTimeout(() => setSuccessMsg(false), 4000);
+    if (!subject.trim() || !content.trim() || supportSubmitting) return;
+    setSupportSubmitting(true);
+    setSupportError('');
+    try {
+      const response = await fetch('/api/support/tickets', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject: subject.trim(), content: content.trim() }),
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.message || 'ثبت تیکت انجام نشد.');
+      }
+      const ticket = await response.json();
+      setSupportTickets(current => [ticket, ...current]);
+      setSubject('');
+      setContent('');
+      setSuccessMsg(true);
+      setTimeout(() => setSuccessMsg(false), 4000);
+    } catch (error) {
+      setSupportError(error instanceof Error ? error.message : 'ثبت تیکت انجام نشد.');
+    } finally {
+      setSupportSubmitting(false);
+    }
   };
 
   const handleOfflineRequestSubmit = (courseId: string) => {
@@ -577,6 +616,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
               </div>
             )}
 
+            {supportError && <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#f87171', padding: '12px', borderRadius: '12px', fontSize: '12px', marginBottom: '16px' }}>{supportError}</div>}
             <form onSubmit={handleSendMessage} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
                 <label style={{ fontSize: '11px', color: subText, display: 'block', marginBottom: '6px', fontWeight: 700 }}>موضوع پیام *</label>
@@ -600,37 +640,38 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                   style={{ width: '100%', backgroundColor: innerCardBg, border: `1px solid ${borderColor}`, color: textColor, padding: '12px 16px', borderRadius: '12px', fontSize: '12px', outline: 'none', boxSizing: 'border-box', resize: 'vertical' }} 
                 />
               </div>
-              <button type="submit" style={{ padding: '14px', background: 'linear-gradient(135deg, #6D001A 0%, #a21c3a 100%)', color: '#fff', border: 'none', borderRadius: '14px', fontWeight: 800, fontSize: '13px', cursor: 'pointer', boxShadow: '0 8px 20px rgba(109, 0, 26, 0.4)' }}>
-                ارسال پیام به پشتیبانی
+              <button type="submit" disabled={supportSubmitting} style={{ padding: '14px', background: 'linear-gradient(135deg, #6D001A 0%, #a21c3a 100%)', color: '#fff', border: 'none', borderRadius: '14px', fontWeight: 800, fontSize: '13px', cursor: supportSubmitting ? 'wait' : 'pointer', opacity: supportSubmitting ? 0.7 : 1, boxShadow: '0 8px 20px rgba(109, 0, 26, 0.4)' }}>
+                {supportSubmitting ? 'در حال ثبت...' : 'ارسال پیام به پشتیبانی'}
               </button>
             </form>
 
-            {studentMessages.length > 0 && (
-              <div style={{ marginTop: '30px', borderTop: `1px solid ${borderColor}`, paddingTop: '20px' }}>
-                <h3 style={{ fontSize: '14px', fontWeight: 800, color: textColor, margin: '0 0 16px 0' }}>تاریخچه پیام‌های شما</h3>
+            <div style={{ marginTop: '30px', borderTop: `1px solid ${borderColor}`, paddingTop: '20px' }}>
+              <h3 style={{ fontSize: '14px', fontWeight: 800, color: textColor, margin: '0 0 16px 0' }}>تاریخچه تیکت‌های شما</h3>
+              {supportLoading ? (
+                <div style={{ textAlign: 'center', padding: '25px 0', color: subText, fontSize: '12px' }}>در حال دریافت تیکت‌ها...</div>
+              ) : studentMessages.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '25px 0', color: subText, fontSize: '12px' }}>هنوز تیکتی ثبت نکرده‌اید.</div>
+              ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {studentMessages.map(msg => (
-                    <div key={msg.id} style={{ backgroundColor: innerCardBg, border: `1px solid ${borderColor}`, padding: '16px', borderRadius: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {studentMessages.map(ticket => (
+                    <div key={ticket.id} style={{ backgroundColor: innerCardBg, border: `1px solid ${borderColor}`, padding: '16px', borderRadius: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: '12px', fontWeight: 800, color: textColor }}>موضوع: {msg.subject}</span>
-                        <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '6px', backgroundColor: msg.status === 'answered' ? 'rgba(52, 211, 153, 0.1)' : 'rgba(239, 68, 68, 0.1)', color: msg.status === 'answered' ? '#34d399' : '#f87171', fontWeight: 700 }}>
-                          {msg.status === 'answered' ? 'پاسخ داده شده' : 'در انتظار پاسخ'}
+                        <span style={{ fontSize: '12px', fontWeight: 800, color: textColor }}>موضوع: {ticket.subject}</span>
+                        <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '6px', backgroundColor: ticket.status === 'ANSWERED' ? 'rgba(52, 211, 153, 0.1)' : 'rgba(239, 68, 68, 0.1)', color: ticket.status === 'ANSWERED' ? '#34d399' : '#f87171', fontWeight: 700 }}>
+                          {ticket.status === 'ANSWERED' ? 'پاسخ داده شده' : ticket.status === 'CLOSED' ? 'بسته شده' : 'در انتظار پاسخ'}
                         </span>
                       </div>
-                      <p style={{ fontSize: '12px', color: subText, margin: 0 }}>{msg.content}</p>
-                      <span style={{ fontSize: '10px', color: subText }}>تاریخ: {msg.createdAt}</span>
-
-                      {msg.adminReply && (
-                        <div style={{ backgroundColor: 'rgba(52, 211, 153, 0.05)', border: '1px solid rgba(52, 211, 153, 0.2)', padding: '12px', borderRadius: '10px', marginTop: '6px' }}>
-                          <span style={{ fontSize: '11px', color: '#34d399', fontWeight: 800, display: 'block', marginBottom: '4px' }}>پاسخ پشتیبانی:</span>
-                          <p style={{ fontSize: '12px', color: textColor, margin: 0 }}>{msg.adminReply}</p>
+                      {ticket.messages.map(message => (
+                        <div key={message.id} style={{ backgroundColor: cardBg, padding: '10px', borderRadius: '9px' }}>
+                          <p style={{ fontSize: '12px', color: textColor, margin: 0 }}>{message.content}</p>
+                          <span style={{ fontSize: '9px', color: subText }}>{new Date(message.createdAt).toLocaleString('fa-IR')}</span>
                         </div>
-                      )}
+                      ))}
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         )}
 
