@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { Student, Course } from '../../types';
 import { useStore } from '../../store/useStore';
 import { BookOpen, LogOut, Video, FileText, Send, Sun, Moon, CheckCircle, Bell, Volume2, Presentation, Link as LinkIcon, AlertCircle } from 'lucide-react';
@@ -37,7 +37,6 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   const [offlineMsg, setOfflineMsg] = useState<{ courseId: string; text: string; success: boolean } | null>(null);
 
   const enrolledCourses = courses.filter(c => student.enrolledCourseIds.includes(c.id));
-  const studentMessages = messages.filter(m => m.studentId === student.id);
   const studentOfflineRequests = offlineRequestsList ? offlineRequestsList.filter(r => r.studentId === student.id) : [];
 
   const studentNotifications = notifications.filter(n => 
@@ -154,7 +153,15 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
               <BookOpen size={18} color="#ff3366" /> دوره‌های آموزشی من ({enrolledCourses.length})
             </h2>
 
-            {enrolledCourses.length > 0 ? (
+            {coursesLoading ? (
+              <div style={{ textAlign: 'center', padding: '40px 0', color: subText, fontSize: '13px' }}>
+                در حال دریافت دوره‌های شما...
+              </div>
+            ) : coursesError ? (
+              <div style={{ textAlign: 'center', padding: '40px 0', color: '#f87171', fontSize: '13px' }}>
+                {coursesError}
+              </div>
+            ) : enrolledCourses.length > 0 ? (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '20px' }}>
                 {enrolledCourses.map(course => {
                   const files = courseFiles[course.id] || [];
