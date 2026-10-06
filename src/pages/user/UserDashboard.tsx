@@ -77,6 +77,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   const [offlineLoading, setOfflineLoading] = useState(false);
   const [editingOfflineRequestId, setEditingOfflineRequestId] = useState<string | null>(null);
   const [editingOfflineSessionId, setEditingOfflineSessionId] = useState<string>('');
+  const [viewerFile, setViewerFile] = useState<BackendFile | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -597,9 +598,10 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                               <div 
                                 key={file.id}
                                 onClick={() => {
-                                  const targetUrl = file.externalUrl || file.streamUrl;
-                                  if (targetUrl) {
-                                    window.open(targetUrl, '_blank', 'noopener,noreferrer');
+                                  if (file.externalUrl) {
+                                    window.open(file.externalUrl, '_blank', 'noopener,noreferrer');
+                                  } else if (file.streamUrl) {
+                                    setViewerFile(file);
                                   }
                                 }}
                                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: cardBg, padding: '8px 12px', borderRadius: '8px', cursor: (file.externalUrl || file.streamUrl) ? 'pointer' : 'default', border: `1px solid ${borderColor}` }}
@@ -738,6 +740,37 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
 
       </div>
 
+      {viewerFile && viewerFile.streamUrl && (
+        <div
+          onClick={() => setViewerFile(null)}
+          style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,.78)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}
+        >
+          <div
+            onClick={event => event.stopPropagation()}
+            style={{ width: 'min(1100px, 96vw)', height: 'min(88vh, 900px)', background: isDark ? '#111318' : '#fff', borderRadius: 18, overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 24px 80px rgba(0,0,0,.55)' }}
+          >
+            <div style={{ minHeight: 54, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', borderBottom: `1px solid ${borderColor}` }}>
+              <strong style={{ color: textColor, fontSize: 13 }}>{viewerFile.title}</strong>
+              <button type="button" onClick={() => setViewerFile(null)} style={{ border: 'none', background: 'rgba(239,68,68,.1)', color: '#f87171', borderRadius: 8, padding: '7px 12px', cursor: 'pointer', fontWeight: 800 }}>بستن</button>
+            </div>
+            <div style={{ flex: 1, minHeight: 0, background: '#222' }}>
+              {viewerFile.type === 'AUDIO' ? (
+                <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 30, boxSizing: 'border-box' }}>
+                  <audio src={`/api/files/${viewerFile.id}/view`} controls controlsList="nodownload" style={{ width: 'min(700px, 100%)' }} />
+                </div>
+              ) : viewerFile.type === 'VIDEO' ? (
+                <video src={`/api/files/${viewerFile.id}/view`} controls controlsList="nodownload" disablePictureInPicture style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+              ) : (
+                <iframe
+                  title={viewerFile.title}
+                  src={`/api/files/${viewerFile.id}/view`}
+                  style={{ width: '100%', height: '100%', border: 0, background: '#fff' }}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
