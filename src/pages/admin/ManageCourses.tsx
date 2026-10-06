@@ -40,6 +40,7 @@ type CourseFile = {
   mimeType: string | null;
   fileSize: string | null;
   externalUrl: string | null;
+  downloadUrl: string | null;
 };
 
 const emptyCourse = {
@@ -95,6 +96,7 @@ export const ManageCourses: React.FC = () => {
   const [fileForm, setFileForm] = useState(emptyFile);
   const [fileTarget, setFileTarget] = useState<{ courseId: string; sessionId?: string } | null>(null);
   const [fileSaving, setFileSaving] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const loadCourses = async () => {
     setLoading(true); setError('');
@@ -273,25 +275,45 @@ export const ManageCourses: React.FC = () => {
   const openFileForm = (courseId: string, sessionId?: string) => {
     setFileTarget({ courseId, sessionId });
     setFileForm(emptyFile);
+    setSelectedFile(null);
   };
 
   const saveFile = async () => {
     if (!fileTarget || !fileForm.title.trim() || fileSaving) return;
     setFileSaving(true); setError('');
     try {
-      const url = fileTarget.sessionId
+      const uploadUrl = fileTarget.sessionId
         ? `/api/admin/sessions/${fileTarget.sessionId}/files`
         : `/api/admin/courses/${fileTarget.courseId}/files`;
-      const response = await fetch(url, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: fileForm.title.trim(),
-          type: fileForm.type,
-          externalUrl: fileForm.externalUrl.trim() || undefined,
-        }),
-      });
+      const linkUrl = fileTarget.sessionId
+        ? `/api/admin/sessions/${fileTarget.sessionId}/files/link`
+        : `/api/admin/courses/${fileTarget.courseId}/files/link`;
+
+      let response: Response;
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append('title', fileForm.title.trim());
+        formData.append('type', fileForm.type);
+        formData.append('file', selectedFile);
+        response = await fetch(uploadUrl, {
+          method: 'POST',
+          credentials: 'include',
+          body: formData,
+        });
+      } else {
+        const externalUrl = fileForm.externalUrl.trim();
+        if (!externalUrl) throw new Error('یک فایل از کامپیوتر انتخاب کنید یا لینک خارجی وارد کنید.');
+        response = await fetch(linkUrl, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: fileForm.title.trim(),
+            type: fileForm.type,
+            externalUrl,
+          }),
+        });
+      }
       const data = await response.json().catch(() => null);
       if (!response.ok) throw new Error(data?.message || 'افزودن فایل انجام نشد.');
       const created = data as CourseFile;
@@ -302,6 +324,7 @@ export const ManageCourses: React.FC = () => {
       }
       setFileTarget(null);
       setFileForm(emptyFile);
+      setSelectedFile(null);
       await loadCourses();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'افزودن فایل انجام نشد.');
@@ -423,7 +446,7 @@ export const ManageCourses: React.FC = () => {
                                       <div key={file.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, padding: '5px 0' }}>
                                         <span style={{ color: '#cbd5e1', fontSize: 10 }}><FileText size={10} style={{ verticalAlign: 'middle', marginLeft: 4 }} />{file.title} · {fileLabel(file.type)}</span>
                                         <div style={{ display: 'flex', gap: 5 }}>
-                                          {file.externalUrl && <a href={file.externalUrl} target="_blank" rel="noreferrer" style={{ color: '#38bdf8', fontSize: 9 }}>باز کردن</a>}
+                                          {(file.downloadUrl || file.externalUrl) && <a href={file.downloadUrl || file.externalUrl || '#'} target="_blank" rel="noreferrer" style={{ color: '#38bdf8', fontSize: 9 }}>{file.downloadUrl ? 'دانلود' : 'باز کردن'}</a>}
                                           <button type="button" onClick={() => void deleteFile(course.id, file)} style={{ background: 'transparent', border: 0, color: '#f87171', cursor: 'pointer' }}><Trash2 size={11} /></button>
                                         </div>
                                       </div>
@@ -458,7 +481,7 @@ export const ManageCourses: React.FC = () => {
                                 <div key={file.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, padding: '8px 0', borderBottom: '1px solid #1e1e24' }}>
                                   <span style={{ color: '#cbd5e1', fontSize: 10 }}>{file.title} · {fileLabel(file.type)}</span>
                                   <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                                    {file.externalUrl && <a href={file.externalUrl} target="_blank" rel="noreferrer" style={{ color: '#38bdf8', fontSize: 9 }}><LinkIcon size={10} style={{ verticalAlign: 'middle', marginLeft: 3 }} />باز کردن</a>}
+                                    {(file.downloadUrl || file.externalUrl) && <a href={file.downloadUrl || file.externalUrl || '#'} target="_blank" rel="noreferrer" style={{ color: '#38bdf8', fontSize: 9 }}><LinkIcon size={10} style={{ verticalAlign: 'middle', marginLeft: 3 }} />{file.downloadUrl ? 'دانلود' : 'باز کردن'}</a>}
                                     <button type="button" onClick={() => void deleteFile(course.id, file)} style={{ background: 'transparent', border: 0, color: '#f87171', cursor: 'pointer' }}><Trash2 size={11} /></button>
                                   </div>
                                 </div>
@@ -488,8 +511,15 @@ export const ManageCourses: React.FC = () => {
               <select value={fileForm.type} onChange={e => setFileForm({ ...fileForm, type: e.target.value as FileType })} style={input}>
                 <option value="PDF">PDF</option><option value="POWERPOINT">PowerPoint</option><option value="AUDIO">صوتی</option><option value="VIDEO">ویدئو</option><option value="DOCUMENT">سند</option><option value="LINK">لینک</option>
               </select>
-              <input placeholder="لینک فایل / منبع خارجی (فعلاً بدون آپلود مستقیم)" value={fileForm.externalUrl} onChange={e => setFileForm({ ...fileForm, externalUrl: e.target.value })} style={input} />
-              <button type="button" disabled={fileSaving} onClick={() => void saveFile()} style={button('#6D001A')}>{fileSaving ? 'در حال ذخیره...' : 'ثبت فایل'}</button>
+              <label style={{ color: '#cbd5e1', fontSize: 11 }}>انتخاب فایل از کامپیوتر (حداکثر 100MB)</label>
+              <input
+                type="file"
+                onChange={e => setSelectedFile(e.target.files?.[0] || null)}
+                style={{ ...input, padding: 8 }}
+              />
+              {selectedFile && <div style={{ color: '#94a3b8', fontSize: 10 }}>فایل انتخاب‌شده: {selectedFile.name}</div>}
+              <input placeholder="یا لینک خارجی (اختیاری)" value={fileForm.externalUrl} onChange={e => setFileForm({ ...fileForm, externalUrl: e.target.value })} style={input} disabled={!!selectedFile} />
+              <button type="button" disabled={fileSaving} onClick={() => void saveFile()} style={button('#6D001A')}>{fileSaving ? 'در حال آپلود...' : selectedFile ? 'آپلود و ثبت فایل' : 'ثبت لینک'}</button>
             </div>
           </div>
         </div>
