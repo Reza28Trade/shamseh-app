@@ -88,7 +88,8 @@ export const ManageCourses: React.FC = () => {
   const [courseFiles, setCourseFiles] = useState<Record<string, CourseFile[]>>({});
   const [sessionFiles, setSessionFiles] = useState<Record<string, CourseFile[]>>({});
   const [contentLoading, setContentLoading] = useState<Record<string, boolean>>({});
-  const [sessionForm, setSessionForm] = useState(emptySession);\n  const [showSessionForm, setShowSessionForm] = useState(false);
+  const [sessionForm, setSessionForm] = useState(emptySession);
+  const [showSessionForm, setShowSessionForm] = useState(false);
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
   const [sessionSaving, setSessionSaving] = useState(false);
   const [fileForm, setFileForm] = useState(emptyFile);
@@ -203,7 +204,13 @@ export const ManageCourses: React.FC = () => {
     setSessionForm(emptySession);
   };
 
-  const cancelSessionForm = () => {\n    setEditingSessionId(null);\n    setSessionForm(emptySession);\n    setShowSessionForm(false);\n  };\n\n  const editSession = (session: Session) => {
+  const cancelSessionForm = () => {
+    setEditingSessionId(null);
+    setSessionForm(emptySession);
+    setShowSessionForm(false);
+  };
+
+  const editSession = (session: Session) => {
     setEditingSessionId(session.id);
     setSessionForm({
       title: session.title,
