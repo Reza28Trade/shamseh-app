@@ -177,7 +177,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
               placeholder={editingStudentId ? "برای تغییر رمز عبور، شماره موبایل جدید را وارد کنید" : "مثال: 09121234567"}
               value={phone}
               onChange={e => setPhone(e.target.value)}
-              required
+              required={!editingStudentId}
               style={{ width: '100%', backgroundColor: 'rgba(20, 20, 25, 0.8)', border: '1px solid rgba(255, 255, 255, 0.1)', color: '#fff', padding: '12px 16px', borderRadius: '12px', fontSize: '12px', outline: 'none', boxSizing: 'border-box' }}
             />
           </div>
