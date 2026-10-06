@@ -116,9 +116,9 @@ export class CoursesController {
     return this.coursesService.createSessionFile(req.user, sessionId, dto);
   }
 
-  @Get('files/:fileId/download')
+  @Get('files/:fileId/stream')
   downloadFile(@Req() req: AuthenticatedRequest, @Param('fileId') fileId: string, @Res() res: Response) {
-    return this.coursesService.downloadFile(req.user, fileId, res);
+    return this.coursesService.streamFile(req.user, fileId, res);
   }
 
   @Delete('admin/files/:fileId')
