@@ -89,6 +89,7 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
               {error && <div style={{ color: '#f87171', textAlign: 'center', padding: 40 }}>{error}</div>}
               {!loading && !error && viewUrl && (
                 <iframe
+                  key={pdfSrc}
                   title={file.title}
                   src={pdfSrc}
                   style={{ width: '100%', height: '100%', minHeight: 500, border: 'none', display: 'block', background: '#fff' }}
