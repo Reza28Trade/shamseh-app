@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { NotificationTargetType } from '@prisma/client';
+import { NotificationTargetType, NotificationType } from '@prisma/client';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { PrismaService } from '../database/prisma.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
@@ -84,6 +84,32 @@ export class NotificationsService {
       },
       include: {
         students: true,
+      },
+    });
+
+    return this.publicNotification(notification, null);
+  }
+
+  async createStudentNotification(
+    createdById: string,
+    studentIds: string[],
+    title: string,
+    content: string,
+    type: NotificationType,
+  ) {
+    const uniqueStudentIds = [...new Set(studentIds)];
+    if (!uniqueStudentIds.length) return null;
+
+    const notification = await this.prisma.notification.create({
+      data: {
+        title,
+        content,
+        type,
+        targetType: NotificationTargetType.STUDENT,
+        createdById,
+        students: {
+          create: uniqueStudentIds.map((studentId) => ({ studentId })),
+        },
       },
     });
 
