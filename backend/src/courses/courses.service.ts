@@ -146,7 +146,7 @@ export class CoursesService {
     return this.publicFile(file);
   }
 
-  async createUploadedCourseFile(user: AuthenticatedUser, courseId: string, dto: CreateFileDto, file: Express.Multer.File) {
+  async createUploadedCourseFile(user: AuthenticatedUser, courseId: string, dto: CreateFileDto, file: any) {
     this.requireAdmin(user);
     await this.ensureCourse(courseId);
     return this.createStoredFile(courseId, null, dto, file);
