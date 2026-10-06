@@ -39,11 +39,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   const { 
     theme, 
     toggleTheme, 
-    offlineRequests, 
-    offlineRequestsList,
-    requestOfflineClass, 
-    updateOfflineRequest,
-    deleteOfflineRequest,
+
   } = useStore();
 
   const [activeTab, setActiveTab] = useState<'courses' | 'notifications' | 'messages'>('courses');
@@ -71,6 +67,17 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   const [supportLoading, setSupportLoading] = useState(false);
   const [supportSubmitting, setSupportSubmitting] = useState(false);
   const [supportError, setSupportError] = useState('');
+  const [offlineRequests, setOfflineRequests] = useState<Array<{
+    id: string;
+    courseId: string;
+    sessionId: string;
+    status: 'PENDING' | 'APPROVED' | 'REJECTED';
+    meetingLink: string | null;
+    createdAt: string;
+    course: { id: string; title: string };
+    session: { id: string; title: string; sessionNumber: number; sessionDate: string; status: string };
+  }>>([]);
+  const [offlineLoading, setOfflineLoading] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -219,9 +226,28 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   void courses;
 
   const studentMessages = supportTickets;
-  const studentOfflineRequests = offlineRequestsList ? offlineRequestsList.filter(r => r.studentId === student.id) : [];
+  const studentOfflineRequests = offlineRequests;
 
   const unreadCount = studentNotifications.filter(n => !n.readAt).length;
+
+  useEffect(() => {
+    let cancelled = false;
+    const loadOfflineRequests = async () => {
+      setOfflineLoading(true);
+      try {
+        const response = await fetch('/api/offline-requests', { credentials: 'include' });
+        if (!response.ok) throw new Error('دریافت درخواست‌های آفلاین انجام نشد.');
+        const data = await response.json();
+        if (!cancelled) setOfflineRequests(data);
+      } catch {
+        if (!cancelled) setOfflineRequests([]);
+      } finally {
+        if (!cancelled) setOfflineLoading(false);
+      }
+    };
+    void loadOfflineRequests();
+    return () => { cancelled = true; };
+  }, [student.id]);
 
   useEffect(() => {
     if (activeTab !== 'messages') return;
@@ -276,18 +302,30 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
     }
   };
 
-  const handleOfflineRequestSubmit = (courseId: string) => {
+  const handleOfflineRequestSubmit = async (courseId: string) => {
     const selectEl = document.getElementById(`session-select-${courseId}`) as HTMLSelectElement;
-    const sessionTitle = selectEl?.value;
+    const sessionId = selectEl?.value;
 
-    if (!sessionTitle) {
-      setOfflineMsg({ courseId, text: 'لطفاً ابتدا جلسه یا سرفصل مورد نظر را انتخاب کنید.', success: false });
+    if (!sessionId) {
+      setOfflineMsg({ courseId, text: 'لطفاً ابتدا جلسه مورد نظر را انتخاب کنید.', success: false });
       setTimeout(() => setOfflineMsg(null), 4000);
       return;
     }
 
-    const result = requestOfflineClass(student.id, courseId, sessionTitle);
-    setOfflineMsg({ courseId, text: result.message, success: result.success });
+    try {
+      const response = await fetch('/api/offline-requests', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ courseId, sessionId }),
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'ثبت درخواست انجام نشد.');
+      setOfflineRequests(current => [data, ...current]);
+      setOfflineMsg({ courseId, text: 'درخواست آفلاین با موفقیت ثبت شد.', success: true });
+    } catch (error) {
+      setOfflineMsg({ courseId, text: error instanceof Error ? error.message : 'ثبت درخواست انجام نشد.', success: false });
+    }
     setTimeout(() => setOfflineMsg(null), 4000);
   };
 
@@ -393,7 +431,8 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                 {enrolledCourses.map(course => {
                   const files = courseFiles[course.id] || [];
                   const sessions = courseSessions[course.id] || [];
-                  const usedOffline = offlineRequests[student.id]?.[course.id] || 0;
+                  const courseRequests = studentOfflineRequests.filter(request => request.courseId === course.id);
+                  const usedOffline = courseRequests.length;
                   const remainingOffline = Math.max(0, 3 - usedOffline);
 
                   return (
@@ -450,7 +489,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                           <option value="">انتخاب جلسه مربوطه...</option>
                           {sessions.length > 0 ? (
                             sessions.map(session => (
-                              <option key={session.id} value={session.title}>
+                              <option key={session.id} value={session.id}>
                                 جلسه {session.sessionNumber}: {session.title}
                               </option>
                             ))
@@ -478,44 +517,21 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                       {/* نمایش وضعیت درخواست‌های آفلاین و امکان ویرایش/حذف در حالت انتظار */}
                       <div style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)', padding: '14px', borderRadius: '12px', border: `1px solid ${borderColor}`, marginTop: '6px' }}>
                         <span style={{ fontSize: '11px', color: subText, fontWeight: 700, display: 'block', marginBottom: '8px' }}>وضعیت درخواست‌های این دوره:</span>
-                        {studentOfflineRequests.filter(r => r.courseTitle.includes(course.title)).length > 0 ? (
+                        {offlineLoading ? (
+                          <span style={{ fontSize: '10px', color: subText }}>در حال دریافت وضعیت درخواست‌ها...</span>
+                        ) : courseRequests.length > 0 ? (
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            {studentOfflineRequests.filter(r => r.courseTitle.includes(course.title)).map(req => (
+                            {courseRequests.map(req => (
                               <div key={req.id} style={{ backgroundColor: cardBg, padding: '10px', borderRadius: '8px', border: `1px solid ${borderColor}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
                                 <div>
-                                  <span style={{ fontSize: '11px', fontWeight: 700, color: textColor, display: 'block' }}>{req.sessionTitle}</span>
-                                  <span style={{ fontSize: '9px', color: subText }}>ثبت: {req.createdAt}</span>
+                                  <span style={{ fontSize: '11px', fontWeight: 700, color: textColor, display: 'block' }}>جلسه {req.session.sessionNumber}: {req.session.title}</span>
+                                  <span style={{ fontSize: '9px', color: subText }}>ثبت: {new Date(req.createdAt).toLocaleString('fa-IR')}</span>
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
-                                  <span style={{ fontSize: '10px', fontWeight: 700, color: req.status === 'approved' ? '#34d399' : req.status === 'rejected' ? '#f87171' : '#fbbf24' }}>
-                                    {req.status === 'approved' ? 'تأیید شده' : req.status === 'rejected' ? 'رد شده' : 'در انتظار بررسی'}
+                                  <span style={{ fontSize: '10px', fontWeight: 700, color: req.status === 'APPROVED' ? '#34d399' : req.status === 'REJECTED' ? '#f87171' : '#fbbf24' }}>
+                                    {req.status === 'APPROVED' ? 'تأیید شده' : req.status === 'REJECTED' ? 'رد شده' : 'در انتظار بررسی'}
                                   </span>
-
-                                  {req.status === 'pending' && (
-                                    <div style={{ display: 'flex', gap: '4px', marginTop: '4px' }}>
-                                      <button 
-                                        onClick={() => {
-                                          const newTitle = prompt('ویرایش عنوان جلسه:', req.sessionTitle);
-                                          if (newTitle) updateOfflineRequest(req.id, newTitle);
-                                        }}
-                                        style={{ backgroundColor: 'rgba(56, 189, 248, 0.1)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.2)', padding: '3px 8px', borderRadius: '6px', fontSize: '9px', fontWeight: 700, cursor: 'pointer' }}
-                                      >
-                                        ویرایش
-                                      </button>
-                                      <button 
-                                        onClick={() => {
-                                          if (confirm('آیا از لغو این درخواست اطمینان دارید؟')) {
-                                            deleteOfflineRequest(req.id);
-                                          }
-                                        }}
-                                        style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '3px 8px', borderRadius: '6px', fontSize: '9px', fontWeight: 700, cursor: 'pointer' }}
-                                      >
-                                        لغو
-                                      </button>
-                                    </div>
-                                  )}
-
-                                  {req.status === 'approved' && req.meetingLink && (
+                                  {req.status === 'APPROVED' && req.meetingLink && (
                                     <a href={req.meetingLink} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', backgroundColor: '#2563eb', color: '#fff', padding: '4px 10px', borderRadius: '6px', textDecoration: 'none', fontSize: '10px', fontWeight: 700 }}>
                                       ورود به جلسه تأیید شده
                                     </a>
