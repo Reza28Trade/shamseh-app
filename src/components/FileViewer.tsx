@@ -39,7 +39,7 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
         }
         const blob = await response.blob();
         objectUrl = URL.createObjectURL(blob);
-        task = getDocument({ url: objectUrl, disableWorker: true });
+        task = getDocument({ url: objectUrl });
         return task.promise;
       })
       .then(document => {
