@@ -3,5 +3,6 @@ export interface AuthenticatedUser {
   username: string;
   role: 'SUPER_ADMIN' | 'STAFF' | 'STUDENT';
   studentId: string | null;
+  student?: { fullName: string; nationalId: string } | null;
   sessionToken: string;
 }
