@@ -285,7 +285,7 @@ export class CoursesService {
     await this.ensureCourse(courseId);
     try {
       return await this.prisma.courseSession.create({
-        data: { courseId, ...dto, sessionDate: new Date(dto.sessionDate) },
+        data: { courseId, sessionNumber: dto.sessionNumber },
       });
     } catch (error: any) {
       if (error?.code === 'P2002') throw new BadRequestException('Session number already exists for this course');
@@ -299,7 +299,7 @@ export class CoursesService {
     if (!session) throw new NotFoundException('Session not found');
     return this.prisma.courseSession.update({
       where: { id: sessionId },
-      data: { ...dto, sessionDate: dto.sessionDate ? new Date(dto.sessionDate) : undefined },
+      data: { sessionNumber: dto.sessionNumber },
     });
   }
 
