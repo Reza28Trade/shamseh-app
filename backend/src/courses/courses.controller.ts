@@ -32,6 +32,11 @@ function uploadedFilename(_req: Request, file: any) {
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
+  @Get('admin/courses/export')
+  exportCourses(@Req() req: AuthenticatedRequest, @Res() res: Response) {
+    return this.coursesService.exportCourses(req.user, res);
+  }
+
   @Get('courses')
   listCourses(@Req() req: AuthenticatedRequest) {
     return this.coursesService.listCourses(req.user);
