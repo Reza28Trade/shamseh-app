@@ -5,8 +5,9 @@ import { CoursesModule } from './courses/courses.module';
 import { StudentsModule } from './students/students.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { SupportModule } from './support/support.module';
+import { OfflineRequestsModule } from './offline-requests/offline-requests.module';
 
 @Module({
-  imports: [DatabaseModule, AuthModule, CoursesModule, StudentsModule, NotificationsModule, SupportModule],
+  imports: [DatabaseModule, AuthModule, CoursesModule, StudentsModule, NotificationsModule, SupportModule, OfflineRequestsModule],
 })
 export class AppModule {}
