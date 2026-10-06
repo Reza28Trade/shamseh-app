@@ -14,6 +14,17 @@ import { UpdateOfflineRequestDto } from './dto/update-offline-request.dto';
 
 const MAX_REQUESTS_PER_COURSE = 3;
 
+function ensureOfflineRequestDay() {
+  const weekday = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Tehran',
+    weekday: 'short',
+  }).format(new Date());
+
+  if (weekday !== 'Wed' && weekday !== 'Thu') {
+    throw new BadRequestException('Offline requests are only available on Wednesdays and Thursdays');
+  }
+}
+
 @Injectable()
 export class OfflineRequestsService {
   constructor(private readonly prisma: PrismaService) {}
@@ -25,6 +36,8 @@ export class OfflineRequestsService {
   }
 
   async create(user: AuthenticatedUser, dto: CreateOfflineRequestDto) {
+    ensureOfflineRequestDay();
+
     if (user.role !== 'STUDENT' || !user.studentId) {
       throw new ForbiddenException('Student access required');
     }
@@ -143,6 +156,8 @@ export class OfflineRequestsService {
   }
 
   async update(user: AuthenticatedUser, requestId: string, dto: UpdateOfflineRequestDto) {
+    ensureOfflineRequestDay();
+
     if (user.role !== 'STUDENT' || !user.studentId) {
       throw new ForbiddenException('Student access required');
     }
