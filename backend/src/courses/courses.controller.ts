@@ -97,7 +97,7 @@ export class CoursesController {
 
   @Get('files/:fileId/view')
   viewFile(@Req() req: AuthenticatedRequest, @Param('fileId') fileId: string, @Res() res: Response) {
-    return this.coursesService.viewFile(req.user, fileId, res);
+    return this.coursesService.viewFile(req.user, fileId, res, req.headers.range);
   }
 
   @Get('files/:fileId/stream')
