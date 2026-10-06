@@ -4,6 +4,7 @@ import { AuthGuard } from '../auth/auth.guard';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { ResetStudentPasswordDto } from './dto/reset-student-password.dto';
+import { UpdateStudentDto } from './dto/update-student.dto';
 import { StudentsService } from './students.service';
 
 type AuthenticatedRequest = Request & { user: AuthenticatedUser };
@@ -21,6 +22,11 @@ export class StudentsController {
   @Post('admin/students')
   createStudent(@Req() req: AuthenticatedRequest, @Body() dto: CreateStudentDto) {
     return this.studentsService.createStudent(req.user, dto);
+  }
+
+  @Patch('admin/students/:studentId')
+  updateStudent(@Req() req: AuthenticatedRequest, @Param('studentId') studentId: string, @Body() dto: UpdateStudentDto) {
+    return this.studentsService.updateStudent(req.user, studentId, dto);
   }
 
   @Patch('admin/students/:studentId/password')
