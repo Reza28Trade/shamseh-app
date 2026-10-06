@@ -83,6 +83,7 @@ export const ManageCourses: React.FC = () => {
   const [fileTarget, setFileTarget] = useState<{ courseId: string } | null>(null);
   const [fileSaving, setFileSaving] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
 
   const exportCourses = async () => {
@@ -269,18 +270,28 @@ export const ManageCourses: React.FC = () => {
         formData.append('title', fileForm.title.trim());
         formData.append('type', fileForm.type);
         formData.append('file', selectedFile);
-        const controller = new AbortController();
-        const timeoutId = window.setTimeout(() => controller.abort(), 60_000);
-        try {
-          response = await fetch(uploadUrl, {
-            method: 'POST',
-            credentials: 'include',
-            body: formData,
-            signal: controller.signal,
-          });
-        } finally {
-          window.clearTimeout(timeoutId);
-        }
+        setUploadProgress(0);
+        response = await new Promise<Response>((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', uploadUrl);
+          xhr.withCredentials = true;
+          xhr.timeout = 120_000;
+          xhr.upload.onprogress = event => {
+            if (event.lengthComputable) setUploadProgress(Math.round((event.loaded / event.total) * 100));
+          };
+          xhr.onload = () => {
+            setUploadProgress(100);
+            resolve(new Response(xhr.responseText, {
+              status: xhr.status,
+              statusText: xhr.statusText,
+              headers: { 'Content-Type': xhr.getResponseHeader('Content-Type') || 'application/json' },
+            }));
+          };
+          xhr.onerror = () => reject(new Error('ارتباط با سرور هنگام آپلود برقرار نشد.'));
+          xhr.ontimeout = () => reject(new Error('آپلود بیشتر از ۱۲۰ ثانیه طول کشید و متوقف شد.'));
+          xhr.onabort = () => reject(new Error('آپلود متوقف شد.'));
+          xhr.send(formData);
+        });
       } else {
         const externalUrl = fileForm.externalUrl.trim();
         if (!externalUrl) throw new Error('یک فایل از کامپیوتر انتخاب کنید یا لینک خارجی وارد کنید.');
@@ -311,6 +322,7 @@ export const ManageCourses: React.FC = () => {
       }
     } finally {
       setFileSaving(false);
+      setUploadProgress(0);
     }
   };
 
@@ -479,7 +491,12 @@ export const ManageCourses: React.FC = () => {
               />
               {selectedFile && <div style={{ color: '#94a3b8', fontSize: 10 }}>فایل انتخاب‌شده: {selectedFile.name}</div>}
               <input placeholder="یا لینک خارجی (اختیاری)" value={fileForm.externalUrl} onChange={e => setFileForm({ ...fileForm, externalUrl: e.target.value })} style={input} disabled={!!selectedFile} />
-              <button type="button" disabled={fileSaving} onClick={() => void saveFile()} style={button('#6D001A')}>{fileSaving ? 'در حال آپلود...' : selectedFile ? 'آپلود و ثبت فایل' : 'ثبت لینک'}</button>
+              <button type="button" disabled={fileSaving} onClick={() => void saveFile()} style={button('#6D001A')}>{fileSaving ? (selectedFile ? 'در حال آپلود... ' + uploadProgress + '%' : 'در حال ثبت...') : selectedFile ? 'آپلود و ثبت فایل' : 'ثبت لینک'}</button>
+              {fileSaving && selectedFile && (
+                <div style={{ width: '100%', height: 6, background: '#25252b', borderRadius: 99, overflow: 'hidden' }}>
+                  <div style={{ width: uploadProgress + '%', height: '100%', background: '#ff3366', transition: 'width .15s ease' }} />
+                </div>
+              )}
             </div>
           </div>
         </div>
