@@ -3,6 +3,7 @@ import * as argon2 from 'argon2';
 import { PrismaService } from '../database/prisma.service';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { CreateStudentDto } from './dto/create-student.dto';
+import { ResetStudentPasswordDto } from './dto/reset-student-password.dto';
 
 @Injectable()
 export class StudentsService {
@@ -50,6 +51,15 @@ export class StudentsService {
       if (error?.code === 'P2002') throw new ConflictException('Username or national ID already exists');
       throw error;
     }
+  }
+
+  async resetPassword(user: AuthenticatedUser, studentId: string, dto: ResetStudentPasswordDto) {
+    this.requireAdmin(user);
+    const student = await this.prisma.student.findUnique({ where: { id: studentId }, select: { userId: true } });
+    if (!student) throw new NotFoundException('Student not found');
+    const passwordHash = await argon2.hash(dto.password);
+    await this.prisma.user.update({ where: { id: student.userId }, data: { passwordHash } });
+    return { success: true };
   }
 
   async enroll(user: AuthenticatedUser, studentId: string, courseId: string) {
