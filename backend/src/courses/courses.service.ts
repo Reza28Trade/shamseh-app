@@ -132,21 +132,6 @@ export class CoursesService {
     return files.map((file) => this.publicFile(file));
   }
 
-  async listSessionFiles(user: AuthenticatedUser, sessionId: string) {
-    const session = await this.prisma.courseSession.findUnique({
-      where: { id: sessionId },
-      select: { id: true, courseId: true },
-    });
-    if (!session) throw new NotFoundException('Session not found');
-
-    await this.ensureCourseAccess(user, session.courseId);
-    const files = await this.prisma.courseFile.findMany({
-      where: { sessionId },
-      orderBy: { createdAt: 'desc' },
-    });
-    return files.map((file) => this.publicFile(file));
-  }
-
   async createCourseFile(user: AuthenticatedUser, courseId: string, dto: CreateFileDto) {
     this.requireAdmin(user);
     await this.ensureCourse(courseId);
@@ -166,49 +151,14 @@ export class CoursesService {
     return this.publicFile(file);
   }
 
-  async createSessionFile(user: AuthenticatedUser, sessionId: string, dto: CreateFileDto) {
-    this.requireAdmin(user);
-    const session = await this.prisma.courseSession.findUnique({
-      where: { id: sessionId },
-      select: { id: true, courseId: true },
-    });
-    if (!session) throw new NotFoundException('Session not found');
-
-    const file = await this.prisma.courseFile.create({
-      data: {
-        courseId: session.courseId,
-        sessionId,
-        title: dto.title,
-        type: dto.type,
-        storageKey: dto.storageKey,
-        mimeType: dto.mimeType,
-        fileSize: dto.fileSize === undefined ? undefined : BigInt(dto.fileSize),
-        externalUrl: dto.externalUrl,
-      },
-    });
-
-    return this.publicFile(file);
-  }
-
   async createUploadedCourseFile(user: AuthenticatedUser, courseId: string, dto: CreateFileDto, file: any) {
     this.requireAdmin(user);
     await this.ensureCourse(courseId);
     return this.createStoredFile(courseId, null, dto, file);
   }
 
-  async createUploadedSessionFile(user: AuthenticatedUser, sessionId: string, dto: CreateFileDto, file: any) {
-    this.requireAdmin(user);
-    const session = await this.prisma.courseSession.findUnique({
-      where: { id: sessionId },
-      select: { id: true, courseId: true },
-    });
-    if (!session) throw new NotFoundException('Session not found');
-    return this.createStoredFile(session.courseId, sessionId, dto, file);
-  }
-
   private async createStoredFile(
     courseId: string,
-    sessionId: string | null,
     dto: CreateFileDto,
     file: any,
   ) {
@@ -216,7 +166,6 @@ export class CoursesService {
     const record = await this.prisma.courseFile.create({
       data: {
         courseId,
-        sessionId,
         title: dto.title,
         type: dto.type,
         storageKey: file.filename,
@@ -262,7 +211,6 @@ export class CoursesService {
   private publicFile(file: {
     id: string;
     courseId: string;
-    sessionId: string | null;
     title: string;
     type: 'PDF' | 'POWERPOINT' | 'AUDIO' | 'VIDEO' | 'DOCUMENT' | 'LINK';
     mimeType: string | null;
@@ -275,7 +223,6 @@ export class CoursesService {
     return {
       id: file.id,
       courseId: file.courseId,
-      sessionId: file.sessionId,
       title: file.title,
       type: file.type,
       mimeType: file.mimeType,
