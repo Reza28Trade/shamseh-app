@@ -19,6 +19,7 @@ interface BackendFile {
   mimeType: string | null;
   fileSize: string | null;
   externalUrl: string | null;
+  streamUrl: string | null;
 }
 
 interface UserDashboardProps {
@@ -596,11 +597,12 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                               <div 
                                 key={file.id}
                                 onClick={() => {
-                                  if (file.externalUrl) {
-                                    window.open(file.externalUrl, '_blank', 'noopener,noreferrer');
+                                  const targetUrl = file.externalUrl || file.streamUrl;
+                                  if (targetUrl) {
+                                    window.open(targetUrl, '_blank', 'noopener,noreferrer');
                                   }
                                 }}
-                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: cardBg, padding: '8px 12px', borderRadius: '8px', cursor: file.externalUrl ? 'pointer' : 'default', border: `1px solid ${borderColor}` }}
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: cardBg, padding: '8px 12px', borderRadius: '8px', cursor: (file.externalUrl || file.streamUrl) ? 'pointer' : 'default', border: `1px solid ${borderColor}` }}
                               >
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                   {file.type === 'PDF' && <FileText size={14} color="#ef4444" />}
@@ -611,8 +613,8 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                                   {file.type === 'DOCUMENT' && <FileText size={14} color="#64748b" />}
                                   <span style={{ fontSize: '11px', fontWeight: 700, color: textColor }}>{file.title}</span>
                                 </div>
-                                <span style={{ fontSize: '9px', color: file.externalUrl ? '#ff3366' : subText, fontWeight: 700 }}>
-                                  {file.externalUrl ? 'مشاهده' : 'فایل داخلی'}
+                                <span style={{ fontSize: '9px', color: (file.externalUrl || file.streamUrl) ? '#ff3366' : subText, fontWeight: 700 }}>
+                                  {(file.externalUrl || file.streamUrl) ? 'مشاهده فایل' : 'فایل داخلی'}
                                 </span>
                               </div>
                             ))}
