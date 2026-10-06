@@ -126,7 +126,7 @@ export class CoursesService {
   async listCourseFiles(user: AuthenticatedUser, courseId: string) {
     await this.ensureCourseAccess(user, courseId);
     const files = await this.prisma.courseFile.findMany({
-      where: { courseId, sessionId: null },
+      where: { courseId },
       orderBy: { createdAt: 'desc' },
     });
     return files.map((file) => this.publicFile(file));
