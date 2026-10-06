@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { CreateOfflineRequestDto } from './dto/create-offline-request.dto';
 import { ReviewOfflineRequestDto } from './dto/review-offline-request.dto';
+import { UpdateOfflineRequestDto } from './dto/update-offline-request.dto';
 import { OfflineRequestsService } from './offline-requests.service';
 
 type AuthenticatedRequest = Request & { user: AuthenticatedUser };
@@ -26,6 +27,20 @@ export class OfflineRequestsController {
   @Get('admin/offline-requests')
   listAll(@Req() req: AuthenticatedRequest) {
     return this.offlineRequestsService.listAll(req.user);
+  }
+
+  @Patch('offline-requests/:requestId')
+  update(
+    @Req() req: AuthenticatedRequest,
+    @Param('requestId') requestId: string,
+    @Body() dto: UpdateOfflineRequestDto,
+  ) {
+    return this.offlineRequestsService.update(req.user, requestId, dto);
+  }
+
+  @Delete('offline-requests/:requestId')
+  remove(@Req() req: AuthenticatedRequest, @Param('requestId') requestId: string) {
+    return this.offlineRequestsService.remove(req.user, requestId);
   }
 
   @Patch('admin/offline-requests/:requestId')

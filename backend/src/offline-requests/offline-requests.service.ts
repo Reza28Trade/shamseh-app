@@ -10,6 +10,7 @@ import { PrismaService } from '../database/prisma.service';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { CreateOfflineRequestDto } from './dto/create-offline-request.dto';
 import { ReviewOfflineRequestDto } from './dto/review-offline-request.dto';
+import { UpdateOfflineRequestDto } from './dto/update-offline-request.dto';
 
 const MAX_REQUESTS_PER_COURSE = 3;
 
@@ -139,6 +140,86 @@ export class OfflineRequestsService {
         reviewer: { select: { id: true, username: true } },
       },
     });
+  }
+
+  async update(user: AuthenticatedUser, requestId: string, dto: UpdateOfflineRequestDto) {
+    if (user.role !== 'STUDENT' || !user.studentId) {
+      throw new ForbiddenException('Student access required');
+    }
+
+    const request = await this.prisma.offlineRequest.findUnique({
+      where: { id: requestId },
+      select: { id: true, studentId: true, courseId: true, sessionId: true, status: true },
+    });
+
+    if (!request || request.studentId !== user.studentId) {
+      throw new NotFoundException('Offline request not found');
+    }
+    if (request.status !== 'PENDING') {
+      throw new ConflictException('Only pending requests can be edited');
+    }
+
+    const enrollment = await this.prisma.enrollment.findUnique({
+      where: { studentId_courseId: { studentId: user.studentId, courseId: dto.courseId } },
+      select: { status: true },
+    });
+    if (!enrollment || enrollment.status !== 'ACTIVE') {
+      throw new ForbiddenException('Course access denied');
+    }
+
+    const session = await this.prisma.courseSession.findUnique({
+      where: { id: dto.sessionId },
+      select: { id: true, courseId: true, status: true },
+    });
+    if (!session) throw new NotFoundException('Session not found');
+    if (session.courseId !== dto.courseId) {
+      throw new BadRequestException('Session does not belong to the selected course');
+    }
+    if (session.status === 'CANCELLED') {
+      throw new BadRequestException('Cannot request an offline link for a cancelled session');
+    }
+
+    const duplicate = await this.prisma.offlineRequest.findFirst({
+      where: {
+        studentId: user.studentId,
+        courseId: dto.courseId,
+        sessionId: dto.sessionId,
+        id: { not: requestId },
+      },
+      select: { id: true },
+    });
+    if (duplicate) {
+      throw new ConflictException('An offline request already exists for this session');
+    }
+
+    return this.prisma.offlineRequest.update({
+      where: { id: requestId },
+      data: { courseId: dto.courseId, sessionId: dto.sessionId },
+      include: {
+        course: { select: { id: true, title: true } },
+        session: { select: { id: true, title: true, sessionNumber: true, sessionDate: true, status: true } },
+      },
+    });
+  }
+
+  async remove(user: AuthenticatedUser, requestId: string) {
+    if (user.role !== 'STUDENT' || !user.studentId) {
+      throw new ForbiddenException('Student access required');
+    }
+
+    const request = await this.prisma.offlineRequest.findUnique({
+      where: { id: requestId },
+      select: { id: true, studentId: true, status: true },
+    });
+
+    if (!request || request.studentId !== user.studentId) {
+      throw new NotFoundException('Offline request not found');
+    }
+    if (request.status !== 'PENDING') {
+      throw new ConflictException('Only pending requests can be deleted');
+    }
+
+    return this.prisma.offlineRequest.delete({ where: { id: requestId } });
   }
 
   async review(user: AuthenticatedUser, requestId: string, dto: ReviewOfflineRequestDto) {
