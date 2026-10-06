@@ -5,19 +5,15 @@ import { BookOpen, LogOut, Video, FileText, Send, Sun, Moon, CheckCircle, Bell, 
 
 interface BackendSession {
   id: string;
-  title: string;
+  courseId: string;
   sessionNumber: number;
-  sessionDate: string;
-  startTime: string | null;
-  endTime: string | null;
-  meetingLink: string | null;
-  status: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface BackendFile {
   id: string;
   courseId: string;
-  sessionId: string | null;
   title: string;
   type: 'PDF' | 'POWERPOINT' | 'AUDIO' | 'VIDEO' | 'DOCUMENT' | 'LINK';
   mimeType: string | null;
@@ -75,7 +71,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
     meetingLink: string | null;
     createdAt: string;
     course: { id: string; title: string };
-    session: { id: string; title: string; sessionNumber: number; sessionDate: string; status: string };
+    session: { id: string; sessionNumber: number };
   }>>([]);
   const [offlineLoading, setOfflineLoading] = useState(false);
   const [editingOfflineRequestId, setEditingOfflineRequestId] = useState<string | null>(null);
@@ -169,27 +165,10 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
               const sessions = await sessionsResponse.json();
               const files = await filesResponse.json();
 
-              const sessionFiles = await Promise.all(
-                sessions.map(async (session: BackendSession) => {
-                  const response = await fetch(`/api/sessions/${session.id}/files`, {
-                    credentials: 'include',
-                  });
-                  if (!response.ok) {
-                    throw new Error(`دریافت فایل‌های جلسه «${session.title}» انجام نشد.`);
-                  }
-                  return [session.id, await response.json()] as const;
-                }),
-              );
-
               return {
                 courseId: course.id,
                 sessions: sessions as BackendSession[],
-                files: [
-                  ...(files as BackendFile[]),
-                  ...sessionFiles.flatMap(([sessionId, sessionFiles]) =>
-                    (sessionFiles as BackendFile[]).map(file => ({ ...file, sessionId })),
-                  ),
-                ],
+                files: files as BackendFile[],
               };
             }),
           );
@@ -493,7 +472,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                           </span>
                           {sessions.slice(0, 3).map(session => (
                             <span key={session.id} style={{ fontSize: '10px', color: subText }}>
-                              جلسه {session.sessionNumber}: {session.title}
+                              جلسه {session.sessionNumber}
                               {session.startTime ? ` — ${session.startTime}` : ''}
                             </span>
                           ))}
@@ -567,7 +546,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                             {courseRequests.map(req => (
                               <div key={req.id} style={{ backgroundColor: cardBg, padding: '10px', borderRadius: '8px', border: `1px solid ${borderColor}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
                                 <div>
-                                  <span style={{ fontSize: '11px', fontWeight: 700, color: textColor, display: 'block' }}>جلسه {req.session.sessionNumber}: {req.session.title}</span>
+                                  <span style={{ fontSize: '11px', fontWeight: 700, color: textColor, display: 'block' }}>جلسه {req.session.sessionNumber}</span>
                                   <span style={{ fontSize: '9px', color: subText }}>ثبت: {new Date(req.createdAt).toLocaleString('fa-IR')}</span>
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
