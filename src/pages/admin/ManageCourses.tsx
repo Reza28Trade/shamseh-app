@@ -20,15 +20,11 @@ type Course = {
 
 type Session = {
   id: string;
-  title: string;
+  courseId: string;
   sessionNumber: number;
-  sessionDate: string;
-  startTime: string | null;
-  endTime: string | null;
-  meetingLink: string | null;
-  status: string;
-  description: string | null;
-  _count?: { files: number };
+  title: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 type CourseFile = {
@@ -49,8 +45,7 @@ const emptyCourse = {
 };
 
 const emptySession = {
-  title: '', sessionNumber: '', sessionDate: '', startTime: '', endTime: '',
-  meetingLink: '', description: '',
+  sessionNumber: '',
 };
 
 const emptyFile = {
@@ -229,30 +224,14 @@ export const ManageCourses: React.FC = () => {
   const editSession = (session: Session) => {
     setEditingSessionId(session.id);
     setShowSessionForm(true);
-    setSessionForm({
-      title: session.title,
-      sessionNumber: String(session.sessionNumber),
-      sessionDate: toDateTimeLocal(session.sessionDate),
-      startTime: session.startTime || '',
-      endTime: session.endTime || '',
-      meetingLink: session.meetingLink || '',
-      description: session.description || '',
-    });
+    setSessionForm({ sessionNumber: String(session.sessionNumber) });
   };
 
   const saveSession = async (courseId: string) => {
-    if (!sessionForm.title.trim() || !sessionForm.sessionNumber || !sessionForm.sessionDate || sessionSaving) return;
+    if (!sessionForm.sessionNumber || Number(sessionForm.sessionNumber) < 1 || sessionSaving) return;
     setSessionSaving(true); setError('');
     try {
-      const body = {
-        title: sessionForm.title.trim(),
-        sessionNumber: Number(sessionForm.sessionNumber),
-        sessionDate: new Date(sessionForm.sessionDate).toISOString(),
-        startTime: sessionForm.startTime || undefined,
-        endTime: sessionForm.endTime || undefined,
-        meetingLink: sessionForm.meetingLink || undefined,
-        description: sessionForm.description || undefined,
-      };
+      const body = { sessionNumber: Number(sessionForm.sessionNumber) };
       const url = editingSessionId
         ? `/api/admin/sessions/${editingSessionId}`
         : `/api/admin/courses/${courseId}/sessions`;
@@ -445,13 +424,9 @@ export const ManageCourses: React.FC = () => {
                             {courseSessions.map(session => (
                               <div key={session.id} style={{ background: '#0e0e11', border: '1px solid #25252b', borderRadius: 12, padding: 13 }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
-                                  <strong style={{ color: '#fff', fontSize: 12 }}>جلسه {session.sessionNumber}: {session.title}</strong>
-                                  <span style={{ color: '#94a3b8', fontSize: 9 }}>{session.status}</span>
-                                </div>
-                                <div style={{ color: '#94a3b8', fontSize: 10, marginTop: 7 }}>{new Date(session.sessionDate).toLocaleString('fa-IR')} {session.startTime ? `· ${session.startTime}` : ''}{session.endTime ? ` تا ${session.endTime}` : ''}</div>
-                                {session.meetingLink && <a href={session.meetingLink} target="_blank" rel="noreferrer" style={{ color: '#38bdf8', fontSize: 10, display: 'inline-flex', marginTop: 6 }}>لینک کلاس</a>}
+                                  <strong style={{ color: '#fff', fontSize: 12 }}>جلسه {session.sessionNumber}</strong>
                                 <div style={{ display: 'flex', gap: 6, marginTop: 10, flexWrap: 'wrap' }}>
-                                  <button type="button" onClick={() => editSession(session)} style={button('rgba(56,189,248,.1)', '#38bdf8')}><Pencil size={11} /> ویرایش</button>
+                                  <button type="button" onClick={() => editSession(session)} style={button('rgba(56,189,248,.1)', '#38bdf8')}><Pencil size={11} /> ویرایش شماره</button>
                                   <button type="button" onClick={() => openFileForm(course.id, session.id)} style={button('rgba(109,0,26,.35)')}><FileText size={11} /> افزودن فایل</button>
                                   <button type="button" onClick={() => void deleteSession(course.id, session.id)} style={button('rgba(239,68,68,.1)', '#f87171')}><Trash2 size={11} /></button>
                                 </div>
