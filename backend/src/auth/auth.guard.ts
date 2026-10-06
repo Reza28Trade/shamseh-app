@@ -7,6 +7,7 @@ import {
 import { Request } from 'express';
 import { AUTH_COOKIE_NAME } from './auth.constants';
 import { AuthService } from './auth.service';
+import { AuthenticatedUser } from './auth.types';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
