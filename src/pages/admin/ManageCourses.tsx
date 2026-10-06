@@ -1,63 +1,520 @@
 import React, { useEffect, useState } from 'react';
-import { BookOpen, Plus, Pencil, Trash2, RefreshCw } from 'lucide-react';
+import { BookOpen, Plus, Pencil, Trash2, RefreshCw, ChevronDown, ChevronUp, FileText, Link as LinkIcon, CalendarDays, X } from 'lucide-react';
+
+type CourseStatus = 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
+type FileType = 'PDF' | 'POWERPOINT' | 'AUDIO' | 'VIDEO' | 'DOCUMENT' | 'LINK';
 
 type Course = {
-  id:string; title:string; professor:string; level:string|null; description:string|null;
-  term:string|null; category:string|null; price:string|number|null; coverImage:string|null;
-  status:'DRAFT'|'ACTIVE'|'ARCHIVED'; _count?:{enrollments:number;sessions:number;files:number};
+  id: string;
+  title: string;
+  professor: string;
+  level: string | null;
+  description: string | null;
+  term: string | null;
+  category: string | null;
+  price: string | number | null;
+  coverImage: string | null;
+  status: CourseStatus;
+  _count?: { enrollments: number; sessions: number; files: number };
 };
-const emptyForm={title:'',professor:'',level:'',description:'',term:'',category:'',price:'',coverImage:'',status:'DRAFT' as Course['status']};
 
-export const ManageCourses:React.FC=()=>{
- const [courses,setCourses]=useState<Course[]>([]); const [form,setForm]=useState(emptyForm);
- const [editingId,setEditingId]=useState<string|null>(null); const [loading,setLoading]=useState(true);
- const [saving,setSaving]=useState(false); const [error,setError]=useState(''); const [success,setSuccess]=useState('');
-
- const loadCourses=async()=>{setLoading(true);setError('');try{const r=await fetch('/api/courses',{credentials:'include'});if(!r.ok)throw new Error('دریافت دوره‌ها انجام نشد.');setCourses(await r.json());}catch(e){setError(e instanceof Error?e.message:'دریافت دوره‌ها انجام نشد.')}finally{setLoading(false)}};
- useEffect(()=>{void loadCourses()},[]);
-
- const saveCourse=async(e:React.FormEvent)=>{e.preventDefault();if(!form.title.trim()||!form.professor.trim()||saving)return;setSaving(true);setError('');setSuccess('');
-  try{const body={...form,title:form.title.trim(),professor:form.professor.trim(),price:form.price===''?undefined:Number(form.price)};
-   const url=editingId?'/api/admin/courses/'+editingId:'/api/admin/courses';
-   const r=await fetch(url,{method:editingId?'PATCH':'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-   const data=await r.json().catch(()=>null);if(!r.ok)throw new Error(data?.message||'ذخیره دوره انجام نشد.');
-   setForm(emptyForm);setEditingId(null);setSuccess(editingId?'دوره ویرایش شد.':'دوره ایجاد شد.');await loadCourses();
-  }catch(e){setError(e instanceof Error?e.message:'ذخیره دوره انجام نشد.')}finally{setSaving(false)}};
-
- const editCourse=(c:Course)=>{setEditingId(c.id);setForm({title:c.title,professor:c.professor,level:c.level||'',description:c.description||'',term:c.term||'',category:c.category||'',price:c.price==null?'':String(c.price),coverImage:c.coverImage||'',status:c.status});window.scrollTo({top:0,behavior:'smooth'})};
- const deleteCourse=async(id:string)=>{if(!confirm('آیا از حذف این دوره اطمینان دارید؟'))return;try{const r=await fetch('/api/admin/courses/'+id,{method:'DELETE',credentials:'include'});const d=await r.json().catch(()=>null);if(!r.ok)throw new Error(d?.message||'حذف دوره انجام نشد.');await loadCourses()}catch(e){setError(e instanceof Error?e.message:'حذف دوره انجام نشد.')}};
-
- const input:React.CSSProperties={width:'100%',boxSizing:'border-box',background:'#0e0e11',color:'#fff',border:'1px solid rgba(255,255,255,.1)',padding:'11px 13px',borderRadius:9,fontSize:12,outline:'none'};
- return <div style={{display:'flex',flexDirection:'column',gap:24,width:'100%',boxSizing:'border-box',direction:'rtl'}}>
-  <div style={{background:'linear-gradient(135deg,rgba(109,0,26,.2),rgba(10,10,10,.8))',border:'1px solid rgba(109,0,26,.4)',padding:'24px 32px',borderRadius:20,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-   <div><h2 style={{fontSize:20,fontWeight:900,color:'#fff',margin:'0 0 6px',display:'flex',alignItems:'center',gap:10}}><BookOpen size={20} color="#ff3366"/> مدیریت دوره‌ها</h2><p style={{fontSize:12,color:'#94a3b8',margin:0}}>مدیریت مستقیم دوره‌های ذخیره‌شده در PostgreSQL</p></div>
-   <button onClick={()=>void loadCourses()} style={{background:'rgba(255,255,255,.06)',color:'#fff',border:'1px solid rgba(255,255,255,.1)',padding:9,borderRadius:9,cursor:'pointer'}}><RefreshCw size={14}/></button>
-  </div>
-  {error&&<div style={{background:'rgba(239,68,68,.1)',color:'#f87171',padding:12,borderRadius:10,fontSize:12}}>{error}</div>}
-  {success&&<div style={{background:'rgba(52,211,153,.1)',color:'#34d399',padding:12,borderRadius:10,fontSize:12}}>{success}</div>}
-  <form onSubmit={saveCourse} style={{background:'rgba(14,14,17,.75)',border:'1px solid rgba(255,255,255,.08)',padding:28,borderRadius:24,display:'flex',flexDirection:'column',gap:15}}>
-   <h3 style={{color:'#fff',fontSize:15,margin:0,display:'flex',alignItems:'center',gap:7}}><Plus size={17} color="#ff3366"/>{editingId?'ویرایش دوره':'ایجاد دوره جدید'}</h3>
-   <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))',gap:12}}>
-    <input required placeholder="عنوان دوره" value={form.title} onChange={e=>setForm({...form,title:e.target.value})} style={input}/>
-    <input required placeholder="نام استاد" value={form.professor} onChange={e=>setForm({...form,professor:e.target.value})} style={input}/>
-    <input placeholder="مقطع تحصیلی" value={form.level} onChange={e=>setForm({...form,level:e.target.value})} style={input}/>
-    <input placeholder="ترم" value={form.term} onChange={e=>setForm({...form,term:e.target.value})} style={input}/>
-    <input placeholder="دسته‌بندی" value={form.category} onChange={e=>setForm({...form,category:e.target.value})} style={input}/>
-    <input type="number" min="0" placeholder="قیمت (تومان)" value={form.price} onChange={e=>setForm({...form,price:e.target.value})} style={input}/>
-    <input placeholder="آدرس تصویر جلد" value={form.coverImage} onChange={e=>setForm({...form,coverImage:e.target.value})} style={input}/>
-    <select value={form.status} onChange={e=>setForm({...form,status:e.target.value as Course['status']})} style={input}><option value="DRAFT">پیش‌نویس</option><option value="ACTIVE">فعال</option><option value="ARCHIVED">بایگانی</option></select>
-   </div>
-   <textarea placeholder="توضیحات دوره" rows={4} value={form.description} onChange={e=>setForm({...form,description:e.target.value})} style={{...input,resize:'vertical'}}/>
-   <div style={{display:'flex',gap:8}}><button disabled={saving} type="submit" style={{background:'#6D001A',color:'#fff',border:0,padding:'11px 18px',borderRadius:9,fontWeight:800,cursor:'pointer'}}>{saving?'در حال ذخیره...':editingId?'ذخیره تغییرات':'ثبت دوره'}</button>{editingId&&<button type="button" onClick={()=>{setEditingId(null);setForm(emptyForm)}} style={{background:'transparent',color:'#94a3b8',border:'1px solid #333',padding:'11px 18px',borderRadius:9,cursor:'pointer'}}>انصراف</button>}</div>
-  </form>
-  <div style={{background:'rgba(14,14,17,.75)',border:'1px solid rgba(255,255,255,.08)',padding:24,borderRadius:24}}>
-   <h3 style={{color:'#fff',fontSize:15,margin:'0 0 16px'}}>دوره‌های ثبت‌شده ({courses.length})</h3>
-   {loading?<p style={{color:'#94a3b8',fontSize:12}}>در حال دریافت...</p>:courses.length===0?<p style={{color:'#666',fontSize:12,textAlign:'center',padding:20}}>هنوز دوره‌ای ثبت نشده است.</p>:
-   <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(290px,1fr))',gap:14}}>{courses.map(c=><div key={c.id} style={{background:'#141419',border:'1px solid #222228',padding:18,borderRadius:14}}>
-    <div style={{display:'flex',justifyContent:'space-between',gap:10}}><strong style={{color:'#fff',fontSize:13}}>{c.title}</strong><span style={{color:c.status==='ACTIVE'?'#34d399':'#fbbf24',fontSize:9}}>{c.status}</span></div>
-    <p style={{color:'#94a3b8',fontSize:11}}>استاد: {c.professor}</p><div style={{color:'#64748b',fontSize:10}}>هنرجو: {c._count?.enrollments??0} · جلسه: {c._count?.sessions??0} · فایل: {c._count?.files??0}</div>
-    <div style={{display:'flex',gap:6,marginTop:12}}><button type="button" onClick={()=>editCourse(c)} style={{background:'rgba(56,189,248,.1)',color:'#38bdf8',border:'1px solid rgba(56,189,248,.2)',padding:'6px 9px',borderRadius:7,cursor:'pointer',fontSize:10,display:'flex',alignItems:'center',gap:4}}><Pencil size={12}/> ویرایش</button><button type="button" onClick={()=>void deleteCourse(c.id)} style={{background:'rgba(239,68,68,.1)',color:'#f87171',border:'1px solid rgba(239,68,68,.2)',padding:'6px 9px',borderRadius:7,cursor:'pointer',fontSize:10,display:'flex',alignItems:'center',gap:4}}><Trash2 size={12}/> حذف</button></div>
-   </div>)}</div>}
-  </div>
- </div>;
+type Session = {
+  id: string;
+  title: string;
+  sessionNumber: number;
+  sessionDate: string;
+  startTime: string | null;
+  endTime: string | null;
+  meetingLink: string | null;
+  status: string;
+  description: string | null;
+  _count?: { files: number };
 };
+
+type CourseFile = {
+  id: string;
+  courseId: string;
+  sessionId: string | null;
+  title: string;
+  type: FileType;
+  mimeType: string | null;
+  fileSize: string | null;
+  externalUrl: string | null;
+};
+
+const emptyCourse = {
+  title: '', professor: '', level: '', description: '', term: '', category: '',
+  price: '', coverImage: '', status: 'DRAFT' as CourseStatus,
+};
+
+const emptySession = {
+  title: '', sessionNumber: '', sessionDate: '', startTime: '', endTime: '',
+  meetingLink: '', description: '',
+};
+
+const emptyFile = {
+  title: '', type: 'PDF' as FileType, externalUrl: '',
+};
+
+const input: React.CSSProperties = {
+  width: '100%', boxSizing: 'border-box', background: '#0e0e11', color: '#fff',
+  border: '1px solid rgba(255,255,255,.1)', padding: '11px 13px',
+  borderRadius: 9, fontSize: 12, outline: 'none',
+};
+
+const button = (background: string, color = '#fff'): React.CSSProperties => ({
+  background, color, border: '1px solid rgba(255,255,255,.1)', padding: '8px 11px',
+  borderRadius: 8, cursor: 'pointer', fontSize: 11, display: 'inline-flex',
+  alignItems: 'center', gap: 5,
+});
+
+const toDateTimeLocal = (value: string) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+};
+
+export const ManageCourses: React.FC = () => {
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [form, setForm] = useState(emptyCourse);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [expandedCourseId, setExpandedCourseId] = useState<string | null>(null);
+  const [sessions, setSessions] = useState<Record<string, Session[]>>({});
+  const [courseFiles, setCourseFiles] = useState<Record<string, CourseFile[]>>({});
+  const [sessionFiles, setSessionFiles] = useState<Record<string, CourseFile[]>>({});
+  const [contentLoading, setContentLoading] = useState<Record<string, boolean>>({});
+  const [sessionForm, setSessionForm] = useState(emptySession);
+  const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
+  const [sessionSaving, setSessionSaving] = useState(false);
+  const [fileForm, setFileForm] = useState(emptyFile);
+  const [fileTarget, setFileTarget] = useState<{ courseId: string; sessionId?: string } | null>(null);
+  const [fileSaving, setFileSaving] = useState(false);
+
+  const loadCourses = async () => {
+    setLoading(true); setError('');
+    try {
+      const response = await fetch('/api/courses', { credentials: 'include' });
+      if (!response.ok) throw new Error('دریافت دوره‌ها انجام نشد.');
+      setCourses(await response.json());
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'دریافت دوره‌ها انجام نشد.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { void loadCourses(); }, []);
+
+  const loadContent = async (courseId: string) => {
+    setContentLoading(current => ({ ...current, [courseId]: true }));
+    try {
+      const [sessionsResponse, filesResponse] = await Promise.all([
+        fetch(`/api/courses/${courseId}/sessions`, { credentials: 'include' }),
+        fetch(`/api/courses/${courseId}/files`, { credentials: 'include' }),
+      ]);
+      if (!sessionsResponse.ok || !filesResponse.ok) throw new Error('دریافت جلسات یا فایل‌های دوره انجام نشد.');
+      const [sessionData, fileData] = await Promise.all([sessionsResponse.json(), filesResponse.json()]);
+      setSessions(current => ({ ...current, [courseId]: sessionData }));
+      setCourseFiles(current => ({ ...current, [courseId]: fileData }));
+      const sessionDataArray = sessionData as Session[];
+      await Promise.all(sessionDataArray.map(async session => {
+        const response = await fetch(`/api/sessions/${session.id}/files`, { credentials: 'include' });
+        if (!response.ok) throw new Error(`دریافت فایل‌های جلسه «${session.title}» انجام نشد.`);
+        const data = await response.json();
+        setSessionFiles(current => ({ ...current, [session.id]: data }));
+      }));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'دریافت محتوای دوره انجام نشد.');
+    } finally {
+      setContentLoading(current => ({ ...current, [courseId]: false }));
+    }
+  };
+
+  const toggleCourse = async (courseId: string) => {
+    if (expandedCourseId === courseId) {
+      setExpandedCourseId(null);
+      return;
+    }
+    setExpandedCourseId(courseId);
+    if (!sessions[courseId]) await loadContent(courseId);
+  };
+
+  const saveCourse = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.title.trim() || !form.professor.trim() || saving) return;
+    setSaving(true); setError(''); setSuccess('');
+    try {
+      const body = {
+        ...form,
+        title: form.title.trim(),
+        professor: form.professor.trim(),
+        price: form.price === '' ? undefined : Number(form.price),
+      };
+      const url = editingId ? `/api/admin/courses/${editingId}` : '/api/admin/courses';
+      const response = await fetch(url, {
+        method: editingId ? 'PATCH' : 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'ذخیره دوره انجام نشد.');
+      setForm(emptyCourse); setEditingId(null);
+      setSuccess(editingId ? 'دوره ویرایش شد.' : 'دوره ایجاد شد.');
+      await loadCourses();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'ذخیره دوره انجام نشد.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const editCourse = (course: Course) => {
+    setEditingId(course.id);
+    setForm({
+      title: course.title, professor: course.professor, level: course.level || '',
+      description: course.description || '', term: course.term || '', category: course.category || '',
+      price: course.price == null ? '' : String(course.price), coverImage: course.coverImage || '',
+      status: course.status,
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const deleteCourse = async (courseId: string) => {
+    if (!confirm('آیا از حذف این دوره اطمینان دارید؟')) return;
+    try {
+      const response = await fetch(`/api/admin/courses/${courseId}`, { method: 'DELETE', credentials: 'include' });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'حذف دوره انجام نشد.');
+      if (expandedCourseId === courseId) setExpandedCourseId(null);
+      await loadCourses();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'حذف دوره انجام نشد.');
+    }
+  };
+
+  const startNewSession = () => {
+    setEditingSessionId(null);
+    setSessionForm(emptySession);
+  };
+
+  const editSession = (session: Session) => {
+    setEditingSessionId(session.id);
+    setSessionForm({
+      title: session.title,
+      sessionNumber: String(session.sessionNumber),
+      sessionDate: toDateTimeLocal(session.sessionDate),
+      startTime: session.startTime || '',
+      endTime: session.endTime || '',
+      meetingLink: session.meetingLink || '',
+      description: session.description || '',
+    });
+  };
+
+  const saveSession = async (courseId: string) => {
+    if (!sessionForm.title.trim() || !sessionForm.sessionNumber || !sessionForm.sessionDate || sessionSaving) return;
+    setSessionSaving(true); setError('');
+    try {
+      const body = {
+        title: sessionForm.title.trim(),
+        sessionNumber: Number(sessionForm.sessionNumber),
+        sessionDate: new Date(sessionForm.sessionDate).toISOString(),
+        startTime: sessionForm.startTime || undefined,
+        endTime: sessionForm.endTime || undefined,
+        meetingLink: sessionForm.meetingLink || undefined,
+        description: sessionForm.description || undefined,
+      };
+      const url = editingSessionId
+        ? `/api/admin/sessions/${editingSessionId}`
+        : `/api/admin/courses/${courseId}/sessions`;
+      const response = await fetch(url, {
+        method: editingSessionId ? 'PATCH' : 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'ذخیره جلسه انجام نشد.');
+      setSessionForm(emptySession); setEditingSessionId(null);
+      await loadContent(courseId);
+      await loadCourses();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'ذخیره جلسه انجام نشد.');
+    } finally {
+      setSessionSaving(false);
+    }
+  };
+
+  const deleteSession = async (courseId: string, sessionId: string) => {
+    if (!confirm('آیا از حذف این جلسه اطمینان دارید؟')) return;
+    try {
+      const response = await fetch(`/api/admin/sessions/${sessionId}`, { method: 'DELETE', credentials: 'include' });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'حذف جلسه انجام نشد.');
+      await loadContent(courseId);
+      await loadCourses();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'حذف جلسه انجام نشد.');
+    }
+  };
+
+  const openFileForm = (courseId: string, sessionId?: string) => {
+    setFileTarget({ courseId, sessionId });
+    setFileForm(emptyFile);
+  };
+
+  const saveFile = async () => {
+    if (!fileTarget || !fileForm.title.trim() || fileSaving) return;
+    setFileSaving(true); setError('');
+    try {
+      const url = fileTarget.sessionId
+        ? `/api/admin/sessions/${fileTarget.sessionId}/files`
+        : `/api/admin/courses/${fileTarget.courseId}/files`;
+      const response = await fetch(url, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: fileForm.title.trim(),
+          type: fileForm.type,
+          externalUrl: fileForm.externalUrl.trim() || undefined,
+        }),
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'افزودن فایل انجام نشد.');
+      const created = data as CourseFile;
+      if (created.sessionId) {
+        setSessionFiles(current => ({ ...current, [created.sessionId as string]: [created, ...(current[created.sessionId as string] || [])] }));
+      } else {
+        setCourseFiles(current => ({ ...current, [fileTarget.courseId]: [created, ...(current[fileTarget.courseId] || [])] }));
+      }
+      setFileTarget(null);
+      setFileForm(emptyFile);
+      await loadCourses();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'افزودن فایل انجام نشد.');
+    } finally {
+      setFileSaving(false);
+    }
+  };
+
+  const deleteFile = async (courseId: string, file: CourseFile) => {
+    if (!confirm(`حذف «${file.title}»؟`)) return;
+    try {
+      const response = await fetch(`/api/admin/files/${file.id}`, { method: 'DELETE', credentials: 'include' });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'حذف فایل انجام نشد.');
+      if (file.sessionId) {
+        setSessionFiles(current => ({ ...current, [file.sessionId as string]: (current[file.sessionId as string] || []).filter(item => item.id !== file.id) }));
+      } else {
+        setCourseFiles(current => ({ ...current, [courseId]: (current[courseId] || []).filter(item => item.id !== file.id) }));
+      }
+      await loadCourses();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'حذف فایل انجام نشد.');
+    }
+  };
+
+  const fileLabel = (type: FileType) => ({
+    PDF: 'PDF', POWERPOINT: 'PowerPoint', AUDIO: 'صوتی', VIDEO: 'ویدئو', DOCUMENT: 'سند', LINK: 'لینک',
+  }[type]);
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24, width: '100%', boxSizing: 'border-box', direction: 'rtl' }}>
+      <div style={{ background: 'linear-gradient(135deg,rgba(109,0,26,.2),rgba(10,10,10,.8))', border: '1px solid rgba(109,0,26,.4)', padding: '24px 32px', borderRadius: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h2 style={{ fontSize: 20, fontWeight: 900, color: '#fff', margin: '0 0 6px', display: 'flex', alignItems: 'center', gap: 10 }}>
+            <BookOpen size={20} color="#ff3366" /> مدیریت دوره‌ها
+          </h2>
+          <p style={{ fontSize: 12, color: '#94a3b8', margin: 0 }}>دوره، جلسات و محتوای هر دوره از PostgreSQL مدیریت می‌شود</p>
+        </div>
+        <button onClick={() => void loadCourses()} style={button('rgba(255,255,255,.06)')}><RefreshCw size={14} /></button>
+      </div>
+
+      {error && <div style={{ background: 'rgba(239,68,68,.1)', color: '#f87171', padding: 12, borderRadius: 10, fontSize: 12 }}>{error}</div>}
+      {success && <div style={{ background: 'rgba(52,211,153,.1)', color: '#34d399', padding: 12, borderRadius: 10, fontSize: 12 }}>{success}</div>}
+
+      <form onSubmit={saveCourse} style={{ background: 'rgba(14,14,17,.75)', border: '1px solid rgba(255,255,255,.08)', padding: 28, borderRadius: 24, display: 'flex', flexDirection: 'column', gap: 15 }}>
+        <h3 style={{ color: '#fff', fontSize: 15, margin: 0, display: 'flex', alignItems: 'center', gap: 7 }}><Plus size={17} color="#ff3366" />{editingId ? 'ویرایش دوره' : 'ایجاد دوره جدید'}</h3>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 12 }}>
+          <input required placeholder="عنوان دوره" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} style={input} />
+          <input required placeholder="نام استاد" value={form.professor} onChange={e => setForm({ ...form, professor: e.target.value })} style={input} />
+          <input placeholder="مقطع تحصیلی" value={form.level} onChange={e => setForm({ ...form, level: e.target.value })} style={input} />
+          <input placeholder="ترم" value={form.term} onChange={e => setForm({ ...form, term: e.target.value })} style={input} />
+          <input placeholder="دسته‌بندی" value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} style={input} />
+          <input type="number" min="0" placeholder="قیمت (تومان)" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} style={input} />
+          <input placeholder="آدرس تصویر جلد" value={form.coverImage} onChange={e => setForm({ ...form, coverImage: e.target.value })} style={input} />
+          <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value as CourseStatus })} style={input}>
+            <option value="DRAFT">پیش‌نویس</option><option value="ACTIVE">فعال</option><option value="ARCHIVED">بایگانی</option>
+          </select>
+        </div>
+        <textarea placeholder="توضیحات دوره" rows={4} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} style={{ ...input, resize: 'vertical' }} />
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button disabled={saving} type="submit" style={button('#6D001A')}>{saving ? 'در حال ذخیره...' : editingId ? 'ذخیره تغییرات' : 'ثبت دوره'}</button>
+          {editingId && <button type="button" onClick={() => { setEditingId(null); setForm(emptyCourse); }} style={button('transparent', '#94a3b8')}>انصراف</button>}
+        </div>
+      </form>
+
+      <div style={{ background: 'rgba(14,14,17,.75)', border: '1px solid rgba(255,255,255,.08)', padding: 24, borderRadius: 24 }}>
+        <h3 style={{ color: '#fff', fontSize: 15, margin: '0 0 16px' }}>دوره‌های ثبت‌شده ({courses.length})</h3>
+        {loading ? <p style={{ color: '#94a3b8', fontSize: 12 }}>در حال دریافت...</p> :
+          courses.length === 0 ? <p style={{ color: '#666', fontSize: 12, textAlign: 'center', padding: 20 }}>هنوز دوره‌ای ثبت نشده است.</p> :
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {courses.map(course => {
+              const expanded = expandedCourseId === course.id;
+              const courseSessions = sessions[course.id] || [];
+              const files = courseFiles[course.id] || [];
+              return (
+                <div key={course.id} style={{ background: '#141419', border: '1px solid #222228', borderRadius: 14, overflow: 'hidden' }}>
+                  <div style={{ padding: 18 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'flex-start' }}>
+                      <div>
+                        <strong style={{ color: '#fff', fontSize: 13 }}>{course.title}</strong>
+                        <p style={{ color: '#94a3b8', fontSize: 11, margin: '7px 0' }}>استاد: {course.professor}</p>
+                        <div style={{ color: '#64748b', fontSize: 10 }}>هنرجو: {course._count?.enrollments ?? 0} · جلسه: {course._count?.sessions ?? 0} · فایل: {course._count?.files ?? 0}</div>
+                      </div>
+                      <span style={{ color: course.status === 'ACTIVE' ? '#34d399' : '#fbbf24', fontSize: 9 }}>{course.status}</span>
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 14 }}>
+                      <button type="button" onClick={() => void toggleCourse(course.id)} style={button('rgba(255,255,255,.06)')}>{expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />} مدیریت جلسات و فایل‌ها</button>
+                      <button type="button" onClick={() => editCourse(course)} style={button('rgba(56,189,248,.1)', '#38bdf8')}><Pencil size={12} /> ویرایش دوره</button>
+                      <button type="button" onClick={() => void deleteCourse(course.id)} style={button('rgba(239,68,68,.1)', '#f87171')}><Trash2 size={12} /> حذف</button>
+                    </div>
+                  </div>
+
+                  {expanded && (
+                    <div style={{ borderTop: '1px solid #222228', padding: 18, background: 'rgba(0,0,0,.15)' }}>
+                      {contentLoading[course.id] ? <p style={{ color: '#94a3b8', fontSize: 12 }}>در حال دریافت محتوای دوره...</p> : (
+                        <>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                            <h4 style={{ color: '#fff', fontSize: 13, margin: 0, display: 'flex', alignItems: 'center', gap: 6 }}><CalendarDays size={14} /> جلسات ({courseSessions.length})</h4>
+                            <button type="button" onClick={startNewSession} style={button('#6D001A')}><Plus size={12} /> جلسه جدید</button>
+                          </div>
+
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 10 }}>
+                            {courseSessions.map(session => (
+                              <div key={session.id} style={{ background: '#0e0e11', border: '1px solid #25252b', borderRadius: 12, padding: 13 }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
+                                  <strong style={{ color: '#fff', fontSize: 12 }}>جلسه {session.sessionNumber}: {session.title}</strong>
+                                  <span style={{ color: '#94a3b8', fontSize: 9 }}>{session.status}</span>
+                                </div>
+                                <div style={{ color: '#94a3b8', fontSize: 10, marginTop: 7 }}>{new Date(session.sessionDate).toLocaleString('fa-IR')} {session.startTime ? `· ${session.startTime}` : ''}{session.endTime ? ` تا ${session.endTime}` : ''}</div>
+                                {session.meetingLink && <a href={session.meetingLink} target="_blank" rel="noreferrer" style={{ color: '#38bdf8', fontSize: 10, display: 'inline-flex', marginTop: 6 }}>لینک کلاس</a>}
+                                <div style={{ display: 'flex', gap: 6, marginTop: 10, flexWrap: 'wrap' }}>
+                                  <button type="button" onClick={() => editSession(session)} style={button('rgba(56,189,248,.1)', '#38bdf8')}><Pencil size={11} /> ویرایش</button>
+                                  <button type="button" onClick={() => openFileForm(course.id, session.id)} style={button('rgba(109,0,26,.35)')}><FileText size={11} /> افزودن فایل</button>
+                                  <button type="button" onClick={() => void deleteSession(course.id, session.id)} style={button('rgba(239,68,68,.1)', '#f87171')}><Trash2 size={11} /></button>
+                                </div>
+                                {(sessionFiles[session.id] || []).length > 0 && (
+                                  <div style={{ marginTop: 10, borderTop: '1px solid #25252b', paddingTop: 9 }}>
+                                    {(sessionFiles[session.id] || []).map(file => (
+                                      <div key={file.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, padding: '5px 0' }}>
+                                        <span style={{ color: '#cbd5e1', fontSize: 10 }}><FileText size={10} style={{ verticalAlign: 'middle', marginLeft: 4 }} />{file.title} · {fileLabel(file.type)}</span>
+                                        <div style={{ display: 'flex', gap: 5 }}>
+                                          {file.externalUrl && <a href={file.externalUrl} target="_blank" rel="noreferrer" style={{ color: '#38bdf8', fontSize: 9 }}>باز کردن</a>}
+                                          <button type="button" onClick={() => void deleteFile(course.id, file)} style={{ background: 'transparent', border: 0, color: '#f87171', cursor: 'pointer' }}><Trash2 size={11} /></button>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+
+                          {editingSessionId && (
+                            <div style={{ marginTop: 14, padding: 15, background: '#111116', border: '1px solid #2b2b32', borderRadius: 12 }}>
+                              <h4 style={{ color: '#fff', fontSize: 12, margin: '0 0 10px' }}>ویرایش جلسه</h4>
+                              <SessionForm form={sessionForm} setForm={setSessionForm} saving={sessionSaving} onSave={() => void saveSession(course.id)} onCancel={startNewSession} />
+                            </div>
+                          )}
+
+                          {!editingSessionId && sessionForm.sessionNumber !== '' && (
+                            <div style={{ marginTop: 14, padding: 15, background: '#111116', border: '1px solid #2b2b32', borderRadius: 12 }}>
+                              <h4 style={{ color: '#fff', fontSize: 12, margin: '0 0 10px' }}>جلسه جدید</h4>
+                              <SessionForm form={sessionForm} setForm={setSessionForm} saving={sessionSaving} onSave={() => void saveSession(course.id)} onCancel={startNewSession} />
+                            </div>
+                          )}
+
+                          <div style={{ marginTop: 20, borderTop: '1px solid #25252b', paddingTop: 15 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                              <h4 style={{ color: '#fff', fontSize: 12, margin: 0 }}><FileText size={13} style={{ verticalAlign: 'middle', marginLeft: 5 }} /> فایل‌های عمومی دوره ({files.length})</h4>
+                              <button type="button" onClick={() => openFileForm(course.id)} style={button('rgba(109,0,26,.35)')}><Plus size={11} /> افزودن فایل</button>
+                            </div>
+                            {files.length === 0 ? <p style={{ color: '#64748b', fontSize: 10 }}>فایل عمومی برای این دوره ثبت نشده است.</p> :
+                              files.map(file => (
+                                <div key={file.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, padding: '8px 0', borderBottom: '1px solid #1e1e24' }}>
+                                  <span style={{ color: '#cbd5e1', fontSize: 10 }}>{file.title} · {fileLabel(file.type)}</span>
+                                  <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                                    {file.externalUrl && <a href={file.externalUrl} target="_blank" rel="noreferrer" style={{ color: '#38bdf8', fontSize: 9 }}><LinkIcon size={10} style={{ verticalAlign: 'middle', marginLeft: 3 }} />باز کردن</a>}
+                                    <button type="button" onClick={() => void deleteFile(course.id, file)} style={{ background: 'transparent', border: 0, color: '#f87171', cursor: 'pointer' }}><Trash2 size={11} /></button>
+                                  </div>
+                                </div>
+                              ))
+                            }
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        }
+      </div>
+
+      {fileTarget && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.72)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 20 }}>
+          <div style={{ width: 'min(520px,100%)', background: '#15151a', border: '1px solid #2b2b32', borderRadius: 18, padding: 22 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
+              <h3 style={{ color: '#fff', margin: 0, fontSize: 14 }}>افزودن فایل</h3>
+              <button type="button" onClick={() => setFileTarget(null)} style={{ background: 'transparent', border: 0, color: '#94a3b8', cursor: 'pointer' }}><X size={16} /></button>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <input placeholder="عنوان فایل" value={fileForm.title} onChange={e => setFileForm({ ...fileForm, title: e.target.value })} style={input} />
+              <select value={fileForm.type} onChange={e => setFileForm({ ...fileForm, type: e.target.value as FileType })} style={input}>
+                <option value="PDF">PDF</option><option value="POWERPOINT">PowerPoint</option><option value="AUDIO">صوتی</option><option value="VIDEO">ویدئو</option><option value="DOCUMENT">سند</option><option value="LINK">لینک</option>
+              </select>
+              <input placeholder="لینک فایل / منبع خارجی (فعلاً بدون آپلود مستقیم)" value={fileForm.externalUrl} onChange={e => setFileForm({ ...fileForm, externalUrl: e.target.value })} style={input} />
+              <button type="button" disabled={fileSaving} onClick={() => void saveFile()} style={button('#6D001A')}>{fileSaving ? 'در حال ذخیره...' : 'ثبت فایل'}</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+type SessionFormProps = {
+  form: typeof emptySession;
+  setForm: React.Dispatch<React.SetStateAction<typeof emptySession>>;
+  saving: boolean;
+  onSave: () => void;
+  onCancel: () => void;
+};
+
+const SessionForm: React.FC<SessionFormProps> = ({ form, setForm, saving, onSave, onCancel }) => (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+    <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 10 }}>
+      <input placeholder="عنوان جلسه" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} style={input} />
+      <input type="number" min="1" placeholder="شماره جلسه" value={form.sessionNumber} onChange={e => setForm({ ...form, sessionNumber: e.target.value })} style={input} />
+    </div>
+    <input type="datetime-local" value={form.sessionDate} onChange={e => setForm({ ...form, sessionDate: e.target.value })} style={input} />
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+      <input type="time" value={form.startTime} onChange={e => setForm({ ...form, startTime: e.target.value })} style={input} />
+      <input type="time" value={form.endTime} onChange={e => setForm({ ...form, endTime: e.target.value })} style={input} />
+    </div>
+    <input placeholder="لینک کلاس / Adobe Connect / Zoom" value={form.meetingLink} onChange={e => setForm({ ...form, meetingLink: e.target.value })} style={input} />
+    <textarea rows={3} placeholder="توضیحات جلسه" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} style={{ ...input, resize: 'vertical' }} />
+    <div style={{ display: 'flex', gap: 7 }}>
+      <button type="button" disabled={saving} onClick={onSave} style={button('#6D001A')}>{saving ? 'در حال ذخیره...' : 'ذخیره جلسه'}</button>
+      <button type="button" onClick={onCancel} style={button('transparent', '#94a3b8')}>انصراف</button>
+    </div>
+  </div>
+);
