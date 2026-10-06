@@ -23,7 +23,7 @@ function ensureUploadDirectory() {
   return uploadDirectory;
 }
 
-function uploadedFilename(_req: Request, file: Express.Multer.File) {
+function uploadedFilename(_req: Request, file: any) {
   return `${randomUUID()}${extname(file.originalname).toLowerCase()}`;
 }
 
@@ -84,7 +84,7 @@ export class CoursesController {
     @Req() req: AuthenticatedRequest,
     @Param('courseId') courseId: string,
     @Body() dto: CreateFileDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file: any,
   ) {
     return this.coursesService.createUploadedCourseFile(req.user, courseId, dto, file);
   }
