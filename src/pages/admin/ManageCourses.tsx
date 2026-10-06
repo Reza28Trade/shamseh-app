@@ -269,11 +269,18 @@ export const ManageCourses: React.FC = () => {
         formData.append('title', fileForm.title.trim());
         formData.append('type', fileForm.type);
         formData.append('file', selectedFile);
-        response = await fetch(uploadUrl, {
-          method: 'POST',
-          credentials: 'include',
-          body: formData,
-        });
+        const controller = new AbortController();
+        const timeoutId = window.setTimeout(() => controller.abort(), 60_000);
+        try {
+          response = await fetch(uploadUrl, {
+            method: 'POST',
+            credentials: 'include',
+            body: formData,
+            signal: controller.signal,
+          });
+        } finally {
+          window.clearTimeout(timeoutId);
+        }
       } else {
         const externalUrl = fileForm.externalUrl.trim();
         if (!externalUrl) throw new Error('یک فایل از کامپیوتر انتخاب کنید یا لینک خارجی وارد کنید.');
@@ -297,7 +304,11 @@ export const ManageCourses: React.FC = () => {
       setSelectedFile(null);
       await loadCourses();
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'افزودن فایل انجام نشد.');
+      if (e instanceof DOMException && e.name === 'AbortError') {
+        setError('آپلود بیشتر از ۶۰ ثانیه طول کشید و متوقف شد. احتمالاً مشکل از سرور، Nginx یا دریافت فایل است.');
+      } else {
+        setError(e instanceof Error ? e.message : 'افزودن فایل انجام نشد.');
+      }
     } finally {
       setFileSaving(false);
     }
