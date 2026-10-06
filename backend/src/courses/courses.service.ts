@@ -218,6 +218,11 @@ export class CoursesService {
     }
 
     const extension = extname(file.storageKey).toLowerCase();
+    if (extension === '.mp3') contentType = 'audio/mpeg';
+    else if (extension === '.wav') contentType = 'audio/wav';
+    else if (extension === '.ogg' || extension === '.oga') contentType = 'audio/ogg';
+    else if (extension === '.mp4') contentType = 'video/mp4';
+    else if (extension === '.webm') contentType = 'video/webm';
     const officeExtensions = new Set(['.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.odt', '.ods', '.odp']);
     let viewPath = sourcePath;
     let contentType = file.mimeType || 'application/octet-stream';
