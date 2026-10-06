@@ -18,7 +18,7 @@ export class AuthService {
         passwordHash: true,
         role: true,
         status: true,
-        student: { select: { id: true } },
+        student: { select: { id: true, fullName: true, nationalId: true } },
       },
     });
 
@@ -73,6 +73,7 @@ export class AuthService {
       username: session.user.username,
       role: session.user.role,
       studentId: session.user.student?.id ?? null,
+      student: session.user.student ? { fullName: session.user.student.fullName, nationalId: session.user.student.nationalId } : null,
       sessionToken,
     };
   }
@@ -98,6 +99,7 @@ export class AuthService {
       username: user.username,
       role: user.role,
       studentId: user.student?.id ?? null,
+      student: user.student ? { fullName: user.student.fullName, nationalId: user.student.nationalId } : null,
     };
   }
 }
