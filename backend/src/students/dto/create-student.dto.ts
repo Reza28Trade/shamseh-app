@@ -1,13 +1,6 @@
-import { IsString, MinLength } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class CreateStudentDto {
-  @IsString()
-  username!: string;
-
-  @IsString()
-  @MinLength(12)
-  password!: string;
-
   @IsString()
   fullName!: string;
 
@@ -15,5 +8,5 @@ export class CreateStudentDto {
   nationalId!: string;
 
   @IsString()
-  phone?: string;
+  phone!: string;
 }
