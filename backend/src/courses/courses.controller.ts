@@ -20,11 +20,14 @@ const uploadDirectory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/stora
 
 function ensureUploadDirectory() {
   mkdirSync(uploadDirectory, { recursive: true });
+  console.log('[CourseUpload] storage directory:', uploadDirectory);
   return uploadDirectory;
 }
 
 function uploadedFilename(_req: Request, file: any) {
-  return `${randomUUID()}${extname(file.originalname).toLowerCase()}`;
+  const filename = randomUUID() + extname(file.originalname).toLowerCase();
+  console.log('[CourseUpload] receiving file:', file.originalname, file.mimetype, '->', filename);
+  return filename;
 }
 
 @Controller()
@@ -86,6 +89,7 @@ export class CoursesController {
     @Body() dto: CreateFileDto,
     @UploadedFile() file: any,
   ) {
+    console.log('[CourseUpload] controller reached:', courseId, dto.title, file?.filename, file?.size);
     return this.coursesService.createUploadedCourseFile(req.user, courseId, dto, file);
   }
 
