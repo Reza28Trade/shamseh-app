@@ -1,4 +1,7 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { Response } from 'express';
+import { createReadStream, existsSync, unlinkSync } from 'fs';
+import { basename, join } from 'path';
 import { PrismaService } from '../database/prisma.service';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { CreateCourseDto } from './dto/create-course.dto';
@@ -143,12 +146,72 @@ export class CoursesService {
     return this.publicFile(file);
   }
 
+  async createUploadedCourseFile(user: AuthenticatedUser, courseId: string, dto: CreateFileDto, file: Express.Multer.File) {
+    this.requireAdmin(user);
+    await this.ensureCourse(courseId);
+    return this.createStoredFile(courseId, null, dto, file);
+  }
+
+  async createUploadedSessionFile(user: AuthenticatedUser, sessionId: string, dto: CreateFileDto, file: Express.Multer.File) {
+    this.requireAdmin(user);
+    const session = await this.prisma.courseSession.findUnique({
+      where: { id: sessionId },
+      select: { id: true, courseId: true },
+    });
+    if (!session) throw new NotFoundException('Session not found');
+    return this.createStoredFile(session.courseId, sessionId, dto, file);
+  }
+
+  private async createStoredFile(
+    courseId: string,
+    sessionId: string | null,
+    dto: CreateFileDto,
+    file: Express.Multer.File,
+  ) {
+    if (!file) throw new BadRequestException('File is required');
+    const record = await this.prisma.courseFile.create({
+      data: {
+        courseId,
+        sessionId,
+        title: dto.title,
+        type: dto.type,
+        storageKey: file.filename,
+        mimeType: file.mimetype,
+        fileSize: BigInt(file.size),
+        externalUrl: null,
+      },
+    });
+    return this.publicFile(record);
+  }
+
+  async downloadFile(user: AuthenticatedUser, fileId: string, res: Response) {
+    const file = await this.prisma.courseFile.findUnique({ where: { id: fileId } });
+    if (!file) throw new NotFoundException('File not found');
+    await this.ensureCourseAccess(user, file.courseId);
+
+    if (file.externalUrl) return res.redirect(file.externalUrl);
+    if (!file.storageKey) throw new NotFoundException('Stored file not found');
+
+    const storageDirectory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
+    const filePath = join(storageDirectory, basename(file.storageKey));
+    if (!existsSync(filePath)) throw new NotFoundException('Stored file not found');
+
+    res.setHeader('Content-Type', file.mimeType || 'application/octet-stream');
+    res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(file.title)}`);
+    return createReadStream(filePath).pipe(res);
+  }
+
   async deleteFile(user: AuthenticatedUser, fileId: string) {
     this.requireAdmin(user);
     const file = await this.prisma.courseFile.findUnique({ where: { id: fileId } });
     if (!file) throw new NotFoundException('File not found');
 
     await this.prisma.courseFile.delete({ where: { id: fileId } });
+    if (file.storageKey) {
+      const storageDirectory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
+      const filePath = join(storageDirectory, basename(file.storageKey));
+      if (existsSync(filePath)) unlinkSync(filePath);
+    }
     return { success: true };
   }
 
