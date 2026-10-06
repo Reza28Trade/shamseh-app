@@ -47,7 +47,6 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
     requestOfflineClass, 
     updateOfflineRequest,
     deleteOfflineRequest,
-    markNotificationAsRead 
   } = useStore();
 
   const [activeTab, setActiveTab] = useState<'courses' | 'notifications' | 'messages'>('courses');
@@ -62,6 +61,49 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   const [courseSessions, setCourseSessions] = useState<Record<string, BackendSession[]>>({});
   const [courseFiles, setCourseFiles] = useState<Record<string, BackendFile[]>>({});
   const [contentLoading, setContentLoading] = useState(false);
+  const [studentNotifications, setStudentNotifications] = useState<Array<{
+    id: string;
+    title: string;
+    content: string;
+    type: string;
+    createdAt: string;
+    readAt: string | null;
+  }>>([]);
+  const [notificationsLoading, setNotificationsLoading] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadNotifications = async () => {
+      setNotificationsLoading(true);
+      try {
+        const response = await fetch('/api/notifications', {
+          credentials: 'include',
+        });
+        if (!response.ok) {
+          throw new Error('دریافت اطلاعیه‌ها انجام نشد.');
+        }
+        const data = await response.json();
+        if (!cancelled) {
+          setStudentNotifications(data);
+        }
+      } catch {
+        if (!cancelled) {
+          setStudentNotifications([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setNotificationsLoading(false);
+        }
+      }
+    };
+
+    void loadNotifications();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [student.id]);
 
   useEffect(() => {
     let cancelled = false;
@@ -178,13 +220,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   const studentMessages = messages.filter(m => m.studentId === student.id);
   const studentOfflineRequests = offlineRequestsList ? offlineRequestsList.filter(r => r.studentId === student.id) : [];
 
-  const studentNotifications = notifications.filter(n => 
-    n.targetType === 'all' || 
-    (n.targetType === 'student' && n.targetId === student.id) ||
-    (n.targetType === 'course' && student.enrolledCourseIds.includes(n.targetId || ''))
-  );
-
-  const unreadCount = studentNotifications.filter(n => !n.readBy.includes(student.nationalId)).length;
+  const unreadCount = studentNotifications.filter(n => !n.readAt).length;
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -218,13 +254,28 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
     setTimeout(() => setOfflineMsg(null), 4000);
   };
 
-  const handleOpenNotificationTab = () => {
+  const handleOpenNotificationTab = async () => {
     setActiveTab('notifications');
-    studentNotifications.forEach(n => {
-      if (!n.readBy.includes(student.nationalId)) {
-        markNotificationAsRead(n.id, student.nationalId);
-      }
-    });
+
+    const unreadNotifications = studentNotifications.filter(n => !n.readAt);
+    if (unreadNotifications.length === 0) return;
+
+    await Promise.all(
+      unreadNotifications.map(async (notification) => {
+        const response = await fetch(`/api/notifications/${notification.id}/read`, {
+          method: 'POST',
+          credentials: 'include',
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setStudentNotifications(current =>
+            current.map(item =>
+              item.id === notification.id ? { ...item, readAt: data.readAt } : item,
+            ),
+          );
+        }
+      }),
+    );
   };
 
   const isDark = theme === 'dark';
@@ -490,7 +541,11 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
               <Bell size={18} color="#ff3366" /> صندوق اطلاعیه‌ها و پیام‌های سیستمی
             </h2>
 
-            {studentNotifications.length === 0 ? (
+            {notificationsLoading ? (
+              <div style={{ textAlign: 'center', padding: '40px 0', color: subText, fontSize: '13px' }}>
+                در حال دریافت اطلاعیه‌ها...
+              </div>
+            ) : studentNotifications.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '40px 0', color: subText, fontSize: '13px' }}>
                 هیچ اطلاعیه‌ای وجود ندارد.
               </div>
@@ -500,7 +555,9 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                   <div key={n.id} style={{ backgroundColor: innerCardBg, border: `1px solid ${borderColor}`, padding: '16px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <h4 style={{ fontSize: '13px', fontWeight: 800, color: textColor, margin: 0 }}>{n.title}</h4>
-                      <span style={{ fontSize: '10px', color: subText }}>{n.date}</span>
+                      <span style={{ fontSize: '10px', color: subText }}>
+                        {new Date(n.createdAt).toLocaleDateString('fa-IR')}
+                      </span>
                     </div>
                     <p style={{ fontSize: '12px', color: subText, margin: 0, lineHeight: 1.6 }}>{n.message}</p>
                   </div>
