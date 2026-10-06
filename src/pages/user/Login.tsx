@@ -28,8 +28,8 @@ export const Login: React.FC<LoginProps> = ({
   const [isLoaded, setIsLoaded] = useState(false);
   const [viewState, setViewState] = useState<'welcome' | 'studentLogin' | 'adminLogin' | 'courses' | 'rules' | 'analysis'>('welcome');
   
-  const [studentUsername, setStudentUsername] = useState('');
-  const [studentPassword, setStudentPassword] = useState('');
+  const [studentNationalId, setStudentNationalId] = useState('');
+  const [studentPhone, setStudentPhone] = useState('');
   const [adminUsername, setAdminUsername] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
   const [error, setError] = useState('');
@@ -55,14 +55,14 @@ export const Login: React.FC<LoginProps> = ({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
-          body: JSON.stringify({ username: studentUsername.trim(), password: studentPassword }),
+          body: JSON.stringify({ username: studentNationalId.trim(), password: studentPhone.trim() }),
         });
         if (!response.ok) throw new Error('login');
         const data = await response.json();
         if (data.user?.role !== 'STUDENT') throw new Error('role');
         onLoginSuccess(data.user);
       } catch {
-        setError('نام کاربری یا رمز عبور هنرجو اشتباه است.');
+        setError('کد ملی یا شماره موبایل هنرجو اشتباه است.');
       }
     })();
   };
@@ -267,10 +267,10 @@ export const Login: React.FC<LoginProps> = ({
             {error && <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#dc2626', padding: '10px', borderRadius: '8px', fontSize: '11px', textAlign: 'center', border: '1px solid rgba(239, 68, 68, 0.2)' }}>{error}</div>}
 
             <div>
-              <label style={{ fontSize: '11px', color: '#52525b', display: 'block', marginBottom: '6px', fontWeight: 700 }}>نام کاربری هنرجو</label>
+              <label style={{ fontSize: '11px', color: '#52525b', display: 'block', marginBottom: '6px', fontWeight: 700 }}>کد ملی هنرجو</label>
               <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#ffffff', border: '1px solid #d4d4d8', borderRadius: '12px', padding: '0 12px' }}>
                 <User size={16} color="#71717a" />
-                <input type="text" placeholder="نام کاربری خود را وارد کنید" value={studentUsername} onChange={e => setStudentUsername(e.target.value)} required style={{ width: '100%', padding: '14px 10px', backgroundColor: 'transparent', border: 'none', color: '#18181b', fontSize: '13px', outline: 'none' }} />
+                <input type="text" placeholder="کد ملی خود را وارد کنید" value={studentNationalId} onChange={e => setStudentNationalId(e.target.value)} required style={{ width: '100%', padding: '14px 10px', backgroundColor: 'transparent', border: 'none', color: '#18181b', fontSize: '13px', outline: 'none' }} />
               </div>
             </div>
 
@@ -278,7 +278,7 @@ export const Login: React.FC<LoginProps> = ({
               <label style={{ fontSize: '11px', color: '#52525b', display: 'block', marginBottom: '6px', fontWeight: 700 }}>رمز عبور</label>
               <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#ffffff', border: '1px solid #d4d4d8', borderRadius: '12px', padding: '0 12px' }}>
                 <Lock size={16} color="#71717a" />
-                <input type="password" placeholder="رمز عبور خود را وارد کنید" value={studentPassword} onChange={e => setStudentPassword(e.target.value)} required style={{ width: '100%', padding: '14px 10px', backgroundColor: 'transparent', border: 'none', color: '#18181b', fontSize: '13px', outline: 'none' }} />
+                <input type="password" placeholder="شماره موبایل خود را وارد کنید" value={studentPhone} onChange={e => setStudentPhone(e.target.value)} required style={{ width: '100%', padding: '14px 10px', backgroundColor: 'transparent', border: 'none', color: '#18181b', fontSize: '13px', outline: 'none' }} />
               </div>
             </div>
 
