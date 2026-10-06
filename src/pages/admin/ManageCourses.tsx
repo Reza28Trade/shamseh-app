@@ -298,8 +298,7 @@ export const ManageCourses: React.FC = () => {
       const data = await response.json().catch(() => null);
       if (!response.ok) throw new Error(data?.message || 'افزودن فایل انجام نشد.');
       const created = data as CourseFile;
-      setCourseFiles((current => ({ ...current, [fileTarget.courseId]: [created, ...(current[fileTarget.courseId] || [])] }));
-      }
+      setCourseFiles(current => ({ ...current, [fileTarget.courseId]: [created, ...(current[fileTarget.courseId] || [])] }));
       setFileTarget(null);
       setFileForm(emptyFile);
       setSelectedFile(null);
