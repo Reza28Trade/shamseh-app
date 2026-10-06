@@ -58,7 +58,7 @@ export class AuthService {
             username: true,
             role: true,
             status: true,
-            student: { select: { id: true } },
+            student: { select: { id: true, fullName: true, nationalId: true } },
           },
         },
       },
