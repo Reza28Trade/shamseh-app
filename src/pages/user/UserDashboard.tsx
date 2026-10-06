@@ -473,7 +473,6 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                           {sessions.slice(0, 3).map(session => (
                             <span key={session.id} style={{ fontSize: '10px', color: subText }}>
                               جلسه {session.sessionNumber}
-                              {session.startTime ? ` — ${session.startTime}` : ''}
                             </span>
                           ))}
                           {sessions.length > 3 && (
@@ -512,7 +511,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                           {sessions.length > 0 ? (
                             sessions.map(session => (
                               <option key={session.id} value={session.id}>
-                                جلسه {session.sessionNumber}: {session.title}
+                                جلسه {session.sessionNumber}
                               </option>
                             ))
                           ) : (
