@@ -184,7 +184,7 @@ export class CoursesService {
     return this.publicFile(record);
   }
 
-  async downloadFile(user: AuthenticatedUser, fileId: string, res: Response) {
+  async streamFile(user: AuthenticatedUser, fileId: string, res: Response) {
     const file = await this.prisma.courseFile.findUnique({ where: { id: fileId } });
     if (!file) throw new NotFoundException('File not found');
     await this.ensureCourseAccess(user, file.courseId);
