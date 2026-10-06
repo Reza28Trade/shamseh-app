@@ -75,17 +75,10 @@ enum OfflineRequestStatus {
 
 enum MockExamStatus {
   DRAFT
-  OPEN_FOR_REGISTRATION
-  REGISTRATION_CLOSED
   SCHEDULED
   LINK_AVAILABLE
   LIVE
   COMPLETED
-  CANCELLED
-}
-
-enum MockExamRegistrationStatus {
-  ACTIVE
   CANCELLED
 }
 
@@ -132,7 +125,6 @@ model Student {
   notificationReads NotificationRead[]
   supportTickets SupportTicket[]
   offlineRequests OfflineRequest[]
-  mockExamRegistrations MockExamRegistration[]
 }
 
 model Course {
@@ -290,16 +282,12 @@ model MockExam {
   level String
   field String
   description String?
-  registrationStartsAt DateTime?
-  registrationEndsAt DateTime?
   examDate DateTime
-  registrationUrl String?
   examUrl String?
   status MockExamStatus @default(DRAFT)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   courses MockExamCourse[]
-  registrations MockExamRegistration[]
   @@index([status, examDate])
   @@index([level, field])
 }
@@ -311,19 +299,6 @@ model MockExamCourse {
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   @@id([mockExamId, courseId])
   @@index([courseId])
-}
-
-model MockExamRegistration {
-  id String @id @default(cuid())
-  mockExamId String
-  studentId String
-  status MockExamRegistrationStatus @default(ACTIVE)
-  registeredAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  mockExam MockExam @relation(fields: [mockExamId], references: [id], onDelete: Cascade)
-  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  @@unique([mockExamId, studentId])
-  @@index([studentId, status])
 }
 
 model AuditLog {
