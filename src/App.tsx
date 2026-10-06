@@ -12,6 +12,8 @@ import { Login } from './pages/user/Login';
 import { UserDashboard } from './pages/user/UserDashboard';
 import type { Student, Admin } from './types';
 
+type AuthUser = { id: string; username: string; role: 'SUPER_ADMIN' | 'STAFF' | 'STUDENT'; studentId: string | null; student?: { fullName: string; nationalId: string } | null };
+
 export function App() {
   const {
     currentAdmin,
@@ -32,12 +34,15 @@ export function App() {
   const [adminTab, setAdminTab] = useState<'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'rules' | 'offlineRequests' | 'mockExams'>('courses');
   const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
 
-  const handleStudentLogin = (student: Student) => {
+  const handleStudentLogin = (user: AuthUser) => {
+    if (!user.studentId || !user.student) return;
+    const student: Student = { id: user.studentId, fullName: user.student.fullName, nationalId: user.student.nationalId, enrolledCourseIds: [] };
     setCurrentStudent(student);
     setView('user');
   };
 
-  const handleAdminLoginSuccess = (admin: Admin) => {
+  const handleAdminLoginSuccess = (user: AuthUser) => {
+    const admin: Admin = { id: user.id, fullName: user.username, username: user.username, password: '', role: user.role === 'SUPER_ADMIN' ? 'super_admin' : 'staff' };
     setCurrentAdmin(admin);
     setView('admin');
   };
