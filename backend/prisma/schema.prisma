@@ -135,7 +135,6 @@ model Course {
   updatedAt DateTime @updatedAt
   enrollments Enrollment[]
   sessions CourseSession[]
-  files CourseFile[]
   notifications Notification[]
   offlineRequests OfflineRequest[]
   mockExams MockExamCourse[]
@@ -170,7 +169,6 @@ model CourseSession {
 model CourseFile {
   id String @id @default(cuid())
   courseId String
-  sessionId String?
   title String
   type FileType
   storageKey String?
@@ -180,9 +178,7 @@ model CourseFile {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  session CourseSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
   @@index([courseId])
-  @@index([sessionId])
 }
 
 model Notification {
