@@ -218,6 +218,7 @@ export class CoursesService {
     }
 
     const extension = extname(file.storageKey).toLowerCase();
+    let contentType = file.mimeType || 'application/octet-stream';
     if (extension === '.mp3') contentType = 'audio/mpeg';
     else if (extension === '.wav') contentType = 'audio/wav';
     else if (extension === '.ogg' || extension === '.oga') contentType = 'audio/ogg';
@@ -225,8 +226,6 @@ export class CoursesService {
     else if (extension === '.webm') contentType = 'video/webm';
     const officeExtensions = new Set(['.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.odt', '.ods', '.odp']);
     let viewPath = sourcePath;
-    let contentType = file.mimeType || 'application/octet-stream';
-
     if (officeExtensions.has(extension)) {
       const cacheDirectory = join(storageDirectory, '.viewer-cache');
       mkdirSync(cacheDirectory, { recursive: true });
