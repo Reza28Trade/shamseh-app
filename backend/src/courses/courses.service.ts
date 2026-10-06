@@ -199,8 +199,12 @@ export class CoursesService {
   }
 
   async viewFile(user: AuthenticatedUser, fileId: string, res: Response) {
+    console.log('[FileViewer] request:', fileId, user.role, user.studentId ?? 'no-student');
     const file = await this.prisma.courseFile.findUnique({ where: { id: fileId } });
-    if (!file) throw new NotFoundException('File not found');
+    if (!file) {
+      console.error('[FileViewer] file not found:', fileId);
+      throw new NotFoundException('File not found');
+    }
     await this.ensureCourseAccess(user, file.courseId);
 
     if (file.externalUrl) return res.redirect(file.externalUrl);
@@ -208,7 +212,10 @@ export class CoursesService {
 
     const storageDirectory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
     const sourcePath = join(storageDirectory, basename(file.storageKey));
-    if (!existsSync(sourcePath)) throw new NotFoundException('Stored file not found');
+    if (!existsSync(sourcePath)) {
+      console.error('[FileViewer] stored file missing:', sourcePath);
+      throw new NotFoundException('Stored file not found');
+    }
 
     const extension = extname(file.storageKey).toLowerCase();
     const officeExtensions = new Set(['.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.odt', '.ods', '.odp']);
@@ -238,6 +245,7 @@ export class CoursesService {
       contentType = 'application/pdf';
     }
 
+    console.log('[FileViewer] serving:', viewPath, contentType);
     res.setHeader('Content-Type', contentType);
     res.setHeader('Content-Disposition', 'inline');
     res.setHeader('X-Content-Type-Options', 'nosniff');
