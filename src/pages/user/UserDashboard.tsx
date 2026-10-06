@@ -39,7 +39,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   const { 
     theme, 
     toggleTheme, 
-    messages, offlineRequests, 
+    offlineRequests, 
     offlineRequestsList,
     requestOfflineClass, 
     updateOfflineRequest,
