@@ -217,6 +217,7 @@ export const ManageCourses: React.FC = () => {
   const startNewSession = () => {
     setEditingSessionId(null);
     setSessionForm(emptySession);
+    setShowSessionForm(true);
   };
 
   const cancelSessionForm = () => {
@@ -227,6 +228,7 @@ export const ManageCourses: React.FC = () => {
 
   const editSession = (session: Session) => {
     setEditingSessionId(session.id);
+    setShowSessionForm(true);
     setSessionForm({
       title: session.title,
       sessionNumber: String(session.sessionNumber),
