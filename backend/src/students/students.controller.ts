@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
-import { Request } from 'express';
+import { Body, Controller, Get, Param, Patch, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { CreateStudentDto } from './dto/create-student.dto';
@@ -13,6 +13,11 @@ type AuthenticatedRequest = Request & { user: AuthenticatedUser };
 @UseGuards(AuthGuard)
 export class StudentsController {
   constructor(private readonly studentsService: StudentsService) {}
+
+  @Get('admin/students/export')
+  exportStudents(@Req() req: AuthenticatedRequest, @Res() res: Response) {
+    return this.studentsService.exportStudents(req.user, res);
+  }
 
   @Get('admin/students')
   listStudents(@Req() req: AuthenticatedRequest) {
