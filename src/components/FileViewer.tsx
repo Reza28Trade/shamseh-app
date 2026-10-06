@@ -1,8 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { GlobalWorkerOptions, getDocument, type PDFDocumentProxy } from 'pdfjs-dist';
-import workerSrc from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
-
-GlobalWorkerOptions.workerSrc = workerSrc;
+import { getDocument, type PDFDocumentProxy } from 'pdfjs-dist';
 
 type ViewerFile = {
   id: string;
@@ -42,7 +39,7 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
         }
         const blob = await response.blob();
         objectUrl = URL.createObjectURL(blob);
-        task = getDocument(objectUrl);
+        task = getDocument({ url: objectUrl, disableWorker: true });
         return task.promise;
       })
       .then(document => {
