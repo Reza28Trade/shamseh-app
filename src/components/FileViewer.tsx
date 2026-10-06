@@ -43,7 +43,14 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
         }
         const blob = await response.blob();
         objectUrl = URL.createObjectURL(blob);
-        task = getDocument({ url: objectUrl });
+        task = getDocument({
+          url: objectUrl,
+          cMapUrl: '/cmaps/',
+          cMapPacked: true,
+          standardFontDataUrl: '/standard_fonts/',
+          useSystemFonts: true,
+          disableFontFace: false,
+        });
         return task.promise;
       })
       .then(document => {
@@ -80,10 +87,11 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
         const baseViewport = page.getViewport({ scale: 1 });
         const fitScale = availableWidth / baseViewport.width;
         const scale = Math.max(0.45, fitScale * zoom);
+        const outputScale = window.devicePixelRatio || 1;
         const viewport = page.getViewport({ scale });
         const canvas = document.createElement('canvas');
-        canvas.width = Math.ceil(viewport.width);
-        canvas.height = Math.ceil(viewport.height);
+        canvas.width = Math.ceil(viewport.width * outputScale);
+        canvas.height = Math.ceil(viewport.height * outputScale);
         canvas.style.display = 'block';
         canvas.style.maxWidth = 'none';
         canvas.style.height = 'auto';
@@ -91,7 +99,11 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
         canvas.style.background = '#fff';
         canvas.style.boxShadow = '0 4px 18px rgba(0,0,0,.22)';
         container.appendChild(canvas);
-        await page.render({ canvas, viewport }).promise;
+        await page.render({
+          canvas,
+          viewport,
+          transform: outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : undefined,
+        }).promise;
       }
     };
     void renderPages().catch(() => {
