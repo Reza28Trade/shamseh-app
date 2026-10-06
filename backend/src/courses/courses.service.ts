@@ -1,7 +1,8 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { Response } from 'express';
-import { createReadStream, existsSync, unlinkSync } from 'fs';
-import { basename, join } from 'path';
+import { randomUUID } from 'crypto';
+import { createReadStream, existsSync, mkdirSync, unlinkSync, writeFileSync } from 'fs';
+import { basename, extname, join } from 'path';
 import { PrismaService } from '../database/prisma.service';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { CreateCourseDto } from './dto/create-course.dto';
@@ -162,21 +163,36 @@ export class CoursesService {
     dto: CreateFileDto,
     file: any,
   ) {
-    if (!file) throw new BadRequestException('File is required');
-    console.log('[CourseUpload] creating DB record:', courseId, dto.title, file.filename);
-    const record = await this.prisma.courseFile.create({
-      data: {
-        courseId,
-        title: dto.title,
-        type: dto.type,
-        storageKey: file.filename,
-        mimeType: file.mimetype,
-        fileSize: BigInt(file.size),
-        externalUrl: null,
-      },
-    });
-    console.log('[CourseUpload] DB record created:', record.id);
-    return this.publicFile(record);
+    if (!file?.buffer) throw new BadRequestException('File is required');
+
+    const storageDirectory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
+    mkdirSync(storageDirectory, { recursive: true });
+
+    const storageKey = randomUUID() + extname(file.originalname).toLowerCase();
+    const filePath = join(storageDirectory, storageKey);
+
+    console.log('[CourseUpload] writing file:', file.originalname, file.size, '->', filePath);
+    writeFileSync(filePath, file.buffer);
+    console.log('[CourseUpload] file written:', filePath);
+
+    try {
+      const record = await this.prisma.courseFile.create({
+        data: {
+          courseId,
+          title: dto.title,
+          type: dto.type,
+          storageKey,
+          mimeType: file.mimetype,
+          fileSize: BigInt(file.size),
+          externalUrl: null,
+        },
+      });
+      console.log('[CourseUpload] DB record created:', record.id);
+      return this.publicFile(record);
+    } catch (error) {
+      if (existsSync(filePath)) unlinkSync(filePath);
+      throw error;
+    }
   }
 
   async streamFile(user: AuthenticatedUser, fileId: string, res: Response) {
