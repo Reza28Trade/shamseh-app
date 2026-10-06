@@ -63,13 +63,6 @@ const button = (background: string, color = '#fff'): React.CSSProperties => ({
   alignItems: 'center', gap: 5,
 });
 
-const toDateTimeLocal = (value: string) => {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '';
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-};
-
 export const ManageCourses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [form, setForm] = useState(emptyCourse);
