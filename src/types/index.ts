@@ -9,7 +9,7 @@ export interface Admin {
   id: string;
   fullName: string;
   username: string;
-  password: string;
+  password?: string;
   role: 'super_admin' | 'staff';
 }
 
