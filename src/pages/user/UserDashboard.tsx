@@ -78,6 +78,8 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
     session: { id: string; title: string; sessionNumber: number; sessionDate: string; status: string };
   }>>([]);
   const [offlineLoading, setOfflineLoading] = useState(false);
+  const [editingOfflineRequestId, setEditingOfflineRequestId] = useState<string | null>(null);
+  const [editingOfflineSessionId, setEditingOfflineSessionId] = useState<string>('');
 
   useEffect(() => {
     let cancelled = false;
@@ -329,6 +331,47 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
     setTimeout(() => setOfflineMsg(null), 4000);
   };
 
+  const handleEditOfflineRequest = async (request: typeof offlineRequests[number]) => {
+    if (!editingOfflineSessionId || editingOfflineSessionId === request.sessionId) {
+      setEditingOfflineRequestId(null);
+      return;
+    }
+    try {
+      const response = await fetch(`/api/offline-requests/${request.id}`, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ courseId: request.courseId, sessionId: editingOfflineSessionId }),
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'ویرایش درخواست انجام نشد.');
+      setOfflineRequests(current => current.map(item => item.id === request.id ? data : item));
+      setOfflineMsg({ courseId: request.courseId, text: 'درخواست با موفقیت ویرایش شد.', success: true });
+      setEditingOfflineRequestId(null);
+      setEditingOfflineSessionId('');
+    } catch (error) {
+      setOfflineMsg({ courseId: request.courseId, text: error instanceof Error ? error.message : 'ویرایش درخواست انجام نشد.', success: false });
+    }
+    setTimeout(() => setOfflineMsg(null), 4000);
+  };
+
+  const handleDeleteOfflineRequest = async (request: typeof offlineRequests[number]) => {
+    if (!confirm('آیا از حذف این درخواست اطمینان دارید؟')) return;
+    try {
+      const response = await fetch(`/api/offline-requests/${request.id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'حذف درخواست انجام نشد.');
+      setOfflineRequests(current => current.filter(item => item.id !== request.id));
+      setOfflineMsg({ courseId: request.courseId, text: 'درخواست حذف شد.', success: true });
+    } catch (error) {
+      setOfflineMsg({ courseId: request.courseId, text: error instanceof Error ? error.message : 'حذف درخواست انجام نشد.', success: false });
+    }
+    setTimeout(() => setOfflineMsg(null), 4000);
+  };
+
   const handleOpenNotificationTab = async () => {
     setActiveTab('notifications');
 
@@ -531,6 +574,28 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                                   <span style={{ fontSize: '10px', fontWeight: 700, color: req.status === 'APPROVED' ? '#34d399' : req.status === 'REJECTED' ? '#f87171' : '#fbbf24' }}>
                                     {req.status === 'APPROVED' ? 'تأیید شده' : req.status === 'REJECTED' ? 'رد شده' : 'در انتظار بررسی'}
                                   </span>
+                                  {req.status === 'PENDING' && (
+                                    <>
+                                      {editingOfflineRequestId === req.id ? (
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', alignItems: 'flex-end', marginTop: '4px' }}>
+                                          <select value={editingOfflineSessionId} onChange={e => setEditingOfflineSessionId(e.target.value)} style={{ backgroundColor: innerCardBg, color: textColor, border: `1px solid ${borderColor}`, padding: '5px 8px', borderRadius: '6px', fontSize: '9px' }}>
+                                            <option value="">انتخاب جلسه جدید...</option>
+                                            {sessions.map(session => <option key={session.id} value={session.id}>جلسه {session.sessionNumber}: {session.title}</option>)}
+                                          </select>
+                                          <div style={{ display: 'flex', gap: '4px' }}>
+                                            <button onClick={() => void handleEditOfflineRequest(req)} style={{ backgroundColor: 'rgba(52,211,153,.1)', color: '#34d399', border: '1px solid rgba(52,211,153,.2)', padding: '3px 8px', borderRadius: '6px', fontSize: '9px', fontWeight: 700, cursor: 'pointer' }}>ذخیره</button>
+                                            <button onClick={() => { setEditingOfflineRequestId(null); setEditingOfflineSessionId(''); }} style={{ backgroundColor: 'rgba(255,255,255,.05)', color: subText, border: `1px solid ${borderColor}`, padding: '3px 8px', borderRadius: '6px', fontSize: '9px', cursor: 'pointer' }}>انصراف</button>
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        <div style={{ display: 'flex', gap: '4px', marginTop: '4px' }}>
+                                          <button onClick={() => { setEditingOfflineRequestId(req.id); setEditingOfflineSessionId(req.sessionId); }} style={{ backgroundColor: 'rgba(56,189,248,.1)', color: '#38bdf8', border: '1px solid rgba(56,189,248,.2)', padding: '3px 8px', borderRadius: '6px', fontSize: '9px', fontWeight: 700, cursor: 'pointer' }}>ویرایش</button>
+                                          <button onClick={() => void handleDeleteOfflineRequest(req)} style={{ backgroundColor: 'rgba(239,68,68,.1)', color: '#f87171', border: '1px solid rgba(239,68,68,.2)', padding: '3px 8px', borderRadius: '6px', fontSize: '9px', fontWeight: 700, cursor: 'pointer' }}>حذف</button>
+                                        </div>
+                                      )}
+                                    </>
+                                  )}
+
                                   {req.status === 'APPROVED' && req.meetingLink && (
                                     <a href={req.meetingLink} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', backgroundColor: '#2563eb', color: '#fff', padding: '4px 10px', borderRadius: '6px', textDecoration: 'none', fontSize: '10px', fontWeight: 700 }}>
                                       ورود به جلسه تأیید شده
