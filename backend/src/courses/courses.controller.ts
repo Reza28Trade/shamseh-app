@@ -7,6 +7,7 @@ import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
+import { CreateFileDto } from './dto/create-file.dto';
 
 type AuthenticatedRequest = Request & { user: AuthenticatedUser };
 
@@ -43,6 +44,31 @@ export class CoursesController {
   @Get('courses/:courseId/sessions')
   listSessions(@Req() req: AuthenticatedRequest, @Param('courseId') courseId: string) {
     return this.coursesService.listSessions(req.user, courseId);
+  }
+
+  @Get('courses/:courseId/files')
+  listCourseFiles(@Req() req: AuthenticatedRequest, @Param('courseId') courseId: string) {
+    return this.coursesService.listCourseFiles(req.user, courseId);
+  }
+
+  @Get('sessions/:sessionId/files')
+  listSessionFiles(@Req() req: AuthenticatedRequest, @Param('sessionId') sessionId: string) {
+    return this.coursesService.listSessionFiles(req.user, sessionId);
+  }
+
+  @Post('admin/courses/:courseId/files')
+  createCourseFile(@Req() req: AuthenticatedRequest, @Param('courseId') courseId: string, @Body() dto: CreateFileDto) {
+    return this.coursesService.createCourseFile(req.user, courseId, dto);
+  }
+
+  @Post('admin/sessions/:sessionId/files')
+  createSessionFile(@Req() req: AuthenticatedRequest, @Param('sessionId') sessionId: string, @Body() dto: CreateFileDto) {
+    return this.coursesService.createSessionFile(req.user, sessionId, dto);
+  }
+
+  @Delete('admin/files/:fileId')
+  deleteFile(@Req() req: AuthenticatedRequest, @Param('fileId') fileId: string) {
+    return this.coursesService.deleteFile(req.user, fileId);
   }
 
   @Post('admin/courses/:courseId/sessions')
