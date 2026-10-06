@@ -558,7 +558,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', alignItems: 'flex-end', marginTop: '4px' }}>
                                           <select value={editingOfflineSessionId} onChange={e => setEditingOfflineSessionId(e.target.value)} style={{ backgroundColor: innerCardBg, color: textColor, border: `1px solid ${borderColor}`, padding: '5px 8px', borderRadius: '6px', fontSize: '9px' }}>
                                             <option value="">انتخاب جلسه جدید...</option>
-                                            {sessions.map(session => <option key={session.id} value={session.id}>جلسه {session.sessionNumber}: {session.title}</option>)}
+                                            {sessions.map(session => <option key={session.id} value={session.id}>جلسه {session.sessionNumber}</option>)}
                                           </select>
                                           <div style={{ display: 'flex', gap: '4px' }}>
                                             <button onClick={() => void handleEditOfflineRequest(req)} style={{ backgroundColor: 'rgba(52,211,153,.1)', color: '#34d399', border: '1px solid rgba(52,211,153,.2)', padding: '3px 8px', borderRadius: '6px', fontSize: '9px', fontWeight: 700, cursor: 'pointer' }}>ذخیره</button>
