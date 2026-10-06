@@ -446,7 +446,7 @@ export const ManageCourses: React.FC = () => {
                                 )}
                               </div>
                             ))}
-                          {showSessionForm && (
+                          {showSessionForm && editingSessionId && (
                             <div style={{ marginTop: 14, padding: 15, background: '#111116', border: '1px solid #2b2b32', borderRadius: 12 }}>
                               <h4 style={{ color: '#fff', fontSize: 12, margin: '0 0 10px' }}>ویرایش جلسه</h4>
                               <SessionForm form={sessionForm} setForm={setSessionForm} saving={sessionSaving} onSave={() => void saveSession(course.id)} onCancel={cancelSessionForm} />
@@ -456,7 +456,7 @@ export const ManageCourses: React.FC = () => {
                           {!editingSessionId && showSessionForm && (
                             <div style={{ marginTop: 14, padding: 15, background: '#111116', border: '1px solid #2b2b32', borderRadius: 12 }}>
                               <h4 style={{ color: '#fff', fontSize: 12, margin: '0 0 10px' }}>جلسه جدید</h4>
-                              <SessionForm form={sessionForm} setForm={setSessionForm} saving={sessionSaving} onSave={() => void saveSession(course.id)} onCancel={startNewSession} />
+                              <SessionForm form={sessionForm} setForm={setSessionForm} saving={sessionSaving} onSave={() => void saveSession(course.id)} onCancel={cancelSessionForm} />
                             </div>
                           )}
 
