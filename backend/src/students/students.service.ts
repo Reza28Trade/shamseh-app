@@ -5,6 +5,8 @@ import { AuthenticatedUser } from '../auth/auth.types';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { ResetStudentPasswordDto } from './dto/reset-student-password.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
+import { Response } from 'express';
+const ExcelJS = require('exceljs');
 
 @Injectable()
 export class StudentsService {
@@ -28,6 +30,37 @@ export class StudentsService {
         },
       },
     });
+  }
+
+
+  async exportStudents(user: AuthenticatedUser, res: Response) {
+    this.requireAdmin(user);
+    const students = await this.prisma.student.findMany({
+      orderBy: { createdAt: 'desc' },
+      select: {
+        fullName: true, nationalId: true, phone: true,
+        user: { select: { username: true, status: true } },
+        enrollments: { select: { status: true, course: { select: { title: true } } }, orderBy: { enrolledAt: 'asc' } },
+      },
+    });
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet('Students');
+    sheet.columns = [
+      { header: 'نام و نام خانوادگی', key: 'fullName', width: 28 },
+      { header: 'کد ملی', key: 'nationalId', width: 16 },
+      { header: 'شماره موبایل', key: 'phone', width: 16 },
+      { header: 'نام کاربری', key: 'username', width: 16 },
+      { header: 'وضعیت حساب', key: 'status', width: 16 },
+      { header: 'دوره‌ها', key: 'courses', width: 50 },
+    ];
+    for (const student of students) {
+      sheet.addRow({ fullName: student.fullName, nationalId: student.nationalId, phone: student.phone, username: student.user.username, status: student.user.status, courses: student.enrollments.map((e: any) => e.course.title + ' (' + e.status + ')').join('، ') });
+    }
+    sheet.getRow(1).font = { bold: true };
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', "attachment; filename*=UTF-8''students.xlsx");
+    await workbook.xlsx.write(res);
+    res.end();
   }
 
   async createStudent(user: AuthenticatedUser, dto: CreateStudentDto) {
