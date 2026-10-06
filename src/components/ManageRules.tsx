@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useStore } from '../store/useStore';
 
 export const ManageRules: React.FC = () => {
-  const { rulesText, updateRulesText, currentAdmin } = useStore();
+  const { rulesText, setRulesText, currentAdmin } = useStore();
   const [text, setText] = useState(rulesText);
   const [success, setSuccess] = useState(false);
 
@@ -12,8 +12,7 @@ export const ManageRules: React.FC = () => {
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    const adminName = currentAdmin?.fullName || 'مدیر سیستم';
-    updateRulesText(text, adminName);
+    setRulesText(text);
     setSuccess(true);
     setTimeout(() => setSuccess(false), 3000);
   };
