@@ -88,7 +88,7 @@ export const ManageCourses: React.FC = () => {
   const [courseFiles, setCourseFiles] = useState<Record<string, CourseFile[]>>({});
   const [sessionFiles, setSessionFiles] = useState<Record<string, CourseFile[]>>({});
   const [contentLoading, setContentLoading] = useState<Record<string, boolean>>({});
-  const [sessionForm, setSessionForm] = useState(emptySession);
+  const [sessionForm, setSessionForm] = useState(emptySession);\n  const [showSessionForm, setShowSessionForm] = useState(false);
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
   const [sessionSaving, setSessionSaving] = useState(false);
   const [fileForm, setFileForm] = useState(emptyFile);
@@ -240,7 +240,7 @@ export const ManageCourses: React.FC = () => {
       });
       const data = await response.json().catch(() => null);
       if (!response.ok) throw new Error(data?.message || 'ذخیره جلسه انجام نشد.');
-      setSessionForm(emptySession); setEditingSessionId(null);
+      setSessionForm(emptySession); setEditingSessionId(null); setShowSessionForm(false);
       await loadContent(courseId);
       await loadCourses();
     } catch (e) {
@@ -427,14 +427,14 @@ export const ManageCourses: React.FC = () => {
                             ))}
                           </div>
 
-                          {editingSessionId && (
+                          {showSessionForm && (
                             <div style={{ marginTop: 14, padding: 15, background: '#111116', border: '1px solid #2b2b32', borderRadius: 12 }}>
                               <h4 style={{ color: '#fff', fontSize: 12, margin: '0 0 10px' }}>ویرایش جلسه</h4>
                               <SessionForm form={sessionForm} setForm={setSessionForm} saving={sessionSaving} onSave={() => void saveSession(course.id)} onCancel={startNewSession} />
                             </div>
                           )}
 
-                          {!editingSessionId && sessionForm.sessionNumber !== '' && (
+                          {!editingSessionId && showSessionForm && (
                             <div style={{ marginTop: 14, padding: 15, background: '#111116', border: '1px solid #2b2b32', borderRadius: 12 }}>
                               <h4 style={{ color: '#fff', fontSize: 12, margin: '0 0 10px' }}>جلسه جدید</h4>
                               <SessionForm form={sessionForm} setForm={setSessionForm} saving={sessionSaving} onSave={() => void saveSession(course.id)} onCancel={startNewSession} />
