@@ -131,7 +131,7 @@ export class OfflineRequestsService {
       include: {
         course: { select: { id: true, title: true } },
         session: {
-          select: { id: true, title: true, sessionNumber: true, sessionDate: true, status: true },
+          select: { id: true, sessionNumber: true },
         },
       },
     });
@@ -146,7 +146,7 @@ export class OfflineRequestsService {
         student: { select: { id: true, fullName: true, nationalId: true } },
         course: { select: { id: true, title: true } },
         session: {
-          select: { id: true, title: true, sessionNumber: true, sessionDate: true, status: true },
+          select: { id: true, sessionNumber: true },
         },
         reviewer: { select: { id: true, username: true } },
       },
@@ -208,7 +208,7 @@ export class OfflineRequestsService {
       data: { courseId: dto.courseId, sessionId: dto.sessionId },
       include: {
         course: { select: { id: true, title: true } },
-        session: { select: { id: true, title: true, sessionNumber: true, sessionDate: true, status: true } },
+        session: { select: { id: true, sessionNumber: true } },
       },
     });
   }
@@ -262,7 +262,7 @@ export class OfflineRequestsService {
         student: { select: { id: true, fullName: true, nationalId: true } },
         course: { select: { id: true, title: true } },
         session: {
-          select: { id: true, title: true, sessionNumber: true, sessionDate: true, status: true },
+          select: { id: true, sessionNumber: true },
         },
         reviewer: { select: { id: true, username: true } },
       },
