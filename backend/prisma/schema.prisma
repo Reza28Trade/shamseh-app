@@ -28,13 +28,6 @@ enum EnrollmentStatus {
   CANCELLED
 }
 
-enum SessionStatus {
-  SCHEDULED
-  COMPLETED
-  CANCELLED
-  POSTPONED
-}
-
 enum FileType {
   PDF
   POWERPOINT
@@ -163,14 +156,7 @@ model Enrollment {
 model CourseSession {
   id String @id @default(cuid())
   courseId String
-  title String
   sessionNumber Int
-  sessionDate DateTime
-  startTime String?
-  endTime String?
-  meetingLink String?
-  status SessionStatus @default(SCHEDULED)
-  description String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -178,7 +164,7 @@ model CourseSession {
   notifications Notification[]
   offlineRequests OfflineRequest[]
   @@unique([courseId, sessionNumber])
-  @@index([courseId, sessionDate])
+  @@index([courseId])
 }
 
 model CourseFile {
