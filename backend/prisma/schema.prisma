@@ -5,16 +5,70 @@ datasource db {
   provider = "postgresql"
   url = env("DATABASE_URL")
 }
-enum UserRole { SUPER_ADMIN STAFF STUDENT }
-enum UserStatus { ACTIVE INACTIVE }
-enum CourseStatus { DRAFT ACTIVE ARCHIVED }
-enum EnrollmentStatus { ACTIVE COMPLETED CANCELLED }
-enum SessionStatus { SCHEDULED COMPLETED CANCELLED POSTPONED }
-enum FileType { PDF POWERPOINT AUDIO VIDEO DOCUMENT LINK }
-enum NotificationType { GENERAL CLASS_CANCELLED CLASS_POSTPONED NEW_FILE IMPORTANT }
-enum NotificationTargetType { GLOBAL COURSE STUDENT }
-enum SupportTicketStatus { OPEN ANSWERED CLOSED }
-enum OfflineRequestStatus { PENDING APPROVED REJECTED }
+enum UserRole {
+  SUPER_ADMIN
+  STAFF
+  STUDENT
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum CourseStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum SessionStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  POSTPONED
+}
+
+enum FileType {
+  PDF
+  POWERPOINT
+  AUDIO
+  VIDEO
+  DOCUMENT
+  LINK
+}
+
+enum NotificationType {
+  GENERAL
+  CLASS_CANCELLED
+  CLASS_POSTPONED
+  NEW_FILE
+  IMPORTANT
+}
+
+enum NotificationTargetType {
+  GLOBAL
+  COURSE
+  STUDENT
+}
+
+enum SupportTicketStatus {
+  OPEN
+  ANSWERED
+  CLOSED
+}
+
+enum OfflineRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
 
 model User {
   id String @id @default(cuid())
