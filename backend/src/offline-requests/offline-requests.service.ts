@@ -58,16 +58,14 @@ export class OfflineRequestsService {
 
     const session = await this.prisma.courseSession.findUnique({
       where: { id: dto.sessionId },
-      select: { id: true, courseId: true, status: true },
+      select: { id: true, courseId: true },
     });
 
     if (!session) throw new NotFoundException('Session not found');
     if (session.courseId !== dto.courseId) {
       throw new BadRequestException('Session does not belong to the selected course');
     }
-    if (session.status === 'CANCELLED') {
-      throw new BadRequestException('Cannot request an offline link for a cancelled session');
-    }
+    
 
     try {
       return await this.prisma.$transaction(
@@ -107,7 +105,7 @@ export class OfflineRequestsService {
             include: {
               course: { select: { id: true, title: true } },
               session: {
-                select: { id: true, title: true, sessionNumber: true, sessionDate: true, status: true },
+                select: { id: true, sessionNumber: true },
               },
             },
           });
@@ -184,15 +182,13 @@ export class OfflineRequestsService {
 
     const session = await this.prisma.courseSession.findUnique({
       where: { id: dto.sessionId },
-      select: { id: true, courseId: true, status: true },
+      select: { id: true, courseId: true },
     });
     if (!session) throw new NotFoundException('Session not found');
     if (session.courseId !== dto.courseId) {
       throw new BadRequestException('Session does not belong to the selected course');
     }
-    if (session.status === 'CANCELLED') {
-      throw new BadRequestException('Cannot request an offline link for a cancelled session');
-    }
+    
 
     const duplicate = await this.prisma.offlineRequest.findFirst({
       where: {
