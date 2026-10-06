@@ -22,8 +22,8 @@ export const AuditLogs: React.FC = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <ShieldAlert size={16} color="#ff3366" />
                   <div>
-                    <span style={{ color: '#ff3366', fontWeight: 800, marginLeft: '8px', fontSize: '12px' }}>[{log.adminName}]</span>
-                    <span style={{ color: '#fff', fontSize: '12px' }}>{log.action}: <strong style={{ color: '#38bdf8' }}>{log.target}</strong></span>
+                    <span style={{ color: '#ff3366', fontWeight: 800, marginLeft: '8px', fontSize: '12px' }}>[{log.performedBy}]</span>
+                    <span style={{ color: '#fff', fontSize: '12px' }}>{log.action}: <strong style={{ color: '#38bdf8' }}>{log.details}</strong></span>
                   </div>
                 </div>
                 <span style={{ color: '#94a3b8', fontSize: '11px' }}>{log.timestamp}</span>
