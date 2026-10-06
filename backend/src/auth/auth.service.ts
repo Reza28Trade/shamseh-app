@@ -92,7 +92,7 @@ export class AuthService {
     id: string;
     username: string;
     role: 'SUPER_ADMIN' | 'STAFF' | 'STUDENT';
-    student: { id: string } | null;
+    student: { id: string; fullName: string; nationalId: string } | null;
   }) {
     return {
       id: user.id,
