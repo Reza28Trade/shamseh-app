@@ -166,7 +166,7 @@ export class CoursesService {
     courseId: string,
     sessionId: string | null,
     dto: CreateFileDto,
-    file: Express.Multer.File,
+    file: any,
   ) {
     if (!file) throw new BadRequestException('File is required');
     const record = await this.prisma.courseFile.create({
