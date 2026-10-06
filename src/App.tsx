@@ -7,6 +7,7 @@ import { AuditLogs } from './pages/admin/AuditLogs';
 import { ManageMessages } from './pages/admin/ManageMessages';
 import { ManageOfflineRequests } from './pages/admin/ManageOfflineRequests';
 import { ManageMockExams } from './pages/admin/ManageMockExams';
+import { ManageNotifications } from './pages/admin/ManageNotifications';
 import { ManageRules } from './components/ManageRules';
 import { Login } from './pages/user/Login';
 import { UserDashboard } from './pages/user/UserDashboard';
@@ -31,7 +32,7 @@ export function App() {
   } = useStore();
 
   const [view, setView] = useState<'login' | 'admin' | 'user'>('login');
-  const [adminTab, setAdminTab] = useState<'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'rules' | 'offlineRequests' | 'mockExams'>('courses');
+  const [adminTab, setAdminTab] = useState<'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams'>('courses');
   const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
 
   const handleStudentLogin = (user: AuthUser) => {
@@ -84,8 +85,10 @@ export function App() {
           <ManageMockExams />
         ) : adminTab === 'logs' ? (
           <AuditLogs />
-        ) : adminTab === 'messages' ? (
+         ) : adminTab === 'messages' ? (
           <ManageMessages />
+        ) : adminTab === 'notifications' ? (
+          <ManageNotifications />
         ) : adminTab === 'rules' ? (
           <ManageRules />
         ) : (

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import type { Admin } from '../types';
 import { useStore } from '../store/useStore';
-import { LayoutDashboard, BookOpen, Users, MessageSquare, ShieldAlert, FileText, LogOut, Sun, Moon, Menu, X, CheckSquare, ClipboardList } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Users, MessageSquare, ShieldAlert, FileText, LogOut, Sun, Moon, Menu, X, CheckSquare, ClipboardList, Bell } from 'lucide-react';
 
 interface AdminLayoutProps {
   admin?: Admin;
@@ -35,6 +35,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
     { id: 'offlineRequests', label: 'درخواست‌های آفلاین', icon: CheckSquare },
     { id: 'mockExams', label: 'آزمون‌های آزمایشی', icon: ClipboardList },
     { id: 'messages', label: 'پیام‌ها و پرسش‌ها', icon: MessageSquare },
+    { id: 'notifications', label: 'ارسال اطلاعیه', icon: Bell },
     { id: 'rules', label: 'مدیریت قوانین', icon: FileText },
     { id: 'logs', label: 'گزارش‌های سیستمی', icon: ShieldAlert },
   ];
