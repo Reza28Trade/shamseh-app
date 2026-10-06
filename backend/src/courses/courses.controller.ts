@@ -94,11 +94,6 @@ export class CoursesController {
     return this.coursesService.createCourseFile(req.user, courseId, dto);
   }
 
-  @Post('admin/sessions/:sessionId/files/link')
-  createSessionLink(@Req() req: AuthenticatedRequest, @Param('sessionId') sessionId: string, @Body() dto: CreateFileDto) {
-    return this.coursesService.createSessionFile(req.user, sessionId, dto);
-  }
-
   @Get('files/:fileId/stream')
   downloadFile(@Req() req: AuthenticatedRequest, @Param('fileId') fileId: string, @Res() res: Response) {
     return this.coursesService.streamFile(req.user, fileId, res);
