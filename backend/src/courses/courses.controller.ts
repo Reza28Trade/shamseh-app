@@ -72,11 +72,6 @@ export class CoursesController {
     return this.coursesService.listCourseFiles(req.user, courseId);
   }
 
-  @Get('sessions/:sessionId/files')
-  listSessionFiles(@Req() req: AuthenticatedRequest, @Param('sessionId') sessionId: string) {
-    return this.coursesService.listSessionFiles(req.user, sessionId);
-  }
-
   @Post('admin/courses/:courseId/files')
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
@@ -92,23 +87,6 @@ export class CoursesController {
     @UploadedFile() file: any,
   ) {
     return this.coursesService.createUploadedCourseFile(req.user, courseId, dto, file);
-  }
-
-  @Post('admin/sessions/:sessionId/files')
-  @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: (_req: any, _file: any, cb: (error: Error | null, destination: string) => void) => cb(null, ensureUploadDirectory()),
-      filename: uploadedFilename,
-    }),
-    limits: { fileSize: 100 * 1024 * 1024 },
-  }))
-  createSessionFile(
-    @Req() req: AuthenticatedRequest,
-    @Param('sessionId') sessionId: string,
-    @Body() dto: CreateFileDto,
-    @UploadedFile() file: any,
-  ) {
-    return this.coursesService.createUploadedSessionFile(req.user, sessionId, dto, file);
   }
 
   @Post('admin/courses/:courseId/files/link')
