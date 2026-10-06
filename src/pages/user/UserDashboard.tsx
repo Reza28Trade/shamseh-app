@@ -559,7 +559,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                         {new Date(n.createdAt).toLocaleDateString('fa-IR')}
                       </span>
                     </div>
-                    <p style={{ fontSize: '12px', color: subText, margin: 0, lineHeight: 1.6 }}>{n.message}</p>
+                    <p style={{ fontSize: '12px', color: subText, margin: 0, lineHeight: 1.6 }}>{n.content}</p>
                   </div>
                 ))}
               </div>
