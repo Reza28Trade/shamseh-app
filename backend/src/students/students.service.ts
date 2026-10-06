@@ -4,6 +4,7 @@ import { PrismaService } from '../database/prisma.service';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { ResetStudentPasswordDto } from './dto/reset-student-password.dto';
+import { UpdateStudentDto } from './dto/update-student.dto';
 
 @Injectable()
 export class StudentsService {
@@ -46,6 +47,60 @@ export class StudentsService {
           id: true, username: true, role: true, status: true,
           student: { select: { id: true, fullName: true, nationalId: true, phone: true } },
         },
+      });
+    } catch (error: any) {
+      if (error?.code === 'P2002') throw new ConflictException('Username or national ID already exists');
+      throw error;
+    }
+  }
+
+  async updateStudent(user: AuthenticatedUser, studentId: string, dto: UpdateStudentDto) {
+    this.requireAdmin(user);
+    const student = await this.prisma.student.findUnique({
+      where: { id: studentId },
+      select: { id: true, userId: true, nationalId: true, phone: true },
+    });
+    if (!student) throw new NotFoundException('Student not found');
+
+    const nationalId = dto.nationalId ?? student.nationalId;
+    const phone = dto.phone ?? student.phone;
+    if (!phone) throw new ConflictException('Student phone is required');
+
+    const passwordHash = await argon2.hash(phone);
+
+    try {
+      return await this.prisma.$transaction(async (tx) => {
+        await tx.user.update({
+          where: { id: student.userId },
+          data: { username: nationalId, passwordHash },
+        });
+
+        const updated = await tx.student.update({
+          where: { id: studentId },
+          data: {
+            ...(dto.fullName !== undefined ? { fullName: dto.fullName } : {}),
+            nationalId,
+            phone,
+          },
+          select: {
+            id: true,
+            fullName: true,
+            nationalId: true,
+            phone: true,
+          },
+        });
+
+        if (dto.courseIds !== undefined) {
+          await tx.enrollment.deleteMany({ where: { studentId } });
+          if (dto.courseIds.length > 0) {
+            await tx.enrollment.createMany({
+              data: dto.courseIds.map((courseId) => ({ studentId, courseId })),
+              skipDuplicates: true,
+            });
+          }
+        }
+
+        return updated;
       });
     } catch (error: any) {
       if (error?.code === 'P2002') throw new ConflictException('Username or national ID already exists');
