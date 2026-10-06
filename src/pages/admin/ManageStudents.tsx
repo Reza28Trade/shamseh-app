@@ -11,7 +11,7 @@ interface ManageStudentsProps {
 }
 
 export const ManageStudents: React.FC<ManageStudentsProps> = ({
-  students,
+  students: _students,
   courses,
   onAddStudent: _onAddStudent,
   onDeleteStudent: _onDeleteStudent,
