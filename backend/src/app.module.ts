@@ -6,8 +6,18 @@ import { StudentsModule } from './students/students.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { SupportModule } from './support/support.module';
 import { OfflineRequestsModule } from './offline-requests/offline-requests.module';
+import { MockExamsModule } from './mock-exams/mock-exams.module';
 
 @Module({
-  imports: [DatabaseModule, AuthModule, CoursesModule, StudentsModule, NotificationsModule, SupportModule, OfflineRequestsModule],
+  imports: [
+    DatabaseModule,
+    AuthModule,
+    CoursesModule,
+    StudentsModule,
+    NotificationsModule,
+    SupportModule,
+    OfflineRequestsModule,
+    MockExamsModule,
+  ],
 })
 export class AppModule {}
