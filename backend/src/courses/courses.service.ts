@@ -163,6 +163,7 @@ export class CoursesService {
     file: any,
   ) {
     if (!file) throw new BadRequestException('File is required');
+    console.log('[CourseUpload] creating DB record:', courseId, dto.title, file.filename);
     const record = await this.prisma.courseFile.create({
       data: {
         courseId,
@@ -174,6 +175,7 @@ export class CoursesService {
         externalUrl: null,
       },
     });
+    console.log('[CourseUpload] DB record created:', record.id);
     return this.publicFile(record);
   }
 
