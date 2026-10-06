@@ -261,7 +261,7 @@ export class CoursesService {
     if (isStreamableMedia) {
       res.setHeader('Accept-Ranges', 'bytes');
       if (range) {
-        const match = /^bytes=(\\d*)-(\\d*)$/.exec(range);
+        const match = /^bytes=(\d*)-(\d*)$/.exec(range);
         if (match) {
           const start = match[1] ? Number(match[1]) : Math.max(fileSize - Number(match[2]), 0);
           const end = match[2] ? Number(match[2]) : fileSize - 1;
