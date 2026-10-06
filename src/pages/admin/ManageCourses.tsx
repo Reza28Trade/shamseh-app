@@ -35,7 +35,7 @@ type CourseFile = {
   mimeType: string | null;
   fileSize: string | null;
   externalUrl: string | null;
-  downloadUrl: string | null;
+  streamUrl: string | null;
 };
 
 const emptyCourse = {
@@ -87,7 +87,7 @@ export const ManageCourses: React.FC = () => {
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
   const [sessionSaving, setSessionSaving] = useState(false);
   const [fileForm, setFileForm] = useState(emptyFile);
-  const [fileTarget, setFileTarget] = useState<{ courseId: string; sessionId?: string } | null>(null);
+  const [fileTarget, setFileTarget] = useState<{ courseId: string } | null>(null);
   const [fileSaving, setFileSaving] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -257,8 +257,8 @@ export const ManageCourses: React.FC = () => {
     }
   };
 
-  const openFileForm = (courseId: string, sessionId?: string) => {
-    setFileTarget({ courseId, sessionId });
+  const openFileForm = (courseId: string) => {
+    setFileTarget({ courseId });
     setFileForm(emptyFile);
     setSelectedFile(null);
   };
@@ -316,11 +316,7 @@ export const ManageCourses: React.FC = () => {
       const response = await fetch(`/api/admin/files/${file.id}`, { method: 'DELETE', credentials: 'include' });
       const data = await response.json().catch(() => null);
       if (!response.ok) throw new Error(data?.message || 'حذف فایل انجام نشد.');
-      if (file.sessionId) {
-        setSessionFiles(current => ({ ...current, [file.sessionId as string]: (current[file.sessionId as string] || []).filter(item => item.id !== file.id) }));
-      } else {
-        setCourseFiles(current => ({ ...current, [courseId]: (current[courseId] || []).filter(item => item.id !== file.id) }));
-      }
+      setCourseFiles(current => ({ ...current, [courseId]: (current[courseId] || []).filter(item => item.id !== file.id) }));
       await loadCourses();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'حذف فایل انجام نشد.');
@@ -415,6 +411,8 @@ export const ManageCourses: React.FC = () => {
                                 </div>
                               </div>
                             ))}
+                          </div>
+
                           {showSessionForm && editingSessionId && (
                             <div style={{ marginTop: 14, padding: 15, background: '#111116', border: '1px solid #2b2b32', borderRadius: 12 }}>
                               <h4 style={{ color: '#fff', fontSize: 12, margin: '0 0 10px' }}>ویرایش جلسه</h4>
@@ -439,7 +437,7 @@ export const ManageCourses: React.FC = () => {
                                 <div key={file.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, padding: '8px 0', borderBottom: '1px solid #1e1e24' }}>
                                   <span style={{ color: '#cbd5e1', fontSize: 10 }}>{file.title} · {fileLabel(file.type)}</span>
                                   <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                                    {(file.downloadUrl || file.externalUrl) && <a href={file.downloadUrl || file.externalUrl || '#'} target="_blank" rel="noreferrer" style={{ color: '#38bdf8', fontSize: 9 }}><LinkIcon size={10} style={{ verticalAlign: 'middle', marginLeft: 3 }} />{file.downloadUrl ? 'دانلود' : 'باز کردن'}</a>}
+                                    {(file.streamUrl || file.externalUrl) && <a href={file.streamUrl || file.externalUrl || '#'} target="_blank" rel="noreferrer" style={{ color: '#38bdf8', fontSize: 9 }}><LinkIcon size={10} style={{ verticalAlign: 'middle', marginLeft: 3 }} />باز کردن</a>}
                                     <button type="button" onClick={() => void deleteFile(course.id, file)} style={{ background: 'transparent', border: 0, color: '#f87171', cursor: 'pointer' }}><Trash2 size={11} /></button>
                                   </div>
                                 </div>
