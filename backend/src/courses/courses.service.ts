@@ -5,6 +5,7 @@ import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
+import { CreateFileDto } from './dto/create-file.dto';
 
 @Injectable()
 export class CoursesService {
@@ -73,6 +74,104 @@ export class CoursesService {
       orderBy: [{ sessionNumber: 'asc' }],
       include: { _count: { select: { files: true } } },
     });
+  }
+
+  async listCourseFiles(user: AuthenticatedUser, courseId: string) {
+    await this.ensureCourseAccess(user, courseId);
+    const files = await this.prisma.courseFile.findMany({
+      where: { courseId, sessionId: null },
+      orderBy: { createdAt: 'desc' },
+    });
+    return files.map((file) => this.publicFile(file));
+  }
+
+  async listSessionFiles(user: AuthenticatedUser, sessionId: string) {
+    const session = await this.prisma.courseSession.findUnique({
+      where: { id: sessionId },
+      select: { id: true, courseId: true },
+    });
+    if (!session) throw new NotFoundException('Session not found');
+
+    await this.ensureCourseAccess(user, session.courseId);
+    const files = await this.prisma.courseFile.findMany({
+      where: { sessionId },
+      orderBy: { createdAt: 'desc' },
+    });
+    return files.map((file) => this.publicFile(file));
+  }
+
+  async createCourseFile(user: AuthenticatedUser, courseId: string, dto: CreateFileDto) {
+    this.requireAdmin(user);
+    await this.ensureCourse(courseId);
+
+    return this.prisma.courseFile.create({
+      data: {
+        courseId,
+        title: dto.title,
+        type: dto.type,
+        storageKey: dto.storageKey,
+        mimeType: dto.mimeType,
+        fileSize: dto.fileSize === undefined ? undefined : BigInt(dto.fileSize),
+        externalUrl: dto.externalUrl,
+      },
+    });
+  }
+
+  async createSessionFile(user: AuthenticatedUser, sessionId: string, dto: CreateFileDto) {
+    this.requireAdmin(user);
+    const session = await this.prisma.courseSession.findUnique({
+      where: { id: sessionId },
+      select: { id: true, courseId: true },
+    });
+    if (!session) throw new NotFoundException('Session not found');
+
+    return this.prisma.courseFile.create({
+      data: {
+        courseId: session.courseId,
+        sessionId,
+        title: dto.title,
+        type: dto.type,
+        storageKey: dto.storageKey,
+        mimeType: dto.mimeType,
+        fileSize: dto.fileSize === undefined ? undefined : BigInt(dto.fileSize),
+        externalUrl: dto.externalUrl,
+      },
+    });
+  }
+
+  async deleteFile(user: AuthenticatedUser, fileId: string) {
+    this.requireAdmin(user);
+    const file = await this.prisma.courseFile.findUnique({ where: { id: fileId } });
+    if (!file) throw new NotFoundException('File not found');
+
+    await this.prisma.courseFile.delete({ where: { id: fileId } });
+    return { success: true };
+  }
+
+  private publicFile(file: {
+    id: string;
+    courseId: string;
+    sessionId: string | null;
+    title: string;
+    type: 'PDF' | 'POWERPOINT' | 'AUDIO' | 'VIDEO' | 'DOCUMENT' | 'LINK';
+    mimeType: string | null;
+    fileSize: bigint | null;
+    externalUrl: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+  }) {
+    return {
+      id: file.id,
+      courseId: file.courseId,
+      sessionId: file.sessionId,
+      title: file.title,
+      type: file.type,
+      mimeType: file.mimeType,
+      fileSize: file.fileSize?.toString() ?? null,
+      externalUrl: file.externalUrl,
+      createdAt: file.createdAt,
+      updatedAt: file.updatedAt,
+    };
   }
 
   async createSession(user: AuthenticatedUser, courseId: string, dto: CreateSessionDto) {
