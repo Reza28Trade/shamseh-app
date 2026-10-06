@@ -31,11 +31,11 @@ export class StudentsService {
 
   async createStudent(user: AuthenticatedUser, dto: CreateStudentDto) {
     this.requireAdmin(user);
-    const passwordHash = await argon2.hash(dto.password);
+    const passwordHash = await argon2.hash(dto.phone);
     try {
       return await this.prisma.user.create({
         data: {
-          username: dto.username,
+          username: dto.nationalId,
           passwordHash,
           role: 'STUDENT',
           student: {
