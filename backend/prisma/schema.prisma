@@ -135,6 +135,7 @@ model Course {
   updatedAt DateTime @updatedAt
   enrollments Enrollment[]
   sessions CourseSession[]
+  files CourseFile[]
   notifications Notification[]
   offlineRequests OfflineRequest[]
   mockExams MockExamCourse[]
