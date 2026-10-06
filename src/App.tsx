@@ -23,9 +23,6 @@ export function App() {
     courses,
     students,
     rulesText,
-    addCourse,
-    updateCourse,
-    deleteCourse,
     addStudent,
     updateStudent,
     deleteStudent,
@@ -65,12 +62,7 @@ export function App() {
         onLogout={handleLogout}
       >
         {adminTab === 'courses' ? (
-          <ManageCourses
-            courses={courses}
-            onAddCourse={(course) => addCourse(course, adminName)}
-            onUpdateCourse={(course) => updateCourse(course, adminName)}
-            onDeleteCourse={(id) => deleteCourse(id, adminName)}
-          />
+          <ManageCourses />
         ) : adminTab === 'students' ? (
           <ManageStudents
             students={students}
