@@ -9,6 +9,7 @@ import { UpdateCourseDto } from './dto/update-course.dto';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
 import { CreateFileDto } from './dto/create-file.dto';
+const ExcelJS = require('exceljs');
 
 @Injectable()
 export class CoursesService {
@@ -18,6 +19,42 @@ export class CoursesService {
     if (user.role !== 'SUPER_ADMIN' && user.role !== 'STAFF') {
       throw new ForbiddenException('Admin access required');
     }
+  }
+
+
+  async exportCourses(user: AuthenticatedUser, res: Response) {
+    this.requireAdmin(user);
+    const courses = await this.prisma.course.findMany({
+      orderBy: { createdAt: 'desc' },
+      select: {
+        title: true, professor: true, level: true, term: true, category: true, status: true,
+        enrollments: { select: { status: true } },
+        sessions: { select: { id: true } },
+        files: { select: { id: true } },
+      },
+    });
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet('Courses');
+    sheet.columns = [
+      { header: 'عنوان دوره', key: 'title', width: 32 },
+      { header: 'استاد', key: 'professor', width: 24 },
+      { header: 'مقطع', key: 'level', width: 18 },
+      { header: 'ترم', key: 'term', width: 18 },
+      { header: 'دسته‌بندی', key: 'category', width: 20 },
+      { header: 'وضعیت', key: 'status', width: 16 },
+      { header: 'دانشجویان فعال', key: 'activeStudents', width: 18 },
+      { header: 'کل دانشجویان', key: 'students', width: 16 },
+      { header: 'جلسات', key: 'sessions', width: 12 },
+      { header: 'فایل‌ها', key: 'files', width: 12 },
+    ];
+    for (const course of courses) {
+      sheet.addRow({ title: course.title, professor: course.professor, level: course.level || '', term: course.term || '', category: course.category || '', status: course.status, activeStudents: course.enrollments.filter((e: any) => e.status === 'ACTIVE').length, students: course.enrollments.length, sessions: course.sessions.length, files: course.files.length });
+    }
+    sheet.getRow(1).font = { bold: true };
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', "attachment; filename*=UTF-8''courses.xlsx");
+    await workbook.xlsx.write(res);
+    res.end();
   }
 
   async listCourses(user: AuthenticatedUser) {
