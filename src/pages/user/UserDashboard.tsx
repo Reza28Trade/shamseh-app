@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import type { Student, Course } from '../../types';
 import { useStore } from '../../store/useStore';
 import { FileViewer } from '../../components/FileViewer';
-import { BookOpen, LogOut, Video, FileText, Send, Sun, Moon, CheckCircle, Bell, Volume2, Presentation, Link as LinkIcon, AlertCircle } from 'lucide-react';
+import { BookOpen, LogOut, Video, FileText, Send, Sun, Moon, CheckCircle, Bell, Volume2, Presentation, Link as LinkIcon, AlertCircle, CalendarClock, Clock } from 'lucide-react';
 
 interface BackendSession {
   id: string;
@@ -40,7 +40,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
 
   } = useStore();
 
-  const [activeTab, setActiveTab] = useState<'courses' | 'notifications' | 'messages'>('courses');
+  const [activeTab, setActiveTab] = useState<'courses' | 'notifications' | 'messages' | 'counseling'>('courses');
   const [subject, setSubject] = useState('');
   const [content, setContent] = useState('');
   const [successMsg, setSuccessMsg] = useState(false);
@@ -79,6 +79,16 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   const [editingOfflineRequestId, setEditingOfflineRequestId] = useState<string | null>(null);
   const [editingOfflineSessionId, setEditingOfflineSessionId] = useState<string>('');
   const [viewerFile, setViewerFile] = useState<BackendFile | null>(null);
+  const [counselingSlots, setCounselingSlots] = useState<Array<{ id: string; startAt: string }>>([]);
+  const [counselingRequests, setCounselingRequests] = useState<Array<{
+    id: string;
+    status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'COMPLETED' | 'CANCELLED';
+    createdAt: string;
+    slot: { id: string; startAt: string; status: string };
+  }>>([]);
+  const [counselingLoading, setCounselingLoading] = useState(false);
+  const [counselingSubmitting, setCounselingSubmitting] = useState(false);
+  const [counselingError, setCounselingError] = useState('');
 
   useEffect(() => {
     let cancelled = false;
@@ -232,6 +242,95 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
     void loadOfflineRequests();
     return () => { cancelled = true; };
   }, [student.id]);
+
+  useEffect(() => {
+    if (activeTab !== 'counseling') return;
+    let cancelled = false;
+
+    const loadCounseling = async () => {
+      setCounselingLoading(true);
+      setCounselingError('');
+      try {
+        const [slotsResponse, requestsResponse] = await Promise.all([
+          fetch('/api/counseling/slots', { credentials: 'include' }),
+          fetch('/api/counseling/requests', { credentials: 'include' }),
+        ]);
+        if (!slotsResponse.ok || !requestsResponse.ok) {
+          throw new Error('دریافت اطلاعات مشاوره انجام نشد.');
+        }
+        const [slots, requests] = await Promise.all([
+          slotsResponse.json(),
+          requestsResponse.json(),
+        ]);
+        if (!cancelled) {
+          setCounselingSlots(slots);
+          setCounselingRequests(requests);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setCounselingError(error instanceof Error ? error.message : 'دریافت اطلاعات مشاوره انجام نشد.');
+          setCounselingSlots([]);
+          setCounselingRequests([]);
+        }
+      } finally {
+        if (!cancelled) setCounselingLoading(false);
+      }
+    };
+
+    void loadCounseling();
+    return () => { cancelled = true; };
+  }, [activeTab, student.id]);
+
+  const handleCounselingBook = async (slotId: string) => {
+    if (counselingSubmitting) return;
+    setCounselingSubmitting(true);
+    setCounselingError('');
+    try {
+      const response = await fetch('/api/counseling/requests', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slotId }),
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'ثبت درخواست مشاوره انجام نشد.');
+      setCounselingRequests(current => [data, ...current]);
+      setCounselingSlots(current => current.filter(slot => slot.id !== slotId));
+    } catch (error) {
+      setCounselingError(error instanceof Error ? error.message : 'ثبت درخواست مشاوره انجام نشد.');
+    } finally {
+      setCounselingSubmitting(false);
+    }
+  };
+
+  const handleCounselingCancel = async (requestId: string) => {
+    if (counselingSubmitting) return;
+    if (!confirm('آیا از لغو درخواست مشاوره اطمینان دارید؟')) return;
+    setCounselingSubmitting(true);
+    setCounselingError('');
+    try {
+      const response = await fetch(`/api/counseling/requests/${requestId}/cancel`, {
+        method: 'PATCH',
+        credentials: 'include',
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'لغو درخواست مشاوره انجام نشد.');
+      setCounselingRequests(current => current.map(item => item.id === requestId ? { ...item, status: 'CANCELLED' } : item));
+      const slot = data?.slot;
+      if (slot) setCounselingSlots(current => [...current, slot].sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()));
+    } catch (error) {
+      setCounselingError(error instanceof Error ? error.message : 'لغو درخواست مشاوره انجام نشد.');
+    } finally {
+      setCounselingSubmitting(false);
+    }
+  };
+
+  const formatCounselingDate = (value: string) =>
+    new Intl.DateTimeFormat('fa-IR', {
+      dateStyle: 'full',
+      timeStyle: 'short',
+      timeZone: 'Asia/Tehran',
+    }).format(new Date(value));
 
   useEffect(() => {
     if (activeTab !== 'messages') return;
@@ -426,6 +525,12 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
               {unreadCount}
             </span>
           )}
+        </button>
+        <button 
+          onClick={() => setActiveTab('counseling')}
+          style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'counseling' ? '#6D001A' : cardBg, color: textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+        >
+          <CalendarClock size={14} /> مشاوره
         </button>
         <button 
           onClick={() => setActiveTab('messages')}
@@ -664,6 +769,78 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                   </div>
                 ))}
               </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'counseling' && (
+          <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, backdropFilter: 'blur(16px)', padding: '32px', borderRadius: '24px', boxShadow: '0 16px 40px rgba(0,0,0,0.1)' }}>
+            <h2 style={{ fontSize: '16px', fontWeight: 800, color: textColor, margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <CalendarClock size={18} color="#ff3366" /> درخواست مشاوره
+            </h2>
+            <p style={{ fontSize: '11px', color: subText, margin: '0 0 20px 0' }}>
+              زمان مناسب خود را از بین زمان‌های آزاد انتخاب کنید. مشاوره به‌صورت تلفنی انجام می‌شود.
+            </p>
+
+            {counselingError && (
+              <div style={{ backgroundColor: 'rgba(239,68,68,0.1)', color: '#f87171', padding: '12px', borderRadius: '12px', fontSize: '11px', marginBottom: '16px', border: '1px solid rgba(239,68,68,0.2)' }}>
+                {counselingError}
+              </div>
+            )}
+
+            {counselingLoading ? (
+              <div style={{ textAlign: 'center', padding: '35px 0', color: subText, fontSize: '12px' }}>در حال دریافت زمان‌های مشاوره...</div>
+            ) : (
+              <>
+                <div style={{ backgroundColor: innerCardBg, border: `1px solid ${borderColor}`, borderRadius: '16px', padding: '18px', marginBottom: '20px' }}>
+                  <h3 style={{ fontSize: '13px', fontWeight: 800, color: textColor, margin: '0 0 12px 0' }}>زمان‌های آزاد</h3>
+                  {counselingSlots.length === 0 ? (
+                    <div style={{ color: subText, fontSize: '11px', padding: '20px 0', textAlign: 'center' }}>در حال حاضر زمان آزادی برای مشاوره ثبت نشده است.</div>
+                  ) : (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '10px' }}>
+                      {counselingSlots.map(slot => (
+                        <div key={slot.id} style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '12px', padding: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '7px', minWidth: 0 }}>
+                            <Clock size={15} color="#ff3366" />
+                            <span style={{ fontSize: '10px', color: textColor, fontWeight: 700 }}>{formatCounselingDate(slot.startAt)}</span>
+                          </div>
+                          <button onClick={() => void handleCounselingBook(slot.id)} disabled={counselingSubmitting} style={{ flexShrink: 0, padding: '7px 10px', borderRadius: '8px', border: 'none', backgroundColor: '#6D001A', color: '#fff', fontSize: '10px', fontWeight: 800, cursor: counselingSubmitting ? 'wait' : 'pointer', opacity: counselingSubmitting ? 0.6 : 1 }}>
+                            درخواست
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div style={{ backgroundColor: innerCardBg, border: `1px solid ${borderColor}`, borderRadius: '16px', padding: '18px' }}>
+                  <h3 style={{ fontSize: '13px', fontWeight: 800, color: textColor, margin: '0 0 12px 0' }}>درخواست‌های من</h3>
+                  {counselingRequests.length === 0 ? (
+                    <div style={{ color: subText, fontSize: '11px', padding: '20px 0', textAlign: 'center' }}>هنوز درخواست مشاوره‌ای ثبت نکرده‌اید.</div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '9px' }}>
+                      {counselingRequests.map(request => (
+                        <div key={request.id} style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '12px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                          <div>
+                            <div style={{ fontSize: '11px', fontWeight: 800, color: textColor }}>{formatCounselingDate(request.slot.startAt)}</div>
+                            <div style={{ fontSize: '9px', color: subText, marginTop: '4px' }}>ثبت درخواست: {new Date(request.createdAt).toLocaleString('fa-IR')}</div>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontSize: '10px', fontWeight: 800, color: request.status === 'APPROVED' ? '#34d399' : request.status === 'REJECTED' ? '#f87171' : request.status === 'COMPLETED' ? '#38bdf8' : request.status === 'CANCELLED' ? subText : '#fbbf24' }}>
+                              {request.status === 'APPROVED' ? 'تأیید شده' : request.status === 'REJECTED' ? 'رد شده' : request.status === 'COMPLETED' ? 'انجام شده' : request.status === 'CANCELLED' ? 'لغو شده' : 'در انتظار بررسی'}
+                            </span>
+                            {(request.status === 'PENDING' || request.status === 'APPROVED') && (
+                              <button onClick={() => void handleCounselingCancel(request.id)} disabled={counselingSubmitting} style={{ padding: '5px 9px', borderRadius: '7px', border: '1px solid rgba(239,68,68,0.25)', backgroundColor: 'rgba(239,68,68,0.08)', color: '#f87171', fontSize: '9px', fontWeight: 700, cursor: counselingSubmitting ? 'wait' : 'pointer' }}>
+                                لغو درخواست
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </>
             )}
           </div>
         )}
