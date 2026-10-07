@@ -1,15 +1,15 @@
 import React from 'react';
-import { useStore } from '../store/useStore';
+import { useStore } from '../../store/useStore';
 import { BookOpen, Users, ClipboardList, Bell, ArrowLeft, Activity } from 'lucide-react';
 
 interface AdminDashboardProps {
   adminName?: string;
-  onNavigate: (tab: string) => void;
+  onNavigate: (tab: 'dashboard' | 'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams' | 'counseling') => void;
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'مدیر سیستم', onNavigate }) => {
   const { courses, students } = useStore();
-  const activeCourses = courses.filter(course => (course as any).status !== 'ARCHIVED');
+  const activeCourses = courses.filter((course: typeof courses[number]) => (course as any).status !== 'ARCHIVED');
   const stats = [
     { label: 'دوره‌های آموزشی', value: activeCourses.length, note: 'دوره فعال', icon: BookOpen, tab: 'courses' },
     { label: 'هنرجویان', value: students.length, note: 'حساب ثبت‌شده', icon: Users, tab: 'students' },
@@ -45,7 +45,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
       <section className="admin-panel-card">
         <div className="admin-panel-heading"><div><span>نمای کلی</span><h2>آخرین دوره‌ها</h2></div><button onClick={()=>onNavigate('courses')}>مشاهده همه <ArrowLeft size={13}/></button></div>
         {activeCourses.length===0 ? <div className="admin-empty">هنوز دوره‌ای ثبت نشده است.</div> :
-          <div className="admin-course-list">{activeCourses.slice(0,5).map(course=><button key={course.id} onClick={()=>onNavigate('courses')}><span className="admin-course-dot"/><span><strong>{course.title}</strong><small>{course.professor || 'مدرس مشخص نشده'}</small></span><ArrowLeft size={13}/></button>)}</div>}
+          <div className="admin-course-list">{activeCourses.slice(0,5).map((course: typeof courses[number])=><button key={course.id} onClick={()=>onNavigate('courses')}><span className="admin-course-dot"/><span><strong>{course.title}</strong><small>{course.professor || 'مدرس مشخص نشده'}</small></span><ArrowLeft size={13}/></button>)}</div>}
       </section>
     </div>
     <style>{`
