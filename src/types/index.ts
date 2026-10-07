@@ -3,6 +3,7 @@ export interface Student {
   fullName: string;
   nationalId: string;
   enrolledCourseIds: string[];
+  academicLevel: 'MASTER' | 'DOCTORATE' | '';
   levels?: string[];
 }
 
