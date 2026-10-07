@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useStore } from './store/useStore';
 import { AdminLayout } from './layouts/AdminLayout';
+import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { ManageCourses } from './pages/admin/ManageCourses';
 import { ManageStudents } from './pages/admin/ManageStudents';
 import { AuditLogs } from './pages/admin/AuditLogs';
@@ -62,7 +63,9 @@ export function App() {
         setActiveTab={setAdminTab}
         onLogout={handleLogout}
       >
-        {adminTab === 'courses' ? (
+        {adminTab === 'dashboard' ? (
+          <AdminDashboard adminName={adminName} onNavigate={setAdminTab} />
+        ) : adminTab === 'courses' ? (
           <ManageCourses />
         ) : adminTab === 'students' ? (
           <ManageStudents
