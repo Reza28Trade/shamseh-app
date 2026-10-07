@@ -25,6 +25,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
   const [error, setError] = useState('');
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
   const [editingStudentId, setEditingStudentId] = useState<string | null>(null);
+  const [studentGroup, setStudentGroup] = useState<'ALL' | 'MASTER' | 'DOCTORATE'>('ALL');
 
   const handleDelete = async (studentId: string) => {
     const student = apiStudents.find(item => item.id === studentId);
@@ -88,6 +89,11 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
         enrolledCourseIds: student.enrollments
           .filter((enrollment: any) => enrollment.status === 'ACTIVE')
           .map((enrollment: any) => enrollment.courseId),
+        levels: Array.from(new Set(
+          student.enrollments
+            .filter((enrollment: any) => enrollment.status === 'ACTIVE' && enrollment.course?.level)
+            .map((enrollment: any) => enrollment.course.level),
+        )),
       })));
     } catch {
       setError('دریافت فهرست هنرجویان انجام نشد.');
@@ -273,6 +279,64 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
         {loading ? (
           <p style={{ color: '#94a3b8', fontSize: '12px', textAlign: 'center', padding: '20px 0' }}>در حال دریافت فهرست هنرجویان...</p>
         ) : apiStudents.length > 0 ? (
+          <>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
+              {([
+                ['ALL', 'همه'],
+                ['MASTER', 'ارشد'],
+                ['DOCTORATE', 'دکتری'],
+              ] as const).map(([value, label]) => {
+                const count = value === 'ALL'
+                  ? apiStudents.length
+                  : apiStudents.filter(student => (student.levels ?? []).some(level => value === 'DOCTORATE' ? /دکتری|دکترا|دکترا/i.test(level) : /ارشد/i.test(level))).length;
+                return (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setStudentGroup(value)}
+                    style={{
+                      border: studentGroup === value ? '1px solid #6D001A' : '1px solid rgba(255,255,255,.08)',
+                      background: studentGroup === value ? 'rgba(109,0,26,.3)' : 'rgba(255,255,255,.04)',
+                      color: '#fff',
+                      padding: '8px 13px',
+                      borderRadius: 9,
+                      cursor: 'pointer',
+                      fontSize: 11,
+                      fontWeight: 800,
+                    }}
+                  >
+                    {label} ({count})
+                  </button>
+                );
+              })}
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {apiStudents
+                .filter(student => {
+                  if (studentGroup === 'ALL') return true;
+                  return (student.levels ?? []).some(level =>
+                    studentGroup === 'DOCTORATE' ? /دکتری|دکترا|دکترا/i.test(level) : /ارشد/i.test(level),
+                  );
+                })
+                .map(st => (
+              <div key={st.id} style={{ backgroundColor: 'rgba(20, 20, 25, 0.9)', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '14px', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <h4 style={{ fontSize: '13px', fontWeight: 800, color: '#fff', margin: '0 0 4px 0' }}>{st.fullName}</h4>
+                  <span style={{ fontSize: '11px', color: '#94a3b8' }}>کد ملی: {st.nationalId} | دوره‌های فعال: {st.enrolledCourseIds.length} دوره</span>
+                </div>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button onClick={() => handleEdit(st)} style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#93c5fd', border: '1px solid rgba(59, 130, 246, 0.2)', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <Pencil size={12} /> ویرایش
+                  </button>
+                  <button onClick={() => void handleDelete(st.id)} style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <Trash2 size={12} /> حذف
+                  </button>
+                </div>
+              </div>
+                ))}
+            </div>
+          </>
+        ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {apiStudents.map(st => (
               <div key={st.id} style={{ backgroundColor: 'rgba(20, 20, 25, 0.9)', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '14px', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
