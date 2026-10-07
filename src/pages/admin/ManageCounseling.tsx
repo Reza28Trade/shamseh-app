@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CalendarClock, CheckCircle, Clock, Plus, RefreshCw, Trash2, User, XCircle } from 'lucide-react';
+import { CalendarClock, CheckCircle, Plus, RefreshCw, Trash2, User, XCircle } from 'lucide-react';
 
 type SlotStatus = 'AVAILABLE' | 'BOOKED' | 'DISABLED';
 type RequestStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'COMPLETED' | 'CANCELLED';
