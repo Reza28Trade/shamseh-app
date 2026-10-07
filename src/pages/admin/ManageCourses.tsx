@@ -149,7 +149,8 @@ export const ManageCourses: React.FC = () => {
     try {
       const response = await fetch(`/api/admin/courses/${courseId}/enrollments`, { credentials: 'include' });
       if (!response.ok) throw new Error('دریافت هنرجویان دوره انجام نشد.');
-      setEnrollments(current => ({ ...current, [courseId]: await response.json() }));
+      const data = await response.json();
+      setEnrollments(current => ({ ...current, [courseId]: data }));
     } catch (e) {
       setError(e instanceof Error ? e.message : 'دریافت هنرجویان دوره انجام نشد.');
     } finally {
