@@ -1,9 +1,21 @@
-import React from 'react';
-import { useStore } from '../../store/useStore';
+import React, { useEffect, useState } from 'react';
 import { ShieldAlert, FileText } from 'lucide-react';
 
 export const RulesPage: React.FC = () => {
-  const { rulesText } = useStore();
+  const [rulesText, setRulesText] = useState('');
+
+  useEffect(() => {
+    void (async () => {
+      try {
+        const response = await fetch('/api/content/rules', { credentials: 'include' });
+        if (!response.ok) throw new Error('load');
+        const data = await response.json();
+        setRulesText(data.content ?? '');
+      } catch {
+        setRulesText('هنوز قوانین و مقرراتی توسط مدیریت سامانه ثبت نشده است.');
+      }
+    })();
+  }, []);
 
   return (
     <div style={{ width: '100vw', minHeight: '100vh', backgroundColor: '#050505', color: '#f8fafc', direction: 'rtl', fontFamily: 'system-ui, sans-serif', boxSizing: 'border-box', padding: '40px', display: 'flex', flexDirection: 'column' }}>
