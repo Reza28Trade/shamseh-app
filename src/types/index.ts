@@ -3,6 +3,7 @@ export interface Student {
   fullName: string;
   nationalId: string;
   enrolledCourseIds: string[];
+  levels?: string[];
 }
 
 export interface Admin {
