@@ -1,4 +1,9 @@
-import { IsString } from 'class-validator';
+import { IsEnum, IsString } from 'class-validator';
+
+enum StudentLevel {
+  MASTER = 'MASTER',
+  DOCTORATE = 'DOCTORATE',
+}
 
 export class CreateStudentDto {
   @IsString()
@@ -9,4 +14,7 @@ export class CreateStudentDto {
 
   @IsString()
   phone!: string;
+
+  @IsEnum(StudentLevel)
+  academicLevel!: StudentLevel;
 }
