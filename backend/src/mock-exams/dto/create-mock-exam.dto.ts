@@ -1,6 +1,4 @@
 import {
-  ArrayMinSize,
-  IsArray,
   IsDateString,
   IsEnum,
   IsOptional,
@@ -23,10 +21,6 @@ export class CreateMockExamDto {
   @MinLength(1)
   field!: string;
 
-  @IsOptional()
-  @IsString()
-  description?: string;
-
   @IsDateString()
   examDate!: string;
 
@@ -37,10 +31,4 @@ export class CreateMockExamDto {
   @IsOptional()
   @IsEnum(MockExamStatus)
   status?: MockExamStatus;
-
-  @IsOptional()
-  @IsArray()
-  @ArrayMinSize(1)
-  @IsString({ each: true })
-  courseIds?: string[];
 }
