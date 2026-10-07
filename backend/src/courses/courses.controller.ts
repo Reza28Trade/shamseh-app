@@ -75,6 +75,30 @@ export class CoursesController {
     return this.coursesService.listCourseFiles(req.user, courseId);
   }
 
+  @Get('admin/courses/:courseId/enrollments')
+  listCourseEnrollments(@Req() req: AuthenticatedRequest, @Param('courseId') courseId: string) {
+    return this.coursesService.listCourseEnrollments(req.user, courseId);
+  }
+
+  @Post('admin/courses/:courseId/enrollments/:studentId')
+  enrollStudentInCourse(@Req() req: AuthenticatedRequest, @Param('courseId') courseId: string, @Param('studentId') studentId: string) {
+    return this.coursesService.enrollStudentInCourse(req.user, courseId, studentId);
+  }
+
+  @Patch('admin/course-enrollments/:enrollmentId')
+  updateCourseEnrollment(
+    @Req() req: AuthenticatedRequest,
+    @Param('enrollmentId') enrollmentId: string,
+    @Body('status') status: 'ACTIVE' | 'COMPLETED' | 'CANCELLED',
+  ) {
+    return this.coursesService.updateCourseEnrollment(req.user, enrollmentId, status);
+  }
+
+  @Delete('admin/course-enrollments/:enrollmentId')
+  removeCourseEnrollment(@Req() req: AuthenticatedRequest, @Param('enrollmentId') enrollmentId: string) {
+    return this.coursesService.removeCourseEnrollment(req.user, enrollmentId);
+  }
+
   @Post('admin/courses/:courseId/files')
   @UseInterceptors(FileInterceptor('file', {
     storage: memoryStorage(),
