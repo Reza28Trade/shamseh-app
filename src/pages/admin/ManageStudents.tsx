@@ -19,6 +19,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
   const [fullName, setFullName] = useState('');
   const [nationalId, setNationalId] = useState('');
   const [phone, setPhone] = useState('');
+  const [academicLevel, setAcademicLevel] = useState<'MASTER' | 'DOCTORATE' | ''>('');
   const [apiStudents, setApiStudents] = useState<Student[]>([]);
   const [apiCourses, setApiCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
@@ -86,6 +87,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
         id: student.id,
         fullName: student.fullName,
         nationalId: student.nationalId,
+        academicLevel: student.academicLevel ?? '',
         enrolledCourseIds: student.enrollments
           .filter((enrollment: any) => enrollment.status === 'ACTIVE')
           .map((enrollment: any) => enrollment.courseId),
@@ -132,6 +134,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
     setFullName(student.fullName);
     setNationalId(student.nationalId);
     setSelectedCourses(student.enrolledCourseIds);
+    setAcademicLevel(student.academicLevel ?? '');
     setPhone('');
     setError('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -139,7 +142,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fullName || !nationalId || (!editingStudentId && !phone)) return;
+    if (!fullName || !nationalId || !academicLevel || (!editingStudentId && !phone)) return;
 
     void (async () => {
       setError('');
@@ -149,7 +152,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
-            body: JSON.stringify({ fullName, nationalId, ...(phone ? { phone } : {}), courseIds: selectedCourses }),
+            body: JSON.stringify({ fullName, nationalId, academicLevel, ...(phone ? { phone } : {}), courseIds: selectedCourses }),
           });
           if (!response.ok) {
             const body = await response.json().catch(() => null);
@@ -160,7 +163,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
-            body: JSON.stringify({ fullName, nationalId, phone }),
+            body: JSON.stringify({ fullName, nationalId, phone, academicLevel }),
           });
           if (!response.ok) {
             const body = await response.json().catch(() => null);
@@ -229,6 +232,19 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
               style={{ width: '100%', backgroundColor: 'rgba(20, 20, 25, 0.8)', border: '1px solid rgba(255, 255, 255, 0.1)', color: '#fff', padding: '12px 16px', borderRadius: '12px', fontSize: '12px', outline: 'none', boxSizing: 'border-box' }} 
             />
           </div>
+          <div>
+            <label style={{ fontSize: '11px', color: '#94a3b8', display: 'block', marginBottom: '8px', fontWeight: 700 }}>مقطع تحصیلی *</label>
+            <select
+              value={academicLevel}
+              onChange={e => setAcademicLevel(e.target.value as 'MASTER' | 'DOCTORATE' | '')}
+              required
+              style={{ width: '100%', backgroundColor: 'rgba(20, 20, 25, 0.8)', border: '1px solid rgba(255, 255, 255, 0.1)', color: '#fff', padding: '12px 16px', borderRadius: '12px', fontSize: '12px', outline: 'none', boxSizing: 'border-box' }}
+            >
+              <option value="">انتخاب مقطع</option>
+              <option value="MASTER">ارشد</option>
+              <option value="DOCTORATE">دکتری</option>
+            </select>
+          </div>
         </div>
           <div>
             <label style={{ fontSize: '11px', color: '#94a3b8', display: 'block', marginBottom: '8px', fontWeight: 700 }}>شماره موبایل (رمز عبور) *</label>
@@ -288,9 +304,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
               ] as const).map(([value, label]) => {
                 const count = value === 'ALL'
                   ? apiStudents.length
-                  : apiStudents.filter(student => (student.levels ?? []).some(level =>
-                      value === 'DOCTORATE' ? /دکتری|دکترا/i.test(level) : /ارشد/i.test(level),
-                    )).length;
+                  : apiStudents.filter(student => student.academicLevel === (value === 'DOCTORATE' ? 'DOCTORATE' : 'MASTER')).length;
                 return (
                   <button
                     key={value}
@@ -317,9 +331,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
               {apiStudents
                 .filter(student => {
                   if (studentGroup === 'ALL') return true;
-                  return (student.levels ?? []).some(level =>
-                    studentGroup === 'DOCTORATE' ? /دکتری|دکترا/i.test(level) : /ارشد/i.test(level),
-                  );
+                  return student.academicLevel === (studentGroup === 'DOCTORATE' ? 'DOCTORATE' : 'MASTER');
                 })
                 .map(st => (
                   <div key={st.id} style={{ backgroundColor: 'rgba(20, 20, 25, 0.9)', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '14px', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
