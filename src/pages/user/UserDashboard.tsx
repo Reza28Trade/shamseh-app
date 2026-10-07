@@ -527,14 +527,14 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   };
 
   const isDark = theme === 'dark';
-  const bgColors = isDark ? '#050505' : '#f6f4f2';
-  const cardBg = isDark ? 'rgba(14, 14, 17, 0.78)' : '#ffffff';
-  const textColor = isDark ? '#f8fafc' : '#202124';
-  const subText = isDark ? '#94a3b8' : '#6b6670';
-  const borderColor = isDark ? 'rgba(255, 255, 255, 0.08)' : '#e7e1df';
-  const innerCardBg = isDark ? 'rgba(20, 20, 25, 0.82)' : '#fbfaf9';
-  const accent = isDark ? '#9d1638' : '#8b1733';
-  const accentSoft = isDark ? 'rgba(157, 22, 56, 0.16)' : '#f5e8ec';
+  const bgColors = isDark ? '#1a1c1d' : '#f5f7f6';
+  const cardBg = isDark ? '#222526' : '#ffffff';
+  const textColor = isDark ? '#f1f5f4' : '#172022';
+  const subText = isDark ? '#aab5b4' : '#697675';
+  const borderColor = isDark ? '#343a3b' : '#e2e8e7';
+  const innerCardBg = isDark ? '#282c2d' : '#f8faf9';
+  const accent = '#38838a';
+  const accentSoft = isDark ? 'rgba(56, 131, 138, 0.16)' : '#e8f2f2';
 
   return (
     <div className="student-dashboard" style={{ minHeight: '100vh', backgroundColor: bgColors, color: textColor, direction: 'rtl', fontFamily: 'system-ui, sans-serif', boxSizing: 'border-box', margin: 0, padding: '24px', overflowY: 'auto' }}>
@@ -571,10 +571,10 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
       `}</style>
       <div className="student-dashboard-shell">
       {/* هدر پنل دانشجو */}
-      <div className="student-dashboard-header" style={{ maxWidth: '1100px', margin: '0 auto 30px auto', background: isDark ? 'linear-gradient(135deg, rgba(109, 0, 26, 0.28) 0%, rgba(10, 10, 10, 0.92) 100%)' : 'linear-gradient(135deg, #fff8fa 0%, #f1edec 100%)', border: isDark ? '1px solid rgba(109, 0, 26, 0.45)' : '1px solid #ead6dc', padding: '28px 36px', borderRadius: '24px', backdropFilter: 'blur(16px)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: isDark ? '0 12px 40px rgba(0,0,0,0.4)' : '0 12px 32px rgba(58,34,40,0.08)' }}>
+      <div className="student-dashboard-header" style={{ maxWidth: '1100px', margin: '0 auto 30px auto', background: isDark ? 'linear-gradient(135deg, rgba(56, 131, 138, 0.20) 0%, #202425 72%)' : 'linear-gradient(135deg, #ffffff 0%, #eef5f4 100%)', border: isDark ? '1px solid rgba(56, 131, 138, 0.38)' : '1px solid #d7e7e6', padding: '28px 36px', borderRadius: '24px', backdropFilter: 'blur(16px)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: isDark ? '0 14px 36px rgba(0,0,0,0.22)' : '0 12px 30px rgba(30,70,70,0.07)' }}>
         <div>
           <h1 style={{ fontSize: '20px', fontWeight: 900, color: textColor, margin: '0 0 6px 0' }}>سامانه آموزشی شمسه - پنل دانشجو</h1>
-          <p style={{ fontSize: '12px', color: subText, margin: 0 }}>خوش آمدید، <strong style={{ color: '#ff3366' }}>{student.fullName}</strong> (کد ملی: {student.nationalId})</p>
+          <p style={{ fontSize: '12px', color: subText, margin: 0 }}>خوش آمدید، <strong style={{ color: accent }}>{student.fullName}</strong></p>
         </div>
 
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
@@ -583,7 +583,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
             {isDark ? 'حالت روز' : 'حالت شب'}
           </button>
           
-          <button onClick={onLogout} style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '10px 16px', borderRadius: '12px', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 800 }}>
+          <button onClick={onLogout} style={{ backgroundColor: isDark ? 'rgba(248,113,113,.08)' : '#fff3f3', color: '#d95c5c', border: '1px solid rgba(217,92,92,.18)', padding: '10px 16px', borderRadius: '12px', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 800 }}>
             <LogOut size={16} /> خروج از حساب
           </button>
         </div>
@@ -638,109 +638,175 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
       <div className="student-dashboard-main" style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '30px' }}>
         
         {activeTab === 'home' && (
-          <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, backdropFilter: 'blur(16px)', borderRadius: '18px', padding: '24px', boxShadow: isDark ? '0 16px 40px rgba(0,0,0,.18)' : '0 12px 32px rgba(58,34,40,.06)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px', marginBottom: '20px', flexWrap: 'wrap' }}>
-              <div>
-                <div style={{ fontSize: '12px', color: accent, fontWeight: 800, marginBottom: '6px' }}>داشبورد دانشجو</div>
-                <h2 style={{ fontSize: '22px', fontWeight: 900, color: textColor, margin: 0 }}>خوش آمدید، {student.fullName}</h2>
-                <p style={{ fontSize: '12px', color: subText, margin: '7px 0 0', lineHeight: 1.7 }}>اینجا خلاصه‌ای از دوره‌ها، آزمون‌ها و اطلاعیه‌های مهم شما را می‌بینید.</p>
+          <div className="student-home" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div style={{
+              position: 'relative', overflow: 'hidden', minHeight: '190px', borderRadius: '20px',
+              border: `1px solid ${borderColor}`,
+              background: isDark ? 'linear-gradient(135deg, #252a2b 0%, #1e3a3d 100%)' : 'linear-gradient(135deg, #ffffff 0%, #e8f3f2 100%)',
+              padding: '26px 28px', boxSizing: 'border-box',
+              boxShadow: isDark ? '0 14px 34px rgba(0,0,0,.18)' : '0 12px 30px rgba(42,78,78,.07)'
+            }}>
+              <div style={{ position: 'relative', zIndex: 2, maxWidth: '68%' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', color: accent, fontSize: '10px', fontWeight: 900, marginBottom: '10px' }}>
+                  <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: accent, display: 'inline-block' }} />
+                  داشبورد آموزشی شمسه
+                </div>
+                <h2 style={{ color: textColor, fontSize: '24px', fontWeight: 900, margin: '0 0 8px', letterSpacing: '-.3px' }}>
+                  خوش آمدید، {student.fullName}
+                </h2>
+                <p style={{ color: subText, fontSize: '12px', lineHeight: 1.9, margin: 0, maxWidth: '520px' }}>
+                  مسیر آموزشی شما، آزمون‌های پیش‌رو و آخرین اطلاعیه‌ها در یک نگاه.
+                </p>
+                <div style={{ display: 'flex', gap: '8px', marginTop: '18px', flexWrap: 'wrap' }}>
+                  <button type="button" onClick={() => setActiveTab('courses')} style={{ border: 'none', backgroundColor: accent, color: '#fff', borderRadius: '9px', padding: '9px 13px', fontSize: '10px', fontWeight: 900, cursor: 'pointer' }}>
+                    مشاهده دوره‌های من
+                  </button>
+                  <button type="button" onClick={() => setActiveTab('mockExams')} style={{ border: `1px solid ${borderColor}`, backgroundColor: cardBg, color: textColor, borderRadius: '9px', padding: '8px 12px', fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>
+                    آزمون‌های من
+                  </button>
+                </div>
               </div>
-              <button type="button" onClick={() => setActiveTab('courses')} style={{ border: `1px solid ${borderColor}`, backgroundColor: accentSoft, color: accent, borderRadius: '10px', padding: '9px 12px', fontSize: '11px', fontWeight: 800, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                مشاهده دوره‌ها <ArrowLeft size={14} />
-              </button>
+              <div aria-hidden="true" style={{ position: 'absolute', left: '-35px', bottom: '-55px', width: '210px', height: '210px', borderRadius: '50%', background: `radial-gradient(circle, ${accent} 0 2px, transparent 3px), conic-gradient(from 0deg, transparent 0 8deg, rgba(56,131,138,.12) 8deg 12deg, transparent 12deg 30deg)`, opacity: .8 }} />
+              <div aria-hidden="true" style={{ position: 'absolute', left: '28px', top: '28px', width: '112px', height: '112px', border: `1px solid rgba(56,131,138,.22)`, borderRadius: '50%', transform: 'rotate(18deg)' }} />
+              <div aria-hidden="true" style={{ position: 'absolute', left: '55px', top: '55px', width: '58px', height: '58px', border: `1px solid rgba(56,131,138,.28)`, transform: 'rotate(45deg)' }} />
+              <div style={{ position: 'absolute', left: '42px', bottom: '24px', color: accent, fontSize: '9px', fontWeight: 900, letterSpacing: '1px', opacity: .75 }}>SHAMSEH</div>
             </div>
 
-            <div className="student-dashboard-stat-grid" style={{ marginBottom: '14px' }}>
-              <div className="student-dashboard-soft-card" style={{ padding: '14px' }}>
-                <div style={{ color: subText, fontSize: '10px', marginBottom: '7px' }}>دوره‌های فعال</div>
-                <div style={{ color: textColor, fontSize: '22px', fontWeight: 900 }}>{enrolledCourses.length}</div>
-              </div>
-              <div className="student-dashboard-soft-card" style={{ padding: '14px' }}>
-                <div style={{ color: subText, fontSize: '10px', marginBottom: '7px' }}>آزمون‌های پیش‌رو</div>
-                <div style={{ color: textColor, fontSize: '22px', fontWeight: 900 }}>{mockExams.filter(exam => new Date(exam.examDate).getTime() >= Date.now() && exam.status !== 'CANCELLED').length}</div>
-              </div>
-              <div className="student-dashboard-soft-card" style={{ padding: '14px' }}>
-                <div style={{ color: unreadCount > 0 ? accent : textColor, fontSize: '10px', marginBottom: '7px' }}>اطلاعیه‌های خوانده‌نشده</div>
-                <div style={{ color: unreadCount > 0 ? accent : textColor, fontSize: '22px', fontWeight: 900 }}>{unreadCount}</div>
-              </div>
+            <div className="student-dashboard-stat-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+              {[
+                { label: 'دوره‌های فعال', value: enrolledCourses.length, icon: BookOpen, note: 'دوره آموزشی شما' },
+                { label: 'آزمون‌های پیش‌رو', value: mockExams.filter(exam => new Date(exam.examDate).getTime() >= Date.now() && exam.status !== 'CANCELLED').length, icon: ClipboardList, note: 'آزمون در برنامه' },
+                { label: 'خوانده‌نشده', value: unreadCount, icon: Bell, note: unreadCount ? 'نیازمند توجه شما' : 'همه اطلاعیه‌ها خوانده شده' },
+              ].map(stat => {
+                const Icon = stat.icon;
+                return (
+                  <div key={stat.label} style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '14px', padding: '14px 15px', minHeight: '82px', boxSizing: 'border-box', boxShadow: isDark ? 'none' : '0 5px 16px rgba(30,70,70,.035)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                      <div style={{ width: '30px', height: '30px', borderRadius: '9px', backgroundColor: accentSoft, color: accent, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Icon size={15} />
+                      </div>
+                      <span style={{ color: subText, fontSize: '9px', fontWeight: 700 }}>{stat.note}</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginTop: '8px' }}>
+                      <span style={{ color: textColor, fontSize: '21px', fontWeight: 900 }}>{stat.value}</span>
+                      <span style={{ color: subText, fontSize: '10px', fontWeight: 800 }}>{stat.label}</span>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
             <div className="student-dashboard-home-grid">
-              <div className="student-dashboard-soft-card" style={{ padding: '18px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
-                    <ClipboardList size={17} color={accent} />
-                    <h3 style={{ color: textColor, fontSize: '15px', fontWeight: 900, margin: 0 }}>نزدیک‌ترین آزمون</h3>
-                  </div>
-                  <button type="button" onClick={() => setActiveTab('mockExams')} style={{ border: 'none', background: 'transparent', color: accent, fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>همه آزمون‌ها</button>
-                </div>
-                {(() => {
-                  const nextExam = [...mockExams].filter(exam => new Date(exam.examDate).getTime() >= Date.now() && exam.status !== 'CANCELLED').sort((a, b) => new Date(a.examDate).getTime() - new Date(b.examDate).getTime())[0];
-                  return nextExam ? (
-                    <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '12px', padding: '15px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px' }}>
-                        <div style={{ color: textColor, fontSize: '14px', fontWeight: 900 }}>{nextExam.title}</div>
-                        <span style={{ color: accent, fontSize: '9px', fontWeight: 800 }}>پیش‌رو</span>
-                      </div>
-                      <div style={{ color: subText, fontSize: '11px', marginTop: '7px' }}>
-                        {new Intl.DateTimeFormat('fa-IR', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Asia/Tehran' }).format(new Date(nextExam.examDate))}
-                      </div>
-                      <div style={{ display: 'flex', gap: '8px', marginTop: '12px', flexWrap: 'wrap' }}>
-                        {nextExam.level && <span style={{ backgroundColor: accentSoft, color: accent, borderRadius: '7px', padding: '4px 8px', fontSize: '10px', fontWeight: 800 }}>{nextExam.level}</span>}
-                        {nextExam.field && <span style={{ backgroundColor: isDark ? 'rgba(148,163,184,.10)' : '#f1efed', color: subText, borderRadius: '7px', padding: '4px 8px', fontSize: '10px', fontWeight: 700 }}>{nextExam.field}</span>}
-                      </div>
-                      <button type="button" onClick={() => setSelectedMockExam(nextExam)} style={{ width: '100%', marginTop: '12px', border: 'none', backgroundColor: accent, color: '#fff', borderRadius: '9px', padding: '9px', fontSize: '11px', fontWeight: 800, cursor: 'pointer' }}>مشاهده جزئیات آزمون</button>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', minWidth: 0 }}>
+                <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '16px', padding: '18px', boxShadow: isDark ? 'none' : '0 6px 20px rgba(30,70,70,.035)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', gap: '10px' }}>
+                    <div>
+                      <div style={{ color: accent, fontSize: '9px', fontWeight: 900, marginBottom: '3px' }}>UP NEXT</div>
+                      <h3 style={{ color: textColor, fontSize: '15px', fontWeight: 900, margin: 0 }}>نزدیک‌ترین آزمون</h3>
                     </div>
+                    <button type="button" onClick={() => setActiveTab('mockExams')} style={{ border: 'none', background: 'transparent', color: accent, fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>مشاهده همه</button>
+                  </div>
+                  {(() => {
+                    const nextExam = [...mockExams].filter(exam => new Date(exam.examDate).getTime() >= Date.now() && exam.status !== 'CANCELLED').sort((a, b) => new Date(a.examDate).getTime() - new Date(b.examDate).getTime())[0];
+                    return nextExam ? (
+                      <div style={{ backgroundColor: innerCardBg, border: `1px solid ${borderColor}`, borderRadius: '12px', padding: '15px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px' }}>
+                          <div style={{ color: textColor, fontSize: '14px', fontWeight: 900 }}>{nextExam.title}</div>
+                          <span style={{ backgroundColor: accentSoft, color: accent, borderRadius: '999px', padding: '4px 8px', fontSize: '9px', fontWeight: 900 }}>پیش‌رو</span>
+                        </div>
+                        <div style={{ color: subText, fontSize: '10px', marginTop: '7px' }}>
+                          {new Intl.DateTimeFormat('fa-IR', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Asia/Tehran' }).format(new Date(nextExam.examDate))}
+                        </div>
+                        <div style={{ display: 'flex', gap: '7px', marginTop: '11px', flexWrap: 'wrap' }}>
+                          {nextExam.level && <span style={{ backgroundColor: accentSoft, color: accent, borderRadius: '7px', padding: '4px 8px', fontSize: '9px', fontWeight: 800 }}>{nextExam.level}</span>}
+                          {nextExam.field && <span style={{ backgroundColor: isDark ? 'rgba(255,255,255,.05)' : '#eef1f0', color: subText, borderRadius: '7px', padding: '4px 8px', fontSize: '9px', fontWeight: 700 }}>{nextExam.field}</span>}
+                        </div>
+                        <button type="button" onClick={() => setSelectedMockExam(nextExam)} style={{ width: '100%', marginTop: '12px', border: 'none', backgroundColor: accent, color: '#fff', borderRadius: '9px', padding: '9px', fontSize: '10px', fontWeight: 900, cursor: 'pointer' }}>مشاهده جزئیات آزمون</button>
+                      </div>
+                    ) : (
+                      <div style={{ color: subText, fontSize: '11px', lineHeight: 1.8, padding: '22px 8px', textAlign: 'center', backgroundColor: innerCardBg, borderRadius: '12px' }}>در حال حاضر آزمون پیش‌روئی برای شما ثبت نشده است.</div>
+                    );
+                  })()}
+                </div>
+
+                <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '16px', padding: '18px', boxShadow: isDark ? 'none' : '0 6px 20px rgba(30,70,70,.035)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                    <div>
+                      <div style={{ color: accent, fontSize: '9px', fontWeight: 900, marginBottom: '3px' }}>MY LEARNING</div>
+                      <h3 style={{ color: textColor, fontSize: '15px', fontWeight: 900, margin: 0 }}>دوره‌های من</h3>
+                    </div>
+                    <button type="button" onClick={() => setActiveTab('courses')} style={{ border: 'none', background: 'transparent', color: accent, fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>مشاهده همه</button>
+                  </div>
+                  {enrolledCourses.length === 0 ? (
+                    <div style={{ color: subText, fontSize: '11px', padding: '18px 4px', textAlign: 'center' }}>هنوز دوره‌ای برای شما ثبت نشده است.</div>
                   ) : (
-                    <div style={{ color: subText, fontSize: '11px', lineHeight: 1.8, padding: '18px 8px', textAlign: 'center' }}>در حال حاضر آزمون پیش‌روئی برای شما ثبت نشده است.</div>
-                  );
-                })()}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '9px' }}>
+                      {enrolledCourses.slice(0, 4).map(course => (
+                        <button key={course.id} type="button" onClick={() => setActiveTab('courses')} style={{ textAlign: 'right', border: `1px solid ${borderColor}`, backgroundColor: innerCardBg, borderRadius: '11px', padding: '11px', cursor: 'pointer', minWidth: 0 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '7px' }}>
+                            <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: accent, flexShrink: 0 }} />
+                            <span style={{ color: textColor, fontSize: '10px', fontWeight: 900, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{course.title}</span>
+                          </div>
+                          <span style={{ color: subText, fontSize: '9px' }}>{course.professor || 'مدرس مشخص نشده'}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
-              <div className="student-dashboard-home-stack">
-                <div className="student-dashboard-soft-card" style={{ padding: '16px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '10px' }}>
-                    <Bell size={17} color={accent} />
-                    <h3 style={{ color: textColor, fontSize: '15px', fontWeight: 900, margin: 0 }}>آخرین اطلاعیه‌ها</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', minWidth: 0 }}>
+                <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '16px', padding: '18px', boxShadow: isDark ? 'none' : '0 6px 20px rgba(30,70,70,.035)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                    <div>
+                      <div style={{ color: accent, fontSize: '9px', fontWeight: 900, marginBottom: '3px' }}>LATEST</div>
+                      <h3 style={{ color: textColor, fontSize: '15px', fontWeight: 900, margin: 0 }}>آخرین اطلاعیه‌ها</h3>
+                    </div>
+                    <button type="button" onClick={handleOpenNotificationTab} style={{ border: 'none', background: 'transparent', color: accent, fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>مشاهده همه</button>
                   </div>
                   {studentNotifications.length === 0 ? (
-                    <div style={{ color: subText, fontSize: '11px', padding: '8px 0' }}>اطلاعیه جدیدی ندارید.</div>
+                    <div style={{ color: subText, fontSize: '11px', padding: '18px 4px', textAlign: 'center' }}>اطلاعیه جدیدی ندارید.</div>
                   ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '9px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                       {studentNotifications.slice(0, 3).map(notification => (
-                        <button key={notification.id} type="button" onClick={handleOpenNotificationTab} style={{ textAlign: 'right', border: `1px solid ${borderColor}`, backgroundColor: cardBg, borderRadius: '10px', padding: '10px', cursor: 'pointer' }}>
-                          <div style={{ color: textColor, fontSize: '11px', fontWeight: 800 }}>{notification.title}</div>
-                          <div style={{ color: subText, fontSize: '9px', marginTop: '4px' }}>{new Date(notification.createdAt).toLocaleDateString('fa-IR')}</div>
+                        <button key={notification.id} type="button" onClick={handleOpenNotificationTab} style={{ textAlign: 'right', border: `1px solid ${borderColor}`, backgroundColor: innerCardBg, borderRadius: '10px', padding: '10px', cursor: 'pointer' }}>
+                          <div style={{ color: textColor, fontSize: '10px', fontWeight: 900 }}>{notification.title}</div>
+                          <div style={{ color: subText, fontSize: '8px', marginTop: '4px' }}>{new Date(notification.createdAt).toLocaleDateString('fa-IR')}</div>
                         </button>
                       ))}
                     </div>
                   )}
                 </div>
 
-                <div className="student-dashboard-soft-card" style={{ padding: '16px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '10px' }}>
-                    <CalendarClock size={17} color={accent} />
-                    <h3 style={{ color: textColor, fontSize: '15px', fontWeight: 900, margin: 0 }}>مشاوره</h3>
+                <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '16px', padding: '18px', boxShadow: isDark ? 'none' : '0 6px 20px rgba(30,70,70,.035)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+                    <CalendarClock size={16} color={accent} />
+                    <div>
+                      <div style={{ color: accent, fontSize: '9px', fontWeight: 900 }}>SUPPORT / COUNSELING</div>
+                      <h3 style={{ color: textColor, fontSize: '15px', fontWeight: 900, margin: 0 }}>مشاوره</h3>
+                    </div>
                   </div>
                   {counselingRequests.length > 0 ? (
-                    <div style={{ color: textColor, fontSize: '11px', fontWeight: 800 }}>{formatCounselingDate(counselingRequests[0].slot.startAt)}</div>
+                    <div style={{ backgroundColor: innerCardBg, borderRadius: '10px', padding: '10px', color: textColor, fontSize: '10px', fontWeight: 800 }}>
+                      {formatCounselingDate(counselingRequests[0].slot.startAt)}
+                    </div>
                   ) : (
-                    <div style={{ color: subText, fontSize: '11px', lineHeight: 1.7 }}>برای دریافت مشاوره می‌توانید یک زمان مناسب انتخاب کنید.</div>
+                    <div style={{ color: subText, fontSize: '10px', lineHeight: 1.8 }}>برای دریافت مشاوره، یک زمان مناسب از بخش مشاوره انتخاب کنید.</div>
                   )}
-                  <button type="button" onClick={() => setActiveTab('counseling')} style={{ marginTop: '10px', border: 'none', background: 'transparent', color: accent, padding: 0, fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>ورود به بخش مشاوره</button>
+                  <button type="button" onClick={() => setActiveTab('counseling')} style={{ marginTop: '10px', border: 'none', background: 'transparent', color: accent, padding: 0, fontSize: '10px', fontWeight: 900, cursor: 'pointer' }}>ورود به مشاوره ←</button>
                 </div>
               </div>
             </div>
 
-            <div className="student-dashboard-soft-card" style={{ marginTop: '14px', padding: '15px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
+            <div style={{ backgroundColor: isDark ? '#252a2b' : '#eef5f4', border: `1px solid ${borderColor}`, borderRadius: '14px', padding: '13px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
               <div>
-                <div style={{ color: textColor, fontSize: '12px', fontWeight: 900 }}>دسترسی سریع</div>
-                <div style={{ color: subText, fontSize: '10px', marginTop: '4px' }}>برای انجام سریع کارهای روزمره از میانبرهای پنل استفاده کنید.</div>
+                <div style={{ color: textColor, fontSize: '11px', fontWeight: 900 }}>دسترسی سریع</div>
+                <div style={{ color: subText, fontSize: '9px', marginTop: '3px' }}>میانبرهای پرکاربرد پنل</div>
               </div>
               <div style={{ display: 'flex', gap: '7px', flexWrap: 'wrap' }}>
-                <button type="button" onClick={() => setActiveTab('courses')} style={{ border: `1px solid ${borderColor}`, backgroundColor: cardBg, color: textColor, borderRadius: '8px', padding: '7px 10px', fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>دوره‌ها</button>
-                <button type="button" onClick={() => setActiveTab('notifications')} style={{ border: `1px solid ${borderColor}`, backgroundColor: cardBg, color: textColor, borderRadius: '8px', padding: '7px 10px', fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>اطلاعیه‌ها</button>
-                <button type="button" onClick={() => setActiveTab('messages')} style={{ border: `1px solid ${borderColor}`, backgroundColor: cardBg, color: textColor, borderRadius: '8px', padding: '7px 10px', fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>پشتیبانی</button>
+                <button type="button" onClick={() => setActiveTab('courses')} style={{ border: `1px solid ${borderColor}`, backgroundColor: cardBg, color: textColor, borderRadius: '8px', padding: '7px 10px', fontSize: '9px', fontWeight: 800, cursor: 'pointer' }}>دوره‌ها</button>
+                <button type="button" onClick={() => setActiveTab('notifications')} style={{ border: `1px solid ${borderColor}`, backgroundColor: cardBg, color: textColor, borderRadius: '8px', padding: '7px 10px', fontSize: '9px', fontWeight: 800, cursor: 'pointer' }}>اطلاعیه‌ها</button>
+                <button type="button" onClick={() => setActiveTab('messages')} style={{ border: `1px solid ${borderColor}`, backgroundColor: cardBg, color: textColor, borderRadius: '8px', padding: '7px 10px', fontSize: '9px', fontWeight: 800, cursor: 'pointer' }}>پشتیبانی</button>
               </div>
             </div>
           </div>
