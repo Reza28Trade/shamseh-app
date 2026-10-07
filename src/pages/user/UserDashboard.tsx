@@ -41,6 +41,13 @@ interface UserDashboardProps {
   onLogout: () => void;
 }
 
+
+const ShamsehMark: React.FC<{ size?: number; opacity?: number }> = ({ size = 46, opacity = 1 }) => (
+  <svg viewBox="0 0 2000 2000" width={size} height={size} aria-hidden="true" style={{ display: 'block', opacity }}>
+    <g fill="#3c8d95"><path d="M 449,873 L 450,882 L 463,888 L 549,904 L 654,916 L 660,922 L 659,928 L 623,972 L 628,997 L 628,1019 L 622,1034 L 605,1048 L 572,1064 L 543,1073 L 511,1078 L 451,1154 L 450,1163 L 464,1170 L 528,1184 L 652,1197 L 659,1205 L 666,1231 L 676,1250 L 703,1279 L 742,1300 L 799,1313 L 874,1315 L 959,1303 L 1040,1279 L 1112,1246 L 1120,1247 L 1124,1251 L 1128,1275 L 1137,1293 L 1147,1303 L 1162,1310 L 1183,1311 L 1208,1302 L 1229,1287 L 1256,1259 L 1260,1259 L 1294,1282 L 1339,1301 L 1385,1311 L 1437,1312 L 1447,1302 L 1446,1272 L 1439,1228 L 1425,1184 L 1411,1159 L 1398,1144 L 1383,1133 L 1365,1126 L 1335,1127 L 1308,1142 L 1266,1187 L 1257,1189 L 1241,1175 L 1223,1149 L 1211,1119 L 1210,1096 L 1231,1065 L 1248,1051 L 1256,1056 L 1265,1073 L 1276,1082 L 1293,1089 L 1316,1090 L 1333,1086 L 1355,1075 L 1392,1040 L 1400,1043 L 1409,1065 L 1425,1080 L 1448,1089 L 1481,1088 L 1510,1076 L 1528,1061 L 1536,1048 L 1549,1009 L 1549,996 L 1542,980 L 1542,972 L 1549,959 L 1548,952 L 1494,888 L 1484,889 L 1476,900 L 1470,917 L 1469,932 L 1479,962 L 1518,1009 L 1514,1019 L 1503,1023 L 1472,1026 L 1450,1021 L 1437,1014 L 1426,1003 L 1419,984 L 1412,980 L 1406,981 L 1366,1007 L 1345,1013 L 1320,1012 L 1306,1005 L 1297,995 L 1292,981 L 1291,956 L 1283,950 L 1272,951 L 1243,981 L 1224,1008 L 1208,1039 L 1196,1076 L 1191,1113 L 1194,1156 L 1206,1192 L 1225,1223 L 1225,1229 L 1219,1236 L 1204,1242 L 1184,1242 L 1167,1232 L 1157,1212 L 1157,1185 L 1148,1175 L 1142,1175 L 1077,1209 L 1031,1226 L 967,1242 L 904,1250 L 842,1251 L 773,1243 L 734,1229 L 707,1207 L 705,1200 L 708,1198 L 781,1197 L 784,1204 L 773,1218 L 773,1223 L 782,1226 L 841,1148 L 835,1140 L 689,1141 L 684,1137 L 684,996 L 681,958 L 675,930 L 676,923 L 681,919 L 832,927 L 836,934 L 838,960 L 846,988 L 855,1006 L 874,1030 L 911,1054 L 942,1063 L 973,1065 L 978,1069 L 973,1122 L 969,1125 L 932,1124 L 910,1118 L 889,1106 L 871,1086 L 861,1063 L 857,1042 L 847,1039 L 842,1043 L 838,1061 L 838,1082 L 847,1121 L 857,1140 L 876,1161 L 908,1179 L 934,1185 L 965,1186 L 998,1182 L 1036,1173 L 1076,1158 L 1105,1143 L 1134,1124 L 1161,1100 L 1173,1058 L 1173,1027 L 1165,998 L 1150,972 L 1108,927 L 1054,881 L 1005,845 L 932,799 L 926,800 L 917,814 L 914,827 L 915,842 L 921,857 L 930,868 L 977,896 L 982,903 L 981,999 L 975,1003 L 947,1000 L 909,986 L 883,963 L 868,932 L 873,925 L 968,923 L 971,916 L 899,875 L 871,869 L 866,865 L 864,752 L 858,700 L 861,698 L 977,762 L 980,770 L 982,805 L 1006,824 L 1011,823 L 1013,775 L 1010,706 L 1012,696 L 1027,676 L 1031,664 L 997,540 L 987,516 L 991,513 L 1029,511 L 1073,504 L 1075,509 L 1040,552 L 1044,559 L 1051,557 L 1129,460 L 1130,450 L 1124,444 L 1042,457 L 976,458 L 927,451 L 880,438 L 868,447 L 839,484 L 838,492 L 843,497 L 898,509 L 947,529 L 975,548 L 980,560 L 962,585 L 959,594 L 970,649 L 969,664 L 941,660 L 884,639 L 878,642 L 853,671 L 842,643 L 835,641 L 802,683 L 801,693 L 817,730 L 830,787 L 836,856 L 835,864 L 831,868 L 683,860 L 601,850 L 555,841 L 557,834 L 576,824 L 611,798 L 660,817 L 714,828 L 779,828 L 791,826 L 797,821 L 797,790 L 791,752 L 773,704 L 765,692 L 744,673 L 728,666 L 710,664 L 691,670 L 671,685 L 622,745 L 598,766 L 567,783 L 513,799 L 502,806 Z"/><path d="M 1031,743 L 1032,790 L 1035,798 L 1101,853 L 1098,861 L 1076,863 L 1073,871 L 1120,911 L 1150,911 L 1154,914 L 1162,931 L 1152,947 L 1169,970 L 1174,966 L 1189,916 L 1199,906 L 1297,891 L 1383,874 L 1388,876 L 1390,884 L 1323,966 L 1323,974 L 1327,977 L 1333,976 L 1448,827 L 1443,815 L 1429,813 L 1278,841 L 1191,853 L 1171,853 L 1159,847 L 1112,798 L 1057,752 L 1037,738 Z"/><path d="M 1233,655 L 1227,646 L 1218,644 L 1147,658 L 1057,668 L 1050,672 L 1032,693 L 1029,703 L 1030,715 L 1050,717 L 1088,714 L 1177,699 L 1181,703 L 1181,708 L 1139,760 L 1141,767 L 1148,768 L 1228,668 Z"/><path d="M 1219,761 L 1223,768 L 1248,784 L 1271,806 L 1278,806 L 1309,770 L 1320,775 L 1350,805 L 1355,806 L 1373,786 L 1382,771 L 1381,759 L 1374,748 L 1356,731 L 1341,722 L 1334,723 L 1305,757 L 1269,729 L 1256,722 L 1250,722 Z"/><path d="M 731,985 L 726,994 L 727,1007 L 753,1034 L 711,1081 L 725,1074 L 758,1041 L 761,1041 L 766,1049 L 737,1082 L 730,1105 L 737,1119 L 746,1123 L 762,1123 L 780,1115 L 795,1096 L 798,1072 L 783,1043 L 801,1019 L 804,998 L 800,989 L 794,987 L 764,1020 L 760,1015 L 762,1008 Z"/><path d="M 1280,659 L 1251,694 L 1251,700 L 1280,718 L 1299,735 L 1306,736 L 1327,711 L 1330,703 L 1329,693 L 1325,686 L 1306,670 L 1289,660 Z"/></g>
+  </svg>
+);
+
 export const UserDashboard: React.FC<UserDashboardProps> = ({
   student,
   courses,
@@ -135,669 +142,141 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
 
     void loadNotifications();
 
-    return () => {
-      cancelled = true;
-    };
-  }, [student.id]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const loadEnrollments = async () => {
-      setCoursesLoading(true);
-      setCoursesError('');
-
-      try {
-        const response = await fetch('/api/student/enrollments', {
-          credentials: 'include',
-        });
-
-        if (!response.ok) {
-          throw new Error('دریافت دوره‌های هنرجو انجام نشد.');
-        }
-
-        const enrollments = await response.json();
-
-        const mappedCourses: Course[] = enrollments.map((enrollment: any) => {
-          const course = enrollment.course;
-          return {
-            id: course.id,
-            title: course.title,
-            professor: course.professor ?? '',
-            level: course.level ?? '',
-            schedule: '',
-            startDate: '',
-            description: course.description ?? '',
-            term: course.term,
-            price: course.price == null ? undefined : Number(course.price),
-            category: course.category,
-            coverImage: course.coverImage,
-            syllabus: [],
-          };
-        });
-
-        if (!cancelled) {
-          setEnrolledCourses(mappedCourses);
-          setContentLoading(true);
-
-          const contentResults = await Promise.all(
-            mappedCourses.map(async (course) => {
-              const [sessionsResponse, filesResponse] = await Promise.all([
-                fetch(`/api/courses/${course.id}/sessions`, { credentials: 'include' }),
-                fetch(`/api/courses/${course.id}/files`, { credentials: 'include' }),
-              ]);
-
-              if (!sessionsResponse.ok || !filesResponse.ok) {
-                throw new Error(`دریافت محتوای دوره «${course.title}» انجام نشد.`);
-              }
-
-              const sessions = await sessionsResponse.json();
-              const files = await filesResponse.json();
-
-              return {
-                courseId: course.id,
-                sessions: sessions as BackendSession[],
-                files: files as BackendFile[],
-              };
-            }),
-          );
-
-          if (!cancelled) {
-            setCourseSessions(
-              Object.fromEntries(contentResults.map(result => [result.courseId, result.sessions])),
-            );
-            setCourseFiles(
-              Object.fromEntries(contentResults.map(result => [result.courseId, result.files])),
-            );
-          }
-        }
-      } catch (error) {
-        if (!cancelled) {
-          setCoursesError(error instanceof Error ? error.message : 'دریافت دوره‌های هنرجو انجام نشد.');
-          setEnrolledCourses([]);
-          setCourseSessions({});
-          setCourseFiles({});
-        }
-      } finally {
-        if (!cancelled) {
-          setCoursesLoading(false);
-          setContentLoading(false);
-        }
-      }
-    };
-
-    void loadEnrollments();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [student.id]);
-
-  void courses;
-
-  const studentMessages = supportTickets;
-  const studentOfflineRequests = offlineRequests;
-
-  const unreadCount = studentNotifications.filter(n => !n.readAt).length;
-
-  useEffect(() => {
-    let cancelled = false;
-    const loadOfflineRequests = async () => {
-      setOfflineLoading(true);
-      try {
-        const response = await fetch('/api/offline-requests', { credentials: 'include' });
-        if (!response.ok) throw new Error('دریافت درخواست‌های آفلاین انجام نشد.');
-        const data = await response.json();
-        if (!cancelled) setOfflineRequests(data);
-      } catch {
-        if (!cancelled) setOfflineRequests([]);
-      } finally {
-        if (!cancelled) setOfflineLoading(false);
-      }
-    };
-    void loadOfflineRequests();
-    return () => { cancelled = true; };
-  }, [student.id]);
-
-  useEffect(() => {
-    if (activeTab !== 'home' && activeTab !== 'mockExams') return;
-    let cancelled = false;
-
-    const loadMockExams = async () => {
-      setMockExamsLoading(true);
-      setMockExamsError('');
-      try {
-        const response = await fetch('/api/student/mock-exams', {
-          credentials: 'include',
-        });
-        if (!response.ok) {
-          const data = await response.json().catch(() => null);
-          throw new Error(data?.message || 'دریافت آزمون‌های آزمایشی انجام نشد.');
-        }
-        const data = await response.json();
-        if (!cancelled) {
-          setMockExams(data as BackendMockExam[]);
-        }
-      } catch (error) {
-        if (!cancelled) {
-          setMockExamsError(error instanceof Error ? error.message : 'دریافت آزمون‌های آزمایشی انجام نشد.');
-          setMockExams([]);
-        }
-      } finally {
-        if (!cancelled) setMockExamsLoading(false);
-      }
-    };
-
-    void loadMockExams();
-    return () => { cancelled = true; };
-  }, [activeTab, student.id]);
-
-  useEffect(() => {
-    if (activeTab !== 'counseling') return;
-    let cancelled = false;
-
-    const loadCounseling = async () => {
-      setCounselingLoading(true);
-      setCounselingError('');
-      try {
-        const [slotsResponse, requestsResponse] = await Promise.all([
-          fetch('/api/counseling/slots', { credentials: 'include' }),
-          fetch('/api/counseling/requests', { credentials: 'include' }),
-        ]);
-        if (!slotsResponse.ok || !requestsResponse.ok) {
-          throw new Error('دریافت اطلاعات مشاوره انجام نشد.');
-        }
-        const [slots, requests] = await Promise.all([
-          slotsResponse.json(),
-          requestsResponse.json(),
-        ]);
-        if (!cancelled) {
-          setCounselingSlots(slots);
-          setCounselingRequests(requests);
-        }
-      } catch (error) {
-        if (!cancelled) {
-          setCounselingError(error instanceof Error ? error.message : 'دریافت اطلاعات مشاوره انجام نشد.');
-          setCounselingSlots([]);
-          setCounselingRequests([]);
-        }
-      } finally {
-        if (!cancelled) setCounselingLoading(false);
-      }
-    };
-
-    void loadCounseling();
-    return () => { cancelled = true; };
-  }, [activeTab, student.id]);
-
-  const handleCounselingBook = async (slotId: string) => {
-    if (counselingSubmitting) return;
-    setCounselingSubmitting(true);
-    setCounselingError('');
-    try {
-      const response = await fetch('/api/counseling/requests', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slotId }),
-      });
-      const data = await response.json().catch(() => null);
-      if (!response.ok) throw new Error(data?.message || 'ثبت درخواست مشاوره انجام نشد.');
-      setCounselingRequests(current => [data, ...current]);
-      setCounselingSlots(current => current.filter(slot => slot.id !== slotId));
-    } catch (error) {
-      setCounselingError(error instanceof Error ? error.message : 'ثبت درخواست مشاوره انجام نشد.');
-    } finally {
-      setCounselingSubmitting(false);
-    }
-  };
-
-  const handleCounselingCancel = async (requestId: string) => {
-    if (counselingSubmitting) return;
-    if (!confirm('آیا از لغو درخواست مشاوره اطمینان دارید؟')) return;
-    setCounselingSubmitting(true);
-    setCounselingError('');
-    try {
-      const response = await fetch(`/api/counseling/requests/${requestId}/cancel`, {
-        method: 'PATCH',
-        credentials: 'include',
-      });
-      const data = await response.json().catch(() => null);
-      if (!response.ok) throw new Error(data?.message || 'لغو درخواست مشاوره انجام نشد.');
-      setCounselingRequests(current => current.map(item => item.id === requestId ? { ...item, status: 'CANCELLED' } : item));
-      const slot = data?.slot;
-      if (slot) setCounselingSlots(current => [...current, slot].sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()));
-    } catch (error) {
-      setCounselingError(error instanceof Error ? error.message : 'لغو درخواست مشاوره انجام نشد.');
-    } finally {
-      setCounselingSubmitting(false);
-    }
-  };
-
-  const formatCounselingDate = (value: string) =>
-    new Intl.DateTimeFormat('fa-IR', {
-      dateStyle: 'full',
-      timeStyle: 'short',
-      timeZone: 'Asia/Tehran',
-    }).format(new Date(value));
-
-  useEffect(() => {
-    if (activeTab !== 'messages') return;
-    let cancelled = false;
-    const loadSupportTickets = async () => {
-      setSupportLoading(true);
-      setSupportError('');
-      try {
-        const response = await fetch('/api/support/tickets', { credentials: 'include' });
-        if (!response.ok) throw new Error('دریافت تیکت‌های پشتیبانی انجام نشد.');
-        const data = await response.json();
-        if (!cancelled) setSupportTickets(data);
-      } catch (error) {
-        if (!cancelled) {
-          setSupportError(error instanceof Error ? error.message : 'دریافت تیکت‌های پشتیبانی انجام نشد.');
-          setSupportTickets([]);
-        }
-      } finally {
-        if (!cancelled) setSupportLoading(false);
-      }
-    };
-    void loadSupportTickets();
-    return () => { cancelled = true; };
-  }, [activeTab, student.id]);
-
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!subject.trim() || !content.trim() || supportSubmitting) return;
-    setSupportSubmitting(true);
-    setSupportError('');
-    try {
-      const response = await fetch('/api/support/tickets', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subject: subject.trim(), content: content.trim() }),
-      });
-      if (!response.ok) {
-        const data = await response.json().catch(() => null);
-        throw new Error(data?.message || 'ثبت تیکت انجام نشد.');
-      }
-      const ticket = await response.json();
-      setSupportTickets(current => [ticket, ...current]);
-      setSubject('');
-      setContent('');
-      setSuccessMsg(true);
-      setTimeout(() => setSuccessMsg(false), 4000);
-    } catch (error) {
-      setSupportError(error instanceof Error ? error.message : 'ثبت تیکت انجام نشد.');
-    } finally {
-      setSupportSubmitting(false);
-    }
-  };
-
-  const handleOfflineRequestSubmit = async (courseId: string) => {
-    const selectEl = document.getElementById(`session-select-${courseId}`) as HTMLSelectElement;
-    const sessionId = selectEl?.value;
-
-    if (!sessionId) {
-      setOfflineMsg({ courseId, text: 'لطفاً ابتدا جلسه مورد نظر را انتخاب کنید.', success: false });
-      setTimeout(() => setOfflineMsg(null), 4000);
-      return;
-    }
-
-    try {
-      const response = await fetch('/api/offline-requests', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ courseId, sessionId }),
-      });
-      const data = await response.json().catch(() => null);
-      if (!response.ok) throw new Error(data?.message || 'ثبت درخواست انجام نشد.');
-      setOfflineRequests(current => [data, ...current]);
-      setOfflineMsg({ courseId, text: 'درخواست آفلاین با موفقیت ثبت شد.', success: true });
-    } catch (error) {
-      setOfflineMsg({ courseId, text: error instanceof Error ? error.message : 'ثبت درخواست انجام نشد.', success: false });
-    }
-    setTimeout(() => setOfflineMsg(null), 4000);
-  };
-
-  const handleEditOfflineRequest = async (request: typeof offlineRequests[number]) => {
-    if (!editingOfflineSessionId || editingOfflineSessionId === request.sessionId) {
-      setEditingOfflineRequestId(null);
-      return;
-    }
-    try {
-      const response = await fetch(`/api/offline-requests/${request.id}`, {
-        method: 'PATCH',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ courseId: request.courseId, sessionId: editingOfflineSessionId }),
-      });
-      const data = await response.json().catch(() => null);
-      if (!response.ok) throw new Error(data?.message || 'ویرایش درخواست انجام نشد.');
-      setOfflineRequests(current => current.map(item => item.id === request.id ? data : item));
-      setOfflineMsg({ courseId: request.courseId, text: 'درخواست با موفقیت ویرایش شد.', success: true });
-      setEditingOfflineRequestId(null);
-      setEditingOfflineSessionId('');
-    } catch (error) {
-      setOfflineMsg({ courseId: request.courseId, text: error instanceof Error ? error.message : 'ویرایش درخواست انجام نشد.', success: false });
-    }
-    setTimeout(() => setOfflineMsg(null), 4000);
-  };
-
-  const handleDeleteOfflineRequest = async (request: typeof offlineRequests[number]) => {
-    if (!confirm('آیا از حذف این درخواست اطمینان دارید؟')) return;
-    try {
-      const response = await fetch(`/api/offline-requests/${request.id}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
-      const data = await response.json().catch(() => null);
-      if (!response.ok) throw new Error(data?.message || 'حذف درخواست انجام نشد.');
-      setOfflineRequests(current => current.filter(item => item.id !== request.id));
-      setOfflineMsg({ courseId: request.courseId, text: 'درخواست حذف شد.', success: true });
-    } catch (error) {
-      setOfflineMsg({ courseId: request.courseId, text: error instanceof Error ? error.message : 'حذف درخواست انجام نشد.', success: false });
-    }
-    setTimeout(() => setOfflineMsg(null), 4000);
-  };
-
-  const handleOpenNotificationTab = async () => {
-    setActiveTab('notifications');
-
-    const unreadNotifications = studentNotifications.filter(n => !n.readAt);
-    if (unreadNotifications.length === 0) return;
-
-    await Promise.all(
-      unreadNotifications.map(async (notification) => {
-        const response = await fetch(`/api/notifications/${notification.id}/read`, {
-          method: 'POST',
-          credentials: 'include',
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setStudentNotifications(current =>
-            current.map(item =>
-              item.id === notification.id ? { ...item, readAt: data.readAt } : item,
-            ),
-          );
-        }
-      }),
-    );
-  };
-
-  const isDark = theme === 'dark';
-  const bgColors = isDark ? '#1a1c1d' : '#f5f7f6';
-  const cardBg = isDark ? '#222526' : '#ffffff';
-  const textColor = isDark ? '#f1f5f4' : '#172022';
-  const subText = isDark ? '#aab5b4' : '#697675';
-  const borderColor = isDark ? '#343a3b' : '#e2e8e7';
-  const innerCardBg = isDark ? '#282c2d' : '#f8faf9';
-  const accent = '#38838a';
-  const accentSoft = isDark ? 'rgba(56, 131, 138, 0.16)' : '#e8f2f2';
-
-  return (
-    <div className="student-dashboard" style={{ minHeight: '100vh', backgroundColor: bgColors, color: textColor, direction: 'rtl', fontFamily: 'system-ui, sans-serif', boxSizing: 'border-box', margin: 0, padding: '24px', overflowY: 'auto' }}>
+    return (
+    <div
+      className="student-dashboard"
+      style={{
+        minHeight:'100vh',
+        backgroundColor:bgColors,
+        color:textColor,
+        direction:'rtl',
+        fontFamily:'system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif',
+        boxSizing:'border-box',
+        margin:0,
+        padding:'24px',
+        overflowY:'auto',
+        ['--sd-card' as any]:cardBg,
+        ['--sd-border' as any]:borderColor,
+        ['--sd-inner' as any]:innerCardBg,
+        ['--sd-accent-soft' as any]:accentSoft
+      }}
+    >
       <style>{`
-        .student-dashboard-shell { max-width: 1180px; margin: 0 auto; }
-        .student-dashboard-header { max-width: none !important; margin: 0 0 16px !important; padding: 18px 22px !important; border-radius: 16px !important; box-shadow: 0 8px 24px rgba(0,0,0,.08) !important; }
-        .student-dashboard-layout { display: grid; grid-template-columns: 196px minmax(0,1fr); gap: 16px; align-items: start; }
-        .student-dashboard-nav { width: auto !important; max-width: none !important; margin: 0 !important; display: flex !important; flex-direction: column !important; gap: 5px !important; padding: 7px !important; background: ${cardBg}; border: 1px solid ${borderColor}; border-radius: 14px; position: sticky; top: 16px; box-sizing: border-box; box-shadow: 0 6px 18px rgba(0,0,0,.045); }
-        .student-dashboard-nav button { width: 100%; min-height: 40px; justify-content: flex-start; box-sizing: border-box; text-align: right; padding: 9px 11px !important; border-radius: 10px !important; font-size: 11px !important; }
-        .student-dashboard-main { max-width: none !important; margin: 0 !important; gap: 16px !important; min-width: 0; }
-        .student-dashboard-main > div { border-radius: 16px !important; padding: 20px !important; }
-        .student-dashboard-home-grid { display: grid; grid-template-columns: 1.3fr .92fr; gap: 12px; align-items: start; }
-        .student-dashboard-home-stack { display: flex; flex-direction: column; gap: 12px; }
-        .student-dashboard-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
-        .student-dashboard-soft-card { border: 1px solid ${borderColor}; background: ${innerCardBg}; border-radius: 12px; }
-        .student-dashboard-nav button:hover { filter: brightness(.985); }
-        .student-sidebar-brand { padding: 10px 8px 12px; border-bottom: 1px solid rgba(128,150,150,.18); margin-bottom: 3px; }
-        .student-sidebar-logo { display: flex; align-items: center; gap: 9px; }
-        .student-sidebar-logo-mark { width: 32px; height: 32px; border: 1.5px solid #38838a; border-radius: 10px; display: grid; place-items: center; color: #38838a; font-size: 14px; font-weight: 900; transform: rotate(45deg); }
-        .student-sidebar-logo-mark span { transform: rotate(-45deg); }
-        .student-sidebar-title { color: inherit; font-size: 12px; font-weight: 900; }
-        .student-sidebar-subtitle { color: inherit; opacity: .62; font-size: 8px; margin-top: 2px; }
-        .student-sidebar-spacer { flex: 1; min-height: 18px; }
-        .student-home-emblem { position: absolute; left: 34px; top: 50%; transform: translateY(-50%); width: 116px; height: 116px; opacity: .58; display: grid; place-items: center; color: #38838a; }
-        .student-home-emblem-ring { position: absolute; inset: 0; border: 1px solid rgba(56,131,138,.28); border-radius: 50%; }
-        .student-home-emblem-diamond { position: absolute; width: 62px; height: 62px; border: 1px solid rgba(56,131,138,.34); transform: rotate(45deg); border-radius: 7px; }
-        .student-home-emblem span { position: relative; font-size: 25px; font-weight: 900; }
-        @media (max-width: 820px) { .student-home-emblem { left: 18px; width: 88px; height: 88px; opacity: .3; } .student-home-emblem-diamond { width: 48px; height: 48px; } .student-home-emblem span { font-size: 20px; } }
-
-        .student-dashboard-main h2 { font-size: 18px !important; }
-        .student-dashboard-main h3 { line-height: 1.5; }
-        .student-home-hero-content { max-width: 68%; }
-        .student-home-stat-grid { grid-template-columns: repeat(3, 1fr); }
-        @media (max-width: 980px) {
-          .student-dashboard-home-grid { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 820px) {
-          .student-dashboard { padding: 14px !important; }
-          .student-dashboard-layout { grid-template-columns: 1fr; }
-          .student-dashboard-nav { position: static; flex-direction: row !important; overflow-x: auto; padding: 6px !important; }
-          .student-dashboard-nav button { width: auto; min-width: max-content; justify-content: center; }
-          .student-dashboard-header { padding: 16px 18px !important; }
-        }
-        @media (max-width: 560px) {
-          .student-dashboard-header { flex-direction: column; align-items: stretch !important; gap: 14px; }
-          .student-dashboard-header > div:last-child { justify-content: space-between; }
-          .student-dashboard-main > div { padding: 18px !important; }
-          .student-home-hero-content { max-width: 100%; }
-          .student-home-stat-grid { grid-template-columns: 1fr; }
-        }
+        .student-dashboard{position:relative;overflow-x:hidden}
+        .student-dashboard::before,.student-dashboard::after{content:"";position:fixed;width:420px;height:420px;border-radius:50%;pointer-events:none;filter:blur(12px);opacity:${isDark ? ".16" : ".48"};z-index:0;animation:shamsehFloat 14s ease-in-out infinite alternate}
+        .student-dashboard::before{top:-170px;left:-130px;background:radial-gradient(circle,rgba(91,191,198,.28),transparent 68%)}
+        .student-dashboard::after{right:-180px;bottom:-170px;background:radial-gradient(circle,rgba(125,211,215,.20),transparent 68%);animation-delay:-6s}
+        @keyframes shamsehFloat{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(18px,24px,0) scale(1.08)}}
+        .student-dashboard-shell{max-width:1280px;margin:0 auto;position:relative;z-index:1}
+        .student-dashboard-header{max-width:none!important;margin:0 0 16px!important;padding:14px 18px!important;border-radius:18px!important;min-height:72px}
+        .student-dashboard-layout{display:grid;grid-template-columns:218px minmax(0,1fr);gap:16px;align-items:start}
+        .student-dashboard-nav{width:auto!important;max-width:none!important;margin:0!important;display:flex!important;flex-direction:column!important;gap:5px!important;padding:10px!important;background:var(--sd-card);border:1px solid var(--sd-border);border-radius:18px;position:sticky;top:16px;box-sizing:border-box;box-shadow:0 12px 30px rgba(0,0,0,.08);backdrop-filter:blur(18px)}
+        .student-dashboard-nav button{width:100%;min-height:42px;justify-content:flex-start;box-sizing:border-box;text-align:right;padding:9px 11px!important;border-radius:11px!important;font-size:11px!important;transition:transform .18s ease,background-color .18s ease}
+        .student-dashboard-nav button:hover{transform:translateX(-2px)}
+        .student-dashboard-main{max-width:none!important;margin:0!important;gap:14px!important;min-width:0}
+        .student-dashboard-main>div{border-radius:18px!important;padding:20px!important}
+        .student-dashboard-main h2{font-size:18px!important}
+        .student-dashboard-home-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:12px;align-items:start}
+        .student-dashboard-stat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+        .student-sidebar-brand{padding:6px 6px 13px;border-bottom:1px solid var(--sd-border);margin-bottom:2px}
+        .student-sidebar-logo{display:flex;align-items:center;gap:10px}
+        .student-sidebar-logo-copy{min-width:0}
+        .student-sidebar-title{color:var(--sd-text);font-size:13px;font-weight:900}
+        .student-sidebar-subtitle{color:var(--sd-sub);font-size:8px;margin-top:3px}
+        .student-sidebar-spacer{flex:1;min-height:20px}
+        .student-sidebar-logout{margin-top:8px!important}
+        .student-home-hero{position:relative;overflow:hidden;min-height:196px}
+        .student-home-hero-content{position:relative;z-index:2;max-width:64%}
+        .student-home-hero-art{position:absolute;left:-24px;bottom:-42px;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle at center,rgba(91,191,198,.20),transparent 62%)}
+        .student-home-hero-art:before,.student-home-hero-art:after{content:"";position:absolute;inset:24px;border:1px solid rgba(91,191,198,.18);border-radius:50%;transform:rotate(18deg)}
+        .student-home-hero-art:after{inset:58px;transform:rotate(45deg);border-radius:22px}
+        .student-home-exam{min-height:196px}
+        .student-course-cover{height:78px;border-radius:12px;position:relative;overflow:hidden;background:linear-gradient(135deg,#d9efee 0%,#f8fbfa 48%,#b9dedc 100%)}
+        .student-course-cover:before{content:"";position:absolute;width:90px;height:90px;border:1px solid rgba(56,131,138,.25);border-radius:28px;transform:rotate(45deg);right:-12px;top:-42px}
+        .student-course-cover:after{content:"";position:absolute;width:110px;height:110px;border-radius:50%;border:1px solid rgba(56,131,138,.20);left:-28px;bottom:-74px}
+        .student-file-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--sd-border);background:var(--sd-inner);border-radius:11px}
+        .student-file-action{border:1px solid var(--sd-border);background:var(--sd-card);color:var(--sd-accent);border-radius:9px;padding:7px 9px;font-size:9px;font-weight:900;cursor:pointer}
+        .student-file-action:hover{background:var(--sd-accent-soft)}
+        @media(max-width:1020px){.student-dashboard-home-grid{grid-template-columns:1fr}.student-home-hero-content{max-width:72%}}
+        @media(max-width:820px){.student-dashboard{padding:14px!important}.student-dashboard-layout{grid-template-columns:1fr}.student-dashboard-nav{position:static;flex-direction:row!important;overflow-x:auto;padding:6px!important}.student-dashboard-nav button{width:auto;min-width:max-content;justify-content:center}.student-sidebar-brand,.student-sidebar-spacer{display:none}.student-sidebar-logout{margin-top:0!important}}
+        @media(max-width:620px){.student-dashboard-header{padding:12px 14px!important}.student-dashboard-stat-grid{grid-template-columns:1fr}.student-home-hero-content{max-width:100%}.student-home-hero-art{opacity:.35}.student-file-row{grid-template-columns:minmax(0,1fr) auto}.student-file-action{grid-column:2}}
       `}</style>
+
       <div className="student-dashboard-shell">
-      {/* هدر پنل دانشجو */}
-      <div className="student-dashboard-header" style={{ background: isDark ? 'linear-gradient(135deg, rgba(56, 131, 138, 0.17) 0%, #202425 72%)' : 'linear-gradient(135deg, #ffffff 0%, #eef5f4 100%)', border: isDark ? '1px solid rgba(56, 131, 138, 0.30)' : '1px solid #d7e7e6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '3px' }}>
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: accent, display: 'inline-block' }} />
-            <span style={{ fontSize: '10px', fontWeight: 800, color: accent }}>سامانه آموزشی شمسه</span>
+        <div className="student-dashboard-header" style={{background:isDark?'linear-gradient(135deg,rgba(43,53,54,.96),rgba(30,38,39,.94))':'linear-gradient(135deg,rgba(255,255,255,.97),rgba(239,247,246,.95))',border:`1px solid ${isDark?'rgba(78,145,151,.34)':'#d6e8e6'}`,display:'flex',justifyContent:'space-between',alignItems:'center',gap:'16px',backdropFilter:'blur(18px)'}}>
+          <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
+            <div style={{width:'42px',height:'42px',borderRadius:'13px',backgroundColor:accentSoft,display:'grid',placeItems:'center',flexShrink:0}}><ShamsehMark size={30}/></div>
+            <div><div style={{fontSize:'9px',fontWeight:900,color:accent,marginBottom:'2px'}}>سامانه آموزشی شمسه</div><h1 style={{fontSize:'18px',fontWeight:900,color:textColor,margin:0}}>پنل دانشجو</h1><p style={{fontSize:'10px',color:subText,margin:'3px 0 0'}}>خوش آمدید، <strong style={{color:accent}}>{student.fullName}</strong></p></div>
           </div>
-          <h1 style={{ fontSize: '17px', fontWeight: 900, color: textColor, margin: 0 }}>پنل دانشجو</h1>
-          <p style={{ fontSize: '11px', color: subText, margin: '4px 0 0' }}>خوش آمدید، <strong style={{ color: accent }}>{student.fullName}</strong></p>
+          <button aria-label={isDark?'فعال‌کردن حالت روز':'فعال‌کردن حالت شب'} onClick={toggleTheme} style={{width:'40px',height:'40px',backgroundColor:isDark?'rgba(255,255,255,.05)':'#fff',border:`1px solid ${borderColor}`,color:textColor,borderRadius:'12px',cursor:'pointer',display:'grid',placeItems:'center',flexShrink:0}}>{isDark?<Sun size={17} color="#fbbf24"/>:<Moon size={17} color="#64748b"/>}</button>
         </div>
-        <button aria-label={isDark ? 'فعال‌کردن حالت روز' : 'فعال‌کردن حالت شب'} onClick={toggleTheme} style={{ width: '38px', height: '38px', backgroundColor: isDark ? 'rgba(255,255,255,0.06)' : '#ffffff', border: `1px solid ${borderColor}`, color: textColor, borderRadius: '11px', cursor: 'pointer', display: 'grid', placeItems: 'center' }}>
-          {isDark ? <Sun size={17} color="#fbbf24" /> : <Moon size={17} color="#64748b" />}
-        </button>
-      </div>
 
-      <div className="student-dashboard-layout">
-      {/* تب‌بندی ناوبری پنل */}
-      <div className="student-dashboard-nav">
-        <div className="student-sidebar-brand">
-          <div className="student-sidebar-logo">
-            <div className="student-sidebar-logo-mark" aria-hidden="true"><span>ش</span></div>
-            <div><div className="student-sidebar-title">شمسه</div><div className="student-sidebar-subtitle">پنل آموزشی دانشجو</div></div>
+        <div className="student-dashboard-layout">
+          <div className="student-dashboard-nav">
+            <div className="student-sidebar-brand"><div className="student-sidebar-logo"><div style={{width:'42px',height:'42px',flexShrink:0}}><ShamsehMark size={42}/></div><div className="student-sidebar-logo-copy"><div style={{color:textColor,fontSize:'13px',fontWeight:900}}>شمسه</div><div style={{color:subText,fontSize:'8px',marginTop:'3px'}}>سامانه آموزشی دانشجو</div></div></div></div>
+            <button onClick={() => setActiveTab('home')} style={{border:`1px solid ${borderColor}`,backgroundColor:activeTab==='home'?accent:cardBg,color:activeTab==='home'?'#fff':textColor,display:'flex',alignItems:'center',gap:'7px'}}><Home size={14}/> نمای کلی</button>
+            <button onClick={() => setActiveTab('courses')} style={{border:`1px solid ${borderColor}`,backgroundColor:activeTab==='courses'?accent:cardBg,color:activeTab==='courses'?'#fff':textColor,display:'flex',alignItems:'center',gap:'7px'}}><BookOpen size={14}/> دوره‌های من</button>
+            <button onClick={() => setActiveTab('mockExams')} style={{border:`1px solid ${borderColor}`,backgroundColor:activeTab==='mockExams'?accent:cardBg,color:activeTab==='mockExams'?'#fff':textColor,display:'flex',alignItems:'center',gap:'7px'}}><ClipboardList size={14}/> آزمون‌های من</button>
+            <button onClick={handleOpenNotificationTab} style={{border:`1px solid ${borderColor}`,backgroundColor:activeTab==='notifications'?accent:cardBg,color:activeTab==='notifications'?'#fff':textColor,display:'flex',alignItems:'center',gap:'7px'}}><Bell size={14}/> اطلاعیه‌ها {unreadCount>0&&<span style={{marginRight:'auto',backgroundColor:'#ef5d68',color:'#fff',fontSize:'8px',padding:'2px 6px',borderRadius:'999px',fontWeight:900}}>{unreadCount}</span>}</button>
+            <button onClick={() => setActiveTab('counseling')} style={{border:`1px solid ${borderColor}`,backgroundColor:activeTab==='counseling'?accent:cardBg,color:activeTab==='counseling'?'#fff':textColor,display:'flex',alignItems:'center',gap:'7px'}}><CalendarClock size={14}/> مشاوره</button>
+            <button onClick={() => setActiveTab('messages')} style={{border:`1px solid ${borderColor}`,backgroundColor:activeTab==='messages'?accent:cardBg,color:activeTab==='messages'?'#fff':textColor,display:'flex',alignItems:'center',gap:'7px'}}><Send size={14}/> پشتیبانی</button>
+            <div className="student-sidebar-spacer"/>
+            <button className="student-sidebar-logout" onClick={onLogout} style={{display:'flex',alignItems:'center',gap:'7px',border:`1px solid ${isDark?'rgba(170,92,100,.45)':'#ead9d9'}`,color:isDark?'#dba2a7':'#b75d5d',background:isDark?'rgba(130,45,52,.08)':'#fffafa'}}><LogOut size={14}/> خروج از حساب</button>
           </div>
-        </div>
-        <button onClick={() => setActiveTab('home')} style={{ border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'home' ? accent : cardBg, color: activeTab === 'home' ? '#fff' : textColor, display: 'flex', alignItems: 'center', gap: '7px' }}><Home size={14} /> نمای کلی</button>
-        <button onClick={() => setActiveTab('courses')} style={{ border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'courses' ? accent : cardBg, color: activeTab === 'courses' ? '#fff' : textColor, display: 'flex', alignItems: 'center', gap: '7px' }}><BookOpen size={14} /> دوره‌های آموزشی من</button>
-        <button onClick={() => setActiveTab('mockExams')} style={{ border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'mockExams' ? accent : cardBg, color: activeTab === 'mockExams' ? '#fff' : textColor, display: 'flex', alignItems: 'center', gap: '7px' }}><ClipboardList size={14} /> آزمون‌های آزمایشی</button>
-        <button onClick={handleOpenNotificationTab} style={{ border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'notifications' ? accent : cardBg, color: activeTab === 'notifications' ? '#fff' : textColor, display: 'flex', alignItems: 'center', gap: '7px' }}><Bell size={14} /> صندوق اطلاعیه‌ها {unreadCount > 0 && <span style={{ marginRight: 'auto', backgroundColor: '#ef4444', color: '#fff', fontSize: '9px', padding: '2px 6px', borderRadius: '999px', fontWeight: 800 }}>{unreadCount}</span>}</button>
-        <button onClick={() => setActiveTab('counseling')} style={{ border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'counseling' ? accent : cardBg, color: activeTab === 'counseling' ? '#fff' : textColor, display: 'flex', alignItems: 'center', gap: '7px' }}><CalendarClock size={14} /> مشاوره</button>
-        <button onClick={() => setActiveTab('messages')} style={{ border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'messages' ? accent : cardBg, color: activeTab === 'messages' ? '#fff' : textColor, display: 'flex', alignItems: 'center', gap: '7px' }}><Send size={14} /> پیام و پشتیبانی</button>
-        <div className="student-sidebar-spacer" />
-        <button className="student-sidebar-logout" onClick={onLogout} style={{ display: 'flex', alignItems: 'center', gap: '7px', borderColor: isDark ? '#4a3536' : '#ead9d9', color: isDark ? '#e7a3a3' : '#b75d5d', background: isDark ? 'rgba(183,93,93,.07)' : '#fffafa' }}><LogOut size={14} /> خروج از حساب</button>
-      </div>
 
-      <div className="student-dashboard-main" style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '30px' }}>
-        
-        {activeTab === 'home' && (
-          <div className="student-home" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            <div style={{
-              position: 'relative', overflow: 'hidden', minHeight: '190px', borderRadius: '20px',
-              border: `1px solid ${borderColor}`,
-              background: isDark ? 'linear-gradient(135deg, #252a2b 0%, #1e3a3d 100%)' : 'linear-gradient(135deg, #ffffff 0%, #e8f3f2 100%)',
-              padding: '26px 28px', boxSizing: 'border-box',
-              boxShadow: isDark ? '0 14px 34px rgba(0,0,0,.18)' : '0 12px 30px rgba(42,78,78,.07)'
-            }}>
-              <div className="student-home-hero-content" style={{ position: 'relative', zIndex: 2 }}>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', color: accent, fontSize: '10px', fontWeight: 900, marginBottom: '10px' }}>
-                  <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: accent, display: 'inline-block' }} />
-                  داشبورد آموزشی شمسه
+          <div className="student-dashboard-main">
+            {activeTab === 'home' && (
+              <div className="student-home" style={{display:'flex',flexDirection:'column',gap:'12px'}}>
+                <div className="student-home-hero" style={{border:`1px solid ${borderColor}`,background:isDark?'linear-gradient(135deg,rgba(38,54,55,.98),rgba(29,47,48,.98))':'linear-gradient(135deg,rgba(255,255,255,.98),rgba(232,245,244,.96))',padding:'24px 26px',boxSizing:'border-box',boxShadow:isDark?'0 16px 36px rgba(0,0,0,.16)':'0 12px 28px rgba(35,90,90,.06)'}}>
+                  <div className="student-home-hero-content">
+                    <div style={{display:'inline-flex',alignItems:'center',gap:'7px',color:accent,fontSize:'9px',fontWeight:900,marginBottom:'8px'}}><span style={{width:'7px',height:'7px',borderRadius:'50%',backgroundColor:accent}}/> مسیر آموزشی شما</div>
+                    <h2 style={{color:textColor,fontSize:'24px',fontWeight:900,margin:'0 0 7px',letterSpacing:'-.3px'}}>خوش آمدید، {student.fullName}</h2>
+                    <p style={{color:subText,fontSize:'11px',lineHeight:1.9,margin:0,maxWidth:'520px'}}>دوره‌ها، آزمون‌ها، اطلاعیه‌ها و فایل‌های آموزشی شما در یک نمای ساده و حرفه‌ای.</p>
+                    <div style={{display:'flex',gap:'8px',marginTop:'16px',flexWrap:'wrap'}}><button type="button" onClick={() => setActiveTab('courses')} style={{border:'none',backgroundColor:accent,color:'#fff',borderRadius:'10px',padding:'9px 13px',fontSize:'10px',fontWeight:900,cursor:'pointer'}}>مشاهده دوره‌های من</button><button type="button" onClick={() => setActiveTab('mockExams')} style={{border:`1px solid ${borderColor}`,backgroundColor:cardBg,color:textColor,borderRadius:'10px',padding:'8px 12px',fontSize:'10px',fontWeight:800,cursor:'pointer'}}>آزمون‌های من</button></div>
+                  </div>
+                  <div className="student-home-hero-art"><div style={{position:'absolute',left:'54px',top:'54px'}}><ShamsehMark size={108} opacity={.26}/></div></div>
                 </div>
-                <h2 style={{ color: textColor, fontSize: '24px', fontWeight: 900, margin: '0 0 8px', letterSpacing: '-.3px' }}>
-                  خوش آمدید، {student.fullName}
-                </h2>
-                <p style={{ color: subText, fontSize: '12px', lineHeight: 1.9, margin: 0, maxWidth: '520px' }}>
-                  همه چیزهایی که برای ادامه مسیر آموزشی‌تان لازم دارید، همین‌جا در دسترس شماست.
-                </p>
-                <div style={{ display: 'flex', gap: '8px', marginTop: '18px', flexWrap: 'wrap' }}>
-                  <button type="button" onClick={() => setActiveTab('courses')} style={{ border: 'none', backgroundColor: accent, color: '#fff', borderRadius: '9px', padding: '9px 13px', fontSize: '10px', fontWeight: 900, cursor: 'pointer' }}>
-                    مشاهده دوره‌های من
-                  </button>
-                  <button type="button" onClick={() => setActiveTab('mockExams')} style={{ border: `1px solid ${borderColor}`, backgroundColor: cardBg, color: textColor, borderRadius: '9px', padding: '8px 12px', fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>
-                    آزمون‌های من
-                  </button>
-                </div>
-              </div>
-              <div aria-hidden="true" style={{ position: 'absolute', left: '-35px', bottom: '-55px', width: '210px', height: '210px', borderRadius: '50%', background: `radial-gradient(circle, ${accent} 0 2px, transparent 3px), conic-gradient(from 0deg, transparent 0 8deg, rgba(56,131,138,.12) 8deg 12deg, transparent 12deg 30deg)`, opacity: .8 }} />
-              
-              
-              
-            </div>
 
-            <div className="student-dashboard-stat-grid student-home-stat-grid">
-              {[
-                { label: 'دوره‌های فعال', value: enrolledCourses.length, icon: BookOpen, note: 'دوره آموزشی شما' },
-                { label: 'آزمون‌های پیش‌رو', value: mockExams.filter(exam => new Date(exam.examDate).getTime() >= Date.now() && exam.status !== 'CANCELLED').length, icon: ClipboardList, note: 'آزمون در برنامه' },
-                { label: 'خوانده‌نشده', value: unreadCount, icon: Bell, note: unreadCount ? 'نیازمند توجه شما' : 'همه اطلاعیه‌ها خوانده شده' },
-              ].map(stat => {
-                const Icon = stat.icon;
-                return (
-                  <div key={stat.label} style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '14px', padding: '14px 15px', minHeight: '82px', boxSizing: 'border-box', boxShadow: isDark ? 'none' : '0 5px 16px rgba(30,70,70,.035)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-                      <div style={{ width: '30px', height: '30px', borderRadius: '9px', backgroundColor: accentSoft, color: accent, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Icon size={15} />
-                      </div>
-                      <span style={{ color: subText, fontSize: '9px', fontWeight: 700 }}>{stat.note}</span>
+                <div className="student-dashboard-stat-grid">
+                  {[
+                    {label:'دوره‌های فعال',value:enrolledCourses.length,icon:BookOpen,note:'دوره آموزشی'},
+                    {label:'آزمون‌های پیش‌رو',value:mockExams.filter(exam=>new Date(exam.examDate).getTime()>=Date.now()&&exam.status!=='CANCELLED').length,icon:ClipboardList,note:'در برنامه'},
+                    {label:'اطلاعیه جدید',value:unreadCount,icon:Bell,note:unreadCount?'نیازمند توجه':'همه خوانده شده'}
+                  ].map(stat=>{const Icon=stat.icon;return <div key={stat.label} style={{backgroundColor:cardBg,border:`1px solid ${borderColor}`,borderRadius:'14px',padding:'14px 15px',minHeight:'82px',boxSizing:'border-box'}}><div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:'8px'}}><div style={{width:'31px',height:'31px',borderRadius:'10px',backgroundColor:accentSoft,color:accent,display:'grid',placeItems:'center'}}><Icon size={15}/></div><span style={{color:subText,fontSize:'9px',fontWeight:700}}>{stat.note}</span></div><div style={{display:'flex',alignItems:'baseline',justifyContent:'space-between',marginTop:'8px'}}><span style={{color:textColor,fontSize:'21px',fontWeight:900}}>{stat.value}</span><span style={{color:subText,fontSize:'10px',fontWeight:800}}>{stat.label}</span></div></div>})}
+                </div>
+
+                <div className="student-dashboard-home-grid">
+                  <div style={{display:'flex',flexDirection:'column',gap:'12px',minWidth:0}}>
+                    <div className="student-home-exam" style={{backgroundColor:cardBg,border:`1px solid ${borderColor}`,padding:'18px'}}>
+                      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'12px',gap:'10px'}}><div><div style={{color:accent,fontSize:'9px',fontWeight:900,marginBottom:'3px'}}>آزمون پیش‌رو</div><h3 style={{color:textColor,fontSize:'17px',fontWeight:900,margin:0}}>نزدیک‌ترین آزمون</h3></div><button type="button" onClick={() => setActiveTab('mockExams')} style={{border:'none',background:'transparent',color:accent,fontSize:'10px',fontWeight:900,cursor:'pointer'}}>مشاهده همه</button></div>
+                      {(() => { const nextExam=[...mockExams].filter(exam=>new Date(exam.examDate).getTime()>=Date.now()&&exam.status!=='CANCELLED').sort((a,b)=>new Date(a.examDate).getTime()-new Date(b.examDate).getTime())[0]; return nextExam ? <div style={{backgroundColor:innerCardBg,border:`1px solid ${borderColor}`,borderRadius:'13px',padding:'15px'}}><div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:'10px'}}><div style={{color:textColor,fontSize:'15px',fontWeight:900}}>{nextExam.title}</div><span style={{backgroundColor:accentSoft,color:accent,borderRadius:'999px',padding:'4px 8px',fontSize:'9px',fontWeight:900}}>پیش‌رو</span></div><div style={{color:subText,fontSize:'10px',marginTop:'7px'}}>{new Intl.DateTimeFormat('fa-IR',{dateStyle:'full',timeStyle:'short',timeZone:'Asia/Tehran'}).format(new Date(nextExam.examDate))}</div><div style={{display:'flex',gap:'7px',marginTop:'11px',flexWrap:'wrap'}}>{nextExam.level&&<span style={{backgroundColor:accentSoft,color:accent,borderRadius:'7px',padding:'4px 8px',fontSize:'9px',fontWeight:800}}>{nextExam.level}</span>}{nextExam.field&&<span style={{backgroundColor:isDark?'rgba(255,255,255,.05)':'#eef1f0',color:subText,borderRadius:'7px',padding:'4px 8px',fontSize:'9px',fontWeight:700}}>{nextExam.field}</span>}</div><button type="button" onClick={() => setSelectedMockExam(nextExam)} style={{width:'100%',marginTop:'12px',border:'none',backgroundColor:accent,color:'#fff',borderRadius:'10px',padding:'10px',fontSize:'10px',fontWeight:900,cursor:'pointer'}}>مشاهده جزئیات آزمون</button></div>:<div style={{color:subText,fontSize:'11px',lineHeight:1.8,padding:'24px 8px',textAlign:'center',backgroundColor:innerCardBg,borderRadius:'12px'}}>در حال حاضر آزمون پیش‌روئی برای شما ثبت نشده است.</div>})()}
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginTop: '8px' }}>
-                      <span style={{ color: textColor, fontSize: '21px', fontWeight: 900 }}>{stat.value}</span>
-                      <span style={{ color: subText, fontSize: '10px', fontWeight: 800 }}>{stat.label}</span>
+
+                    <div style={{backgroundColor:cardBg,border:`1px solid ${borderColor}`,padding:'18px'}}>
+                      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'12px'}}><div><div style={{color:accent,fontSize:'9px',fontWeight:900,marginBottom:'3px'}}>دوره‌های آموزشی</div><h3 style={{color:textColor,fontSize:'17px',fontWeight:900,margin:0}}>دوره‌های من</h3></div><button type="button" onClick={() => setActiveTab('courses')} style={{border:'none',background:'transparent',color:accent,fontSize:'10px',fontWeight:900,cursor:'pointer'}}>مشاهده همه</button></div>
+                      {enrolledCourses.length===0?<div style={{color:subText,fontSize:'11px',padding:'18px',textAlign:'center'}}>هنوز دوره‌ای برای شما ثبت نشده است.</div>:<div style={{display:'grid',gridTemplateColumns:'repeat(2,minmax(0,1fr))',gap:'10px'}}>{enrolledCourses.slice(0,4).map(course=><button key={course.id} type="button" onClick={() => setActiveTab('courses')} style={{textAlign:'right',border:`1px solid ${borderColor}`,backgroundColor:innerCardBg,borderRadius:'13px',padding:'8px',cursor:'pointer',minWidth:0}}><div className="student-course-cover" style={course.coverImage?{backgroundImage:`url("${course.coverImage}")`,backgroundSize:'cover',backgroundPosition:'center'}:undefined}><span style={{position:'absolute',right:'9px',bottom:'8px',backgroundColor:'rgba(20,80,82,.78)',color:'#fff',padding:'4px 7px',borderRadius:'999px',fontSize:'8px',fontWeight:800}}>فعال</span></div><div style={{color:textColor,fontSize:'10px',fontWeight:900,marginTop:'8px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{course.title}</div><div style={{color:subText,fontSize:'9px',marginTop:'3px'}}>{course.professor||'مدرس مشخص نشده'}</div></button>)}</div>}
                     </div>
                   </div>
-                );
-              })}
-            </div>
 
-            <div className="student-dashboard-home-grid">
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', minWidth: 0 }}>
-                <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '16px', padding: '18px', boxShadow: isDark ? 'none' : '0 6px 20px rgba(30,70,70,.035)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', gap: '10px' }}>
-                    <div>
-                      <div style={{ color: accent, fontSize: '9px', fontWeight: 900, marginBottom: '3px' }}>آزمون بعدی</div>
-                      <h3 style={{ color: textColor, fontSize: '15px', fontWeight: 900, margin: 0 }}>نزدیک‌ترین آزمون</h3>
+                  <div style={{display:'flex',flexDirection:'column',gap:'12px',minWidth:0}}>
+                    <div style={{backgroundColor:cardBg,border:`1px solid ${borderColor}`,padding:'18px'}}>
+                      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'10px'}}><div><div style={{color:accent,fontSize:'9px',fontWeight:900,marginBottom:'3px'}}>آخرین خبرها</div><h3 style={{color:textColor,fontSize:'17px',fontWeight:900,margin:0}}>آخرین اطلاعیه‌ها</h3></div><button type="button" onClick={handleOpenNotificationTab} style={{border:'none',background:'transparent',color:accent,fontSize:'10px',fontWeight:900,cursor:'pointer'}}>مشاهده همه</button></div>
+                      {studentNotifications.length===0?<div style={{color:subText,fontSize:'11px',padding:'18px 4px',textAlign:'center'}}>اطلاعیه جدیدی ندارید.</div>:<div style={{display:'flex',flexDirection:'column',gap:'8px'}}>{studentNotifications.slice(0,3).map(n=><button key={n.id} type="button" onClick={handleOpenNotificationTab} style={{textAlign:'right',border:`1px solid ${borderColor}`,backgroundColor:innerCardBg,borderRadius:'11px',padding:'10px',cursor:'pointer'}}><div style={{color:textColor,fontSize:'10px',fontWeight:900}}>{n.title}</div><div style={{color:subText,fontSize:'8px',marginTop:'4px'}}>{new Date(n.createdAt).toLocaleDateString('fa-IR')}</div></button>)}</div>}
                     </div>
-                    <button type="button" onClick={() => setActiveTab('mockExams')} style={{ border: 'none', background: 'transparent', color: accent, fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>مشاهده همه</button>
-                  </div>
-                  {(() => {
-                    const nextExam = [...mockExams].filter(exam => new Date(exam.examDate).getTime() >= Date.now() && exam.status !== 'CANCELLED').sort((a, b) => new Date(a.examDate).getTime() - new Date(b.examDate).getTime())[0];
-                    return nextExam ? (
-                      <div style={{ backgroundColor: innerCardBg, border: `1px solid ${borderColor}`, borderRadius: '12px', padding: '15px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px' }}>
-                          <div style={{ color: textColor, fontSize: '14px', fontWeight: 900 }}>{nextExam.title}</div>
-                          <span style={{ backgroundColor: accentSoft, color: accent, borderRadius: '999px', padding: '4px 8px', fontSize: '9px', fontWeight: 900 }}>پیش‌رو</span>
-                        </div>
-                        <div style={{ color: subText, fontSize: '10px', marginTop: '7px' }}>
-                          {new Intl.DateTimeFormat('fa-IR', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Asia/Tehran' }).format(new Date(nextExam.examDate))}
-                        </div>
-                        <div style={{ display: 'flex', gap: '7px', marginTop: '11px', flexWrap: 'wrap' }}>
-                          {nextExam.level && <span style={{ backgroundColor: accentSoft, color: accent, borderRadius: '7px', padding: '4px 8px', fontSize: '9px', fontWeight: 800 }}>{nextExam.level}</span>}
-                          {nextExam.field && <span style={{ backgroundColor: isDark ? 'rgba(255,255,255,.05)' : '#eef1f0', color: subText, borderRadius: '7px', padding: '4px 8px', fontSize: '9px', fontWeight: 700 }}>{nextExam.field}</span>}
-                        </div>
-                        <button type="button" onClick={() => setSelectedMockExam(nextExam)} style={{ width: '100%', marginTop: '12px', border: 'none', backgroundColor: accent, color: '#fff', borderRadius: '9px', padding: '9px', fontSize: '10px', fontWeight: 900, cursor: 'pointer' }}>مشاهده جزئیات آزمون</button>
-                      </div>
-                    ) : (
-                      <div style={{ color: subText, fontSize: '11px', lineHeight: 1.8, padding: '22px 8px', textAlign: 'center', backgroundColor: innerCardBg, borderRadius: '12px' }}>در حال حاضر آزمون پیش‌روئی برای شما ثبت نشده است.</div>
-                    );
-                  })()}
-                </div>
-
-                <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '16px', padding: '18px', boxShadow: isDark ? 'none' : '0 6px 20px rgba(30,70,70,.035)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                    <div>
-                      <div style={{ color: accent, fontSize: '9px', fontWeight: 900, marginBottom: '3px' }}>مسیر آموزشی</div>
-                      <h3 style={{ color: textColor, fontSize: '15px', fontWeight: 900, margin: 0 }}>دوره‌های من</h3>
-                    </div>
-                    <button type="button" onClick={() => setActiveTab('courses')} style={{ border: 'none', background: 'transparent', color: accent, fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>مشاهده همه</button>
-                  </div>
-                  {enrolledCourses.length === 0 ? (
-                    <div style={{ color: subText, fontSize: '11px', padding: '18px 4px', textAlign: 'center' }}>هنوز دوره‌ای برای شما ثبت نشده است.</div>
-                  ) : (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '9px' }}>
-                      {enrolledCourses.slice(0, 4).map(course => (
-                        <button key={course.id} type="button" onClick={() => setActiveTab('courses')} style={{ textAlign: 'right', border: `1px solid ${borderColor}`, backgroundColor: innerCardBg, borderRadius: '11px', padding: '11px', cursor: 'pointer', minWidth: 0 }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '7px' }}>
-                            <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: accent, flexShrink: 0 }} />
-                            <span style={{ color: textColor, fontSize: '10px', fontWeight: 900, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{course.title}</span>
-                          </div>
-                          <span style={{ color: subText, fontSize: '9px' }}>{course.professor || 'مدرس مشخص نشده'}</span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', minWidth: 0 }}>
-                <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '16px', padding: '18px', boxShadow: isDark ? 'none' : '0 6px 20px rgba(30,70,70,.035)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                    <div>
-                      <div style={{ color: accent, fontSize: '9px', fontWeight: 900, marginBottom: '3px' }}>جدیدترین‌ها</div>
-                      <h3 style={{ color: textColor, fontSize: '15px', fontWeight: 900, margin: 0 }}>آخرین اطلاعیه‌ها</h3>
-                    </div>
-                    <button type="button" onClick={handleOpenNotificationTab} style={{ border: 'none', background: 'transparent', color: accent, fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>مشاهده همه</button>
-                  </div>
-                  {studentNotifications.length === 0 ? (
-                    <div style={{ color: subText, fontSize: '11px', padding: '18px 4px', textAlign: 'center' }}>اطلاعیه جدیدی ندارید.</div>
-                  ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      {studentNotifications.slice(0, 3).map(notification => (
-                        <button key={notification.id} type="button" onClick={handleOpenNotificationTab} style={{ textAlign: 'right', border: `1px solid ${borderColor}`, backgroundColor: innerCardBg, borderRadius: '10px', padding: '10px', cursor: 'pointer' }}>
-                          <div style={{ color: textColor, fontSize: '10px', fontWeight: 900 }}>{notification.title}</div>
-                          <div style={{ color: subText, fontSize: '8px', marginTop: '4px' }}>{new Date(notification.createdAt).toLocaleDateString('fa-IR')}</div>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '16px', padding: '18px', boxShadow: isDark ? 'none' : '0 6px 20px rgba(30,70,70,.035)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-                    <CalendarClock size={16} color={accent} />
-                    <div>
-                      <div style={{ color: accent, fontSize: '9px', fontWeight: 900 }}>پشتیبانی و مشاوره</div>
-                      <h3 style={{ color: textColor, fontSize: '15px', fontWeight: 900, margin: 0 }}>مشاوره</h3>
+                    <div style={{backgroundColor:cardBg,border:`1px solid ${borderColor}`,padding:'18px'}}>
+                      <div style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'10px'}}><CalendarClock size={16} color={accent}/><div><div style={{color:accent,fontSize:'9px',fontWeight:900}}>پشتیبانی و مشاوره</div><h3 style={{color:textColor,fontSize:'17px',fontWeight:900,margin:0}}>مشاوره</h3></div></div>
+                      {counselingRequests.length>0?<div style={{backgroundColor:innerCardBg,borderRadius:'11px',padding:'11px',color:textColor,fontSize:'10px',fontWeight:800}}>{formatCounselingDate(counselingRequests[0].slot.startAt)}</div>:<div style={{color:subText,fontSize:'10px',lineHeight:1.8}}>برای دریافت مشاوره، یک زمان مناسب از بخش مشاوره انتخاب کنید.</div>}
+                      <button type="button" onClick={() => setActiveTab('counseling')} style={{marginTop:'10px',border:'none',background:'transparent',color:accent,padding:0,fontSize:'10px',fontWeight:900,cursor:'pointer'}}>ورود به مشاوره ←</button>
                     </div>
                   </div>
-                  {counselingRequests.length > 0 ? (
-                    <div style={{ backgroundColor: innerCardBg, borderRadius: '10px', padding: '10px', color: textColor, fontSize: '10px', fontWeight: 800 }}>
-                      {formatCounselingDate(counselingRequests[0].slot.startAt)}
-                    </div>
-                  ) : (
-                    <div style={{ color: subText, fontSize: '10px', lineHeight: 1.8 }}>برای دریافت مشاوره، یک زمان مناسب از بخش مشاوره انتخاب کنید.</div>
-                  )}
-                  <button type="button" onClick={() => setActiveTab('counseling')} style={{ marginTop: '10px', border: 'none', background: 'transparent', color: accent, padding: 0, fontSize: '10px', fontWeight: 900, cursor: 'pointer' }}>ورود به مشاوره ←</button>
+                </div>
+
+                <div style={{backgroundColor:cardBg,border:`1px solid ${borderColor}`,padding:'18px'}}>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:'10px',marginBottom:'12px'}}><div><div style={{color:accent,fontSize:'9px',fontWeight:900,marginBottom:'3px'}}>محتوای آموزشی</div><h3 style={{color:textColor,fontSize:'17px',fontWeight:900,margin:0}}>فایل‌های دوره‌های من</h3></div><button type="button" onClick={() => setActiveTab('courses')} style={{border:'none',background:'transparent',color:accent,fontSize:'10px',fontWeight:900,cursor:'pointer'}}>مشاهده فایل‌ها</button></div>
+                  {(() => { const dashboardFiles=Object.entries(courseFiles).flatMap(([courseId,files])=>files.map(file=>({file,courseTitle:enrolledCourses.find(c=>c.id===courseId)?.title||'دوره آموزشی'}))).slice(0,6); return dashboardFiles.length===0?<div style={{color:subText,fontSize:'11px',padding:'24px',textAlign:'center',backgroundColor:innerCardBg,borderRadius:'12px'}}>هنوز فایلی برای دوره‌های شما ثبت نشده است.</div>:<div style={{display:'grid',gridTemplateColumns:'repeat(2,minmax(0,1fr))',gap:'8px'}}>{dashboardFiles.map(({file,courseTitle})=><div key={file.id} className="student-file-row"><div style={{display:'flex',alignItems:'center',gap:'9px',minWidth:0}}><div style={{width:'34px',height:'34px',borderRadius:'10px',display:'grid',placeItems:'center',backgroundColor:accentSoft,color:accent,fontSize:'8px',fontWeight:900}}>{file.type==='PDF'?'PDF':file.type==='VIDEO'?'MP4':file.type==='POWERPOINT'?'PPT':file.type==='DOCUMENT'?'DOC':file.type==='AUDIO'?'MP3':'LINK'}</div><div style={{minWidth:0}}><div style={{color:textColor,fontSize:'10px',fontWeight:900,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{file.title}</div><div style={{color:subText,fontSize:'8px',marginTop:'3px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{courseTitle}</div></div></div><span style={{color:subText,fontSize:'8px',whiteSpace:'nowrap'}}>{file.fileSize||''}</span><button type="button" className="student-file-action" onClick={() => setViewerFile(file)}>{file.type==='LINK'?'بازکردن':'مشاهده فایل'}</button></div>)}</div>})()}
                 </div>
               </div>
-            </div>
-
-            <div style={{ backgroundColor: isDark ? '#252a2b' : '#eef5f4', border: `1px solid ${borderColor}`, borderRadius: '14px', padding: '13px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
-              <div>
-                <div style={{ color: textColor, fontSize: '11px', fontWeight: 900 }}>دسترسی سریع</div>
-                <div style={{ color: subText, fontSize: '9px', marginTop: '3px' }}>میانبرهای پرکاربرد پنل</div>
-              </div>
-              <div style={{ display: 'flex', gap: '7px', flexWrap: 'wrap' }}>
-                <button type="button" onClick={() => setActiveTab('courses')} style={{ border: `1px solid ${borderColor}`, backgroundColor: cardBg, color: textColor, borderRadius: '8px', padding: '7px 10px', fontSize: '9px', fontWeight: 800, cursor: 'pointer' }}>دوره‌ها</button>
-                <button type="button" onClick={() => setActiveTab('notifications')} style={{ border: `1px solid ${borderColor}`, backgroundColor: cardBg, color: textColor, borderRadius: '8px', padding: '7px 10px', fontSize: '9px', fontWeight: 800, cursor: 'pointer' }}>اطلاعیه‌ها</button>
-                <button type="button" onClick={() => setActiveTab('messages')} style={{ border: `1px solid ${borderColor}`, backgroundColor: cardBg, color: textColor, borderRadius: '8px', padding: '7px 10px', fontSize: '9px', fontWeight: 800, cursor: 'pointer' }}>پشتیبانی</button>
-              </div>
-            </div>
-          </div>
-        )}
-
+            )}
         {activeTab === 'courses' && (
           <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, backdropFilter: 'blur(16px)', padding: '32px', borderRadius: '24px', boxShadow: '0 16px 40px rgba(0,0,0,0.1)' }}>
             <h2 style={{ fontSize: '16px', fontWeight: 800, color: textColor, margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
