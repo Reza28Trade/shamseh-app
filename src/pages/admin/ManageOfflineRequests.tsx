@@ -65,7 +65,7 @@ export const ManageOfflineRequests: React.FC = () => {
   const statusLabel = (status: Status) => status === 'APPROVED' ? 'تأیید شده' : status === 'REJECTED' ? 'رد شده' : 'در انتظار بررسی';
 
   return (
-    <div className="admin-legacy-page admin-offline-page" style={{ backgroundColor: '#0e0e11', border: '1px solid #222228', borderRadius: '20px', padding: '32px', color: '#fff', direction: 'rtl' }}>
+    <div className="admin-legacy-page admin-offline-page" className="admin-legacy-page admin-offline-page" style={{ backgroundColor: '#0e0e11', border: '1px solid #222228', borderRadius: '20px', padding: '32px', color: '#fff', direction: 'rtl' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
         <h2 style={{ fontSize: '16px', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
           <BookOpen size={18} color="#ff3366" /> مدیریت درخواست‌های کلاس‌های آفلاین هنرجویان
