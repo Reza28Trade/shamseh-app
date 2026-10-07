@@ -598,20 +598,22 @@ export const ManageCourses: React.FC = () => {
               <h3 style={{ color: '#fff', margin: 0, fontSize: 14 }}>افزودن هنرجو به دوره</h3>
               <button type="button" onClick={() => setEnrollmentTarget(null)} style={{ background: 'transparent', border: 0, color: '#94a3b8', cursor: 'pointer' }}><X size={16} /></button>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 280, overflowY: 'auto', marginBottom: 12 }}>
-              {(enrollments[enrollmentTarget] || []).length === 0 ? (
-                <p style={{ color: '#64748b', fontSize: 10, margin: 0 }}>هنوز هنرجویی در این دوره ثبت نشده است.</p>
-              ) : (
-                (enrollments[enrollmentTarget] || []).map(enrollment => (
-                  <div key={enrollment.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, background: '#0e0e11', border: '1px solid #25252b', borderRadius: 10, padding: 9 }}>
-                    <div>
-                      <strong style={{ color: '#fff', fontSize: 11 }}>{enrollment.student.fullName}</strong>
-                      <div style={{ color: '#64748b', fontSize: 9, marginTop: 3 }}>{enrollment.student.nationalId} · {enrollment.student.phone}</div>
+            <div style={{ maxHeight: 'min(42vh, 320px)', overflowY: 'auto', paddingLeft: 3, marginBottom: 12 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {(enrollments[enrollmentTarget] || []).length === 0 ? (
+                  <p style={{ color: '#64748b', fontSize: 10, margin: 0 }}>هنوز هنرجویی در این دوره ثبت نشده است.</p>
+                ) : (
+                  (enrollments[enrollmentTarget] || []).map(enrollment => (
+                    <div key={enrollment.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, background: '#0e0e11', border: '1px solid #25252b', borderRadius: 10, padding: 9 }}>
+                      <div style={{ minWidth: 0 }}>
+                        <strong style={{ color: '#fff', fontSize: 11 }}>{enrollment.student.fullName}</strong>
+                        <div style={{ color: '#64748b', fontSize: 9, marginTop: 3 }}>{enrollment.student.nationalId} · {enrollment.student.phone}</div>
+                      </div>
+                      <button type="button" onClick={() => void removeEnrollment(enrollmentTarget, enrollment)} style={button('rgba(239,68,68,.1)', '#f87171')}><Trash2 size={11} /> حذف</button>
                     </div>
-                    <button type="button" onClick={() => void removeEnrollment(enrollmentTarget, enrollment)} style={button('rgba(239,68,68,.1)', '#f87171')}><Trash2 size={11} /> حذف</button>
-                  </div>
-                ))
-              )}
+                  ))
+                )}
+              </div>
             </div>
             <select value={selectedStudentId} onChange={e => setSelectedStudentId(e.target.value)} style={input}>
               <option value="">انتخاب هنرجوی جدید...</option>
