@@ -89,6 +89,7 @@ export class CoursesService {
       const enrollment = await this.prisma.enrollment.findUnique({
         where: { studentId_courseId: { studentId: user.studentId, courseId } },
       });
+      if (course.status !== 'ACTIVE') throw new ForbiddenException('Course is not active');
       if (!enrollment || enrollment.status !== 'ACTIVE') throw new ForbiddenException('Course access denied');
     }
     return course;
