@@ -8,7 +8,7 @@ interface StudentOption {
   id: string;
   fullName: string;
   nationalId: string;
-  levels?: string[];
+  academicLevel?: 'MASTER' | 'DOCTORATE' | '';
 }
 
 interface MockExamParticipant {
@@ -78,11 +78,7 @@ export const ManageMockExams: React.FC = () => {
               id: student.id,
               fullName: student.fullName,
               nationalId: student.nationalId,
-              levels: Array.from(new Set(
-                student.enrollments
-                  .filter((enrollment: any) => enrollment.status === 'ACTIVE' && enrollment.course?.level)
-                  .map((enrollment: any) => enrollment.course.level),
-              )),
+              academicLevel: student.academicLevel ?? '',
             }))
           : [],
       );
@@ -444,7 +440,7 @@ export const ManageMockExams: React.FC = () => {
                         ] as const).map(([value, label]) => {
                           const count = value === 'ALL'
                             ? students.length
-                            : students.filter(student => (student.levels ?? []).some(level => value === 'DOCTORATE' ? /دکتری|دکترا/i.test(level) : /ارشد/i.test(level))).length;
+                            : students.filter(student => student.academicLevel === value).length;
                           return (
                             <button
                               key={value}
@@ -474,9 +470,7 @@ export const ManageMockExams: React.FC = () => {
                       {students
                         .filter(student => {
                           if (participantGroup === 'ALL') return true;
-                          return (student.levels ?? []).some(level =>
-                            participantGroup === 'DOCTORATE' ? /دکتری|دکترا/i.test(level) : /ارشد/i.test(level),
-                          );
+                          return student.academicLevel === participantGroup;
                         })
                         .map((student) => {
                           const selected = exam.participants.some((item) => item.student.id === student.id);
@@ -497,7 +491,7 @@ export const ManageMockExams: React.FC = () => {
                             >
                               <div>{student.fullName}</div>
                               <div style={{ color: '#64748b', fontSize: 9, marginTop: 4 }}>
-                                {student.nationalId} · {(student.levels ?? []).join('، ') || 'مقطع نامشخص'}
+                                {student.nationalId} · {student.academicLevel === 'MASTER' ? 'ارشد' : student.academicLevel === 'DOCTORATE' ? 'دکتری' : 'مقطع نامشخص'}
                               </div>
                             </button>
                           );
