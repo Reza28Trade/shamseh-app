@@ -7,6 +7,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { SupportModule } from './support/support.module';
 import { OfflineRequestsModule } from './offline-requests/offline-requests.module';
 import { MockExamsModule } from './mock-exams/mock-exams.module';
+import { GeneralContentModule } from './general-content/general-content.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { MockExamsModule } from './mock-exams/mock-exams.module';
     SupportModule,
     OfflineRequestsModule,
     MockExamsModule,
+    GeneralContentModule,
   ],
 })
 export class AppModule {}
