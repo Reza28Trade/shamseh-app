@@ -269,7 +269,6 @@ export const ManageCounseling: React.FC = () => {
         {loading ? <div style={{ color: '#888', padding: '30px', textAlign: 'center', fontSize: '12px' }}>در حال دریافت...</div> : slots.length === 0 ? <div style={{ color: '#888', padding: '30px', textAlign: 'center', fontSize: '12px', background: '#141419', borderRadius: '14px' }}>هنوز زمانی ایجاد نشده است.</div> : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {slots.map(slot => {
-              const style = slotStyle[slot.status];
               return <div key={slot.id} style={{ background: '#141419', border: '1px solid #222228', borderRadius: '14px', padding: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '14px', flexWrap: 'wrap' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   <strong style={{ fontSize: '13px' }}>{formatDate(slot.startAt)}</strong>
