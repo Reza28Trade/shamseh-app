@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthenticatedUser } from '../auth/auth.types';
@@ -32,6 +32,11 @@ export class StudentsController {
   @Patch('admin/students/:studentId')
   updateStudent(@Req() req: AuthenticatedRequest, @Param('studentId') studentId: string, @Body() dto: UpdateStudentDto) {
     return this.studentsService.updateStudent(req.user, studentId, dto);
+  }
+
+  @Delete('admin/students/:studentId')
+  deleteStudent(@Req() req: AuthenticatedRequest, @Param('studentId') studentId: string) {
+    return this.studentsService.deleteStudent(req.user, studentId);
   }
 
   @Patch('admin/students/:studentId/password')
