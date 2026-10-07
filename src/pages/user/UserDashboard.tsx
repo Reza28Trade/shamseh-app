@@ -551,6 +551,13 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         .student-dashboard-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
         .student-dashboard-soft-card { border: 1px solid ${borderColor}; background: ${innerCardBg}; border-radius: 12px; }
         .student-dashboard-nav button:hover { filter: brightness(.985); }
+        .student-sidebar-brand { padding: 10px 8px 12px; border-bottom: 1px solid rgba(128,150,150,.18); margin-bottom: 3px; }
+        .student-sidebar-logo { display: flex; align-items: center; gap: 9px; }
+        .student-sidebar-logo-mark { width: 32px; height: 32px; border: 1.5px solid #38838a; border-radius: 10px; display: grid; place-items: center; color: #38838a; font-size: 14px; font-weight: 900; transform: rotate(45deg); }
+        .student-sidebar-logo-mark span { transform: rotate(-45deg); }
+        .student-sidebar-title { color: inherit; font-size: 12px; font-weight: 900; }
+        .student-sidebar-subtitle { color: inherit; opacity: .62; font-size: 8px; margin-top: 2px; }
+        .student-sidebar-spacer { flex: 1; min-height: 18px; }
         .student-dashboard-main h2 { font-size: 18px !important; }
         .student-dashboard-main h3 { line-height: 1.5; }
         .student-home-hero-content { max-width: 68%; }
@@ -575,68 +582,37 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
       `}</style>
       <div className="student-dashboard-shell">
       {/* هدر پنل دانشجو */}
-      <div className="student-dashboard-header" style={{ maxWidth: '1100px', margin: '0 auto 30px auto', background: isDark ? 'linear-gradient(135deg, rgba(56, 131, 138, 0.20) 0%, #202425 72%)' : 'linear-gradient(135deg, #ffffff 0%, #eef5f4 100%)', border: isDark ? '1px solid rgba(56, 131, 138, 0.38)' : '1px solid #d7e7e6', padding: '28px 36px', borderRadius: '24px', backdropFilter: 'blur(16px)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: isDark ? '0 14px 36px rgba(0,0,0,0.22)' : '0 12px 30px rgba(30,70,70,0.07)' }}>
+      <div className="student-dashboard-header" style={{ background: isDark ? 'linear-gradient(135deg, rgba(56, 131, 138, 0.17) 0%, #202425 72%)' : 'linear-gradient(135deg, #ffffff 0%, #eef5f4 100%)', border: isDark ? '1px solid rgba(56, 131, 138, 0.30)' : '1px solid #d7e7e6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <h1 style={{ fontSize: '20px', fontWeight: 900, color: textColor, margin: '0 0 6px 0' }}>سامانه آموزشی شمسه - پنل دانشجو</h1>
-          <p style={{ fontSize: '12px', color: subText, margin: 0 }}>خوش آمدید، <strong style={{ color: accent }}>{student.fullName}</strong></p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '3px' }}>
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: accent, display: 'inline-block' }} />
+            <span style={{ fontSize: '10px', fontWeight: 800, color: accent }}>سامانه آموزشی شمسه</span>
+          </div>
+          <h1 style={{ fontSize: '17px', fontWeight: 900, color: textColor, margin: 0 }}>پنل دانشجو</h1>
+          <p style={{ fontSize: '11px', color: subText, margin: '4px 0 0' }}>خوش آمدید، <strong style={{ color: accent }}>{student.fullName}</strong></p>
         </div>
-
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <button onClick={toggleTheme} style={{ backgroundColor: isDark ? 'rgba(255,255,255,0.06)' : '#ffffff', border: `1px solid ${borderColor}`, color: textColor, padding: '9px 12px', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700 }}>
-            {isDark ? <Sun size={16} color="#fbbf24" /> : <Moon size={16} color="#64748b" />}
-            {isDark ? 'حالت روز' : 'حالت شب'}
-          </button>
-          
-          <button onClick={onLogout} style={{ backgroundColor: isDark ? 'rgba(248,113,113,.08)' : '#fff3f3', color: '#d95c5c', border: '1px solid rgba(217,92,92,.18)', padding: '10px 16px', borderRadius: '12px', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 800 }}>
-            <LogOut size={16} /> خروج از حساب
-          </button>
-        </div>
+        <button aria-label={isDark ? 'فعال‌کردن حالت روز' : 'فعال‌کردن حالت شب'} onClick={toggleTheme} style={{ width: '38px', height: '38px', backgroundColor: isDark ? 'rgba(255,255,255,0.06)' : '#ffffff', border: `1px solid ${borderColor}`, color: textColor, borderRadius: '11px', cursor: 'pointer', display: 'grid', placeItems: 'center' }}>
+          {isDark ? <Sun size={17} color="#fbbf24" /> : <Moon size={17} color="#64748b" />}
+        </button>
       </div>
 
       <div className="student-dashboard-layout">
       {/* تب‌بندی ناوبری پنل */}
-      <div className="student-dashboard-nav" style={{ maxWidth: '1100px', margin: '0 auto 20px auto', display: 'flex', gap: '12px' }}>
-        <button
-          onClick={() => setActiveTab('home')}
-          style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'home' ? accent : cardBg, color: activeTab === 'home' ? '#fff' : textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
-        >
-          <Home size={14} /> نمای کلی
-        </button>
-        <button 
-          onClick={() => setActiveTab('courses')}
-          style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'courses' ? accent : cardBg, color: textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer' }}
-        >
-          دوره‌های آموزشی من
-        </button>
-        <button
-          onClick={() => setActiveTab('mockExams')}
-          style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'mockExams' ? accent : cardBg, color: textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
-        >
-          <ClipboardList size={14} /> آزمون‌های آزمایشی
-        </button>
-        <button 
-          onClick={handleOpenNotificationTab}
-          style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'notifications' ? accent : cardBg, color: textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
-        >
-          <Bell size={14} /> صندوق اطلاعیه‌ها 
-          {unreadCount > 0 && (
-            <span style={{ backgroundColor: '#ef4444', color: '#fff', fontSize: '10px', padding: '2px 6px', borderRadius: '50%', fontWeight: 800 }}>
-              {unreadCount}
-            </span>
-          )}
-        </button>
-        <button 
-          onClick={() => setActiveTab('counseling')}
-          style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'counseling' ? accent : cardBg, color: textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
-        >
-          <CalendarClock size={14} /> مشاوره
-        </button>
-        <button 
-          onClick={() => setActiveTab('messages')}
-          style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'messages' ? accent : cardBg, color: textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer' }}
-        >
-          ارسال پیام و تیکت پشتیبانی
-        </button>
+      <div className="student-dashboard-nav">
+        <div className="student-sidebar-brand">
+          <div className="student-sidebar-logo">
+            <div className="student-sidebar-logo-mark" aria-hidden="true"><span>ش</span></div>
+            <div><div className="student-sidebar-title">شمسه</div><div className="student-sidebar-subtitle">پنل آموزشی دانشجو</div></div>
+          </div>
+        </div>
+        <button onClick={() => setActiveTab('home')} style={{ border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'home' ? accent : cardBg, color: activeTab === 'home' ? '#fff' : textColor, display: 'flex', alignItems: 'center', gap: '7px' }}><Home size={14} /> نمای کلی</button>
+        <button onClick={() => setActiveTab('courses')} style={{ border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'courses' ? accent : cardBg, color: activeTab === 'courses' ? '#fff' : textColor, display: 'flex', alignItems: 'center', gap: '7px' }}><BookOpen size={14} /> دوره‌های آموزشی من</button>
+        <button onClick={() => setActiveTab('mockExams')} style={{ border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'mockExams' ? accent : cardBg, color: activeTab === 'mockExams' ? '#fff' : textColor, display: 'flex', alignItems: 'center', gap: '7px' }}><ClipboardList size={14} /> آزمون‌های آزمایشی</button>
+        <button onClick={handleOpenNotificationTab} style={{ border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'notifications' ? accent : cardBg, color: activeTab === 'notifications' ? '#fff' : textColor, display: 'flex', alignItems: 'center', gap: '7px' }}><Bell size={14} /> صندوق اطلاعیه‌ها {unreadCount > 0 && <span style={{ marginRight: 'auto', backgroundColor: '#ef4444', color: '#fff', fontSize: '9px', padding: '2px 6px', borderRadius: '999px', fontWeight: 800 }}>{unreadCount}</span>}</button>
+        <button onClick={() => setActiveTab('counseling')} style={{ border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'counseling' ? accent : cardBg, color: activeTab === 'counseling' ? '#fff' : textColor, display: 'flex', alignItems: 'center', gap: '7px' }}><CalendarClock size={14} /> مشاوره</button>
+        <button onClick={() => setActiveTab('messages')} style={{ border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'messages' ? accent : cardBg, color: activeTab === 'messages' ? '#fff' : textColor, display: 'flex', alignItems: 'center', gap: '7px' }}><Send size={14} /> پیام و پشتیبانی</button>
+        <div className="student-sidebar-spacer" />
+        <button className="student-sidebar-logout" onClick={onLogout} style={{ display: 'flex', alignItems: 'center', gap: '7px', borderColor: isDark ? '#4a3536' : '#ead9d9', color: isDark ? '#e7a3a3' : '#b75d5d', background: isDark ? 'rgba(183,93,93,.07)' : '#fffafa' }}><LogOut size={14} /> خروج از حساب</button>
       </div>
 
       <div className="student-dashboard-main" style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '30px' }}>
