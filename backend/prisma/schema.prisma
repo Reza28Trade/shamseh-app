@@ -119,6 +119,7 @@ model User {
   auditLogs AuditLog[]
   notifications Notification[] @relation("NotificationCreator")
   reviewedRequests OfflineRequest[] @relation("OfflineRequestReviewer")
+  reviewedPayments Payment[] @relation("PaymentReviewer")
   supportMessages SupportMessage[]
   updatedContent GeneralContent[] @relation("GeneralContentUpdater")
 }
