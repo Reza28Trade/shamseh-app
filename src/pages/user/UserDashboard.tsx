@@ -56,6 +56,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   const [mockExams, setMockExams] = useState<BackendMockExam[]>([]);
   const [mockExamsLoading, setMockExamsLoading] = useState(false);
   const [mockExamsError, setMockExamsError] = useState('');
+  const [selectedMockExam, setSelectedMockExam] = useState<BackendMockExam | null>(null);
   const [subject, setSubject] = useState('');
   const [content, setContent] = useState('');
   const [successMsg, setSuccessMsg] = useState(false);
@@ -856,25 +857,95 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                         </span>
                       </div>
 
-                      {canOpen ? (
-                        <a
-                          href={exam.examUrl!}
-                          target="_blank"
-                          rel="noreferrer"
-                          style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '7px', padding: '11px 14px', borderRadius: '10px', background: 'linear-gradient(135deg, #6D001A 0%, #a21c3a 100%)', color: '#fff', textDecoration: 'none', fontSize: '11px', fontWeight: 800 }}
+                      <div style={{ display: 'grid', gridTemplateColumns: canOpen ? '1fr 1fr' : '1fr', gap: '8px' }}>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedMockExam(exam)}
+                          style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '7px', padding: '11px 14px', borderRadius: '10px', backgroundColor: 'transparent', color: textColor, border: `1px solid ${borderColor}`, fontSize: '11px', fontWeight: 800, cursor: 'pointer' }}
                         >
-                          <ExternalLink size={14} /> ورود به آزمون
-                        </a>
-                      ) : (
-                        <div style={{ textAlign: 'center', padding: '10px', borderRadius: '10px', backgroundColor: 'rgba(148,163,184,0.08)', color: subText, fontSize: '10px', fontWeight: 700 }}>
-                          {exam.status === 'CANCELLED' ? 'این آزمون لغو شده است.' : exam.status === 'COMPLETED' ? 'این آزمون به پایان رسیده است.' : 'لینک آزمون هنوز فعال نشده است.'}
-                        </div>
-                      )}
+                          <ClipboardList size={14} /> مشاهده جزئیات
+                        </button>
+                        {canOpen ? (
+                          <a
+                            href={exam.examUrl!}
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '7px', padding: '11px 14px', borderRadius: '10px', background: 'linear-gradient(135deg, #6D001A 0%, #a21c3a 100%)', color: '#fff', textDecoration: 'none', fontSize: '11px', fontWeight: 800 }}
+                          >
+                            <ExternalLink size={14} /> ورود به آزمون
+                          </a>
+                        ) : (
+                          <div style={{ textAlign: 'center', padding: '10px', borderRadius: '10px', backgroundColor: 'rgba(148,163,184,0.08)', color: subText, fontSize: '10px', fontWeight: 700 }}>
+                            {exam.status === 'CANCELLED' ? 'این آزمون لغو شده است.' : exam.status === 'COMPLETED' ? 'این آزمون به پایان رسیده است.' : 'لینک آزمون هنوز فعال نشده است.'}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   );
                 })}
               </div>
             )}
+          </div>
+        )}
+
+        {selectedMockExam && (
+          <div
+            style={{ position: 'fixed', inset: 0, zIndex: 1200, background: 'rgba(0,0,0,.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}
+            onClick={() => setSelectedMockExam(null)}
+          >
+            <div
+              onClick={e => e.stopPropagation()}
+              style={{ width: 'min(520px, 100%)', backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '20px', padding: '24px', boxShadow: '0 24px 80px rgba(0,0,0,.45)', direction: 'rtl' }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px', marginBottom: '20px' }}>
+                <div>
+                  <h3 style={{ color: textColor, margin: 0, fontSize: '16px', fontWeight: 900 }}>{selectedMockExam.title}</h3>
+                  <p style={{ color: subText, margin: '6px 0 0', fontSize: '10px' }}>اطلاعات آزمون آزمایشی</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelectedMockExam(null)}
+                  style={{ border: 'none', background: 'rgba(148,163,184,.1)', color: textColor, borderRadius: '8px', width: '32px', height: '32px', cursor: 'pointer', fontSize: '16px' }}
+                >×</button>
+              </div>
+
+              <div style={{ display: 'grid', gap: '10px' }}>
+                <div style={{ backgroundColor: innerCardBg, border: `1px solid ${borderColor}`, borderRadius: '12px', padding: '13px' }}>
+                  <div style={{ color: subText, fontSize: '9px', marginBottom: '5px' }}>تاریخ و ساعت آزمون</div>
+                  <div style={{ color: textColor, fontSize: '12px', fontWeight: 800 }}>
+                    {new Intl.DateTimeFormat('fa-IR', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Asia/Tehran' }).format(new Date(selectedMockExam.examDate))}
+                  </div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                  <div style={{ backgroundColor: innerCardBg, border: `1px solid ${borderColor}`, borderRadius: '12px', padding: '13px' }}>
+                    <div style={{ color: subText, fontSize: '9px', marginBottom: '5px' }}>مقطع</div>
+                    <div style={{ color: textColor, fontSize: '12px', fontWeight: 800 }}>{selectedMockExam.level || '—'}</div>
+                  </div>
+                  <div style={{ backgroundColor: innerCardBg, border: `1px solid ${borderColor}`, borderRadius: '12px', padding: '13px' }}>
+                    <div style={{ color: subText, fontSize: '9px', marginBottom: '5px' }}>رشته</div>
+                    <div style={{ color: textColor, fontSize: '12px', fontWeight: 800 }}>{selectedMockExam.field || '—'}</div>
+                  </div>
+                </div>
+                <div style={{ backgroundColor: innerCardBg, border: `1px solid ${borderColor}`, borderRadius: '12px', padding: '13px' }}>
+                  <div style={{ color: subText, fontSize: '9px', marginBottom: '5px' }}>وضعیت</div>
+                  <div style={{ color: selectedMockExam.status === 'LIVE' ? '#34d399' : selectedMockExam.status === 'CANCELLED' ? '#f87171' : textColor, fontSize: '12px', fontWeight: 800 }}>
+                    {selectedMockExam.status === 'SCHEDULED' ? 'زمان‌بندی شده' : selectedMockExam.status === 'LINK_AVAILABLE' ? 'لینک آزمون فعال است' : selectedMockExam.status === 'LIVE' ? 'آزمون در حال برگزاری' : selectedMockExam.status === 'COMPLETED' ? 'به پایان رسیده' : selectedMockExam.status === 'CANCELLED' ? 'لغو شده' : 'در انتظار آماده‌سازی'}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ marginTop: '18px' }}>
+                {selectedMockExam.examUrl && ['LINK_AVAILABLE', 'LIVE'].includes(selectedMockExam.status) ? (
+                  <a href={selectedMockExam.examUrl} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', width: '100%', boxSizing: 'border-box', alignItems: 'center', justifyContent: 'center', gap: '7px', padding: '12px', borderRadius: '10px', background: 'linear-gradient(135deg, #6D001A 0%, #a21c3a 100%)', color: '#fff', textDecoration: 'none', fontSize: '11px', fontWeight: 800 }}>
+                    <ExternalLink size={14} /> ورود به آزمون
+                  </a>
+                ) : (
+                  <div style={{ textAlign: 'center', padding: '11px', borderRadius: '10px', backgroundColor: 'rgba(148,163,184,0.08)', color: subText, fontSize: '10px', fontWeight: 700 }}>
+                    {selectedMockExam.status === 'CANCELLED' ? 'این آزمون لغو شده است.' : selectedMockExam.status === 'COMPLETED' ? 'این آزمون به پایان رسیده است.' : 'لینک آزمون هنوز فعال نشده است.'}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
