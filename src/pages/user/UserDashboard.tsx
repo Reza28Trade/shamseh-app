@@ -41,13 +41,6 @@ interface UserDashboardProps {
   onLogout: () => void;
 }
 
-
-const ShamsehMark: React.FC<{ size?: number; opacity?: number }> = ({ size = 46, opacity = 1 }) => (
-  <svg viewBox="0 0 2000 2000" width={size} height={size} aria-hidden="true" style={{ display: 'block', opacity }}>
-    <g fill="#3c8d95"><path d="M 449,873 L 450,882 L 463,888 L 549,904 L 654,916 L 660,922 L 659,928 L 623,972 L 628,997 L 628,1019 L 622,1034 L 605,1048 L 572,1064 L 543,1073 L 511,1078 L 451,1154 L 450,1163 L 464,1170 L 528,1184 L 652,1197 L 659,1205 L 666,1231 L 676,1250 L 703,1279 L 742,1300 L 799,1313 L 874,1315 L 959,1303 L 1040,1279 L 1112,1246 L 1120,1247 L 1124,1251 L 1128,1275 L 1137,1293 L 1147,1303 L 1162,1310 L 1183,1311 L 1208,1302 L 1229,1287 L 1256,1259 L 1260,1259 L 1294,1282 L 1339,1301 L 1385,1311 L 1437,1312 L 1447,1302 L 1446,1272 L 1439,1228 L 1425,1184 L 1411,1159 L 1398,1144 L 1383,1133 L 1365,1126 L 1335,1127 L 1308,1142 L 1266,1187 L 1257,1189 L 1241,1175 L 1223,1149 L 1211,1119 L 1210,1096 L 1231,1065 L 1248,1051 L 1256,1056 L 1265,1073 L 1276,1082 L 1293,1089 L 1316,1090 L 1333,1086 L 1355,1075 L 1392,1040 L 1400,1043 L 1409,1065 L 1425,1080 L 1448,1089 L 1481,1088 L 1510,1076 L 1528,1061 L 1536,1048 L 1549,1009 L 1549,996 L 1542,980 L 1542,972 L 1549,959 L 1548,952 L 1494,888 L 1484,889 L 1476,900 L 1470,917 L 1469,932 L 1479,962 L 1518,1009 L 1514,1019 L 1503,1023 L 1472,1026 L 1450,1021 L 1437,1014 L 1426,1003 L 1419,984 L 1412,980 L 1406,981 L 1366,1007 L 1345,1013 L 1320,1012 L 1306,1005 L 1297,995 L 1292,981 L 1291,956 L 1283,950 L 1272,951 L 1243,981 L 1224,1008 L 1208,1039 L 1196,1076 L 1191,1113 L 1194,1156 L 1206,1192 L 1225,1223 L 1225,1229 L 1219,1236 L 1204,1242 L 1184,1242 L 1167,1232 L 1157,1212 L 1157,1185 L 1148,1175 L 1142,1175 L 1077,1209 L 1031,1226 L 967,1242 L 904,1250 L 842,1251 L 773,1243 L 734,1229 L 707,1207 L 705,1200 L 708,1198 L 781,1197 L 784,1204 L 773,1218 L 773,1223 L 782,1226 L 841,1148 L 835,1140 L 689,1141 L 684,1137 L 684,996 L 681,958 L 675,930 L 676,923 L 681,919 L 832,927 L 836,934 L 838,960 L 846,988 L 855,1006 L 874,1030 L 911,1054 L 942,1063 L 973,1065 L 978,1069 L 973,1122 L 969,1125 L 932,1124 L 910,1118 L 889,1106 L 871,1086 L 861,1063 L 857,1042 L 847,1039 L 842,1043 L 838,1061 L 838,1082 L 847,1121 L 857,1140 L 876,1161 L 908,1179 L 934,1185 L 965,1186 L 998,1182 L 1036,1173 L 1076,1158 L 1105,1143 L 1134,1124 L 1161,1100 L 1173,1058 L 1173,1027 L 1165,998 L 1150,972 L 1108,927 L 1054,881 L 1005,845 L 932,799 L 926,800 L 917,814 L 914,827 L 915,842 L 921,857 L 930,868 L 977,896 L 982,903 L 981,999 L 975,1003 L 947,1000 L 909,986 L 883,963 L 868,932 L 873,925 L 968,923 L 971,916 L 899,875 L 871,869 L 866,865 L 864,752 L 858,700 L 861,698 L 977,762 L 980,770 L 982,805 L 1006,824 L 1011,823 L 1013,775 L 1010,706 L 1012,696 L 1027,676 L 1031,664 L 997,540 L 987,516 L 991,513 L 1029,511 L 1073,504 L 1075,509 L 1040,552 L 1044,559 L 1051,557 L 1129,460 L 1130,450 L 1124,444 L 1042,457 L 976,458 L 927,451 L 880,438 L 868,447 L 839,484 L 838,492 L 843,497 L 898,509 L 947,529 L 975,548 L 980,560 L 962,585 L 959,594 L 970,649 L 969,664 L 941,660 L 884,639 L 878,642 L 853,671 L 842,643 L 835,641 L 802,683 L 801,693 L 817,730 L 830,787 L 836,856 L 835,864 L 831,868 L 683,860 L 601,850 L 555,841 L 557,834 L 576,824 L 611,798 L 660,817 L 714,828 L 779,828 L 791,826 L 797,821 L 797,790 L 791,752 L 773,704 L 765,692 L 744,673 L 728,666 L 710,664 L 691,670 L 671,685 L 622,745 L 598,766 L 567,783 L 513,799 L 502,806 Z"/><path d="M 1031,743 L 1032,790 L 1035,798 L 1101,853 L 1098,861 L 1076,863 L 1073,871 L 1120,911 L 1150,911 L 1154,914 L 1162,931 L 1152,947 L 1169,970 L 1174,966 L 1189,916 L 1199,906 L 1297,891 L 1383,874 L 1388,876 L 1390,884 L 1323,966 L 1323,974 L 1327,977 L 1333,976 L 1448,827 L 1443,815 L 1429,813 L 1278,841 L 1191,853 L 1171,853 L 1159,847 L 1112,798 L 1057,752 L 1037,738 Z"/><path d="M 1233,655 L 1227,646 L 1218,644 L 1147,658 L 1057,668 L 1050,672 L 1032,693 L 1029,703 L 1030,715 L 1050,717 L 1088,714 L 1177,699 L 1181,703 L 1181,708 L 1139,760 L 1141,767 L 1148,768 L 1228,668 Z"/><path d="M 1219,761 L 1223,768 L 1248,784 L 1271,806 L 1278,806 L 1309,770 L 1320,775 L 1350,805 L 1355,806 L 1373,786 L 1382,771 L 1381,759 L 1374,748 L 1356,731 L 1341,722 L 1334,723 L 1305,757 L 1269,729 L 1256,722 L 1250,722 Z"/><path d="M 731,985 L 726,994 L 727,1007 L 753,1034 L 711,1081 L 725,1074 L 758,1041 L 761,1041 L 766,1049 L 737,1082 L 730,1105 L 737,1119 L 746,1123 L 762,1123 L 780,1115 L 795,1096 L 798,1072 L 783,1043 L 801,1019 L 804,998 L 800,989 L 794,987 L 764,1020 L 760,1015 L 762,1008 Z"/><path d="M 1280,659 L 1251,694 L 1251,700 L 1280,718 L 1299,735 L 1306,736 L 1327,711 L 1330,703 L 1329,693 L 1325,686 L 1306,670 L 1289,660 Z"/></g>
-  </svg>
-);
-
 export const UserDashboard: React.FC<UserDashboardProps> = ({
   student,
   courses,
@@ -142,7 +135,408 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
 
     void loadNotifications();
 
-    return (
+    return () => {
+      cancelled = true;
+    };
+  }, [student.id]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadEnrollments = async () => {
+      setCoursesLoading(true);
+      setCoursesError('');
+
+      try {
+        const response = await fetch('/api/student/enrollments', {
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          throw new Error('دریافت دوره‌های هنرجو انجام نشد.');
+        }
+
+        const enrollments = await response.json();
+
+        const mappedCourses: Course[] = enrollments.map((enrollment: any) => {
+          const course = enrollment.course;
+          return {
+            id: course.id,
+            title: course.title,
+            professor: course.professor ?? '',
+            level: course.level ?? '',
+            schedule: '',
+            startDate: '',
+            description: course.description ?? '',
+            term: course.term,
+            price: course.price == null ? undefined : Number(course.price),
+            category: course.category,
+            coverImage: course.coverImage,
+            syllabus: [],
+          };
+        });
+
+        if (!cancelled) {
+          setEnrolledCourses(mappedCourses);
+          setContentLoading(true);
+
+          const contentResults = await Promise.all(
+            mappedCourses.map(async (course) => {
+              const [sessionsResponse, filesResponse] = await Promise.all([
+                fetch(`/api/courses/${course.id}/sessions`, { credentials: 'include' }),
+                fetch(`/api/courses/${course.id}/files`, { credentials: 'include' }),
+              ]);
+
+              if (!sessionsResponse.ok || !filesResponse.ok) {
+                throw new Error(`دریافت محتوای دوره «${course.title}» انجام نشد.`);
+              }
+
+              const sessions = await sessionsResponse.json();
+              const files = await filesResponse.json();
+
+              return {
+                courseId: course.id,
+                sessions: sessions as BackendSession[],
+                files: files as BackendFile[],
+              };
+            }),
+          );
+
+          if (!cancelled) {
+            setCourseSessions(
+              Object.fromEntries(contentResults.map(result => [result.courseId, result.sessions])),
+            );
+            setCourseFiles(
+              Object.fromEntries(contentResults.map(result => [result.courseId, result.files])),
+            );
+          }
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setCoursesError(error instanceof Error ? error.message : 'دریافت دوره‌های هنرجو انجام نشد.');
+          setEnrolledCourses([]);
+          setCourseSessions({});
+          setCourseFiles({});
+        }
+      } finally {
+        if (!cancelled) {
+          setCoursesLoading(false);
+          setContentLoading(false);
+        }
+      }
+    };
+
+    void loadEnrollments();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [student.id]);
+
+  void courses;
+
+  const studentMessages = supportTickets;
+  const studentOfflineRequests = offlineRequests;
+
+  const unreadCount = studentNotifications.filter(n => !n.readAt).length;
+
+  useEffect(() => {
+    let cancelled = false;
+    const loadOfflineRequests = async () => {
+      setOfflineLoading(true);
+      try {
+        const response = await fetch('/api/offline-requests', { credentials: 'include' });
+        if (!response.ok) throw new Error('دریافت درخواست‌های آفلاین انجام نشد.');
+        const data = await response.json();
+        if (!cancelled) setOfflineRequests(data);
+      } catch {
+        if (!cancelled) setOfflineRequests([]);
+      } finally {
+        if (!cancelled) setOfflineLoading(false);
+      }
+    };
+    void loadOfflineRequests();
+    return () => { cancelled = true; };
+  }, [student.id]);
+
+  useEffect(() => {
+    if (activeTab !== 'home' && activeTab !== 'mockExams') return;
+    let cancelled = false;
+
+    const loadMockExams = async () => {
+      setMockExamsLoading(true);
+      setMockExamsError('');
+      try {
+        const response = await fetch('/api/student/mock-exams', {
+          credentials: 'include',
+        });
+        if (!response.ok) {
+          const data = await response.json().catch(() => null);
+          throw new Error(data?.message || 'دریافت آزمون‌های آزمایشی انجام نشد.');
+        }
+        const data = await response.json();
+        if (!cancelled) {
+          setMockExams(data as BackendMockExam[]);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setMockExamsError(error instanceof Error ? error.message : 'دریافت آزمون‌های آزمایشی انجام نشد.');
+          setMockExams([]);
+        }
+      } finally {
+        if (!cancelled) setMockExamsLoading(false);
+      }
+    };
+
+    void loadMockExams();
+    return () => { cancelled = true; };
+  }, [activeTab, student.id]);
+
+  useEffect(() => {
+    if (activeTab !== 'counseling') return;
+    let cancelled = false;
+
+    const loadCounseling = async () => {
+      setCounselingLoading(true);
+      setCounselingError('');
+      try {
+        const [slotsResponse, requestsResponse] = await Promise.all([
+          fetch('/api/counseling/slots', { credentials: 'include' }),
+          fetch('/api/counseling/requests', { credentials: 'include' }),
+        ]);
+        if (!slotsResponse.ok || !requestsResponse.ok) {
+          throw new Error('دریافت اطلاعات مشاوره انجام نشد.');
+        }
+        const [slots, requests] = await Promise.all([
+          slotsResponse.json(),
+          requestsResponse.json(),
+        ]);
+        if (!cancelled) {
+          setCounselingSlots(slots);
+          setCounselingRequests(requests);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setCounselingError(error instanceof Error ? error.message : 'دریافت اطلاعات مشاوره انجام نشد.');
+          setCounselingSlots([]);
+          setCounselingRequests([]);
+        }
+      } finally {
+        if (!cancelled) setCounselingLoading(false);
+      }
+    };
+
+    void loadCounseling();
+    return () => { cancelled = true; };
+  }, [activeTab, student.id]);
+
+  const handleCounselingBook = async (slotId: string) => {
+    if (counselingSubmitting) return;
+    setCounselingSubmitting(true);
+    setCounselingError('');
+    try {
+      const response = await fetch('/api/counseling/requests', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slotId }),
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'ثبت درخواست مشاوره انجام نشد.');
+      setCounselingRequests(current => [data, ...current]);
+      setCounselingSlots(current => current.filter(slot => slot.id !== slotId));
+    } catch (error) {
+      setCounselingError(error instanceof Error ? error.message : 'ثبت درخواست مشاوره انجام نشد.');
+    } finally {
+      setCounselingSubmitting(false);
+    }
+  };
+
+  const handleCounselingCancel = async (requestId: string) => {
+    if (counselingSubmitting) return;
+    if (!confirm('آیا از لغو درخواست مشاوره اطمینان دارید؟')) return;
+    setCounselingSubmitting(true);
+    setCounselingError('');
+    try {
+      const response = await fetch(`/api/counseling/requests/${requestId}/cancel`, {
+        method: 'PATCH',
+        credentials: 'include',
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'لغو درخواست مشاوره انجام نشد.');
+      setCounselingRequests(current => current.map(item => item.id === requestId ? { ...item, status: 'CANCELLED' } : item));
+      const slot = data?.slot;
+      if (slot) setCounselingSlots(current => [...current, slot].sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()));
+    } catch (error) {
+      setCounselingError(error instanceof Error ? error.message : 'لغو درخواست مشاوره انجام نشد.');
+    } finally {
+      setCounselingSubmitting(false);
+    }
+  };
+
+  const formatCounselingDate = (value: string) =>
+    new Intl.DateTimeFormat('fa-IR', {
+      dateStyle: 'full',
+      timeStyle: 'short',
+      timeZone: 'Asia/Tehran',
+    }).format(new Date(value));
+
+  useEffect(() => {
+    if (activeTab !== 'messages') return;
+    let cancelled = false;
+    const loadSupportTickets = async () => {
+      setSupportLoading(true);
+      setSupportError('');
+      try {
+        const response = await fetch('/api/support/tickets', { credentials: 'include' });
+        if (!response.ok) throw new Error('دریافت تیکت‌های پشتیبانی انجام نشد.');
+        const data = await response.json();
+        if (!cancelled) setSupportTickets(data);
+      } catch (error) {
+        if (!cancelled) {
+          setSupportError(error instanceof Error ? error.message : 'دریافت تیکت‌های پشتیبانی انجام نشد.');
+          setSupportTickets([]);
+        }
+      } finally {
+        if (!cancelled) setSupportLoading(false);
+      }
+    };
+    void loadSupportTickets();
+    return () => { cancelled = true; };
+  }, [activeTab, student.id]);
+
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!subject.trim() || !content.trim() || supportSubmitting) return;
+    setSupportSubmitting(true);
+    setSupportError('');
+    try {
+      const response = await fetch('/api/support/tickets', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject: subject.trim(), content: content.trim() }),
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.message || 'ثبت تیکت انجام نشد.');
+      }
+      const ticket = await response.json();
+      setSupportTickets(current => [ticket, ...current]);
+      setSubject('');
+      setContent('');
+      setSuccessMsg(true);
+      setTimeout(() => setSuccessMsg(false), 4000);
+    } catch (error) {
+      setSupportError(error instanceof Error ? error.message : 'ثبت تیکت انجام نشد.');
+    } finally {
+      setSupportSubmitting(false);
+    }
+  };
+
+  const handleOfflineRequestSubmit = async (courseId: string) => {
+    const selectEl = document.getElementById(`session-select-${courseId}`) as HTMLSelectElement;
+    const sessionId = selectEl?.value;
+
+    if (!sessionId) {
+      setOfflineMsg({ courseId, text: 'لطفاً ابتدا جلسه مورد نظر را انتخاب کنید.', success: false });
+      setTimeout(() => setOfflineMsg(null), 4000);
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/offline-requests', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ courseId, sessionId }),
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'ثبت درخواست انجام نشد.');
+      setOfflineRequests(current => [data, ...current]);
+      setOfflineMsg({ courseId, text: 'درخواست آفلاین با موفقیت ثبت شد.', success: true });
+    } catch (error) {
+      setOfflineMsg({ courseId, text: error instanceof Error ? error.message : 'ثبت درخواست انجام نشد.', success: false });
+    }
+    setTimeout(() => setOfflineMsg(null), 4000);
+  };
+
+  const handleEditOfflineRequest = async (request: typeof offlineRequests[number]) => {
+    if (!editingOfflineSessionId || editingOfflineSessionId === request.sessionId) {
+      setEditingOfflineRequestId(null);
+      return;
+    }
+    try {
+      const response = await fetch(`/api/offline-requests/${request.id}`, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ courseId: request.courseId, sessionId: editingOfflineSessionId }),
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'ویرایش درخواست انجام نشد.');
+      setOfflineRequests(current => current.map(item => item.id === request.id ? data : item));
+      setOfflineMsg({ courseId: request.courseId, text: 'درخواست با موفقیت ویرایش شد.', success: true });
+      setEditingOfflineRequestId(null);
+      setEditingOfflineSessionId('');
+    } catch (error) {
+      setOfflineMsg({ courseId: request.courseId, text: error instanceof Error ? error.message : 'ویرایش درخواست انجام نشد.', success: false });
+    }
+    setTimeout(() => setOfflineMsg(null), 4000);
+  };
+
+  const handleDeleteOfflineRequest = async (request: typeof offlineRequests[number]) => {
+    if (!confirm('آیا از حذف این درخواست اطمینان دارید؟')) return;
+    try {
+      const response = await fetch(`/api/offline-requests/${request.id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'حذف درخواست انجام نشد.');
+      setOfflineRequests(current => current.filter(item => item.id !== request.id));
+      setOfflineMsg({ courseId: request.courseId, text: 'درخواست حذف شد.', success: true });
+    } catch (error) {
+      setOfflineMsg({ courseId: request.courseId, text: error instanceof Error ? error.message : 'حذف درخواست انجام نشد.', success: false });
+    }
+    setTimeout(() => setOfflineMsg(null), 4000);
+  };
+
+  const handleOpenNotificationTab = async () => {
+    setActiveTab('notifications');
+
+    const unreadNotifications = studentNotifications.filter(n => !n.readAt);
+    if (unreadNotifications.length === 0) return;
+
+    await Promise.all(
+      unreadNotifications.map(async (notification) => {
+        const response = await fetch(`/api/notifications/${notification.id}/read`, {
+          method: 'POST',
+          credentials: 'include',
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setStudentNotifications(current =>
+            current.map(item =>
+              item.id === notification.id ? { ...item, readAt: data.readAt } : item,
+            ),
+          );
+        }
+      }),
+    );
+  };
+
+  const isDark = theme === 'dark';
+  const bgColors = isDark ? '#1a1c1d' : '#f5f7f6';
+  const cardBg = isDark ? '#222526' : '#ffffff';
+  const textColor = isDark ? '#f1f5f4' : '#172022';
+  const subText = isDark ? '#aab5b4' : '#697675';
+  const borderColor = isDark ? '#343a3b' : '#e2e8e7';
+  const innerCardBg = isDark ? '#282c2d' : '#f8faf9';
+  const accent = '#38838a';
+  const accentSoft = isDark ? 'rgba(56, 131, 138, 0.16)' : '#e8f2f2';
+
+  return (
     <div
       className="student-dashboard"
       style={{
@@ -818,5 +1212,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
       )}
       </div>
     </div>
+  );
+};
   );
 };
