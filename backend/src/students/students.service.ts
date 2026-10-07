@@ -26,7 +26,7 @@ export class StudentsService {
         id: true, fullName: true, nationalId: true, phone: true,
         user: { select: { id: true, username: true, status: true, createdAt: true } },
         enrollments: {
-          select: { id: true, status: true, courseId: true, enrolledAt: true, course: { select: { id: true, title: true } } },
+          select: { id: true, status: true, courseId: true, enrolledAt: true, course: { select: { id: true, title: true, level: true } } },
         },
       },
     });
