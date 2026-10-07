@@ -33,6 +33,18 @@ export const Login: React.FC<LoginProps> = ({
   const [adminUsername, setAdminUsername] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
   const [error, setError] = useState('');
+  const [liveRulesText, setLiveRulesText] = useState(rulesText);
+
+  useEffect(() => {
+    void (async () => {
+      try {
+        const response = await fetch('/api/content/rules');
+        if (!response.ok) return;
+        const data = await response.json();
+        setLiveRulesText(data.content ?? '');
+      } catch {}
+    })();
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -344,7 +356,7 @@ export const Login: React.FC<LoginProps> = ({
               </button>
             </div>
             <p style={{ fontSize: '12px', color: '#52525b', lineHeight: 1.8, margin: 0, whiteSpace: 'pre-line' }}>
-              {rulesText}
+              {liveRulesText || rulesText}
             </p>
           </div>
         )}
