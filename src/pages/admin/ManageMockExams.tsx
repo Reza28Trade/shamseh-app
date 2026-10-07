@@ -8,6 +8,7 @@ interface StudentOption {
   id: string;
   fullName: string;
   nationalId: string;
+  levels?: string[];
 }
 
 interface MockExamParticipant {
@@ -41,6 +42,7 @@ export const ManageMockExams: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [participantExamId, setParticipantExamId] = useState<string | null>(null);
+  const [participantGroup, setParticipantGroup] = useState<'ALL' | 'MASTER' | 'DOCTORATE'>('ALL');
   const [error, setError] = useState('');
   const [calendarOpen, setCalendarOpen] = useState(false);
   const today = getTehranTodayJalali();
@@ -76,6 +78,11 @@ export const ManageMockExams: React.FC = () => {
               id: student.id,
               fullName: student.fullName,
               nationalId: student.nationalId,
+              levels: Array.from(new Set(
+                student.enrollments
+                  .filter((enrollment: any) => enrollment.status === 'ACTIVE' && enrollment.course?.level)
+                  .map((enrollment: any) => enrollment.course.level),
+              )),
             }))
           : [],
       );
@@ -421,28 +428,73 @@ export const ManageMockExams: React.FC = () => {
                     <div style={{ color: '#cbd5e1', fontSize: 12, fontWeight: 800, marginBottom: 10 }}>
                       انتخاب هنرجویان ثبت‌نام‌شده در این آزمون
                     </div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap', marginBottom: 12 }}>
+                      <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
+                        {([
+                          ['ALL', 'همه'],
+                          ['MASTER', 'ارشد'],
+                          ['DOCTORATE', 'دکتری'],
+                        ] as const).map(([value, label]) => {
+                          const count = value === 'ALL'
+                            ? students.length
+                            : students.filter(student => (student.levels ?? []).some(level => value === 'DOCTORATE' ? /دکتری|دکترا/i.test(level) : /ارشد/i.test(level))).length;
+                          return (
+                            <button
+                              key={value}
+                              type="button"
+                              onClick={() => setParticipantGroup(value)}
+                              style={{
+                                border: participantGroup === value ? '1px solid #6D001A' : '1px solid rgba(255,255,255,.08)',
+                                background: participantGroup === value ? 'rgba(109,0,26,.3)' : 'rgba(255,255,255,.04)',
+                                color: '#fff',
+                                padding: '7px 11px',
+                                borderRadius: 8,
+                                cursor: 'pointer',
+                                fontSize: 10,
+                                fontWeight: 800,
+                              }}
+                            >
+                              {label} ({count})
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <span style={{ color: '#34d399', fontSize: 11, fontWeight: 800 }}>
+                        {exam.participants.length} نفر انتخاب شده
+                      </span>
+                    </div>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 8 }}>
-                      {students.map((student) => {
-                        const selected = exam.participants.some((item) => item.student.id === student.id);
-                        return (
-                          <button
-                            key={student.id}
-                            type="button"
-                            onClick={() => void toggleParticipant(exam.id, student.id, selected)}
-                            style={{
-                              textAlign: 'right',
-                              padding: '10px 12px',
-                              borderRadius: 11,
-                              cursor: 'pointer',
-                              color: '#fff',
-                              background: selected ? 'rgba(109,0,26,.35)' : 'rgba(20,20,25,.8)',
-                              border: selected ? '1px solid #6D001A' : '1px solid rgba(255,255,255,.08)',
-                            }}
-                          >
-                            {student.fullName} · {student.nationalId}
-                          </button>
-                        );
-                      })}
+                      {students
+                        .filter(student => {
+                          if (participantGroup === 'ALL') return true;
+                          return (student.levels ?? []).some(level =>
+                            participantGroup === 'DOCTORATE' ? /دکتری|دکترا/i.test(level) : /ارشد/i.test(level),
+                          );
+                        })
+                        .map((student) => {
+                          const selected = exam.participants.some((item) => item.student.id === student.id);
+                          return (
+                            <button
+                              key={student.id}
+                              type="button"
+                              onClick={() => void toggleParticipant(exam.id, student.id, selected)}
+                              style={{
+                                textAlign: 'right',
+                                padding: '10px 12px',
+                                borderRadius: 11,
+                                cursor: 'pointer',
+                                color: '#fff',
+                                background: selected ? 'rgba(109,0,26,.35)' : 'rgba(20,20,25,.8)',
+                                border: selected ? '1px solid #6D001A' : '1px solid rgba(255,255,255,.08)',
+                              }}
+                            >
+                              <div>{student.fullName}</div>
+                              <div style={{ color: '#64748b', fontSize: 9, marginTop: 4 }}>
+                                {student.nationalId} · {(student.levels ?? []).join('، ') || 'مقطع نامشخص'}
+                              </div>
+                            </button>
+                          );
+                        })}
                     </div>
                   </div>
                 )}
