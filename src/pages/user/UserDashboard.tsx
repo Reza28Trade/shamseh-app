@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import type { Student, Course } from '../../types';
 import { useStore } from '../../store/useStore';
 import { FileViewer } from '../../components/FileViewer';
-import { BookOpen, LogOut, Video, FileText, Send, Sun, Moon, CheckCircle, Bell, Volume2, Presentation, Link as LinkIcon, AlertCircle, CalendarClock, Clock, ClipboardList, ExternalLink, Home, ArrowLeft } from 'lucide-react';
+import { BookOpen, LogOut, Video, FileText, Send, Sun, Moon, CheckCircle, Bell, Volume2, Presentation, Link as LinkIcon, AlertCircle, CalendarClock, Clock, ClipboardList, ExternalLink, Home } from 'lucide-react';
 
 interface BackendSession {
   id: string;
