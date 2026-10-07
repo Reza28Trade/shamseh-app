@@ -417,7 +417,14 @@ export const ManageMockExams: React.FC = () => {
                     <button onClick={() => editExam(exam)} style={secondaryButton}>
                       <Pencil size={14} /> ویرایش
                     </button>
-                    <button onClick={() => setParticipantExamId(participantExamId === exam.id ? null : exam.id)} style={secondaryButton}>
+                    <button onClick={() => {
+                        if (participantExamId === exam.id) {
+                          setParticipantExamId(null);
+                        } else {
+                          setParticipantExamId(exam.id);
+                          setParticipantGroup(/دکتری|دکترا/i.test(exam.level) ? 'DOCTORATE' : /ارشد/i.test(exam.level) ? 'MASTER' : 'ALL');
+                        }
+                      }} style={secondaryButton}>
                       <Users size={14} /> شرکت‌کنندگان
                     </button>
                   </div>
