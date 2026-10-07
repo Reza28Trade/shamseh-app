@@ -18,6 +18,11 @@ enum UserStatus {
   INACTIVE
 }
 
+enum StudentLevel {
+  MASTER
+  DOCTORATE
+}
+
 enum CourseStatus {
   DRAFT
   ACTIVE
@@ -142,6 +147,7 @@ model Student {
   fullName String
   nationalId String @unique
   phone String?
+  academicLevel StudentLevel?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
