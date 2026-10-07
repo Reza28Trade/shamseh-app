@@ -1,0 +1,110 @@
+/* Unified visual system for legacy admin pages */
+.admin-legacy-page{
+  --legacy-accent: var(--admin-accent);
+  width:100%;
+  max-width:1240px;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  color:var(--admin-text);
+  direction:rtl;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+.admin-legacy-page > div{
+  box-sizing:border-box;
+  background:var(--admin-card)!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:18px!important;
+  box-shadow:var(--admin-shadow)!important;
+  color:var(--admin-text)!important;
+}
+.admin-legacy-page [style*="#0e0e11"],
+.admin-legacy-page [style*="#141419"],
+.admin-legacy-page [style*="rgba(14,14,17"],
+.admin-legacy-page [style*="rgba(20,20,25"],
+.admin-legacy-page [style*="rgba(10,10,10"],
+.admin-legacy-page [style*="linear-gradient"]{
+  background:var(--admin-card)!important;
+  background-color:var(--admin-card)!important;
+  background-image:none!important;
+  border-color:var(--admin-border)!important;
+  box-shadow:none!important;
+}
+.admin-legacy-page input,
+.admin-legacy-page select,
+.admin-legacy-page textarea{
+  background:var(--admin-inner)!important;
+  color:var(--admin-text)!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:11px!important;
+  outline:none;
+}
+.admin-legacy-page input::placeholder,
+.admin-legacy-page textarea::placeholder{color:var(--admin-sub)!important}
+.admin-legacy-page button{
+  font-family:inherit;
+  border-radius:10px!important;
+  transition:transform .16s ease,background .16s ease,border-color .16s ease,box-shadow .16s ease;
+}
+.admin-legacy-page button:hover{transform:translateY(-1px)}
+.admin-legacy-page h1,.admin-legacy-page h2,.admin-legacy-page h3{
+  color:var(--admin-text)!important;
+  letter-spacing:-.2px;
+}
+.admin-legacy-page p,.admin-legacy-page label{
+  color:var(--admin-sub)!important;
+}
+.admin-legacy-page strong{color:var(--admin-text)!important}
+.admin-legacy-page a{color:var(--admin-accent)!important}
+.admin-legacy-page table{width:100%;border-collapse:separate;border-spacing:0}
+.admin-legacy-page th{
+  color:var(--admin-sub)!important;
+  background:var(--admin-inner)!important;
+  border-color:var(--admin-border)!important;
+}
+.admin-legacy-page td{
+  color:var(--admin-text)!important;
+  border-color:var(--admin-border)!important;
+}
+.admin-legacy-page [style*="color: '#fff'"],
+.admin-legacy-page [style*="color:'#fff'"],
+.admin-legacy-page [style*="color: #fff"]{color:var(--admin-text)!important}
+.admin-legacy-page [style*="color: '#94a3b8'"],
+.admin-legacy-page [style*="color:'#94a3b8'"],
+.admin-legacy-page [style*="color: #94a3b8"]{color:var(--admin-sub)!important}
+.admin-legacy-page [style*="#ff3366"],
+.admin-legacy-page [style*="#ff6688"],
+.admin-legacy-page [style*="#6D001A"]{
+  color:var(--admin-accent)!important;
+  border-color:var(--admin-accent)!important;
+}
+.admin-legacy-page [style*="#6D001A"]{background:var(--admin-accent)!important;color:#fff!important}
+.admin-legacy-page [style*="#38bdf8"]{color:var(--admin-accent)!important}
+.admin-legacy-page [style*="#34d399"]{color:#28a889!important}
+.admin-legacy-page [style*="#f87171"]{color:#d45b65!important}
+.admin-legacy-page [style*="#fbbf24"]{color:#b98922!important}
+.admin-legacy-page .admin-page-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+.admin-legacy-page .admin-page-title h2{
+  font-size:22px!important;
+  margin:0!important;
+  font-weight:900!important;
+}
+.admin-legacy-page .admin-page-title p{
+  font-size:11px!important;
+  margin:6px 0 0!important;
+}
+@media(max-width:900px){
+  .admin-legacy-page{max-width:none}
+}
+@media(max-width:620px){
+  .admin-legacy-page{gap:12px}
+  .admin-legacy-page > div{border-radius:14px!important}
+  .admin-legacy-page > div[style*="padding: 32px"],
+  .admin-legacy-page > div[style*="padding: 28px 32px"]{padding:18px!important}
+}
