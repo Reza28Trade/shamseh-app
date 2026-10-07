@@ -44,7 +44,7 @@ export const ManageRules: React.FC = () => {
   };
 
   return (
-    <div style={{
+    <div className="admin-legacy-page admin-rules-page" style={{
       display: 'flex',
       flexDirection: 'column',
       height: 'calc(100vh - 80px)',
