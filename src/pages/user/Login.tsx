@@ -1,6 +1,6 @@
 import React,{useEffect,useState} from 'react';
 import type { Student,Admin } from '../../types';
-import { User,Shield,Lock,ArrowRight,Send,Globe,Camera,Play,Moon,Sun,BookOpen,FileText,BarChart3 } from 'lucide-react';
+import { User,Shield,Lock,ArrowRight,Send,Globe,Camera,Play,BookOpen,FileText,BarChart3 } from 'lucide-react';
 
 interface AuthUser{ id:string; username:string; role:'SUPER_ADMIN'|'STAFF'|'STUDENT'; studentId:string|null; student?:{fullName:string;nationalId:string}|null; }
 interface LoginProps{students:Student[];admins:Admin[];onLoginSuccess:(user:AuthUser)=>void;onAdminLoginSuccess:(user:AuthUser)=>void;rulesText?:string;}
@@ -12,7 +12,6 @@ export const Login:React.FC<LoginProps>=({students,admins,onLoginSuccess,onAdmin
  const studentSubmit=(e:React.FormEvent)=>{e.preventDefault();setError('');void students;(async()=>{try{const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({username:studentNationalId.trim(),password:studentPhone.trim()})});if(!r.ok)throw 0;const d=await r.json();if(d.user?.role!=='STUDENT')throw 0;onLoginSuccess(d.user)}catch{setError('کد ملی یا شماره موبایل هنرجو اشتباه است.')}})()};
  const adminSubmit=(e:React.FormEvent)=>{e.preventDefault();setError('');void admins;(async()=>{try{const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({username:adminUsername.trim(),password:adminPassword})});if(!r.ok)throw 0;const d=await r.json();if(d.user?.role!=='SUPER_ADMIN'&&d.user?.role!=='STAFF')throw 0;onAdminLoginSuccess(d.user)}catch{setError('نام کاربری یا رمز عبور ادمین اشتباه است.')}})()};
  const back=()=>{setViewState('welcome');setError('')};
- const isForm=viewState==='studentLogin'||viewState==='adminLogin';
  return <div className="sh-login">
    <div className="sh-login-visual">
      <div className="sh-login-orbit one"/><div className="sh-login-orbit two"/>
