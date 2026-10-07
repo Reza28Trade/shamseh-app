@@ -546,7 +546,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         .student-dashboard-nav button { width: 100%; min-height: 40px; justify-content: flex-start; box-sizing: border-box; text-align: right; padding: 9px 11px !important; border-radius: 10px !important; font-size: 11px !important; }
         .student-dashboard-main { max-width: none !important; margin: 0 !important; gap: 16px !important; min-width: 0; }
         .student-dashboard-main > div { border-radius: 16px !important; padding: 20px !important; }
-        .student-dashboard-home-grid { display: grid; grid-template-columns: 1.3fr .92fr; gap: 12px; }
+        .student-dashboard-home-grid { display: grid; grid-template-columns: 1.3fr .92fr; gap: 12px; align-items: start; }
         .student-dashboard-home-stack { display: flex; flex-direction: column; gap: 12px; }
         .student-dashboard-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
         .student-dashboard-soft-card { border: 1px solid ${borderColor}; background: ${innerCardBg}; border-radius: 12px; }
@@ -678,7 +678,10 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                   const nextExam = [...mockExams].filter(exam => new Date(exam.examDate).getTime() >= Date.now() && exam.status !== 'CANCELLED').sort((a, b) => new Date(a.examDate).getTime() - new Date(b.examDate).getTime())[0];
                   return nextExam ? (
                     <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '12px', padding: '15px' }}>
-                      <div style={{ color: textColor, fontSize: '14px', fontWeight: 900 }}>{nextExam.title}</div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px' }}>
+                        <div style={{ color: textColor, fontSize: '14px', fontWeight: 900 }}>{nextExam.title}</div>
+                        <span style={{ color: accent, fontSize: '9px', fontWeight: 800 }}>پیش‌رو</span>
+                      </div>
                       <div style={{ color: subText, fontSize: '11px', marginTop: '7px' }}>
                         {new Intl.DateTimeFormat('fa-IR', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Asia/Tehran' }).format(new Date(nextExam.examDate))}
                       </div>
@@ -686,7 +689,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                         {nextExam.level && <span style={{ backgroundColor: accentSoft, color: accent, borderRadius: '7px', padding: '4px 8px', fontSize: '10px', fontWeight: 800 }}>{nextExam.level}</span>}
                         {nextExam.field && <span style={{ backgroundColor: isDark ? 'rgba(148,163,184,.10)' : '#f1efed', color: subText, borderRadius: '7px', padding: '4px 8px', fontSize: '10px', fontWeight: 700 }}>{nextExam.field}</span>}
                       </div>
-                      <button type="button" onClick={() => setSelectedMockExam(nextExam)} style={{ width: '100%', marginTop: '14px', border: 'none', backgroundColor: accent, color: '#fff', borderRadius: '9px', padding: '9px', fontSize: '11px', fontWeight: 800, cursor: 'pointer' }}>مشاهده جزئیات آزمون</button>
+                      <button type="button" onClick={() => setSelectedMockExam(nextExam)} style={{ width: '100%', marginTop: '12px', border: 'none', backgroundColor: accent, color: '#fff', borderRadius: '9px', padding: '9px', fontSize: '11px', fontWeight: 800, cursor: 'pointer' }}>مشاهده جزئیات آزمون</button>
                     </div>
                   ) : (
                     <div style={{ color: subText, fontSize: '11px', lineHeight: 1.8, padding: '18px 8px', textAlign: 'center' }}>در حال حاضر آزمون پیش‌روئی برای شما ثبت نشده است.</div>
@@ -695,8 +698,8 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
               </div>
 
               <div className="student-dashboard-home-stack">
-                <div className="student-dashboard-soft-card" style={{ padding: '18px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '12px' }}>
+                <div className="student-dashboard-soft-card" style={{ padding: '16px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '10px' }}>
                     <Bell size={17} color={accent} />
                     <h3 style={{ color: textColor, fontSize: '15px', fontWeight: 900, margin: 0 }}>آخرین اطلاعیه‌ها</h3>
                   </div>
@@ -714,8 +717,8 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                   )}
                 </div>
 
-                <div className="student-dashboard-soft-card" style={{ padding: '18px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '12px' }}>
+                <div className="student-dashboard-soft-card" style={{ padding: '16px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '10px' }}>
                     <CalendarClock size={17} color={accent} />
                     <h3 style={{ color: textColor, fontSize: '15px', fontWeight: 900, margin: 0 }}>مشاوره</h3>
                   </div>
