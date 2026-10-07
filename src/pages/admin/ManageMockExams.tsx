@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { compareJalali, getTehranTodayJalali, jalaliMonthLength, jalaliToTehranDate, toGregorian } from '../../utils/jalali';
 import { CalendarDays, ExternalLink, Link2, Pencil, Plus, RefreshCw, Sparkles, Users } from 'lucide-react';
 
 type MockExamStatus = 'DRAFT' | 'SCHEDULED' | 'LINK_AVAILABLE' | 'LIVE' | 'COMPLETED' | 'CANCELLED';
@@ -41,6 +42,12 @@ export const ManageMockExams: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [participantExamId, setParticipantExamId] = useState<string | null>(null);
   const [error, setError] = useState('');
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const today = getTehranTodayJalali();
+  const [calendarMonth, setCalendarMonth] = useState({ jy: today.jy, jm: today.jm });
+  const [selectedDate, setSelectedDate] = useState<{ jy: number; jm: number; jd: number } | null>(null);
+  const [hour, setHour] = useState('10');
+  const [minute, setMinute] = useState('00');
   const [form, setForm] = useState({
     title: '',
     level: '',
@@ -93,6 +100,9 @@ export const ManageMockExams: React.FC = () => {
       examUrl: '',
       status: 'DRAFT',
     });
+    setSelectedDate(null);
+    setHour('10');
+    setMinute('00');
   };
 
   const editExam = (exam: MockExam) => {
@@ -101,16 +111,52 @@ export const ManageMockExams: React.FC = () => {
       title: exam.title,
       level: exam.level,
       field: exam.field,
-      examDate: exam.examDate.slice(0, 16),
+      examDate: exam.examDate,
       examUrl: exam.examUrl ?? '',
       status: exam.status,
     });
+    const examDate = new Date(exam.examDate);
+    const jalali = new Intl.DateTimeFormat('en-US-u-ca-persian', {
+      timeZone: 'Asia/Tehran',
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+    }).formatToParts(examDate);
+    const jy = Number(jalali.find(p => p.type === 'year')?.value);
+    const jm = Number(jalali.find(p => p.type === 'month')?.value);
+    const jd = Number(jalali.find(p => p.type === 'day')?.value);
+    setSelectedDate({ jy, jm, jd });
+    const timeParts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Asia/Tehran',
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23',
+    }).formatToParts(examDate);
+    setHour(timeParts.find(p => p.type === 'hour')?.value ?? '10');
+    setMinute(timeParts.find(p => p.type === 'minute')?.value ?? '00');
+    setCalendarMonth({ jy, jm });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!form.title || !form.level || !form.field || !form.examDate) return;
+    if (!form.title || !form.level || !form.field || !selectedDate) {
+      setError('عنوان، مقطع، رشته و تاریخ آزمون را کامل کنید.');
+      return;
+    }
+
+    const h = Number(hour);
+    const m = Number(minute);
+    if (h < 0 || h > 23 || m < 0 || m > 59) {
+      setError('ساعت واردشده معتبر نیست.');
+      return;
+    }
+
+    const examDate = jalaliToTehranDate(selectedDate.jy, selectedDate.jm, selectedDate.jd, h, m);
+    if (examDate <= new Date()) {
+      setError('زمان آزمون باید در آینده باشد.');
+      return;
+    }
 
     setSaving(true);
     setError('');
@@ -119,7 +165,7 @@ export const ManageMockExams: React.FC = () => {
         title: form.title,
         level: form.level,
         field: form.field,
-        examDate: new Date(form.examDate).toISOString(),
+        examDate: examDate.toISOString(),
         examUrl: form.examUrl || undefined,
         status: form.status,
       };
@@ -141,12 +187,41 @@ export const ManageMockExams: React.FC = () => {
 
       await load();
       resetForm();
+      setSelectedDate(null);
+      setCalendarOpen(false);
     } catch {
       setError('ذخیره آزمون انجام نشد. اطلاعات واردشده و اتصال به سرور را بررسی کنید.');
     } finally {
       setSaving(false);
     }
   };
+
+  const openCalendar = () => {
+    const base = selectedDate || { jy: today.jy, jm: today.jm, jd: today.jd };
+    setCalendarMonth({ jy: base.jy, jm: base.jm });
+    setCalendarOpen(true);
+  };
+
+  const selectDay = (jd: number) => {
+    setSelectedDate({ ...calendarMonth, jd });
+  };
+
+  const monthNames = ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+  const weekdays = ['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه'];
+  const firstGregorian = toGregorian(calendarMonth.jy, calendarMonth.jm, 1);
+  const firstWeekday = (new Date(Date.UTC(firstGregorian.gy, firstGregorian.gm - 1, firstGregorian.gd)).getUTCDay() + 1) % 7;
+  const days = Array.from({ length: firstWeekday + jalaliMonthLength(calendarMonth.jy, calendarMonth.jm) }, (_, i) => i < firstWeekday ? null : i - firstWeekday + 1);
+
+  const shiftMonth = (delta: number) => {
+    let jy = calendarMonth.jy;
+    let jm = calendarMonth.jm + delta;
+    if (jm < 1) { jm = 12; jy -= 1; }
+    if (jm > 12) { jm = 1; jy += 1; }
+    setCalendarMonth({ jy, jm });
+  };
+
+  const isPast = (jd: number) => compareJalali({ jy: calendarMonth.jy, jm: calendarMonth.jm, jd }, today) < 0;
+  const isSelected = (jd: number) => selectedDate?.jy === calendarMonth.jy && selectedDate?.jm === calendarMonth.jm && selectedDate?.jd === jd;
 
   const toggleParticipant = async (examId: string, studentId: string, selected: boolean) => {
     setError('');
@@ -212,7 +287,24 @@ export const ManageMockExams: React.FC = () => {
             <input value={form.field} onChange={(e) => setForm({ ...form, field: e.target.value })} placeholder="مثال: پژوهش هنر" style={input} required />
           </Field>
           <Field label="تاریخ و ساعت آزمون *">
-            <input type="datetime-local" value={form.examDate} onChange={(e) => setForm({ ...form, examDate: e.target.value })} style={input} required />
+            <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+              <button
+                type="button"
+                onClick={openCalendar}
+                style={{ ...input, flex: 1, minWidth: 180, textAlign: 'right', cursor: 'pointer' }}
+              >
+                {selectedDate ? `${selectedDate.jd} ${monthNames[selectedDate.jm - 1]} ${selectedDate.jy}` : 'انتخاب تاریخ شمسی'}
+              </button>
+              <div style={{ display: 'flex', gap: 7, alignItems: 'center' }}>
+                <select value={hour} onChange={e => setHour(e.target.value)} style={{ ...input, width: 72 }}>
+                  {Array.from({ length: 24 }, (_, i) => <option key={i} value={String(i).padStart(2,'0')}>{String(i).padStart(2,'0')}</option>)}
+                </select>
+                <span style={{ color: '#888', fontWeight: 800 }}>:</span>
+                <select value={minute} onChange={e => setMinute(e.target.value)} style={{ ...input, width: 72 }}>
+                  {['00','15','30','45'].map(v => <option key={v} value={v}>{v}</option>)}
+                </select>
+              </div>
+            </div>
           </Field>
           <Field label="وضعیت">
             <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value as MockExamStatus })} style={input}>
@@ -231,6 +323,49 @@ export const ManageMockExams: React.FC = () => {
           </button>
         </div>
       </form>
+
+      {calendarOpen && (
+        <div
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.65)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}
+          onClick={() => setCalendarOpen(false)}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{ width: 'min(390px, 100%)', background: '#141419', border: '1px solid #333', borderRadius: 18, padding: 18, boxShadow: '0 20px 60px rgba(0,0,0,.45)' }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+              <button type="button" onClick={() => shiftMonth(1)} style={calendarNavButton}>‹</button>
+              <strong style={{ fontSize: 14 }}>{monthNames[calendarMonth.jm - 1]} {calendarMonth.jy}</strong>
+              <button type="button" onClick={() => shiftMonth(-1)} style={calendarNavButton}>›</button>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 5, textAlign: 'center' }}>
+              {weekdays.map(day => <div key={day} style={{ color: '#888', fontSize: 10, padding: '6px 0' }}>{day}</div>)}
+              {days.map((jd, i) => jd === null ? <div key={`empty-${i}`} /> : (
+                <button
+                  type="button"
+                  key={jd}
+                  disabled={isPast(jd)}
+                  onClick={() => selectDay(jd)}
+                  style={{
+                    height: 40,
+                    borderRadius: 9,
+                    border: isSelected(jd) ? '1px solid #38bdf8' : '1px solid transparent',
+                    background: isSelected(jd) ? 'rgba(56,189,248,.16)' : 'transparent',
+                    color: isPast(jd) ? '#444' : isSelected(jd) ? '#38bdf8' : '#fff',
+                    cursor: isPast(jd) ? 'not-allowed' : 'pointer',
+                    fontSize: 12,
+                    fontWeight: isSelected(jd) ? 900 : 500,
+                  }}
+                >{jd}</button>
+              ))}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 16, borderTop: '1px solid #26262d', paddingTop: 14 }}>
+              <span style={{ color: '#888', fontSize: 10 }}>روزهای گذشته قابل انتخاب نیستند</span>
+              <button type="button" onClick={() => setCalendarOpen(false)} style={{ background: '#38bdf8', color: '#071018', border: 0, padding: '8px 15px', borderRadius: 8, fontWeight: 800, cursor: 'pointer', fontSize: 11 }}>تأیید تاریخ</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div style={card}>
         <div style={sectionTitle}>
@@ -387,6 +522,16 @@ const badge: React.CSSProperties = {
   background: 'rgba(109,0,26,.25)',
   padding: '3px 8px',
   borderRadius: 7,
+};
+
+const calendarNavButton: React.CSSProperties = {
+  background: '#1d1d24',
+  color: '#fff',
+  border: '1px solid #333',
+  borderRadius: 8,
+  width: 38,
+  height: 38,
+  cursor: 'pointer',
 };
 
 const primaryButton: React.CSSProperties = {
