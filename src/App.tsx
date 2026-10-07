@@ -31,7 +31,8 @@ export function App() {
   } = useStore();
 
   const [view, setView] = useState<'login' | 'admin' | 'user'>('login');
-  const [adminTab, setAdminTab] = useState<'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams' | 'counseling'>('courses');
+  type AdminTab = 'dashboard' | 'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams' | 'counseling';
+  const [adminTab, setAdminTab] = useState<AdminTab>('dashboard');
   const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
 
   const handleStudentLogin = (user: AuthUser) => {
