@@ -554,7 +554,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         boxSizing:'border-box',
         margin:0,
         padding:'24px',
-        overflowY:'auto',
+        overflowX:'hidden',
         ['--sd-card' as any]:cardBg,
         ['--sd-border' as any]:borderColor,
         ['--sd-inner' as any]:innerCardBg,
