@@ -26,6 +26,27 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
   const [editingStudentId, setEditingStudentId] = useState<string | null>(null);
 
+  const handleDelete = async (studentId: string) => {
+    const student = apiStudents.find(item => item.id === studentId);
+    if (!student) return;
+    if (!window.confirm(`آیا از حذف «${student.fullName}» مطمئن هستید؟ این عملیات اطلاعات حساب و دسترسی‌های هنرجو را حذف می‌کند.`)) return;
+    setError('');
+    try {
+      const response = await fetch(`/api/admin/students/${studentId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        const body = await response.json().catch(() => null);
+        throw new Error(body?.message || 'حذف هنرجو انجام نشد.');
+      }
+      if (editingStudentId === studentId) resetForm();
+      await loadStudents();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'حذف هنرجو انجام نشد.');
+    }
+  };
+
   const handleCheckboxChange = (courseId: string) => {
     if (selectedCourses.includes(courseId)) {
       setSelectedCourses(selectedCourses.filter(id => id !== courseId));
@@ -263,7 +284,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
                   <button onClick={() => handleEdit(st)} style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#93c5fd', border: '1px solid rgba(59, 130, 246, 0.2)', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <Pencil size={12} /> ویرایش
                   </button>
-                  <button onClick={() => void _onDeleteStudent(st.id)} style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <button onClick={() => void handleDelete(st.id)} style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <Trash2 size={12} /> حذف
                   </button>
                 </div>
