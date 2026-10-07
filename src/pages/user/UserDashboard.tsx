@@ -636,14 +636,14 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
       <div className="student-dashboard-main" style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '30px' }}>
         
         {activeTab === 'home' && (
-          <div style={{ backgroundColor: cardBg, border: \`1px solid \${borderColor}\`, backdropFilter: 'blur(16px)', borderRadius: '18px', padding: '24px', boxShadow: isDark ? '0 16px 40px rgba(0,0,0,.18)' : '0 12px 32px rgba(58,34,40,.06)' }}>
+          <div style={{ backgroundColor: cardBg, border: `1px solid \${borderColor}`, backdropFilter: 'blur(16px)', borderRadius: '18px', padding: '24px', boxShadow: isDark ? '0 16px 40px rgba(0,0,0,.18)' : '0 12px 32px rgba(58,34,40,.06)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px', marginBottom: '20px', flexWrap: 'wrap' }}>
               <div>
                 <div style={{ fontSize: '12px', color: accent, fontWeight: 800, marginBottom: '6px' }}>داشبورد دانشجو</div>
                 <h2 style={{ fontSize: '22px', fontWeight: 900, color: textColor, margin: 0 }}>خوش آمدید، {student.fullName}</h2>
                 <p style={{ fontSize: '12px', color: subText, margin: '7px 0 0', lineHeight: 1.7 }}>اینجا خلاصه‌ای از دوره‌ها، آزمون‌ها و اطلاعیه‌های مهم شما را می‌بینید.</p>
               </div>
-              <button type="button" onClick={() => setActiveTab('courses')} style={{ border: \`1px solid \${borderColor}\`, backgroundColor: accentSoft, color: accent, borderRadius: '10px', padding: '9px 12px', fontSize: '11px', fontWeight: 800, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <button type="button" onClick={() => setActiveTab('courses')} style={{ border: `1px solid \${borderColor}`, backgroundColor: accentSoft, color: accent, borderRadius: '10px', padding: '9px 12px', fontSize: '11px', fontWeight: 800, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                 مشاهده دوره‌ها <ArrowLeft size={14} />
               </button>
             </div>
@@ -675,7 +675,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                 {(() => {
                   const nextExam = [...mockExams].filter(exam => new Date(exam.examDate).getTime() >= Date.now() && exam.status !== 'CANCELLED').sort((a, b) => new Date(a.examDate).getTime() - new Date(b.examDate).getTime())[0];
                   return nextExam ? (
-                    <div style={{ backgroundColor: cardBg, border: \`1px solid \${borderColor}\`, borderRadius: '12px', padding: '15px' }}>
+                    <div style={{ backgroundColor: cardBg, border: `1px solid \${borderColor}`, borderRadius: '12px', padding: '15px' }}>
                       <div style={{ color: textColor, fontSize: '14px', fontWeight: 900 }}>{nextExam.title}</div>
                       <div style={{ color: subText, fontSize: '11px', marginTop: '7px' }}>
                         {new Intl.DateTimeFormat('fa-IR', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Asia/Tehran' }).format(new Date(nextExam.examDate))}
@@ -703,7 +703,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '9px' }}>
                       {studentNotifications.slice(0, 3).map(notification => (
-                        <button key={notification.id} type="button" onClick={handleOpenNotificationTab} style={{ textAlign: 'right', border: \`1px solid \${borderColor}\`, backgroundColor: cardBg, borderRadius: '10px', padding: '10px', cursor: 'pointer' }}>
+                        <button key={notification.id} type="button" onClick={handleOpenNotificationTab} style={{ textAlign: 'right', border: `1px solid \${borderColor}`, backgroundColor: cardBg, borderRadius: '10px', padding: '10px', cursor: 'pointer' }}>
                           <div style={{ color: textColor, fontSize: '11px', fontWeight: 800 }}>{notification.title}</div>
                           <div style={{ color: subText, fontSize: '9px', marginTop: '4px' }}>{new Date(notification.createdAt).toLocaleDateString('fa-IR')}</div>
                         </button>
@@ -733,9 +733,9 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                 <div style={{ color: subText, fontSize: '10px', marginTop: '4px' }}>برای انجام سریع کارهای روزمره از میانبرهای پنل استفاده کنید.</div>
               </div>
               <div style={{ display: 'flex', gap: '7px', flexWrap: 'wrap' }}>
-                <button type="button" onClick={() => setActiveTab('courses')} style={{ border: \`1px solid \${borderColor}\`, backgroundColor: cardBg, color: textColor, borderRadius: '8px', padding: '7px 10px', fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>دوره‌ها</button>
-                <button type="button" onClick={() => setActiveTab('notifications')} style={{ border: \`1px solid \${borderColor}\`, backgroundColor: cardBg, color: textColor, borderRadius: '8px', padding: '7px 10px', fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>اطلاعیه‌ها</button>
-                <button type="button" onClick={() => setActiveTab('messages')} style={{ border: \`1px solid \${borderColor}\`, backgroundColor: cardBg, color: textColor, borderRadius: '8px', padding: '7px 10px', fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>پشتیبانی</button>
+                <button type="button" onClick={() => setActiveTab('courses')} style={{ border: `1px solid \${borderColor}`, backgroundColor: cardBg, color: textColor, borderRadius: '8px', padding: '7px 10px', fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>دوره‌ها</button>
+                <button type="button" onClick={() => setActiveTab('notifications')} style={{ border: `1px solid \${borderColor}`, backgroundColor: cardBg, color: textColor, borderRadius: '8px', padding: '7px 10px', fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>اطلاعیه‌ها</button>
+                <button type="button" onClick={() => setActiveTab('messages')} style={{ border: `1px solid \${borderColor}`, backgroundColor: cardBg, color: textColor, borderRadius: '8px', padding: '7px 10px', fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>پشتیبانی</button>
               </div>
             </div>
           </div>
