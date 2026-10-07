@@ -480,7 +480,7 @@ export const ManageCourses: React.FC = () => {
               const courseSessions = sessions[course.id] || [];
               const files = courseFiles[course.id] || [];
               return (
-                <div className="admin-legacy-page admin-courses-page" key={course.id} style={{ background: '#141419', border: '1px solid #222228', borderRadius: 14, overflow: 'hidden' }}>
+                <div className="admin-legacy-page admin-courses-page" className="admin-legacy-page admin-courses-page" key={course.id} style={{ background: '#141419', border: '1px solid #222228', borderRadius: 14, overflow: 'hidden' }}>
                   <div style={{ padding: 18 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'flex-start' }}>
                       <div>
