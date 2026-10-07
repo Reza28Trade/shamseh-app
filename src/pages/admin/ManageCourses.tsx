@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BookOpen, Plus, Pencil, Trash2, RefreshCw, Download, ChevronDown, ChevronUp, FileText, Link as LinkIcon, CalendarDays, X } from 'lucide-react';
+import { BookOpen, Plus, Pencil, Trash2, RefreshCw, Download, ChevronDown, ChevronUp, FileText, Link as LinkIcon, CalendarDays, X, Users } from 'lucide-react';
 
 type CourseStatus = 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
 type FileType = 'PDF' | 'POWERPOINT' | 'AUDIO' | 'VIDEO' | 'DOCUMENT' | 'LINK';
@@ -36,6 +36,13 @@ type CourseFile = {
   fileSize: string | null;
   externalUrl: string | null;
   streamUrl: string | null;
+};
+
+type CourseEnrollment = {
+  id: string;
+  status: 'ACTIVE' | 'COMPLETED' | 'CANCELLED';
+  enrolledAt: string;
+  student: { id: string; fullName: string; nationalId: string; phone: string };
 };
 
 const emptyCourse = {
@@ -84,6 +91,12 @@ export const ManageCourses: React.FC = () => {
   const [fileSaving, setFileSaving] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [enrollments, setEnrollments] = useState<Record<string, CourseEnrollment[]>>({});
+  const [enrollmentLoading, setEnrollmentLoading] = useState<Record<string, boolean>>({});
+  const [studentOptions, setStudentOptions] = useState<{ id: string; fullName: string; nationalId: string }[]>([]);
+  const [enrollmentTarget, setEnrollmentTarget] = useState<string | null>(null);
+  const [selectedStudentId, setSelectedStudentId] = useState('');
+  const [enrollmentSaving, setEnrollmentSaving] = useState(false);
 
 
   const exportCourses = async () => {
@@ -131,13 +144,90 @@ export const ManageCourses: React.FC = () => {
     }
   };
 
+  const loadEnrollments = async (courseId: string) => {
+    setEnrollmentLoading(current => ({ ...current, [courseId]: true }));
+    try {
+      const response = await fetch(`/api/admin/courses/${courseId}/enrollments`, { credentials: 'include' });
+      if (!response.ok) throw new Error('دریافت هنرجویان دوره انجام نشد.');
+      setEnrollments(current => ({ ...current, [courseId]: await response.json() }));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'دریافت هنرجویان دوره انجام نشد.');
+    } finally {
+      setEnrollmentLoading(current => ({ ...current, [courseId]: false }));
+    }
+  };
+
+  const loadStudentOptions = async () => {
+    if (studentOptions.length > 0) return;
+    const response = await fetch('/api/admin/students', { credentials: 'include' });
+    if (!response.ok) throw new Error('دریافت فهرست هنرجویان انجام نشد.');
+    const data = await response.json();
+    setStudentOptions(data.map((item: any) => ({
+      id: item.id, fullName: item.fullName, nationalId: item.nationalId,
+    })));
+  };
+
   const toggleCourse = async (courseId: string) => {
     if (expandedCourseId === courseId) {
       setExpandedCourseId(null);
       return;
     }
     setExpandedCourseId(courseId);
-    if (!sessions[courseId]) await loadContent(courseId);
+    setError('');
+    await Promise.all([
+      sessions[courseId] ? Promise.resolve() : loadContent(courseId),
+      enrollments[courseId] ? Promise.resolve() : loadEnrollments(courseId),
+    ]);
+  };
+
+  const addEnrollment = async (courseId: string) => {
+    if (!selectedStudentId || enrollmentSaving) return;
+    setEnrollmentSaving(true); setError('');
+    try {
+      const response = await fetch(`/api/admin/courses/${courseId}/enrollments/${selectedStudentId}`, {
+        method: 'POST', credentials: 'include',
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'افزودن هنرجو به دوره انجام نشد.');
+      setSelectedStudentId('');
+      setEnrollmentTarget(null);
+      await loadEnrollments(courseId);
+      await loadCourses();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'افزودن هنرجو به دوره انجام نشد.');
+    } finally {
+      setEnrollmentSaving(false);
+    }
+  };
+
+  const changeEnrollmentStatus = async (courseId: string, enrollmentId: string, status: CourseEnrollment['status']) => {
+    try {
+      const response = await fetch(`/api/admin/course-enrollments/${enrollmentId}`, {
+        method: 'PATCH', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'تغییر وضعیت ثبت‌نام انجام نشد.');
+      await loadEnrollments(courseId);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'تغییر وضعیت ثبت‌نام انجام نشد.');
+    }
+  };
+
+  const removeEnrollment = async (courseId: string, enrollment: CourseEnrollment) => {
+    if (!confirm(`هنرجوی «${enrollment.student.fullName}» از این دوره خارج شود؟`)) return;
+    try {
+      const response = await fetch(`/api/admin/course-enrollments/${enrollment.id}`, {
+        method: 'DELETE', credentials: 'include',
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'خروج هنرجو از دوره انجام نشد.');
+      await loadEnrollments(courseId);
+      await loadCourses();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'خروج هنرجو از دوره انجام نشد.');
+    }
   };
 
   const saveCourse = async (e: React.FormEvent) => {
@@ -401,6 +491,7 @@ export const ManageCourses: React.FC = () => {
                     </div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 14 }}>
                       <button type="button" onClick={() => void toggleCourse(course.id)} style={button('rgba(255,255,255,.06)')}>{expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />} مدیریت جلسات و فایل‌ها</button>
+                      <button type="button" onClick={async () => { setEnrollmentTarget(course.id); setSelectedStudentId(''); setError(''); try { await loadStudentOptions(); } catch (e) { setError(e instanceof Error ? e.message : 'دریافت هنرجویان انجام نشد.'); } }} style={button('rgba(56,189,248,.1)', '#38bdf8')}><Users size={12} /> هنرجویان ({course._count?.enrollments ?? 0})</button>
                       <button type="button" onClick={() => editCourse(course)} style={button('rgba(56,189,248,.1)', '#38bdf8')}><Pencil size={12} /> ویرایش دوره</button>
                       <button type="button" onClick={() => void deleteCourse(course.id)} style={button('rgba(239,68,68,.1)', '#f87171')}><Trash2 size={12} /> حذف</button>
                     </div>
@@ -445,6 +536,34 @@ export const ManageCourses: React.FC = () => {
 
                           <div style={{ marginTop: 20, borderTop: '1px solid #25252b', paddingTop: 15 }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                              <h4 style={{ color: '#fff', fontSize: 12, margin: 0, display: 'flex', alignItems: 'center', gap: 5 }}><Users size={13} /> هنرجویان دوره ({(enrollments[course.id] || []).length})</h4>
+                              <button type="button" onClick={async () => { setEnrollmentTarget(course.id); setSelectedStudentId(''); try { await loadStudentOptions(); } catch (e) { setError(e instanceof Error ? e.message : 'دریافت فهرست هنرجویان انجام نشد.'); } }} style={button('#6D001A')}><Plus size={11} /> افزودن هنرجو</button>
+                            </div>
+                            {enrollmentLoading[course.id] ? <p style={{ color: '#94a3b8', fontSize: 10 }}>در حال دریافت هنرجویان...</p> :
+                              (enrollments[course.id] || []).length === 0 ? <p style={{ color: '#64748b', fontSize: 10 }}>هنوز هنرجویی در این دوره ثبت نشده است.</p> :
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+                                {(enrollments[course.id] || []).map(enrollment => (
+                                  <div key={enrollment.id} style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr auto', gap: 8, alignItems: 'center', background: '#0e0e11', border: '1px solid #25252b', borderRadius: 10, padding: 9 }}>
+                                    <div>
+                                      <strong style={{ color: '#fff', fontSize: 11 }}>{enrollment.student.fullName}</strong>
+                                      <div style={{ color: '#64748b', fontSize: 9, marginTop: 3 }}>{enrollment.student.nationalId} · {enrollment.student.phone}</div>
+                                    </div>
+                                    <span style={{ color: enrollment.status === 'ACTIVE' ? '#34d399' : enrollment.status === 'COMPLETED' ? '#38bdf8' : '#f87171', fontSize: 9 }}>
+                                      {enrollment.status === 'ACTIVE' ? 'فعال' : enrollment.status === 'COMPLETED' ? 'تکمیل‌شده' : 'لغوشده'}
+                                    </span>
+                                    <select value={enrollment.status} onChange={e => void changeEnrollmentStatus(course.id, enrollment.id, e.target.value as CourseEnrollment['status'])} style={{ ...input, padding: '7px 8px', fontSize: 10 }}>
+                                      <option value="ACTIVE">فعال</option>
+                                      <option value="COMPLETED">تکمیل‌شده</option>
+                                      <option value="CANCELLED">لغوشده</option>
+                                    </select>
+                                    <button type="button" onClick={() => void removeEnrollment(course.id, enrollment)} style={{ background: 'transparent', border: 0, color: '#f87171', cursor: 'pointer' }} title="خروج از دوره"><Trash2 size={12} /></button>
+                                  </div>
+                                ))}
+                              </div>}
+                          </div>
+
+                          <div style={{ marginTop: 20, borderTop: '1px solid #25252b', paddingTop: 15 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                               <h4 style={{ color: '#fff', fontSize: 12, margin: 0 }}><FileText size={13} style={{ verticalAlign: 'middle', marginLeft: 5 }} /> فایل‌های عمومی دوره ({files.length})</h4>
                               <button type="button" onClick={() => openFileForm(course.id)} style={button('rgba(109,0,26,.35)')}><Plus size={11} /> افزودن فایل</button>
                             </div>
@@ -470,6 +589,25 @@ export const ManageCourses: React.FC = () => {
           </div>
         }
       </div>
+
+      {enrollmentTarget && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.72)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 20 }}>
+          <div style={{ width: 'min(480px,100%)', background: '#15151a', border: '1px solid #2b2b32', borderRadius: 18, padding: 22 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
+              <h3 style={{ color: '#fff', margin: 0, fontSize: 14 }}>افزودن هنرجو به دوره</h3>
+              <button type="button" onClick={() => setEnrollmentTarget(null)} style={{ background: 'transparent', border: 0, color: '#94a3b8', cursor: 'pointer' }}><X size={16} /></button>
+            </div>
+            <select value={selectedStudentId} onChange={e => setSelectedStudentId(e.target.value)} style={input}>
+              <option value="">انتخاب هنرجو...</option>
+              {studentOptions.map(student => <option key={student.id} value={student.id}>{student.fullName} — {student.nationalId}</option>)}
+            </select>
+            <div style={{ display: 'flex', gap: 7, marginTop: 12 }}>
+              <button type="button" disabled={!selectedStudentId || enrollmentSaving} onClick={() => void addEnrollment(enrollmentTarget)} style={button('#6D001A')}>{enrollmentSaving ? 'در حال ثبت...' : 'ثبت هنرجو'}</button>
+              <button type="button" onClick={() => setEnrollmentTarget(null)} style={button('transparent', '#94a3b8')}>انصراف</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {fileTarget && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.72)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 20 }}>
