@@ -141,6 +141,22 @@ export class StudentsService {
     }
   }
 
+  async deleteStudent(user: AuthenticatedUser, studentId: string) {
+    this.requireAdmin(user);
+    const student = await this.prisma.student.findUnique({
+      where: { id: studentId },
+      select: { id: true, userId: true },
+    });
+    if (!student) throw new NotFoundException('Student not found');
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.student.delete({ where: { id: student.id } });
+      await tx.user.delete({ where: { id: student.userId } });
+    });
+
+    return { success: true };
+  }
+
   async resetPassword(user: AuthenticatedUser, studentId: string, dto: ResetStudentPasswordDto) {
     this.requireAdmin(user);
     const student = await this.prisma.student.findUnique({ where: { id: studentId }, select: { userId: true } });
