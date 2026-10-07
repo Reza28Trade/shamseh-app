@@ -1214,5 +1214,3 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
     </div>
   );
 };
-  );
-};
