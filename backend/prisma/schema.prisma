@@ -1,10 +1,12 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 datasource db {
   provider = "postgresql"
   url = env("DATABASE_URL")
 }
+
 enum UserRole {
   SUPER_ADMIN
   STAFF
@@ -75,6 +77,33 @@ enum MockExamStatus {
   CANCELLED
 }
 
+enum CounselingSlotStatus {
+  AVAILABLE
+  BOOKED
+  DISABLED
+}
+
+enum CounselingRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum PaymentPurpose {
+  COURSE_FEE
+  BOOK
+  MOCK_EXAM
+  OTHER
+}
+
 model User {
   id String @id @default(cuid())
   username String @unique
@@ -84,12 +113,14 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   lastLoginAt DateTime?
+
   sessions Session[]
   student Student?
   auditLogs AuditLog[]
   notifications Notification[] @relation("NotificationCreator")
   reviewedRequests OfflineRequest[] @relation("OfflineRequestReviewer")
   supportMessages SupportMessage[]
+  updatedContent GeneralContent[] @relation("GeneralContentUpdater")
 }
 
 model Session {
@@ -112,12 +143,16 @@ model Student {
   phone String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   enrollments Enrollment[]
   notificationTargets NotificationTargetStudent[]
   notificationReads NotificationRead[]
   supportTickets SupportTicket[]
   offlineRequests OfflineRequest[]
+  mockExamParticipants MockExamParticipant[]
+  counselingRequests CounselingRequest[]
+  payments Payment[]
 }
 
 model Course {
@@ -133,12 +168,13 @@ model Course {
   status CourseStatus @default(DRAFT)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
   enrollments Enrollment[]
   sessions CourseSession[]
   files CourseFile[]
   notifications Notification[]
   offlineRequests OfflineRequest[]
-  mockExams MockExamCourse[]
+  payments Payment[]
 }
 
 model Enrollment {
@@ -147,8 +183,10 @@ model Enrollment {
   courseId String
   status EnrollmentStatus @default(ACTIVE)
   enrolledAt DateTime @default(now())
+
   student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
   @@unique([studentId, courseId])
   @@index([courseId])
 }
@@ -159,9 +197,11 @@ model CourseSession {
   sessionNumber Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   notifications Notification[]
   offlineRequests OfflineRequest[]
+
   @@unique([courseId, sessionNumber])
   @@index([courseId])
 }
@@ -177,7 +217,9 @@ model CourseFile {
   externalUrl String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
   @@index([courseId])
 }
 
@@ -191,11 +233,13 @@ model Notification {
   courseId String?
   sessionId String?
   createdAt DateTime @default(now())
+
   createdBy User @relation("NotificationCreator", fields: [createdById], references: [id])
   course Course? @relation(fields: [courseId], references: [id], onDelete: Cascade)
   session CourseSession? @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   students NotificationTargetStudent[]
   reads NotificationRead[]
+
   @@index([courseId])
   @@index([sessionId])
   @@index([createdAt])
@@ -204,8 +248,10 @@ model Notification {
 model NotificationTargetStudent {
   notificationId String
   studentId String
+
   notification Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
   student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
   @@id([notificationId, studentId])
 }
 
@@ -213,8 +259,10 @@ model NotificationRead {
   notificationId String
   studentId String
   readAt DateTime @default(now())
+
   notification Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
   student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
   @@id([notificationId, studentId])
 }
 
@@ -225,8 +273,10 @@ model SupportTicket {
   status SupportTicketStatus @default(OPEN)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
   student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
   messages SupportMessage[]
+
   @@index([studentId, status])
 }
 
@@ -236,8 +286,10 @@ model SupportMessage {
   senderUserId String
   content String
   createdAt DateTime @default(now())
+
   ticket SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
   sender User @relation(fields: [senderUserId], references: [id])
+
   @@index([ticketId, createdAt])
 }
 
@@ -251,10 +303,12 @@ model OfflineRequest {
   createdAt DateTime @default(now())
   reviewedAt DateTime?
   reviewedBy String?
+
   student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   session CourseSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   reviewer User? @relation("OfflineRequestReviewer", fields: [reviewedBy], references: [id], onDelete: SetNull)
+
   @@index([studentId, courseId, status])
 }
 
@@ -263,24 +317,187 @@ model MockExam {
   title String
   level String
   field String
-  description String?
   examDate DateTime
   examUrl String?
   status MockExamStatus @default(DRAFT)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  courses MockExamCourse[]
+
+  participants MockExamParticipant[]
+
   @@index([status, examDate])
   @@index([level, field])
 }
 
-model MockExamCourse {
+model MockExamParticipant {
   mockExamId String
-  courseId String
+  studentId String
+  createdAt DateTime @default(now())
+
   mockExam MockExam @relation(fields: [mockExamId], references: [id], onDelete: Cascade)
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  @@id([mockExamId, courseId])
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@id([mockExamId, studentId])
+  @@index([studentId])
+}
+
+model PastExam {
+  id String @id @default(cuid())
+  title String
+  year Int
+  level String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  codes PastExamCode[]
+
+  @@index([year, level])
+}
+
+model PastExamCode {
+  id String @id @default(cuid())
+  pastExamId String
+  field String
+  fieldCode String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  pastExam PastExam @relation(fields: [pastExamId], references: [id], onDelete: Cascade)
+  questions PastExamQuestion[]
+
+  @@unique([pastExamId, fieldCode])
+  @@index([fieldCode])
+}
+
+model PastExamQuestion {
+  id String @id @default(cuid())
+  pastExamCodeId String
+  questionNumber Int
+  explanation String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  pastExamCode PastExamCode @relation(fields: [pastExamCodeId], references: [id], onDelete: Cascade)
+
+  @@unique([pastExamCodeId, questionNumber])
+  @@index([pastExamCodeId])
+}
+
+model CounselingSlot {
+  id String @id @default(cuid())
+  startAt DateTime
+  status CounselingSlotStatus @default(AVAILABLE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  request CounselingRequest?
+
+  @@index([startAt, status])
+}
+
+model CounselingRequest {
+  id String @id @default(cuid())
+  studentId String
+  slotId String
+  status CounselingRequestStatus @default(PENDING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  slot CounselingSlot @relation(fields: [slotId], references: [id], onDelete: Cascade)
+
+  @@unique([slotId])
+  @@index([studentId, status])
+}
+
+model Book {
+  id String @id @default(cuid())
+  title String
+  description String?
+  coverImage String?
+  category String?
+  price Decimal? @db.Decimal(12, 2)
+  discountedPrice Decimal? @db.Decimal(12, 2)
+  isActive Boolean @default(true)
+  displayOrder Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  payments Payment[]
+
+  @@index([isActive, displayOrder])
+}
+
+model Payment {
+  id String @id @default(cuid())
+  studentId String
+  courseId String?
+  bookId String?
+  purpose PaymentPurpose
+  amount Decimal @db.Decimal(12, 2)
+  paymentDate DateTime
+  trackingCode String?
+  status PaymentStatus @default(PENDING)
+  rejectionReason String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  reviewedAt DateTime?
+  reviewedBy String?
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  course Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  book Book? @relation(fields: [bookId], references: [id], onDelete: SetNull)
+  reviewer User? @relation("PaymentReviewer", fields: [reviewedBy], references: [id], onDelete: SetNull)
+  receipts PaymentReceipt[]
+
+  @@index([studentId, status])
   @@index([courseId])
+  @@index([bookId])
+  @@index([paymentDate])
+}
+
+model PaymentReceipt {
+  id String @id @default(cuid())
+  paymentId String
+  storageKey String
+  mimeType String
+  fileSize BigInt?
+  uploadedAt DateTime @default(now())
+
+  payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@index([paymentId, uploadedAt])
+}
+
+model GeneralContent {
+  id String @id @default(cuid())
+  key String @unique
+  title String
+  content String
+  updatedById String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  updatedBy User? @relation("GeneralContentUpdater", fields: [updatedById], references: [id], onDelete: SetNull)
+}
+
+model Achievement {
+  id String @id @default(cuid())
+  title String
+  studentName String
+  year Int
+  level String?
+  field String?
+  university String?
+  rank String?
+  description String?
+  imageUrl String?
+  isActive Boolean @default(true)
+  displayOrder Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive, year, displayOrder])
 }
 
 model AuditLog {
@@ -292,7 +509,9 @@ model AuditLog {
   metadata Json?
   ipAddress String?
   createdAt DateTime @default(now())
+
   actor User @relation(fields: [actorUserId], references: [id])
+
   @@index([actorUserId, createdAt])
   @@index([entityType, entityId])
 }
