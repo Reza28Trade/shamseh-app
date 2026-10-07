@@ -265,7 +265,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
             {apiCourses.map(course => {
               const isSelected = selectedCourses.includes(course.id);
               return (
-                <div className="admin-legacy-page admin-students-page" 
+                <div className="admin-legacy-page admin-students-page" className="admin-legacy-page admin-students-page" 
                   key={course.id} 
                   onClick={() => handleCheckboxChange(course.id)}
                   style={{ backgroundColor: isSelected ? 'rgba(109, 0, 26, 0.25)' : 'rgba(20, 20, 25, 0.6)', border: `1px solid ${isSelected ? '#6D001A' : 'rgba(255,255,255,0.06)'}`, padding: '12px', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', transition: 'all 0.2s' }}
