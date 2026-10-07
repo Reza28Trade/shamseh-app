@@ -23,7 +23,7 @@ export class StudentsService {
     return this.prisma.student.findMany({
       orderBy: { createdAt: 'desc' },
       select: {
-        id: true, fullName: true, nationalId: true, phone: true,
+        id: true, fullName: true, nationalId: true, phone: true, academicLevel: true,
         user: { select: { id: true, username: true, status: true, createdAt: true } },
         enrollments: {
           select: { id: true, status: true, courseId: true, enrolledAt: true, course: { select: { id: true, title: true, level: true } } },
@@ -73,12 +73,17 @@ export class StudentsService {
           passwordHash,
           role: 'STUDENT',
           student: {
-            create: { fullName: dto.fullName, nationalId: dto.nationalId, phone: dto.phone },
+            create: {
+              fullName: dto.fullName,
+              nationalId: dto.nationalId,
+              phone: dto.phone,
+              academicLevel: dto.academicLevel,
+            },
           },
         },
         select: {
           id: true, username: true, role: true, status: true,
-          student: { select: { id: true, fullName: true, nationalId: true, phone: true } },
+          student: { select: { id: true, fullName: true, nationalId: true, phone: true, academicLevel: true } },
         },
       });
     } catch (error: any) {
@@ -91,7 +96,7 @@ export class StudentsService {
     this.requireAdmin(user);
     const student = await this.prisma.student.findUnique({
       where: { id: studentId },
-      select: { id: true, userId: true, nationalId: true, phone: true },
+      select: { id: true, userId: true, nationalId: true, phone: true, academicLevel: true },
     });
     if (!student) throw new NotFoundException('Student not found');
 
@@ -114,6 +119,7 @@ export class StudentsService {
             ...(dto.fullName !== undefined ? { fullName: dto.fullName } : {}),
             nationalId,
             phone,
+            ...(dto.academicLevel !== undefined ? { academicLevel: dto.academicLevel } : {}),
           },
           select: {
             id: true,
