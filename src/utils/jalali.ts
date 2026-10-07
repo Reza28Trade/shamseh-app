@@ -5,19 +5,36 @@ const mod = (a: number, b: number) => a - Math.floor(a / b) * b;
 
 function jalCal(jy: number) {
   const bl = BREAKS.length;
+  const gy = jy + 621;
+  let leapJ = -14;
   let jp = BREAKS[0];
   let jump = 0;
+
+  if (jy < jp || jy >= BREAKS[bl - 1]) {
+    throw new RangeError('Invalid Jalaali year');
+  }
+
   for (let i = 1; i < bl; i += 1) {
     const jm = BREAKS[i];
     jump = jm - jp;
     if (jy < jm) break;
+    leapJ += div(jump, 33) * 8 + div(mod(jump, 33), 4);
     jp = jm;
   }
-  let n = jy - jp;
-  if (jump - n < 6) n = n - jump + div(jump + 4, 33) * 33;
-  const leap = mod(mod(n + 1, 33) - 1, 4);
-  const gy = jy + 621;
-  const march = 20 + leap;
+
+  const n = jy - jp;
+  leapJ += div(n, 33) * 8 + div(mod(n, 33) + 3, 4);
+  if (mod(jump, 33) === 4 && jump - n === 4) leapJ += 1;
+
+  const leapG = div(gy, 4) - div((div(gy, 100) + 1) * 3, 4) - 150;
+  const march = 20 + leapJ - leapG;
+
+  let leap = 0;
+  let cycleN = n;
+  if (jump - cycleN < 6) cycleN = cycleN - jump + div(jump + 4, 33) * 33;
+  leap = mod(mod(cycleN + 1, 33) - 1, 4);
+  if (leap === -1) leap = 4;
+
   return { gy, march, leap };
 }
 
