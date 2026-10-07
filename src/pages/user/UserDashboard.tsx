@@ -553,6 +553,8 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         .student-dashboard-nav button:hover { filter: brightness(.985); }
         .student-dashboard-main h2 { font-size: 18px !important; }
         .student-dashboard-main h3 { line-height: 1.5; }
+        .student-home-hero-content { max-width: 68%; }
+        .student-home-stat-grid { grid-template-columns: repeat(3, 1fr); }
         @media (max-width: 980px) {
           .student-dashboard-home-grid { grid-template-columns: 1fr; }
         }
@@ -567,6 +569,8 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
           .student-dashboard-header { flex-direction: column; align-items: stretch !important; gap: 14px; }
           .student-dashboard-header > div:last-child { justify-content: space-between; }
           .student-dashboard-main > div { padding: 18px !important; }
+          .student-home-hero-content { max-width: 100%; }
+          .student-home-stat-grid { grid-template-columns: 1fr; }
         }
       `}</style>
       <div className="student-dashboard-shell">
@@ -646,7 +650,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
               padding: '26px 28px', boxSizing: 'border-box',
               boxShadow: isDark ? '0 14px 34px rgba(0,0,0,.18)' : '0 12px 30px rgba(42,78,78,.07)'
             }}>
-              <div style={{ position: 'relative', zIndex: 2, maxWidth: '68%' }}>
+              <div className="student-home-hero-content" style={{ position: 'relative', zIndex: 2 }}>
                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', color: accent, fontSize: '10px', fontWeight: 900, marginBottom: '10px' }}>
                   <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: accent, display: 'inline-block' }} />
                   داشبورد آموزشی شمسه
@@ -672,7 +676,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
               <div style={{ position: 'absolute', left: '42px', bottom: '24px', color: accent, fontSize: '9px', fontWeight: 900, letterSpacing: '1px', opacity: .75 }}>SHAMSEH</div>
             </div>
 
-            <div className="student-dashboard-stat-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+            <div className="student-dashboard-stat-grid student-home-stat-grid">
               {[
                 { label: 'دوره‌های فعال', value: enrolledCourses.length, icon: BookOpen, note: 'دوره آموزشی شما' },
                 { label: 'آزمون‌های پیش‌رو', value: mockExams.filter(exam => new Date(exam.examDate).getTime() >= Date.now() && exam.status !== 'CANCELLED').length, icon: ClipboardList, note: 'آزمون در برنامه' },
