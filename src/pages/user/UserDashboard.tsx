@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import type { Student, Course } from '../../types';
 import { useStore } from '../../store/useStore';
 import { FileViewer } from '../../components/FileViewer';
-import { BookOpen, LogOut, Video, FileText, Send, Sun, Moon, CheckCircle, Bell, Volume2, Presentation, Link as LinkIcon, AlertCircle, CalendarClock, Clock } from 'lucide-react';
+import { BookOpen, LogOut, Video, FileText, Send, Sun, Moon, CheckCircle, Bell, Volume2, Presentation, Link as LinkIcon, AlertCircle, CalendarClock, Clock, ClipboardList, ExternalLink } from 'lucide-react';
 
 interface BackendSession {
   id: string;
@@ -23,6 +23,18 @@ interface BackendFile {
   streamUrl: string | null;
 }
 
+interface BackendMockExam {
+  id: string;
+  title: string;
+  level: string | null;
+  field: string | null;
+  examDate: string;
+  examUrl: string | null;
+  status: 'DRAFT' | 'SCHEDULED' | 'LINK_AVAILABLE' | 'LIVE' | 'COMPLETED' | 'CANCELLED';
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface UserDashboardProps {
   student: Student;
   courses: Course[];
@@ -40,7 +52,10 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
 
   } = useStore();
 
-  const [activeTab, setActiveTab] = useState<'courses' | 'notifications' | 'messages' | 'counseling'>('courses');
+  const [activeTab, setActiveTab] = useState<'courses' | 'mockExams' | 'notifications' | 'messages' | 'counseling'>('courses');
+  const [mockExams, setMockExams] = useState<BackendMockExam[]>([]);
+  const [mockExamsLoading, setMockExamsLoading] = useState(false);
+  const [mockExamsError, setMockExamsError] = useState('');
   const [subject, setSubject] = useState('');
   const [content, setContent] = useState('');
   const [successMsg, setSuccessMsg] = useState(false);
@@ -242,6 +257,39 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
     void loadOfflineRequests();
     return () => { cancelled = true; };
   }, [student.id]);
+
+  useEffect(() => {
+    if (activeTab !== 'mockExams') return;
+    let cancelled = false;
+
+    const loadMockExams = async () => {
+      setMockExamsLoading(true);
+      setMockExamsError('');
+      try {
+        const response = await fetch('/api/student/mock-exams', {
+          credentials: 'include',
+        });
+        if (!response.ok) {
+          const data = await response.json().catch(() => null);
+          throw new Error(data?.message || 'دریافت آزمون‌های آزمایشی انجام نشد.');
+        }
+        const data = await response.json();
+        if (!cancelled) {
+          setMockExams(data as BackendMockExam[]);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setMockExamsError(error instanceof Error ? error.message : 'دریافت آزمون‌های آزمایشی انجام نشد.');
+          setMockExams([]);
+        }
+      } finally {
+        if (!cancelled) setMockExamsLoading(false);
+      }
+    };
+
+    void loadMockExams();
+    return () => { cancelled = true; };
+  }, [activeTab, student.id]);
 
   useEffect(() => {
     if (activeTab !== 'counseling') return;
@@ -515,6 +563,12 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         >
           دوره‌های آموزشی من
         </button>
+        <button
+          onClick={() => setActiveTab('mockExams')}
+          style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'mockExams' ? '#6D001A' : cardBg, color: textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+        >
+          <ClipboardList size={14} /> آزمون‌های آزمایشی
+        </button>
         <button 
           onClick={handleOpenNotificationTab}
           style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'notifications' ? '#6D001A' : cardBg, color: textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
@@ -736,6 +790,89 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
             ) : (
               <div style={{ textAlign: 'center', padding: '40px 0', color: subText, fontSize: '13px' }}>
                 شما هنوز به هیچ دوره‌ای دسترسی ندارید. لطفاً با مدیر سیستم تماس بگیرید.
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'mockExams' && (
+          <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, backdropFilter: 'blur(16px)', padding: '32px', borderRadius: '24px', boxShadow: '0 16px 40px rgba(0,0,0,0.1)' }}>
+            <h2 style={{ fontSize: '16px', fontWeight: 800, color: textColor, margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <ClipboardList size={18} color="#ff3366" /> آزمون‌های آزمایشی من
+            </h2>
+            <p style={{ fontSize: '11px', color: subText, margin: '0 0 20px 0' }}>
+              در این بخش فقط آزمون‌هایی نمایش داده می‌شوند که برای شما ثبت شده‌اند.
+            </p>
+
+            {mockExamsLoading ? (
+              <div style={{ textAlign: 'center', padding: '40px 0', color: subText, fontSize: '13px' }}>
+                در حال دریافت آزمون‌های شما...
+              </div>
+            ) : mockExamsError ? (
+              <div style={{ textAlign: 'center', padding: '40px 0', color: '#f87171', fontSize: '13px' }}>
+                {mockExamsError}
+              </div>
+            ) : mockExams.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '40px 0', color: subText, fontSize: '13px' }}>
+                در حال حاضر آزمون آزمایشی برای شما ثبت نشده است.
+              </div>
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
+                {mockExams.map(exam => {
+                  const canOpen = Boolean(exam.examUrl) && ['LINK_AVAILABLE', 'LIVE'].includes(exam.status);
+                  const statusLabel =
+                    exam.status === 'SCHEDULED' ? 'زمان‌بندی شده' :
+                    exam.status === 'LINK_AVAILABLE' ? 'لینک آزمون فعال است' :
+                    exam.status === 'LIVE' ? 'آزمون در حال برگزاری' :
+                    exam.status === 'COMPLETED' ? 'به پایان رسیده' :
+                    exam.status === 'CANCELLED' ? 'لغو شده' : 'در انتظار آماده‌سازی';
+                  const statusColor =
+                    exam.status === 'LIVE' ? '#34d399' :
+                    exam.status === 'LINK_AVAILABLE' ? '#38bdf8' :
+                    exam.status === 'CANCELLED' ? '#f87171' :
+                    exam.status === 'COMPLETED' ? subText : '#fbbf24';
+
+                  return (
+                    <div key={exam.id} style={{ backgroundColor: innerCardBg, border: `1px solid ${borderColor}`, borderRadius: '16px', padding: '18px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '10px' }}>
+                        <div>
+                          <h3 style={{ fontSize: '14px', fontWeight: 800, color: textColor, margin: 0 }}>{exam.title}</h3>
+                          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '7px' }}>
+                            {exam.level && <span style={{ fontSize: '9px', color: subText }}>{exam.level}</span>}
+                            {exam.field && <span style={{ fontSize: '9px', color: subText }}>{exam.field}</span>}
+                          </div>
+                        </div>
+                        <span style={{ fontSize: '9px', fontWeight: 800, color: statusColor, whiteSpace: 'nowrap' }}>{statusLabel}</span>
+                      </div>
+
+                      <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '10px', padding: '10px 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <CalendarClock size={15} color="#ff3366" />
+                        <span style={{ fontSize: '10px', color: textColor, fontWeight: 700 }}>
+                          {new Intl.DateTimeFormat('fa-IR', {
+                            dateStyle: 'full',
+                            timeStyle: 'short',
+                            timeZone: 'Asia/Tehran',
+                          }).format(new Date(exam.examDate))}
+                        </span>
+                      </div>
+
+                      {canOpen ? (
+                        <a
+                          href={exam.examUrl!}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '7px', padding: '11px 14px', borderRadius: '10px', background: 'linear-gradient(135deg, #6D001A 0%, #a21c3a 100%)', color: '#fff', textDecoration: 'none', fontSize: '11px', fontWeight: 800 }}
+                        >
+                          <ExternalLink size={14} /> ورود به آزمون
+                        </a>
+                      ) : (
+                        <div style={{ textAlign: 'center', padding: '10px', borderRadius: '10px', backgroundColor: 'rgba(148,163,184,0.08)', color: subText, fontSize: '10px', fontWeight: 700 }}>
+                          {exam.status === 'CANCELLED' ? 'این آزمون لغو شده است.' : exam.status === 'COMPLETED' ? 'این آزمون به پایان رسیده است.' : 'لینک آزمون هنوز فعال نشده است.'}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
