@@ -193,7 +193,11 @@ export class StudentsService {
   async myEnrollments(user: AuthenticatedUser) {
     if (user.role !== 'STUDENT' || !user.studentId) throw new ForbiddenException('Student access required');
     return this.prisma.enrollment.findMany({
-      where: { studentId: user.studentId, status: 'ACTIVE' },
+      where: {
+        studentId: user.studentId,
+        status: 'ACTIVE',
+        course: { status: 'ACTIVE' },
+      },
       orderBy: { enrolledAt: 'desc' },
       include: { course: true },
     });
