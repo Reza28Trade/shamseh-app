@@ -95,6 +95,73 @@ export class CoursesService {
     return course;
   }
 
+  async listCourseEnrollments(user: AuthenticatedUser, courseId: string) {
+    this.requireAdmin(user);
+    await this.ensureCourse(courseId);
+    return this.prisma.enrollment.findMany({
+      where: { courseId },
+      orderBy: { enrolledAt: 'desc' },
+      select: {
+        id: true,
+        status: true,
+        enrolledAt: true,
+        student: {
+          select: {
+            id: true,
+            fullName: true,
+            nationalId: true,
+            phone: true,
+          },
+        },
+      },
+    });
+  }
+
+  async enrollStudentInCourse(user: AuthenticatedUser, courseId: string, studentId: string) {
+    this.requireAdmin(user);
+    await this.ensureCourse(courseId);
+    const student = await this.prisma.student.findUnique({ where: { id: studentId }, select: { id: true } });
+    if (!student) throw new NotFoundException('Student not found');
+    try {
+      return await this.prisma.enrollment.create({
+        data: { courseId, studentId },
+        select: {
+          id: true,
+          status: true,
+          enrolledAt: true,
+          student: { select: { id: true, fullName: true, nationalId: true, phone: true } },
+        },
+      });
+    } catch (error: any) {
+      if (error?.code === 'P2002') throw new BadRequestException('Student is already enrolled in this course');
+      throw error;
+    }
+  }
+
+  async updateCourseEnrollment(user: AuthenticatedUser, enrollmentId: string, status: 'ACTIVE' | 'COMPLETED' | 'CANCELLED') {
+    this.requireAdmin(user);
+    const enrollment = await this.prisma.enrollment.findUnique({ where: { id: enrollmentId } });
+    if (!enrollment) throw new NotFoundException('Enrollment not found');
+    return this.prisma.enrollment.update({
+      where: { id: enrollmentId },
+      data: { status },
+      select: {
+        id: true,
+        status: true,
+        enrolledAt: true,
+        student: { select: { id: true, fullName: true, nationalId: true, phone: true } },
+      },
+    });
+  }
+
+  async removeCourseEnrollment(user: AuthenticatedUser, enrollmentId: string) {
+    this.requireAdmin(user);
+    const enrollment = await this.prisma.enrollment.findUnique({ where: { id: enrollmentId } });
+    if (!enrollment) throw new NotFoundException('Enrollment not found');
+    await this.prisma.enrollment.delete({ where: { id: enrollmentId } });
+    return { success: true };
+  }
+
   async createCourse(user: AuthenticatedUser, dto: CreateCourseDto) {
     this.requireAdmin(user);
     return this.prisma.course.create({ data: { ...dto, price: dto.price } });
