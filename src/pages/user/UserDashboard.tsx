@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import type { Student, Course } from '../../types';
 import { useStore } from '../../store/useStore';
 import { FileViewer } from '../../components/FileViewer';
-import { BookOpen, LogOut, Video, FileText, Send, Sun, Moon, CheckCircle, Bell, Volume2, Presentation, Link as LinkIcon, AlertCircle, CalendarClock, Clock, ClipboardList, ExternalLink } from 'lucide-react';
+import { BookOpen, LogOut, Video, FileText, Send, Sun, Moon, CheckCircle, Bell, Volume2, Presentation, Link as LinkIcon, AlertCircle, CalendarClock, Clock, ClipboardList, ExternalLink, Home, ArrowLeft } from 'lucide-react';
 
 interface BackendSession {
   id: string;
@@ -52,7 +52,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
 
   } = useStore();
 
-  const [activeTab, setActiveTab] = useState<'courses' | 'mockExams' | 'notifications' | 'messages' | 'counseling'>('courses');
+  const [activeTab, setActiveTab] = useState<'home' | 'courses' | 'mockExams' | 'notifications' | 'messages' | 'counseling'>('home');
   const [mockExams, setMockExams] = useState<BackendMockExam[]>([]);
   const [mockExamsLoading, setMockExamsLoading] = useState(false);
   const [mockExamsError, setMockExamsError] = useState('');
@@ -260,7 +260,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   }, [student.id]);
 
   useEffect(() => {
-    if (activeTab !== 'mockExams') return;
+    if (activeTab !== 'home' && activeTab !== 'mockExams') return;
     let cancelled = false;
 
     const loadMockExams = async () => {
@@ -527,23 +527,32 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   };
 
   const isDark = theme === 'dark';
-  const bgColors = isDark ? '#050505' : '#f8fafc';
-  const cardBg = isDark ? 'rgba(14, 14, 17, 0.75)' : '#ffffff';
-  const textColor = isDark ? '#f8fafc' : '#0f172a';
-  const subText = isDark ? '#94a3b8' : '#64748b';
-  const borderColor = isDark ? 'rgba(255, 255, 255, 0.08)' : '#e2e8f0';
-  const innerCardBg = isDark ? 'rgba(20, 20, 25, 0.8)' : '#f1f5f9';
+  const bgColors = isDark ? '#050505' : '#f6f4f2';
+  const cardBg = isDark ? 'rgba(14, 14, 17, 0.78)' : '#ffffff';
+  const textColor = isDark ? '#f8fafc' : '#202124';
+  const subText = isDark ? '#94a3b8' : '#6b6670';
+  const borderColor = isDark ? 'rgba(255, 255, 255, 0.08)' : '#e7e1df';
+  const innerCardBg = isDark ? 'rgba(20, 20, 25, 0.82)' : '#fbfaf9';
+  const accent = isDark ? '#9d1638' : '#8b1733';
+  const accentSoft = isDark ? 'rgba(157, 22, 56, 0.16)' : '#f5e8ec';
 
   return (
     <div className="student-dashboard" style={{ minHeight: '100vh', backgroundColor: bgColors, color: textColor, direction: 'rtl', fontFamily: 'system-ui, sans-serif', boxSizing: 'border-box', margin: 0, padding: '24px', overflowY: 'auto' }}>
       <style>{`
         .student-dashboard-shell { max-width: 1240px; margin: 0 auto; }
-        .student-dashboard-header { max-width: none !important; margin: 0 0 18px !important; padding: 20px 24px !important; border-radius: 18px !important; box-shadow: 0 10px 30px rgba(0,0,0,.18) !important; }
+        .student-dashboard-header { max-width: none !important; margin: 0 0 18px !important; padding: 20px 24px !important; border-radius: 18px !important; box-shadow: 0 10px 30px rgba(0,0,0,.10) !important; }
         .student-dashboard-layout { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 18px; align-items: start; }
-        .student-dashboard-nav { width: auto !important; max-width: none !important; margin: 0 !important; display: flex !important; flex-direction: column !important; gap: 6px !important; padding: 8px !important; background: ${cardBg}; border: 1px solid ${borderColor}; border-radius: 16px; position: sticky; top: 18px; box-sizing: border-box; }
+        .student-dashboard-nav { width: auto !important; max-width: none !important; margin: 0 !important; display: flex !important; flex-direction: column !important; gap: 6px !important; padding: 8px !important; background: ${cardBg}; border: 1px solid ${borderColor}; border-radius: 16px; position: sticky; top: 18px; box-sizing: border-box; box-shadow: 0 8px 24px rgba(0,0,0,.05); }
         .student-dashboard-nav button { width: 100%; justify-content: flex-start; box-sizing: border-box; text-align: right; }
         .student-dashboard-main { max-width: none !important; margin: 0 !important; gap: 18px !important; }
         .student-dashboard-main > div { border-radius: 18px !important; padding: 24px !important; }
+        .student-dashboard-home-grid { display: grid; grid-template-columns: 1.35fr .9fr; gap: 14px; }
+        .student-dashboard-home-stack { display: flex; flex-direction: column; gap: 14px; }
+        .student-dashboard-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .student-dashboard-soft-card { border: 1px solid ${borderColor}; background: ${innerCardBg}; border-radius: 14px; }
+        @media (max-width: 980px) {
+          .student-dashboard-home-grid { grid-template-columns: 1fr; }
+        }
         .student-dashboard-main h2 { font-size: 18px !important; }
         @media (max-width: 820px) {
           .student-dashboard { padding: 14px !important; }
@@ -560,10 +569,10 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
       `}</style>
       <div className="student-dashboard-shell">
       {/* هدر پنل دانشجو */}
-      <div className="student-dashboard-header" style={{ maxWidth: '1100px', margin: '0 auto 30px auto', background: 'linear-gradient(135deg, rgba(109, 0, 26, 0.25) 0%, rgba(10, 10, 10, 0.85) 100%)', border: '1px solid rgba(109, 0, 26, 0.4)', padding: '28px 36px', borderRadius: '24px', backdropFilter: 'blur(16px)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 12px 40px rgba(0,0,0,0.4)' }}>
+      <div className="student-dashboard-header" style={{ maxWidth: '1100px', margin: '0 auto 30px auto', background: isDark ? 'linear-gradient(135deg, rgba(109, 0, 26, 0.28) 0%, rgba(10, 10, 10, 0.92) 100%)' : 'linear-gradient(135deg, #fff8fa 0%, #f1edec 100%)', border: isDark ? '1px solid rgba(109, 0, 26, 0.45)' : '1px solid #ead6dc', padding: '28px 36px', borderRadius: '24px', backdropFilter: 'blur(16px)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: isDark ? '0 12px 40px rgba(0,0,0,0.4)' : '0 12px 32px rgba(58,34,40,0.08)' }}>
         <div>
-          <h1 style={{ fontSize: '20px', fontWeight: 900, color: '#fff', margin: '0 0 6px 0' }}>سامانه آموزشی شمسه - پنل دانشجو</h1>
-          <p style={{ fontSize: '12px', color: '#94a3b8', margin: 0 }}>خوش آمدید، <strong style={{ color: '#ff3366' }}>{student.fullName}</strong> (کد ملی: {student.nationalId})</p>
+          <h1 style={{ fontSize: '20px', fontWeight: 900, color: textColor, margin: '0 0 6px 0' }}>سامانه آموزشی شمسه - پنل دانشجو</h1>
+          <p style={{ fontSize: '12px', color: subText, margin: 0 }}>خوش آمدید، <strong style={{ color: '#ff3366' }}>{student.fullName}</strong> (کد ملی: {student.nationalId})</p>
         </div>
 
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
@@ -581,21 +590,27 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
       <div className="student-dashboard-layout">
       {/* تب‌بندی ناوبری پنل */}
       <div className="student-dashboard-nav" style={{ maxWidth: '1100px', margin: '0 auto 20px auto', display: 'flex', gap: '12px' }}>
+        <button
+          onClick={() => setActiveTab('home')}
+          style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'home' ? accent : cardBg, color: activeTab === 'home' ? '#fff' : textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+        >
+          <Home size={14} /> نمای کلی
+        </button>
         <button 
           onClick={() => setActiveTab('courses')}
-          style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'courses' ? '#6D001A' : cardBg, color: textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer' }}
+          style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'courses' ? accent : cardBg, color: textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer' }}
         >
           دوره‌های آموزشی من
         </button>
         <button
           onClick={() => setActiveTab('mockExams')}
-          style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'mockExams' ? '#6D001A' : cardBg, color: textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+          style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'mockExams' ? accent : cardBg, color: textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
         >
           <ClipboardList size={14} /> آزمون‌های آزمایشی
         </button>
         <button 
           onClick={handleOpenNotificationTab}
-          style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'notifications' ? '#6D001A' : cardBg, color: textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+          style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'notifications' ? accent : cardBg, color: textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
         >
           <Bell size={14} /> صندوق اطلاعیه‌ها 
           {unreadCount > 0 && (
@@ -606,13 +621,13 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         </button>
         <button 
           onClick={() => setActiveTab('counseling')}
-          style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'counseling' ? '#6D001A' : cardBg, color: textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+          style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'counseling' ? accent : cardBg, color: textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
         >
           <CalendarClock size={14} /> مشاوره
         </button>
         <button 
           onClick={() => setActiveTab('messages')}
-          style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'messages' ? '#6D001A' : cardBg, color: textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer' }}
+          style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'messages' ? accent : cardBg, color: textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer' }}
         >
           ارسال پیام و تیکت پشتیبانی
         </button>
@@ -620,6 +635,112 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
 
       <div className="student-dashboard-main" style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '30px' }}>
         
+        {activeTab === 'home' && (
+          <div style={{ backgroundColor: cardBg, border: \`1px solid \${borderColor}\`, backdropFilter: 'blur(16px)', borderRadius: '18px', padding: '24px', boxShadow: isDark ? '0 16px 40px rgba(0,0,0,.18)' : '0 12px 32px rgba(58,34,40,.06)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px', marginBottom: '20px', flexWrap: 'wrap' }}>
+              <div>
+                <div style={{ fontSize: '12px', color: accent, fontWeight: 800, marginBottom: '6px' }}>داشبورد دانشجو</div>
+                <h2 style={{ fontSize: '22px', fontWeight: 900, color: textColor, margin: 0 }}>خوش آمدید، {student.fullName}</h2>
+                <p style={{ fontSize: '12px', color: subText, margin: '7px 0 0', lineHeight: 1.7 }}>اینجا خلاصه‌ای از دوره‌ها، آزمون‌ها و اطلاعیه‌های مهم شما را می‌بینید.</p>
+              </div>
+              <button type="button" onClick={() => setActiveTab('courses')} style={{ border: \`1px solid \${borderColor}\`, backgroundColor: accentSoft, color: accent, borderRadius: '10px', padding: '9px 12px', fontSize: '11px', fontWeight: 800, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                مشاهده دوره‌ها <ArrowLeft size={14} />
+              </button>
+            </div>
+
+            <div className="student-dashboard-stat-grid" style={{ marginBottom: '14px' }}>
+              <div className="student-dashboard-soft-card" style={{ padding: '14px' }}>
+                <div style={{ color: subText, fontSize: '10px', marginBottom: '7px' }}>دوره‌های فعال</div>
+                <div style={{ color: textColor, fontSize: '22px', fontWeight: 900 }}>{enrolledCourses.length}</div>
+              </div>
+              <div className="student-dashboard-soft-card" style={{ padding: '14px' }}>
+                <div style={{ color: subText, fontSize: '10px', marginBottom: '7px' }}>آزمون‌های پیش‌رو</div>
+                <div style={{ color: textColor, fontSize: '22px', fontWeight: 900 }}>{mockExams.filter(exam => new Date(exam.examDate).getTime() >= Date.now() && exam.status !== 'CANCELLED').length}</div>
+              </div>
+              <div className="student-dashboard-soft-card" style={{ padding: '14px' }}>
+                <div style={{ color: unreadCount > 0 ? accent : textColor, fontSize: '10px', marginBottom: '7px' }}>اطلاعیه‌های خوانده‌نشده</div>
+                <div style={{ color: unreadCount > 0 ? accent : textColor, fontSize: '22px', fontWeight: 900 }}>{unreadCount}</div>
+              </div>
+            </div>
+
+            <div className="student-dashboard-home-grid">
+              <div className="student-dashboard-soft-card" style={{ padding: '18px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+                    <ClipboardList size={17} color={accent} />
+                    <h3 style={{ color: textColor, fontSize: '15px', fontWeight: 900, margin: 0 }}>نزدیک‌ترین آزمون</h3>
+                  </div>
+                  <button type="button" onClick={() => setActiveTab('mockExams')} style={{ border: 'none', background: 'transparent', color: accent, fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>همه آزمون‌ها</button>
+                </div>
+                {(() => {
+                  const nextExam = [...mockExams].filter(exam => new Date(exam.examDate).getTime() >= Date.now() && exam.status !== 'CANCELLED').sort((a, b) => new Date(a.examDate).getTime() - new Date(b.examDate).getTime())[0];
+                  return nextExam ? (
+                    <div style={{ backgroundColor: cardBg, border: \`1px solid \${borderColor}\`, borderRadius: '12px', padding: '15px' }}>
+                      <div style={{ color: textColor, fontSize: '14px', fontWeight: 900 }}>{nextExam.title}</div>
+                      <div style={{ color: subText, fontSize: '11px', marginTop: '7px' }}>
+                        {new Intl.DateTimeFormat('fa-IR', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Asia/Tehran' }).format(new Date(nextExam.examDate))}
+                      </div>
+                      <div style={{ display: 'flex', gap: '8px', marginTop: '12px', flexWrap: 'wrap' }}>
+                        {nextExam.level && <span style={{ backgroundColor: accentSoft, color: accent, borderRadius: '7px', padding: '4px 8px', fontSize: '10px', fontWeight: 800 }}>{nextExam.level}</span>}
+                        {nextExam.field && <span style={{ backgroundColor: isDark ? 'rgba(148,163,184,.10)' : '#f1efed', color: subText, borderRadius: '7px', padding: '4px 8px', fontSize: '10px', fontWeight: 700 }}>{nextExam.field}</span>}
+                      </div>
+                      <button type="button" onClick={() => setSelectedMockExam(nextExam)} style={{ width: '100%', marginTop: '14px', border: 'none', backgroundColor: accent, color: '#fff', borderRadius: '9px', padding: '9px', fontSize: '11px', fontWeight: 800, cursor: 'pointer' }}>مشاهده جزئیات آزمون</button>
+                    </div>
+                  ) : (
+                    <div style={{ color: subText, fontSize: '11px', lineHeight: 1.8, padding: '18px 8px', textAlign: 'center' }}>در حال حاضر آزمون پیش‌روئی برای شما ثبت نشده است.</div>
+                  );
+                })()}
+              </div>
+
+              <div className="student-dashboard-home-stack">
+                <div className="student-dashboard-soft-card" style={{ padding: '18px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '12px' }}>
+                    <Bell size={17} color={accent} />
+                    <h3 style={{ color: textColor, fontSize: '15px', fontWeight: 900, margin: 0 }}>آخرین اطلاعیه‌ها</h3>
+                  </div>
+                  {studentNotifications.length === 0 ? (
+                    <div style={{ color: subText, fontSize: '11px', padding: '8px 0' }}>اطلاعیه جدیدی ندارید.</div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '9px' }}>
+                      {studentNotifications.slice(0, 3).map(notification => (
+                        <button key={notification.id} type="button" onClick={handleOpenNotificationTab} style={{ textAlign: 'right', border: \`1px solid \${borderColor}\`, backgroundColor: cardBg, borderRadius: '10px', padding: '10px', cursor: 'pointer' }}>
+                          <div style={{ color: textColor, fontSize: '11px', fontWeight: 800 }}>{notification.title}</div>
+                          <div style={{ color: subText, fontSize: '9px', marginTop: '4px' }}>{new Date(notification.createdAt).toLocaleDateString('fa-IR')}</div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="student-dashboard-soft-card" style={{ padding: '18px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '12px' }}>
+                    <CalendarClock size={17} color={accent} />
+                    <h3 style={{ color: textColor, fontSize: '15px', fontWeight: 900, margin: 0 }}>مشاوره</h3>
+                  </div>
+                  {counselingRequests.length > 0 ? (
+                    <div style={{ color: textColor, fontSize: '11px', fontWeight: 800 }}>{formatCounselingDate(counselingRequests[0].slot.startAt)}</div>
+                  ) : (
+                    <div style={{ color: subText, fontSize: '11px', lineHeight: 1.7 }}>برای دریافت مشاوره می‌توانید یک زمان مناسب انتخاب کنید.</div>
+                  )}
+                  <button type="button" onClick={() => setActiveTab('counseling')} style={{ marginTop: '10px', border: 'none', background: 'transparent', color: accent, padding: 0, fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>ورود به بخش مشاوره</button>
+                </div>
+              </div>
+            </div>
+
+            <div className="student-dashboard-soft-card" style={{ marginTop: '14px', padding: '15px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
+              <div>
+                <div style={{ color: textColor, fontSize: '12px', fontWeight: 900 }}>دسترسی سریع</div>
+                <div style={{ color: subText, fontSize: '10px', marginTop: '4px' }}>برای انجام سریع کارهای روزمره از میانبرهای پنل استفاده کنید.</div>
+              </div>
+              <div style={{ display: 'flex', gap: '7px', flexWrap: 'wrap' }}>
+                <button type="button" onClick={() => setActiveTab('courses')} style={{ border: \`1px solid \${borderColor}\`, backgroundColor: cardBg, color: textColor, borderRadius: '8px', padding: '7px 10px', fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>دوره‌ها</button>
+                <button type="button" onClick={() => setActiveTab('notifications')} style={{ border: \`1px solid \${borderColor}\`, backgroundColor: cardBg, color: textColor, borderRadius: '8px', padding: '7px 10px', fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>اطلاعیه‌ها</button>
+                <button type="button" onClick={() => setActiveTab('messages')} style={{ border: \`1px solid \${borderColor}\`, backgroundColor: cardBg, color: textColor, borderRadius: '8px', padding: '7px 10px', fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>پشتیبانی</button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {activeTab === 'courses' && (
           <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, backdropFilter: 'blur(16px)', padding: '32px', borderRadius: '24px', boxShadow: '0 16px 40px rgba(0,0,0,0.1)' }}>
             <h2 style={{ fontSize: '16px', fontWeight: 800, color: textColor, margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
