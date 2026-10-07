@@ -557,7 +557,7 @@ export const ManageCourses: React.FC = () => {
                                       <option value="COMPLETED">تکمیل‌شده</option>
                                       <option value="CANCELLED">لغوشده</option>
                                     </select>
-                                    <button type="button" onClick={() => void removeEnrollment(course.id, enrollment)} style={{ background: 'transparent', border: 0, color: '#f87171', cursor: 'pointer' }} title="خروج از دوره"><Trash2 size={12} /></button>
+                                    <button type="button" onClick={() => void removeEnrollment(course.id, enrollment)} style={button('rgba(239,68,68,.1)', '#f87171')}><Trash2 size={11} /> حذف</button>
                                   </div>
                                 ))}
                               </div>}
