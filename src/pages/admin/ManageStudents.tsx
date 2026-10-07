@@ -288,7 +288,9 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
               ] as const).map(([value, label]) => {
                 const count = value === 'ALL'
                   ? apiStudents.length
-                  : apiStudents.filter(student => (student.levels ?? []).some(level => value === 'DOCTORATE' ? /دکتری|دکترا|دکترا/i.test(level) : /ارشد/i.test(level))).length;
+                  : apiStudents.filter(student => (student.levels ?? []).some(level =>
+                      value === 'DOCTORATE' ? /دکتری|دکترا/i.test(level) : /ارشد/i.test(level),
+                    )).length;
                 return (
                   <button
                     key={value}
@@ -310,51 +312,33 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
                 );
               })}
             </div>
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {apiStudents
                 .filter(student => {
                   if (studentGroup === 'ALL') return true;
                   return (student.levels ?? []).some(level =>
-                    studentGroup === 'DOCTORATE' ? /دکتری|دکترا|دکترا/i.test(level) : /ارشد/i.test(level),
+                    studentGroup === 'DOCTORATE' ? /دکتری|دکترا/i.test(level) : /ارشد/i.test(level),
                   );
                 })
                 .map(st => (
-              <div key={st.id} style={{ backgroundColor: 'rgba(20, 20, 25, 0.9)', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '14px', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <h4 style={{ fontSize: '13px', fontWeight: 800, color: '#fff', margin: '0 0 4px 0' }}>{st.fullName}</h4>
-                  <span style={{ fontSize: '11px', color: '#94a3b8' }}>کد ملی: {st.nationalId} | دوره‌های فعال: {st.enrolledCourseIds.length} دوره</span>
-                </div>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <button onClick={() => handleEdit(st)} style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#93c5fd', border: '1px solid rgba(59, 130, 246, 0.2)', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <Pencil size={12} /> ویرایش
-                  </button>
-                  <button onClick={() => void handleDelete(st.id)} style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <Trash2 size={12} /> حذف
-                  </button>
-                </div>
-              </div>
+                  <div key={st.id} style={{ backgroundColor: 'rgba(20, 20, 25, 0.9)', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '14px', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <h4 style={{ fontSize: '13px', fontWeight: 800, color: '#fff', margin: '0 0 4px 0' }}>{st.fullName}</h4>
+                      <span style={{ fontSize: '11px', color: '#94a3b8' }}>کد ملی: {st.nationalId} | دوره‌های فعال: {st.enrolledCourseIds.length} دوره</span>
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button onClick={() => handleEdit(st)} style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#93c5fd', border: '1px solid rgba(59, 130, 246, 0.2)', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <Pencil size={12} /> ویرایش
+                      </button>
+                      <button onClick={() => void handleDelete(st.id)} style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <Trash2 size={12} /> حذف
+                      </button>
+                    </div>
+                  </div>
                 ))}
             </div>
           </>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {apiStudents.map(st => (
-              <div key={st.id} style={{ backgroundColor: 'rgba(20, 20, 25, 0.9)', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '14px', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <h4 style={{ fontSize: '13px', fontWeight: 800, color: '#fff', margin: '0 0 4px 0' }}>{st.fullName}</h4>
-                  <span style={{ fontSize: '11px', color: '#94a3b8' }}>کد ملی: {st.nationalId} | دوره‌های فعال: {st.enrolledCourseIds.length} دوره</span>
-                </div>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <button onClick={() => handleEdit(st)} style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#93c5fd', border: '1px solid rgba(59, 130, 246, 0.2)', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <Pencil size={12} /> ویرایش
-                  </button>
-                  <button onClick={() => void handleDelete(st.id)} style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <Trash2 size={12} /> حذف
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
         ) : (
           <p style={{ color: '#666', fontSize: '12px', textAlign: 'center', padding: '20px 0' }}>هنوز هیچ دانشجویی ثبت نشده است.</p>
         )}
