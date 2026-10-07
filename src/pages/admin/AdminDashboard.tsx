@@ -15,7 +15,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
     { label: 'هنرجویان', value: students.length, note: 'حساب ثبت‌شده', icon: Users, tab: 'students' },
     { label: 'آزمون‌های آزمایشی', value: '—', note: 'مدیریت آزمون‌ها', icon: ClipboardList, tab: 'mockExams' },
     { label: 'اطلاعیه‌ها', value: '—', note: 'مرکز اطلاع‌رسانی', icon: Bell, tab: 'notifications' },
-  ];
+  ] as const;
   return <div className="admin-dashboard-page">
     <section className="admin-welcome">
       <div>
