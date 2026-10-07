@@ -558,6 +558,12 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         .student-sidebar-title { color: inherit; font-size: 12px; font-weight: 900; }
         .student-sidebar-subtitle { color: inherit; opacity: .62; font-size: 8px; margin-top: 2px; }
         .student-sidebar-spacer { flex: 1; min-height: 18px; }
+        .student-home-emblem { position: absolute; left: 34px; top: 50%; transform: translateY(-50%); width: 116px; height: 116px; opacity: .58; display: grid; place-items: center; color: #38838a; }
+        .student-home-emblem-ring { position: absolute; inset: 0; border: 1px solid rgba(56,131,138,.28); border-radius: 50%; }
+        .student-home-emblem-diamond { position: absolute; width: 62px; height: 62px; border: 1px solid rgba(56,131,138,.34); transform: rotate(45deg); border-radius: 7px; }
+        .student-home-emblem span { position: relative; font-size: 25px; font-weight: 900; }
+        @media (max-width: 820px) { .student-home-emblem { left: 18px; width: 88px; height: 88px; opacity: .3; } .student-home-emblem-diamond { width: 48px; height: 48px; } .student-home-emblem span { font-size: 20px; } }
+
         .student-dashboard-main h2 { font-size: 18px !important; }
         .student-dashboard-main h3 { line-height: 1.5; }
         .student-home-hero-content { max-width: 68%; }
@@ -635,7 +641,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                   خوش آمدید، {student.fullName}
                 </h2>
                 <p style={{ color: subText, fontSize: '12px', lineHeight: 1.9, margin: 0, maxWidth: '520px' }}>
-                  مسیر آموزشی شما، آزمون‌های پیش‌رو و آخرین اطلاعیه‌ها در یک نگاه.
+                  همه چیزهایی که برای ادامه مسیر آموزشی‌تان لازم دارید، همین‌جا در دسترس شماست.
                 </p>
                 <div style={{ display: 'flex', gap: '8px', marginTop: '18px', flexWrap: 'wrap' }}>
                   <button type="button" onClick={() => setActiveTab('courses')} style={{ border: 'none', backgroundColor: accent, color: '#fff', borderRadius: '9px', padding: '9px 13px', fontSize: '10px', fontWeight: 900, cursor: 'pointer' }}>
@@ -647,9 +653,9 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                 </div>
               </div>
               <div aria-hidden="true" style={{ position: 'absolute', left: '-35px', bottom: '-55px', width: '210px', height: '210px', borderRadius: '50%', background: `radial-gradient(circle, ${accent} 0 2px, transparent 3px), conic-gradient(from 0deg, transparent 0 8deg, rgba(56,131,138,.12) 8deg 12deg, transparent 12deg 30deg)`, opacity: .8 }} />
-              <div aria-hidden="true" style={{ position: 'absolute', left: '28px', top: '28px', width: '112px', height: '112px', border: `1px solid rgba(56,131,138,.22)`, borderRadius: '50%', transform: 'rotate(18deg)' }} />
-              <div aria-hidden="true" style={{ position: 'absolute', left: '55px', top: '55px', width: '58px', height: '58px', border: `1px solid rgba(56,131,138,.28)`, transform: 'rotate(45deg)' }} />
-              <div style={{ position: 'absolute', left: '42px', bottom: '24px', color: accent, fontSize: '9px', fontWeight: 900, letterSpacing: '1px', opacity: .75 }}>SHAMSEH</div>
+              
+              
+              
             </div>
 
             <div className="student-dashboard-stat-grid student-home-stat-grid">
@@ -681,7 +687,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                 <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '16px', padding: '18px', boxShadow: isDark ? 'none' : '0 6px 20px rgba(30,70,70,.035)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', gap: '10px' }}>
                     <div>
-                      <div style={{ color: accent, fontSize: '9px', fontWeight: 900, marginBottom: '3px' }}>UP NEXT</div>
+                      <div style={{ color: accent, fontSize: '9px', fontWeight: 900, marginBottom: '3px' }}>آزمون بعدی</div>
                       <h3 style={{ color: textColor, fontSize: '15px', fontWeight: 900, margin: 0 }}>نزدیک‌ترین آزمون</h3>
                     </div>
                     <button type="button" onClick={() => setActiveTab('mockExams')} style={{ border: 'none', background: 'transparent', color: accent, fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>مشاهده همه</button>
@@ -712,7 +718,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                 <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '16px', padding: '18px', boxShadow: isDark ? 'none' : '0 6px 20px rgba(30,70,70,.035)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                     <div>
-                      <div style={{ color: accent, fontSize: '9px', fontWeight: 900, marginBottom: '3px' }}>MY LEARNING</div>
+                      <div style={{ color: accent, fontSize: '9px', fontWeight: 900, marginBottom: '3px' }}>مسیر آموزشی</div>
                       <h3 style={{ color: textColor, fontSize: '15px', fontWeight: 900, margin: 0 }}>دوره‌های من</h3>
                     </div>
                     <button type="button" onClick={() => setActiveTab('courses')} style={{ border: 'none', background: 'transparent', color: accent, fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>مشاهده همه</button>
@@ -739,7 +745,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                 <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '16px', padding: '18px', boxShadow: isDark ? 'none' : '0 6px 20px rgba(30,70,70,.035)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                     <div>
-                      <div style={{ color: accent, fontSize: '9px', fontWeight: 900, marginBottom: '3px' }}>LATEST</div>
+                      <div style={{ color: accent, fontSize: '9px', fontWeight: 900, marginBottom: '3px' }}>جدیدترین‌ها</div>
                       <h3 style={{ color: textColor, fontSize: '15px', fontWeight: 900, margin: 0 }}>آخرین اطلاعیه‌ها</h3>
                     </div>
                     <button type="button" onClick={handleOpenNotificationTab} style={{ border: 'none', background: 'transparent', color: accent, fontSize: '10px', fontWeight: 800, cursor: 'pointer' }}>مشاهده همه</button>
@@ -762,7 +768,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
                     <CalendarClock size={16} color={accent} />
                     <div>
-                      <div style={{ color: accent, fontSize: '9px', fontWeight: 900 }}>SUPPORT / COUNSELING</div>
+                      <div style={{ color: accent, fontSize: '9px', fontWeight: 900 }}>پشتیبانی و مشاوره</div>
                       <h3 style={{ color: textColor, fontSize: '15px', fontWeight: 900, margin: 0 }}>مشاوره</h3>
                     </div>
                   </div>
