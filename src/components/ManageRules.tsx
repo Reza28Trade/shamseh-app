@@ -1,20 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import { useStore } from '../store/useStore';
 
 export const ManageRules: React.FC = () => {
-  const { rulesText, setRulesText } = useStore();
-  const [text, setText] = useState(rulesText);
+  const [text, setText] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    setText(rulesText);
-  }, [rulesText]);
+    void (async () => {
+      try {
+        const response = await fetch('/api/content/rules', { credentials: 'include' });
+        if (!response.ok) throw new Error('load');
+        const data = await response.json();
+        setText(data.content ?? '');
+      } catch {
+        setSuccess(false);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    setRulesText(text);
-    setSuccess(true);
-    setTimeout(() => setSuccess(false), 3000);
+    setSaving(true);
+    void (async () => {
+      try {
+        const response = await fetch('/api/content/rules', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ content: text }),
+        });
+        if (!response.ok) throw new Error('save');
+        setSuccess(true);
+        setTimeout(() => setSuccess(false), 3000);
+      } catch {
+        setSuccess(false);
+      } finally {
+        setSaving(false);
+      }
+    })();
   };
 
   return (
@@ -57,7 +83,7 @@ export const ManageRules: React.FC = () => {
         overflowY: 'auto',
         paddingBottom: '20px'
       }}>
-        <textarea
+        {loading ? <div style={{ color: '#888', fontSize: '12px' }}>در حال دریافت قوانین...</div> : <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={14}
@@ -75,7 +101,7 @@ export const ManageRules: React.FC = () => {
             boxSizing: 'border-box',
             resize: 'vertical'
           }}
-        />
+        />}
         
         <div>
           <button
@@ -91,7 +117,7 @@ export const ManageRules: React.FC = () => {
               cursor: 'pointer'
             }}
           >
-            ذخیره تغییرات قوانین
+            {saving ? 'در حال ذخیره...' : 'ذخیره تغییرات قوانین'}
           </button>
         </div>
       </form>
