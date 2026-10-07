@@ -374,9 +374,15 @@ export class CoursesService {
   }
 
   private async ensureCourseAccess(user: AuthenticatedUser, courseId: string) {
-    await this.ensureCourse(courseId);
+    const course = await this.prisma.course.findUnique({
+      where: { id: courseId },
+      select: { id: true, status: true },
+    });
+    if (!course) throw new NotFoundException('Course not found');
+
     if (user.role === 'STUDENT') {
       if (!user.studentId) throw new ForbiddenException('Student profile required');
+      if (course.status !== 'ACTIVE') throw new ForbiddenException('Course is not active');
       const enrollment = await this.prisma.enrollment.findUnique({
         where: { studentId_courseId: { studentId: user.studentId, courseId } },
       });
