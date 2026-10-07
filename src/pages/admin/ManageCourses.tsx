@@ -492,7 +492,7 @@ export const ManageCourses: React.FC = () => {
                     </div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 14 }}>
                       <button type="button" onClick={() => void toggleCourse(course.id)} style={button('rgba(255,255,255,.06)')}>{expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />} مدیریت جلسات و فایل‌ها</button>
-                      <button type="button" onClick={async () => { setEnrollmentTarget(course.id); setSelectedStudentId(''); setError(''); try { await loadStudentOptions(); } catch (e) { setError(e instanceof Error ? e.message : 'دریافت هنرجویان انجام نشد.'); } }} style={button('rgba(56,189,248,.1)', '#38bdf8')}><Users size={12} /> هنرجویان ({course._count?.enrollments ?? 0})</button>
+                      <button type="button" onClick={async () => { setEnrollmentTarget(course.id); setSelectedStudentId(''); setError(''); try { await Promise.all([loadStudentOptions(), loadEnrollments(course.id)]); } catch (e) { setError(e instanceof Error ? e.message : 'دریافت هنرجویان انجام نشد.'); } }} style={button('rgba(56,189,248,.1)', '#38bdf8')}><Users size={12} /> هنرجویان ({course._count?.enrollments ?? 0})</button>
                       <button type="button" onClick={() => editCourse(course)} style={button('rgba(56,189,248,.1)', '#38bdf8')}><Pencil size={12} /> ویرایش دوره</button>
                       <button type="button" onClick={() => void deleteCourse(course.id)} style={button('rgba(239,68,68,.1)', '#f87171')}><Trash2 size={12} /> حذف</button>
                     </div>
@@ -538,7 +538,7 @@ export const ManageCourses: React.FC = () => {
                           <div style={{ marginTop: 20, borderTop: '1px solid #25252b', paddingTop: 15 }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                               <h4 style={{ color: '#fff', fontSize: 12, margin: 0, display: 'flex', alignItems: 'center', gap: 5 }}><Users size={13} /> هنرجویان دوره ({(enrollments[course.id] || []).length})</h4>
-                              <button type="button" onClick={async () => { setEnrollmentTarget(course.id); setSelectedStudentId(''); try { await loadStudentOptions(); } catch (e) { setError(e instanceof Error ? e.message : 'دریافت فهرست هنرجویان انجام نشد.'); } }} style={button('#6D001A')}><Plus size={11} /> افزودن هنرجو</button>
+                              <button type="button" onClick={async () => { setEnrollmentTarget(course.id); setSelectedStudentId(''); try { await Promise.all([loadStudentOptions(), loadEnrollments(course.id)]); } catch (e) { setError(e instanceof Error ? e.message : 'دریافت فهرست هنرجویان انجام نشد.'); } }} style={button('#6D001A')}><Plus size={11} /> افزودن هنرجو</button>
                             </div>
                             {enrollmentLoading[course.id] ? <p style={{ color: '#94a3b8', fontSize: 10 }}>در حال دریافت هنرجویان...</p> :
                               (enrollments[course.id] || []).length === 0 ? <p style={{ color: '#64748b', fontSize: 10 }}>هنوز هنرجویی در این دوره ثبت نشده است.</p> :
@@ -598,13 +598,30 @@ export const ManageCourses: React.FC = () => {
               <h3 style={{ color: '#fff', margin: 0, fontSize: 14 }}>افزودن هنرجو به دوره</h3>
               <button type="button" onClick={() => setEnrollmentTarget(null)} style={{ background: 'transparent', border: 0, color: '#94a3b8', cursor: 'pointer' }}><X size={16} /></button>
             </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 280, overflowY: 'auto', marginBottom: 12 }}>
+              {(enrollments[enrollmentTarget] || []).length === 0 ? (
+                <p style={{ color: '#64748b', fontSize: 10, margin: 0 }}>هنوز هنرجویی در این دوره ثبت نشده است.</p>
+              ) : (
+                (enrollments[enrollmentTarget] || []).map(enrollment => (
+                  <div key={enrollment.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, background: '#0e0e11', border: '1px solid #25252b', borderRadius: 10, padding: 9 }}>
+                    <div>
+                      <strong style={{ color: '#fff', fontSize: 11 }}>{enrollment.student.fullName}</strong>
+                      <div style={{ color: '#64748b', fontSize: 9, marginTop: 3 }}>{enrollment.student.nationalId} · {enrollment.student.phone}</div>
+                    </div>
+                    <button type="button" onClick={() => void removeEnrollment(enrollmentTarget, enrollment)} style={button('rgba(239,68,68,.1)', '#f87171')}><Trash2 size={11} /> حذف</button>
+                  </div>
+                ))
+              )}
+            </div>
             <select value={selectedStudentId} onChange={e => setSelectedStudentId(e.target.value)} style={input}>
-              <option value="">انتخاب هنرجو...</option>
-              {studentOptions.map(student => <option key={student.id} value={student.id}>{student.fullName} — {student.nationalId}</option>)}
+              <option value="">انتخاب هنرجوی جدید...</option>
+              {studentOptions
+                .filter(student => !(enrollments[enrollmentTarget] || []).some(item => item.student.id === student.id))
+                .map(student => <option key={student.id} value={student.id}>{student.fullName} — {student.nationalId}</option>)}
             </select>
             <div style={{ display: 'flex', gap: 7, marginTop: 12 }}>
-              <button type="button" disabled={!selectedStudentId || enrollmentSaving} onClick={() => void addEnrollment(enrollmentTarget)} style={button('#6D001A')}>{enrollmentSaving ? 'در حال ثبت...' : 'ثبت هنرجو'}</button>
-              <button type="button" onClick={() => setEnrollmentTarget(null)} style={button('transparent', '#94a3b8')}>انصراف</button>
+              <button type="button" disabled={!selectedStudentId || enrollmentSaving} onClick={() => void addEnrollment(enrollmentTarget)} style={button('#6D001A')}>{enrollmentSaving ? 'در حال ثبت...' : 'افزودن هنرجو'}</button>
+              <button type="button" onClick={() => setEnrollmentTarget(null)} style={button('transparent', '#94a3b8')}>بستن</button>
             </div>
           </div>
         </div>
