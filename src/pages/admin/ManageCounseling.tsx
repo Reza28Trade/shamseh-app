@@ -199,7 +199,7 @@ export const ManageCounseling: React.FC = () => {
   const isSelected = (jd: number) => selectedDate?.jy === calendarMonth.jy && selectedDate.jm === calendarMonth.jm && selectedDate.jd === jd;
 
   return (
-    <div style={{ backgroundColor: '#0e0e11', border: '1px solid #222228', borderRadius: '20px', padding: '32px', color: '#fff', direction: 'rtl' }}>
+    <div className="admin-legacy-page admin-counseling-page" style={{ backgroundColor: '#0e0e11', border: '1px solid #222228', borderRadius: '20px', padding: '32px', color: '#fff', direction: 'rtl' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', flexWrap: 'wrap', marginBottom: '24px' }}>
         <div>
           <h2 style={{ fontSize: '18px', fontWeight: 900, margin: 0, display: 'flex', alignItems: 'center', gap: '9px' }}>
