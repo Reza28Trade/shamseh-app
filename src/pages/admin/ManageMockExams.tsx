@@ -246,7 +246,7 @@ export const ManageMockExams: React.FC = () => {
   };
 
   return (
-    <div className="admin-legacy-page admin-mock-exams-page" className="admin-legacy-page admin-mock-exams-page" style={{ display: 'flex', flexDirection: 'column', gap: 24, width: '100%', direction: 'rtl' }}>
+    <div className="admin-legacy-page admin-mock-exams-page" style={{ display: 'flex', flexDirection: 'column', gap: 24, width: '100%', direction: 'rtl' }}>
       <div style={{
         background: 'linear-gradient(135deg, rgba(109,0,26,.22), rgba(10,10,10,.85))',
         border: '1px solid rgba(109,0,26,.4)',
