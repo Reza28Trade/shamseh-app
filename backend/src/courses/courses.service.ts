@@ -369,7 +369,7 @@ export class CoursesService {
   }
 
   private async ensureCourse(courseId: string) {
-    const course = await this.prisma.course.findUnique({ where: { id: courseId }, select: { id: true } });
+    const course = await this.prisma.course.findUnique({ where: { id: courseId }, select: { id: true, status: true } });
     if (!course) throw new NotFoundException('Course not found');
   }
 
