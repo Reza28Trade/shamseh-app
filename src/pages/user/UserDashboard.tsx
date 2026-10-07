@@ -535,10 +535,32 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   const innerCardBg = isDark ? 'rgba(20, 20, 25, 0.8)' : '#f1f5f9';
 
   return (
-    <div style={{ width: '100vw', minHeight: '100vh', backgroundColor: bgColors, color: textColor, direction: 'rtl', fontFamily: 'system-ui, sans-serif', boxSizing: 'border-box', margin: 0, padding: '40px', overflowY: 'auto' }}>
-      
+    <div className="student-dashboard" style={{ minHeight: '100vh', backgroundColor: bgColors, color: textColor, direction: 'rtl', fontFamily: 'system-ui, sans-serif', boxSizing: 'border-box', margin: 0, padding: '24px', overflowY: 'auto' }}>
+      <style>{`
+        .student-dashboard-shell { max-width: 1240px; margin: 0 auto; }
+        .student-dashboard-header { max-width: none !important; margin: 0 0 18px !important; padding: 20px 24px !important; border-radius: 18px !important; box-shadow: 0 10px 30px rgba(0,0,0,.18) !important; }
+        .student-dashboard-layout { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 18px; align-items: start; }
+        .student-dashboard-nav { width: auto !important; max-width: none !important; margin: 0 !important; display: flex !important; flex-direction: column !important; gap: 6px !important; padding: 8px !important; background: ${cardBg}; border: 1px solid ${borderColor}; border-radius: 16px; position: sticky; top: 18px; box-sizing: border-box; }
+        .student-dashboard-nav button { width: 100%; justify-content: flex-start; box-sizing: border-box; text-align: right; }
+        .student-dashboard-main { max-width: none !important; margin: 0 !important; gap: 18px !important; }
+        .student-dashboard-main > div { border-radius: 18px !important; padding: 24px !important; }
+        .student-dashboard-main h2 { font-size: 18px !important; }
+        @media (max-width: 820px) {
+          .student-dashboard { padding: 14px !important; }
+          .student-dashboard-layout { grid-template-columns: 1fr; }
+          .student-dashboard-nav { position: static; flex-direction: row !important; overflow-x: auto; padding: 6px !important; }
+          .student-dashboard-nav button { width: auto; min-width: max-content; justify-content: center; }
+          .student-dashboard-header { padding: 16px 18px !important; }
+        }
+        @media (max-width: 560px) {
+          .student-dashboard-header { flex-direction: column; align-items: stretch !important; gap: 14px; }
+          .student-dashboard-header > div:last-child { justify-content: space-between; }
+          .student-dashboard-main > div { padding: 18px !important; }
+        }
+      `}</style>
+      <div className="student-dashboard-shell">
       {/* هدر پنل دانشجو */}
-      <div style={{ maxWidth: '1100px', margin: '0 auto 30px auto', background: 'linear-gradient(135deg, rgba(109, 0, 26, 0.25) 0%, rgba(10, 10, 10, 0.85) 100%)', border: '1px solid rgba(109, 0, 26, 0.4)', padding: '28px 36px', borderRadius: '24px', backdropFilter: 'blur(16px)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 12px 40px rgba(0,0,0,0.4)' }}>
+      <div className="student-dashboard-header" style={{ maxWidth: '1100px', margin: '0 auto 30px auto', background: 'linear-gradient(135deg, rgba(109, 0, 26, 0.25) 0%, rgba(10, 10, 10, 0.85) 100%)', border: '1px solid rgba(109, 0, 26, 0.4)', padding: '28px 36px', borderRadius: '24px', backdropFilter: 'blur(16px)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 12px 40px rgba(0,0,0,0.4)' }}>
         <div>
           <h1 style={{ fontSize: '20px', fontWeight: 900, color: '#fff', margin: '0 0 6px 0' }}>سامانه آموزشی شمسه - پنل دانشجو</h1>
           <p style={{ fontSize: '12px', color: '#94a3b8', margin: 0 }}>خوش آمدید، <strong style={{ color: '#ff3366' }}>{student.fullName}</strong> (کد ملی: {student.nationalId})</p>
@@ -556,8 +578,9 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         </div>
       </div>
 
+      <div className="student-dashboard-layout">
       {/* تب‌بندی ناوبری پنل */}
-      <div style={{ maxWidth: '1100px', margin: '0 auto 20px auto', display: 'flex', gap: '12px' }}>
+      <div className="student-dashboard-nav" style={{ maxWidth: '1100px', margin: '0 auto 20px auto', display: 'flex', gap: '12px' }}>
         <button 
           onClick={() => setActiveTab('courses')}
           style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'courses' ? '#6D001A' : cardBg, color: textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer' }}
@@ -595,7 +618,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         </button>
       </div>
 
-      <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '30px' }}>
+      <div className="student-dashboard-main" style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '30px' }}>
         
         {activeTab === 'courses' && (
           <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, backdropFilter: 'blur(16px)', padding: '32px', borderRadius: '24px', boxShadow: '0 16px 40px rgba(0,0,0,0.1)' }}>
@@ -1125,6 +1148,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         )}
 
       </div>
+      </div>
 
       {viewerFile && (
         <FileViewer
@@ -1135,6 +1159,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
           onClose={() => setViewerFile(null)}
         />
       )}
+      </div>
     </div>
   );
 };
