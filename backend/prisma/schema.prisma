@@ -172,6 +172,11 @@ model Course {
   category String?
   price Decimal? @db.Decimal(12, 2)
   coverImage String?
+  coverImageStorageKey String?
+  academicYear Int?
+  classDays String[] @default([])
+  classStartTime String?
+  classEndTime String?
   status CourseStatus @default(DRAFT)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
