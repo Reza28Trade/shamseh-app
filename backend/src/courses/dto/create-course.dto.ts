@@ -1,7 +1,7 @@
 import { IsArray, IsEnum, IsIn, IsInt, IsNumber, IsOptional, IsString, Matches, Min } from 'class-validator';
 import { CourseStatus } from '@prisma/client';
 
-const WEEK_DAYS = ['SATURDAY', 'SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'] as const;
+const WEEK_DAYS = ['SATURDAY', 'SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
 
 export class CreateCourseDto {
   @IsString()
