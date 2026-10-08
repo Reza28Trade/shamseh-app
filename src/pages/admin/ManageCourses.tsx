@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { BookOpen, Plus, Pencil, Trash2, RefreshCw, Download, Upload, ChevronDown, ChevronUp, FileText, Link as LinkIcon, CalendarDays, X, Users, Filter, Image as ImageIcon, GraduationCap, Archive, CheckCircle2 } from 'lucide-react';
-import '../styles/AdminCourses.css';
+import '../../styles/AdminCourses.css';
 
 type CourseStatus='DRAFT'|'ACTIVE'|'ARCHIVED';
 type FileType='PDF'|'POWERPOINT'|'AUDIO'|'VIDEO'|'DOCUMENT'|'LINK';
