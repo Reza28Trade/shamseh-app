@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { BookOpenText, Check, Eye, EyeOff, FileText, Pencil, Plus, RefreshCw, Save, Search, Trash2 } from 'lucide-react';
+import { BookOpenText, FileText, Pencil, Plus, Save, Search, Trash2 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 
 type ContentRecord = {
