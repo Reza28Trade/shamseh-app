@@ -435,7 +435,7 @@ export const ManageCourses: React.FC = () => {
   }[type]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 24, width: '100%', boxSizing: 'border-box', direction: 'rtl' }}>
+    <div className="admin-legacy-page admin-courses-page" style={{ display: 'flex', flexDirection: 'column', gap: 24, width: '100%', boxSizing: 'border-box', direction: 'rtl' }}>
       <div style={{ background: 'linear-gradient(135deg,rgba(109,0,26,.2),rgba(10,10,10,.8))', border: '1px solid rgba(109,0,26,.4)', padding: '24px 32px', borderRadius: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h2 style={{ fontSize: 20, fontWeight: 900, color: '#fff', margin: '0 0 6px', display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -480,7 +480,7 @@ export const ManageCourses: React.FC = () => {
               const courseSessions = sessions[course.id] || [];
               const files = courseFiles[course.id] || [];
               return (
-                <div className="admin-legacy-page admin-courses-page" key={course.id} style={{ background: '#141419', border: '1px solid #222228', borderRadius: 14, overflow: 'hidden' }}>
+                <div key={course.id} style={{ background: '#141419', border: '1px solid #222228', borderRadius: 14, overflow: 'hidden' }}>
                   <div style={{ padding: 18 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'flex-start' }}>
                       <div>
