@@ -30,51 +30,174 @@ export class CoursesService {
     this.requireAdmin(user);
     const courses = await this.prisma.course.findMany({
       orderBy: { createdAt: 'desc' },
-      select: {
-        title: true, professor: true, level: true, term: true, category: true, status: true,
+      include: {
         enrollments: { select: { status: true } },
         sessions: { select: { id: true } },
         files: { select: { id: true } },
       },
     });
+
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet('Courses');
+    sheet.views = [{ rightToLeft: true }];
     sheet.columns = [
-      { header: 'عنوان دوره', key: 'title', width: 32 },
-      { header: 'استاد', key: 'professor', width: 24 },
-      { header: 'مقطع', key: 'level', width: 18 },
-      { header: 'ترم', key: 'term', width: 18 },
-      { header: 'دسته‌بندی', key: 'category', width: 20 },
-      { header: 'وضعیت', key: 'status', width: 16 },
-      { header: 'دانشجویان فعال', key: 'activeStudents', width: 18 },
-      { header: 'کل دانشجویان', key: 'students', width: 16 },
+      { header: 'عنوان دوره', key: 'title', width: 30 },
+      { header: 'استاد', key: 'professor', width: 22 },
+      { header: 'مقطع', key: 'level', width: 14 },
+      { header: 'سال تحصیلی', key: 'academicYear', width: 14 },
+      { header: 'روزهای کلاس', key: 'classDays', width: 26 },
+      { header: 'ساعت شروع', key: 'classStartTime', width: 14 },
+      { header: 'ساعت پایان', key: 'classEndTime', width: 14 },
+      { header: 'ترم', key: 'term', width: 16 },
+      { header: 'دسته‌بندی', key: 'category', width: 18 },
+      { header: 'قیمت', key: 'price', width: 16 },
+      { header: 'تصویر جلد', key: 'coverImage', width: 34 },
+      { header: 'وضعیت', key: 'status', width: 14 },
+      { header: 'توضیحات', key: 'description', width: 42 },
+      { header: 'هنرجویان فعال', key: 'activeStudents', width: 18 },
+      { header: 'کل هنرجویان', key: 'students', width: 16 },
       { header: 'جلسات', key: 'sessions', width: 12 },
       { header: 'فایل‌ها', key: 'files', width: 12 },
     ];
+
+    const dayLabels: Record<string, string> = {
+      SATURDAY: 'شنبه', SUNDAY: 'یکشنبه', MONDAY: 'دوشنبه', TUESDAY: 'سه‌شنبه',
+      WEDNESDAY: 'چهارشنبه', THURSDAY: 'پنجشنبه', FRIDAY: 'جمعه',
+    };
+
     for (const course of courses) {
-      sheet.addRow({ title: course.title, professor: course.professor, level: course.level || '', term: course.term || '', category: course.category || '', status: course.status, activeStudents: course.enrollments.filter((e: any) => e.status === 'ACTIVE').length, students: course.enrollments.length, sessions: course.sessions.length, files: course.files.length });
+      sheet.addRow({
+        title: course.title,
+        professor: course.professor,
+        level: course.level === 'MASTER' ? 'ارشد' : course.level === 'DOCTORATE' ? 'دکتری' : course.level || '',
+        academicYear: course.academicYear ?? '',
+        classDays: (course.classDays || []).map((day: string) => dayLabels[day] || day).join('، '),
+        classStartTime: course.classStartTime || '',
+        classEndTime: course.classEndTime || '',
+        term: course.term || '',
+        category: course.category || '',
+        price: course.price ? Number(course.price) : '',
+        coverImage: course.coverImage || '',
+        status: course.status === 'ACTIVE' ? 'فعال' : course.status === 'ARCHIVED' ? 'بایگانی' : 'پیش‌نویس',
+        description: course.description || '',
+        activeStudents: course.enrollments.filter((e: any) => e.status === 'ACTIVE').length,
+        students: course.enrollments.length,
+        sessions: course.sessions.length,
+        files: course.files.length,
+      });
     }
-    sheet.getRow(1).font = { bold: true };
+
+    const header = sheet.getRow(1);
+    header.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+    header.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF3F8F8A' } };
+    header.alignment = { vertical: 'middle', horizontal: 'center' };
+    sheet.autoFilter = { from: 'A1', to: 'Q1' };
+
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.setHeader('Content-Disposition', "attachment; filename*=UTF-8''courses.xlsx");
     await workbook.xlsx.write(res);
     res.end();
   }
 
+  async importCourses(user: AuthenticatedUser, file: any) {
+    this.requireAdmin(user);
+    if (!file?.buffer) throw new BadRequestException('فایل Excel انتخاب نشده است.');
+
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.load(file.buffer);
+    const sheet = workbook.worksheets[0];
+    if (!sheet) throw new BadRequestException('برگه‌ای برای وارد کردن دوره‌ها پیدا نشد.');
+
+    const normalize = (value: unknown) => String(value ?? '').trim();
+    const dayMap: Record<string, string> = {
+      'شنبه': 'SATURDAY', 'یکشنبه': 'SUNDAY', 'دوشنبه': 'MONDAY', 'سه‌شنبه': 'TUESDAY',
+      'سه شنبه': 'TUESDAY', 'چهارشنبه': 'WEDNESDAY', 'پنجشنبه': 'THURSDAY', 'جمعه': 'FRIDAY',
+      'SATURDAY': 'SATURDAY', 'SUNDAY': 'SUNDAY', 'MONDAY': 'MONDAY', 'TUESDAY': 'TUESDAY',
+      'WEDNESDAY': 'WEDNESDAY', 'THURSDAY': 'THURSDAY', 'FRIDAY': 'FRIDAY',
+    };
+    const levelMap: Record<string, string> = {
+      'ارشد': 'MASTER', 'master': 'MASTER', 'MASTER': 'MASTER',
+      'دکتری': 'DOCTORATE', 'دکترا': 'DOCTORATE', 'doctorate': 'DOCTORATE', 'DOCTORATE': 'DOCTORATE',
+    };
+    const statusMap: Record<string, CourseStatus> = {
+      'فعال': 'ACTIVE', 'ACTIVE': 'ACTIVE', 'بایگانی': 'ARCHIVED', 'ARCHIVED': 'ARCHIVED',
+      'پیش‌نویس': 'DRAFT', 'DRAFT': 'DRAFT',
+    };
+    const headers = new Map<string, number>();
+    sheet.getRow(1).eachCell((cell: any, col: number) => headers.set(normalize(cell.value), col));
+    const col = (...names: string[]) => names.map(name => headers.get(name)).find(Boolean);
+    const value = (row: any, ...names: string[]) => {
+      const index = col(...names);
+      return index ? normalize(row.getCell(index).value) : '';
+    };
+    const titleCol = col('عنوان دوره', 'title');
+    const professorCol = col('استاد', 'professor');
+    if (!titleCol || !professorCol) throw new BadRequestException('ستون‌های «عنوان دوره» و «استاد» در فایل Excel الزامی هستند.');
+
+    let created = 0;
+    let skipped = 0;
+    const errors: string[] = [];
+    for (let rowNumber = 2; rowNumber <= sheet.rowCount; rowNumber += 1) {
+      const row = sheet.getRow(rowNumber);
+      const title = value(row, 'عنوان دوره', 'title');
+      const professor = value(row, 'استاد', 'professor');
+      if (!title && !professor) continue;
+      if (!title || !professor) { skipped += 1; errors.push(`ردیف ${rowNumber}: عنوان دوره و استاد هر دو لازم هستند.`); continue; }
+      const levelRaw = value(row, 'مقطع', 'level');
+      const level = levelMap[levelRaw] || (levelRaw ? levelRaw : undefined);
+      const academicYearRaw = value(row, 'سال تحصیلی', 'academicYear');
+      const academicYear = academicYearRaw ? Number(academicYearRaw) : undefined;
+      const daysRaw = value(row, 'روزهای کلاس', 'classDays');
+      const classDays = daysRaw.split(/[,،;/|]+/).map(item => dayMap[item.trim()]).filter(Boolean);
+      const priceRaw = value(row, 'قیمت', 'price');
+      const price = priceRaw ? Number(priceRaw.replace(/,/g, '')) : undefined;
+      const statusRaw = value(row, 'وضعیت', 'status');
+      const status = statusMap[statusRaw] || 'DRAFT';
+      if (academicYearRaw && (!Number.isInteger(academicYear) || academicYear! < 1300)) { skipped += 1; errors.push(`ردیف ${rowNumber}: سال تحصیلی معتبر نیست.`); continue; }
+      if (priceRaw && (!Number.isFinite(price) || price! < 0)) { skipped += 1; errors.push(`ردیف ${rowNumber}: قیمت معتبر نیست.`); continue; }
+      try {
+        await this.prisma.course.create({
+          data: {
+            title, professor, level,
+            description: value(row, 'توضیحات', 'description') || undefined,
+            term: value(row, 'ترم', 'term') || undefined,
+            category: value(row, 'دسته‌بندی', 'category') || undefined,
+            price, coverImage: value(row, 'تصویر جلد', 'coverImage') || undefined, academicYear, classDays,
+            classStartTime: value(row, 'ساعت شروع', 'classStartTime') || undefined,
+            classEndTime: value(row, 'ساعت پایان', 'classEndTime') || undefined, status,
+          },
+        });
+        created += 1;
+      } catch (error: any) { skipped += 1; errors.push(`ردیف ${rowNumber}: ${error?.message || 'ذخیره دوره انجام نشد.'}`); }
+    }
+    return { created, skipped, errors: errors.slice(0, 30) };
+  }
+  private publicCourse(course: any) {
+    return {
+      ...course,
+      coverImage: course.coverImageStorageKey
+        ? '/api/courses/' + course.id + '/cover'
+        : course.coverImage,
+      coverImageStorageKey: undefined,
+    };
+  }
+
   async listCourses(user: AuthenticatedUser) {
     if (user.role === 'STUDENT') {
       if (!user.studentId) throw new ForbiddenException('Student profile required');
-      return this.prisma.course.findMany({
+      const courses = await this.prisma.course.findMany({
         where: { status: 'ACTIVE', enrollments: { some: { studentId: user.studentId, status: 'ACTIVE' } } },
         orderBy: { createdAt: 'desc' },
         include: { _count: { select: { sessions: true, files: true } } },
       });
+      return courses.map(course => this.publicCourse(course));
     }
 
-    return this.prisma.course.findMany({
+    const courses = await this.prisma.course.findMany({
       orderBy: { createdAt: 'desc' },
       include: { _count: { select: { enrollments: true, sessions: true, files: true } } },
     });
+    return courses.map(course => this.publicCourse(course));
   }
 
   async getCourse(user: AuthenticatedUser, courseId: string) {
@@ -92,7 +215,7 @@ export class CoursesService {
       if (course.status !== 'ACTIVE') throw new ForbiddenException('Course is not active');
       if (!enrollment || enrollment.status !== 'ACTIVE') throw new ForbiddenException('Course access denied');
     }
-    return course;
+    return this.publicCourse(course);
   }
 
   async listCourseEnrollments(user: AuthenticatedUser, courseId: string) {
@@ -164,13 +287,18 @@ export class CoursesService {
 
   async createCourse(user: AuthenticatedUser, dto: CreateCourseDto) {
     this.requireAdmin(user);
-    return this.prisma.course.create({ data: { ...dto, price: dto.price } });
+    const course = await this.prisma.course.create({ data: { ...dto, price: dto.price } });
+    return this.publicCourse(course);
   }
 
   async updateCourse(user: AuthenticatedUser, courseId: string, dto: UpdateCourseDto) {
     this.requireAdmin(user);
     await this.ensureCourse(courseId);
-    return this.prisma.course.update({ where: { id: courseId }, data: dto });
+    const course = await this.prisma.course.update({
+      where: { id: courseId },
+      data: { ...dto, ...(dto.coverImage !== undefined ? { coverImageStorageKey: null } : {}) },
+    });
+    return this.publicCourse(course);
   }
 
   async deleteCourse(user: AuthenticatedUser, courseId: string) {
@@ -202,6 +330,56 @@ export class CoursesService {
       orderBy: { createdAt: 'desc' },
     });
     return files.map((file) => this.publicFile(file));
+  }
+
+  async uploadCourseCover(user: AuthenticatedUser, courseId: string, file: any) {
+    this.requireAdmin(user);
+    await this.ensureCourse(courseId);
+    if (!file?.buffer) throw new BadRequestException('فایل تصویر انتخاب نشده است.');
+    if (!String(file.mimetype || '').startsWith('image/')) throw new BadRequestException('فایل جلد باید تصویر باشد.');
+
+    const storageDirectory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
+    mkdirSync(storageDirectory, { recursive: true });
+    const storageKey = randomUUID() + extname(file.originalname).toLowerCase();
+    const filePath = join(storageDirectory, storageKey);
+    writeFileSync(filePath, file.buffer);
+
+    const previous = await this.prisma.course.findUnique({
+      where: { id: courseId },
+      select: { coverImageStorageKey: true },
+    });
+    const course = await this.prisma.course.update({
+      where: { id: courseId },
+      data: { coverImage: null, coverImageStorageKey: storageKey },
+    });
+
+    if (previous?.coverImageStorageKey && previous.coverImageStorageKey !== storageKey) {
+      const oldPath = join(storageDirectory, basename(previous.coverImageStorageKey));
+      if (existsSync(oldPath)) unlinkSync(oldPath);
+    }
+    return this.publicCourse(course);
+  }
+
+  async viewCourseCover(user: AuthenticatedUser, courseId: string, res: Response) {
+    const course = await this.prisma.course.findUnique({
+      where: { id: courseId },
+      select: { id: true, coverImageStorageKey: true },
+    });
+    if (!course?.coverImageStorageKey) throw new NotFoundException('Course cover not found');
+    await this.ensureCourseAccess(user, courseId);
+
+    const storageDirectory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
+    const filePath = join(storageDirectory, basename(course.coverImageStorageKey));
+    if (!existsSync(filePath)) throw new NotFoundException('Course cover file not found');
+    const extension = extname(filePath).toLowerCase();
+    const contentTypes: Record<string, string> = {
+      '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png',
+      '.webp': 'image/webp', '.gif': 'image/gif', '.avif': 'image/avif',
+    };
+    res.setHeader('Content-Type', contentTypes[extension] || 'application/octet-stream');
+    res.setHeader('Content-Disposition', 'inline');
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+    return createReadStream(filePath).pipe(res);
   }
 
   async createCourseFile(user: AuthenticatedUser, courseId: string, dto: CreateFileDto) {
