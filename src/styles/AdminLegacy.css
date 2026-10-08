@@ -14,6 +14,18 @@
 .admin-legacy-page,
 .admin-legacy-page *{box-sizing:border-box}
 
+.admin-legacy-page[style*="#0e0e11"],
+.admin-legacy-page[style*="#141419"],
+.admin-legacy-page[style*="rgba(14,14,17"],
+.admin-legacy-page[style*="rgba(14, 14, 17"]{
+  background:var(--admin-card)!important;
+  background-color:var(--admin-card)!important;
+  background-image:none!important;
+  border-color:var(--admin-border)!important;
+  color:var(--admin-text)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+
 .admin-legacy-page > div,
 .admin-legacy-page > form,
 .admin-legacy-page > section{
@@ -124,7 +136,7 @@
 }
 
 /* Old burgundy buttons become the same primary action everywhere. */
-.admin-legacy-page [style*="background: '#6D001A'"],
+.admin-legacy-page button[style*="#6D001A"],
 .admin-legacy-page [style*="background:'#6D001A'"],
 .admin-legacy-page [style*="background: #6D001A"],
 .admin-legacy-page [style*="backgroundColor: '#6D001A'"],
