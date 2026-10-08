@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { Student, Admin } from '../../types';
 import { User, Shield, Lock, ArrowRight, Send, Globe, Camera, Play } from 'lucide-react';
+import { CourseCatalogPage, RulesPage, ExamAnalysisPage } from '../public/PublicPages';
 
 interface AuthUser {
   id: string;
@@ -88,6 +89,10 @@ export const Login: React.FC<LoginProps> = ({
       }
     })();
   };
+
+  if (viewState === 'courses') return <CourseCatalogPage onBack={() => setViewState('welcome')} />;
+  if (viewState === 'rules') return <RulesPage onBack={() => setViewState('welcome')} />;
+  if (viewState === 'analysis') return <ExamAnalysisPage onBack={() => setViewState('welcome')} />;
 
   return (
     <div style={{
