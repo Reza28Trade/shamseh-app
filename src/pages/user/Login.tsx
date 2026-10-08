@@ -1,404 +1,49 @@
-import React, { useState, useEffect } from 'react';
-import type { Student, Admin } from '../../types';
-import { User, Shield, Lock, ArrowRight, Send, Globe, Camera, Play } from 'lucide-react';
+import React,{useEffect,useState} from 'react';
+import type { Student,Admin } from '../../types';
+import { User,Shield,Lock,ArrowRight,Send,Globe,Camera,Play,BookOpen,FileText,BarChart3 } from 'lucide-react';
 
-interface AuthUser {
-  id: string;
-  username: string;
-  role: 'SUPER_ADMIN' | 'STAFF' | 'STUDENT';
-  studentId: string | null;
-  student?: { fullName: string; nationalId: string } | null;
-}
+interface AuthUser{ id:string; username:string; role:'SUPER_ADMIN'|'STAFF'|'STUDENT'; studentId:string|null; student?:{fullName:string;nationalId:string}|null; }
+interface LoginProps{students:Student[];admins:Admin[];onLoginSuccess:(user:AuthUser)=>void;onAdminLoginSuccess:(user:AuthUser)=>void;rulesText?:string;}
 
-interface LoginProps {
-  students: Student[];
-  admins: Admin[];
-  onLoginSuccess: (user: AuthUser) => void;
-  onAdminLoginSuccess: (user: AuthUser) => void;
-  rulesText?: string;
-}
-
-export const Login: React.FC<LoginProps> = ({
-  students,
-  admins,
-  onLoginSuccess,
-  onAdminLoginSuccess,
-  rulesText = '',
-}) => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [viewState, setViewState] = useState<'welcome' | 'studentLogin' | 'adminLogin' | 'courses' | 'rules' | 'analysis'>('welcome');
-  
-  const [studentNationalId, setStudentNationalId] = useState('');
-  const [studentPhone, setStudentPhone] = useState('');
-  const [adminUsername, setAdminUsername] = useState('');
-  const [adminPassword, setAdminPassword] = useState('');
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoaded(true);
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleLogoClick = () => {
-    setViewState(current => current === 'adminLogin' ? 'welcome' : 'adminLogin');
-  };
-
-  const handleStudentSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    void students;
-    void (async () => {
-      try {
-        const response = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ username: studentNationalId.trim(), password: studentPhone.trim() }),
-        });
-        if (!response.ok) throw new Error('login');
-        const data = await response.json();
-        if (data.user?.role !== 'STUDENT') throw new Error('role');
-        onLoginSuccess(data.user);
-      } catch {
-        setError('کد ملی یا شماره موبایل هنرجو اشتباه است.');
-      }
-    })();
-  };
-
-  const handleAdminSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    void admins;
-    void (async () => {
-      try {
-        const response = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ username: adminUsername.trim(), password: adminPassword }),
-        });
-        if (!response.ok) throw new Error('login');
-        const data = await response.json();
-        if (data.user?.role !== 'SUPER_ADMIN' && data.user?.role !== 'STAFF') throw new Error('role');
-        onAdminLoginSuccess(data.user);
-      } catch {
-        setError('نام کاربری یا رمز عبور ادمین اشتباه است.');
-      }
-    })();
-  };
-
-  return (
-    <div style={{
-      width: '100%',
-      minHeight: '100vh',
-      backgroundColor: '#e4e4e7',
-      color: '#18181b',
-      display: 'flex',
-      flexDirection: 'column',
-      direction: 'rtl',
-      fontFamily: 'system-ui, sans-serif',
-      margin: 0,
-      padding: 0,
-      overflowX: 'hidden',
-      boxSizing: 'border-box'
-    }}>
-      {/* بخش بالای مشکی با انحنای هلالی */}
-      <div style={{
-        width: '100%',
-        height: (isLoaded && viewState === 'welcome') ? '52vh' : viewState === 'welcome' ? '100vh' : '28vh',
-        backgroundColor: '#111116',
-        borderBottomLeftRadius: '120px',
-        borderBottomRightRadius: '0px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: '30px',
-        textAlign: 'center',
-        boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
-        zIndex: 2,
-        position: 'relative',
-        transition: 'all 1.6s cubic-bezier(0.25, 1, 0.5, 1)',
-        boxSizing: 'border-box',
-        flexShrink: 0
-      }}>
-        <div 
-          onClick={handleLogoClick}
-          style={{
-            width: '55%',
-            maxWidth: '220px',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            cursor: 'pointer',
-            transition: 'all 1.2s ease',
-            margin: '0 auto 10px auto'
-          }}
-          title="آکادمی شمسه"
-        >
-          <img 
-            src="/logo.png" 
-            alt="لوگو آکادمی شمسه" 
-            style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
-            onError={(e) => {
-              (e.target as HTMLElement).style.display = 'none';
-            }}
-          />
-        </div>
-
-        {viewState === 'welcome' && (
-          <div style={{
-            opacity: isLoaded ? 1 : 0,
-            transform: isLoaded ? 'translateY(0)' : 'translateY(15px)',
-            transition: 'opacity 1.2s ease 0.4s, transform 1.2s cubic-bezier(0.25, 1, 0.5, 1) 0.4s'
-          }}>
-            <p style={{ fontSize: '12px', color: '#9CA3AF', maxWidth: '400px', lineHeight: '1.6', margin: '10px 0 0 0' }}>
-              موسسه پژوهشی، آموزشی و مطالعاتی تخصصی هنر، معماری و پژوهش هنر
-            </p>
-          </div>
-        )}
-      </div>
-
-      {/* بخش پایین صفحه */}
-      <div style={{
-        width: '100%',
-        backgroundColor: '#e4e4e7',
-        color: '#18181b',
-        padding: '40px 20px 30px 20px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flex: 1,
-        zIndex: 1,
-        opacity: isLoaded ? 1 : 0,
-        transform: isLoaded ? 'translateY(0)' : 'translateY(20px)',
-        transition: 'opacity 1.5s ease 0.3s, transform 1.5s cubic-bezier(0.25, 1, 0.5, 1) 0.3s',
-        boxSizing: 'border-box'
-      }}>
-        
-        {viewState === 'welcome' && (
-          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '14px', maxWidth: '400px', margin: 'auto' }}>
-            <button 
-              onClick={() => setViewState('studentLogin')} 
-              style={{
-                width: '100%',
-                padding: '16px',
-                borderRadius: '30px',
-                border: 'none',
-                backgroundColor: '#18181b',
-                color: '#FFFFFF',
-                fontSize: '13px',
-                fontWeight: 800,
-                cursor: 'pointer',
-                boxShadow: '0 4px 14px rgba(0,0,0,0.2)'
-              }}
-            >
-              ورود به پنل هنرجویی
-            </button>
-
-            <button 
-              onClick={() => setViewState('courses')} 
-              style={{
-                width: '100%',
-                padding: '16px',
-                borderRadius: '30px',
-                border: '1px solid #d4d4d8',
-                backgroundColor: '#f4f4f5',
-                color: '#18181b',
-                fontSize: '13px',
-                fontWeight: 700,
-                cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-              }}
-            >
-              معرفی دوره‌ها
-            </button>
-
-            <button 
-              onClick={() => setViewState('analysis')} 
-              style={{
-                width: '100%',
-                padding: '16px',
-                borderRadius: '30px',
-                border: '1px solid rgba(124, 92, 252, 0.3)',
-                backgroundColor: 'rgba(124, 92, 252, 0.08)',
-                color: '#7c5cfc',
-                fontSize: '12px',
-                fontWeight: 800,
-                cursor: 'pointer'
-              }}
-            >
-              آنالیز سؤالات کنکور ۱۴۰۵ (ارشد و دکتری)
-            </button>
-
-            <button 
-              onClick={() => setViewState('rules')} 
-              style={{
-                width: '100%',
-                padding: '16px',
-                borderRadius: '30px',
-                border: '1px solid #d4d4d8',
-                backgroundColor: '#f4f4f5',
-                color: '#18181b',
-                fontSize: '13px',
-                fontWeight: 700,
-                cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-              }}
-            >
-              قوانین و مقررات آموزشی
-            </button>
-          </div>
-        )}
-
-        {viewState === 'studentLogin' && (
-          <form onSubmit={handleStudentSubmit} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '16px', maxWidth: '400px', margin: 'auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-              <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: '#18181b' }}>ورود هنرجو به سامانه</h3>
-              <button type="button" onClick={() => { setViewState('welcome'); setError(''); }} style={{ background: 'none', border: 'none', color: '#6D001A', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <ArrowRight size={14} /> بازگشت
-              </button>
-            </div>
-
-            {error && <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#dc2626', padding: '10px', borderRadius: '8px', fontSize: '11px', textAlign: 'center', border: '1px solid rgba(239, 68, 68, 0.2)' }}>{error}</div>}
-
-            <div>
-              <label style={{ fontSize: '11px', color: '#52525b', display: 'block', marginBottom: '6px', fontWeight: 700 }}>کد ملی هنرجو</label>
-              <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#ffffff', border: '1px solid #d4d4d8', borderRadius: '12px', padding: '0 12px' }}>
-                <User size={16} color="#71717a" />
-                <input type="text" placeholder="کد ملی خود را وارد کنید" value={studentNationalId} onChange={e => setStudentNationalId(e.target.value)} required style={{ width: '100%', padding: '14px 10px', backgroundColor: 'transparent', border: 'none', color: '#18181b', fontSize: '13px', outline: 'none' }} />
-              </div>
-            </div>
-
-            <div>
-              <label style={{ fontSize: '11px', color: '#52525b', display: 'block', marginBottom: '6px', fontWeight: 700 }}>رمز عبور</label>
-              <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#ffffff', border: '1px solid #d4d4d8', borderRadius: '12px', padding: '0 12px' }}>
-                <Lock size={16} color="#71717a" />
-                <input type="password" placeholder="شماره موبایل خود را وارد کنید" value={studentPhone} onChange={e => setStudentPhone(e.target.value)} required style={{ width: '100%', padding: '14px 10px', backgroundColor: 'transparent', border: 'none', color: '#18181b', fontSize: '13px', outline: 'none' }} />
-              </div>
-            </div>
-
-            <button type="submit" style={{ width: '100%', padding: '15px', borderRadius: '30px', border: 'none', backgroundColor: '#18181b', color: '#FFFFFF', fontSize: '13px', fontWeight: 800, cursor: 'pointer', boxShadow: '0 4px 14px rgba(0,0,0,0.2)' }}>
-              ورود به پنل کاربری
-            </button>
-          </form>
-        )}
-
-        {viewState === 'adminLogin' && (
-          <form onSubmit={handleAdminSubmit} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '16px', maxWidth: '400px', margin: 'auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-              <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: '#18181b' }}>ورود ادمین سیستم</h3>
-              <button type="button" onClick={() => { setViewState('welcome'); setError(''); }} style={{ background: 'none', border: 'none', color: '#6D001A', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <ArrowRight size={14} /> بازگشت
-              </button>
-            </div>
-
-            {error && <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#dc2626', padding: '10px', borderRadius: '8px', fontSize: '11px', textAlign: 'center', border: '1px solid rgba(239, 68, 68, 0.2)' }}>{error}</div>}
-
-            <div>
-              <label style={{ fontSize: '11px', color: '#52525b', display: 'block', marginBottom: '6px', fontWeight: 700 }}>نام کاربری ادمین</label>
-              <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#ffffff', border: '1px solid #d4d4d8', borderRadius: '12px', padding: '0 12px' }}>
-                <Shield size={16} color="#71717a" />
-                <input type="text" placeholder="admin" value={adminUsername} onChange={e => setAdminUsername(e.target.value)} required style={{ width: '100%', padding: '14px 10px', backgroundColor: 'transparent', border: 'none', color: '#18181b', fontSize: '13px', outline: 'none' }} />
-              </div>
-            </div>
-
-            <div>
-              <label style={{ fontSize: '11px', color: '#52525b', display: 'block', marginBottom: '6px', fontWeight: 700 }}>رمز عبور</label>
-              <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#ffffff', border: '1px solid #d4d4d8', borderRadius: '12px', padding: '0 12px' }}>
-                <Lock size={16} color="#71717a" />
-                <input type="password" placeholder="••••••••" value={adminPassword} onChange={e => setAdminPassword(e.target.value)} required style={{ width: '100%', padding: '14px 10px', backgroundColor: 'transparent', border: 'none', color: '#18181b', fontSize: '13px', outline: 'none' }} />
-              </div>
-            </div>
-
-            <button type="submit" style={{ width: '100%', padding: '15px', borderRadius: '30px', border: 'none', backgroundColor: '#18181b', color: '#FFFFFF', fontSize: '13px', fontWeight: 800, cursor: 'pointer', boxShadow: '0 4px 14px rgba(0,0,0,0.2)' }}>
-              ورود به مدیریت سیستم
-            </button>
-          </form>
-        )}
-
-        {viewState === 'courses' && (
-          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '400px', margin: 'auto', textAlign: 'right' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-              <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: '#18181b' }}>معرفی دوره‌ها</h3>
-              <button type="button" onClick={() => setViewState('welcome')} style={{ background: 'none', border: 'none', color: '#6D001A', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <ArrowRight size={14} /> بازگشت
-              </button>
-            </div>
-            <p style={{ fontSize: '12px', color: '#52525b', lineHeight: 1.8, margin: 0 }}>
-              دوره‌های تخصصی آمادگی آزمون ارشد و دکتری هنر، پژوهش هنر و معماری با حضور اساتید برجسته، جزوات انحصاری و کلاس‌های آنلاین ادوبی کانکت.
-            </p>
-          </div>
-        )}
-
-        {viewState === 'rules' && (
-          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '400px', margin: 'auto', textAlign: 'right' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-              <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: '#18181b' }}>قوانین و مقررات آموزشی</h3>
-              <button type="button" onClick={() => setViewState('welcome')} style={{ background: 'none', border: 'none', color: '#6D001A', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <ArrowRight size={14} /> بازگشت
-              </button>
-            </div>
-            <p style={{ fontSize: '12px', color: '#52525b', lineHeight: 1.8, margin: 0, whiteSpace: 'pre-line' }}>
-              {rulesText}
-            </p>
-          </div>
-        )}
-
-        {viewState === 'analysis' && (
-          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '400px', margin: 'auto', textAlign: 'right' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-              <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: '#18181b' }}>آنالیز کنکور سال قبل</h3>
-              <button type="button" onClick={() => setViewState('welcome')} style={{ background: 'none', border: 'none', color: '#6D001A', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <ArrowRight size={14} /> بازگشت
-              </button>
-            </div>
-            <p style={{ fontSize: '12px', color: '#52525b', lineHeight: 1.8, margin: 0 }}>
-              بررسی آماری و تخصصی سوالات آزمون ارشد و دکتری هنر سال گذشته، تعیین ضریب دشواری مباحث و ارائه کلید طلایی پیشنهادی اساتید شمسه.
-            </p>
-          </div>
-        )}
-
-        {/* شبکه‌های اجتماعی و کپی‌رایت */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', width: '100%', marginTop: '20px' }}>
-          <div style={{ display: 'flex', gap: '14px' }}>
-            <a href="https://t.me" target="_blank" rel="noreferrer" style={socialIconStyle} title="تلگرام">
-              <Send size={14} />
-            </a>
-            <a href="https://instagram.com" target="_blank" rel="noreferrer" style={socialIconStyle} title="اینستاگرام">
-              <Camera size={14} />
-            </a>
-            <a href="https://youtube.com" target="_blank" rel="noreferrer" style={socialIconStyle} title="یوتیوب">
-              <Play size={14} />
-            </a>
-            <a href="https://shamseh.ir" target="_blank" rel="noreferrer" style={socialIconStyle} title="وب‌سایت">
-              <Globe size={14} />
-            </a>
-          </div>
-          <p style={{ fontSize: '10px', color: '#71717a', margin: 0, textAlign: 'center' }}>
-            تمامی حقوق مادی و معنوی برای آکادمی شمسه محفوظ است. © 2026
-          </p>
-        </div>
-
-      </div>
-    </div>
-  );
-};
-
-const socialIconStyle: React.CSSProperties = {
-  width: '36px',
-  height: '36px',
-  borderRadius: '50%',
-  backgroundColor: '#18181b',
-  color: '#ffffff',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  textDecoration: 'none',
-  boxShadow: '0 4px 10px rgba(0,0,0,0.15)',
-  transition: 'transform 0.2s ease'
+export const Login:React.FC<LoginProps>=({students,admins,onLoginSuccess,onAdminLoginSuccess,rulesText=''})=>{
+ const [viewState,setViewState]=useState<'welcome'|'studentLogin'|'adminLogin'|'courses'|'rules'|'analysis'>('welcome');
+ const [studentNationalId,setStudentNationalId]=useState(''),[studentPhone,setStudentPhone]=useState(''),[adminUsername,setAdminUsername]=useState(''),[adminPassword,setAdminPassword]=useState(''),[error,setError]=useState(''),[liveRulesText,setLiveRulesText]=useState(rulesText);
+ useEffect(()=>{void (async()=>{try{const r=await fetch('/api/content/rules');if(r.ok){const d=await r.json();setLiveRulesText(d.content??'')}}catch{}})()},[]);
+ const studentSubmit=(e:React.FormEvent)=>{e.preventDefault();setError('');void students;(async()=>{try{const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({username:studentNationalId.trim(),password:studentPhone.trim()})});if(!r.ok)throw 0;const d=await r.json();if(d.user?.role!=='STUDENT')throw 0;onLoginSuccess(d.user)}catch{setError('کد ملی یا شماره موبایل هنرجو اشتباه است.')}})()};
+ const adminSubmit=(e:React.FormEvent)=>{e.preventDefault();setError('');void admins;(async()=>{try{const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({username:adminUsername.trim(),password:adminPassword})});if(!r.ok)throw 0;const d=await r.json();if(d.user?.role!=='SUPER_ADMIN'&&d.user?.role!=='STAFF')throw 0;onAdminLoginSuccess(d.user)}catch{setError('نام کاربری یا رمز عبور ادمین اشتباه است.')}})()};
+ const back=()=>{setViewState('welcome');setError('')};
+ return <div className="sh-login">
+   <div className="sh-login-visual">
+     <div className="sh-login-orbit one"/><div className="sh-login-orbit two"/>
+     <div className="sh-login-brand" onClick={()=>setViewState(viewState==='adminLogin'?'welcome':'adminLogin')}><img src="/logo.png" alt="لوگو آکادمی شمسه"/><span>سامانه آموزشی شمسه</span></div>
+     <div className="sh-login-copy"><span>ACADEMIC PLATFORM</span><h1>مسیر آموزش،<br/><em>منظم و متمرکز.</em></h1><p>دسترسی یکپارچه به دوره‌ها، آزمون‌ها، فایل‌های آموزشی و خدمات آموزشی شمسه.</p></div>
+     <div className="sh-login-footer">آکادمی شمسه · ۱۴۰۵</div>
+   </div>
+   <div className="sh-login-content">
+     <div className="sh-login-top"><span>مرکز آموزشی شمسه</span><button type="button" onClick={back}>بازگشت به صفحه اصلی</button></div>
+     {viewState==='welcome'&&<div className="sh-welcome"><div className="sh-kicker">ورود به سامانه</div><h2>از اینجا شروع کنید</h2><p>برای ادامه، بخش موردنظر خود را انتخاب کنید.</p><div className="sh-entry-list">
+       <button className="sh-entry primary" onClick={()=>setViewState('studentLogin')}><span className="sh-entry-icon"><User size={18}/></span><span><strong>پنل هنرجویی</strong><small>دسترسی به دوره‌ها، آزمون‌ها و فایل‌های من</small></span><ArrowRight size={15}/></button>
+       <button className="sh-entry" onClick={()=>setViewState('courses')}><span className="sh-entry-icon"><BookOpen size={18}/></span><span><strong>معرفی دوره‌ها</strong><small>آشنایی با دوره‌های آموزشی شمسه</small></span><ArrowRight size={15}/></button>
+       <button className="sh-entry" onClick={()=>setViewState('analysis')}><span className="sh-entry-icon"><BarChart3 size={18}/></span><span><strong>آنالیز سؤالات کنکور ۱۴۰۵</strong><small>ارشد و دکتری هنر</small></span><ArrowRight size={15}/></button>
+       <button className="sh-entry" onClick={()=>setViewState('rules')}><span className="sh-entry-icon"><FileText size={18}/></span><span><strong>قوانین و مقررات آموزشی</strong><small>راهنمای استفاده از خدمات آموزشی</small></span><ArrowRight size={15}/></button>
+     </div></div>}
+     {(viewState==='studentLogin'||viewState==='adminLogin')&&<form className="sh-form" onSubmit={viewState==='studentLogin'?studentSubmit:adminSubmit}><button type="button" className="sh-back" onClick={back}><ArrowRight size={14}/> بازگشت</button><div className="sh-kicker">{viewState==='studentLogin'?'پنل هنرجویی':'مدیریت سیستم'}</div><h2>{viewState==='studentLogin'?'ورود هنرجو':'ورود مدیر'}</h2><p>{viewState==='studentLogin'?'با کد ملی و شماره موبایل وارد سامانه شوید.':'اطلاعات حساب مدیریت را وارد کنید.'}</p>{error&&<div className="sh-error">{error}</div>}
+       <label>{viewState==='studentLogin'?'کد ملی هنرجو':'نام کاربری ادمین'}<div className="sh-input"><span>{viewState==='studentLogin'?<User size={16}/>:<Shield size={16}/>}</span><input value={viewState==='studentLogin'?studentNationalId:adminUsername} onChange={e=>viewState==='studentLogin'?setStudentNationalId(e.target.value):setAdminUsername(e.target.value)} placeholder={viewState==='studentLogin'?'کد ملی خود را وارد کنید':'admin'} required/></div></label>
+       <label>رمز عبور<div className="sh-input"><Lock size={16}/><input type="password" value={viewState==='studentLogin'?studentPhone:adminPassword} onChange={e=>viewState==='studentLogin'?setStudentPhone(e.target.value):setAdminPassword(e.target.value)} placeholder={viewState==='studentLogin'?'شماره موبایل خود را وارد کنید':'••••••••'} required/></div></label>
+       <button className="sh-submit" type="submit">{viewState==='studentLogin'?'ورود به پنل کاربری':'ورود به مدیریت سیستم'}<ArrowRight size={15}/></button>
+     </form>}
+     {(viewState==='courses'||viewState==='rules'||viewState==='analysis')&&<div className="sh-info"><button className="sh-back" onClick={back}><ArrowRight size={14}/> بازگشت</button><div className="sh-kicker">{viewState==='courses'?'آموزش':viewState==='rules'?'راهنما':'تحلیل'}</div><h2>{viewState==='courses'?'معرفی دوره‌ها':viewState==='rules'?'قوانین و مقررات آموزشی':'آنالیز کنکور سال قبل'}</h2><p>{viewState==='courses'?'دوره‌های تخصصی آمادگی آزمون ارشد و دکتری هنر، پژوهش هنر و معماری با حضور اساتید برجسته، جزوات انحصاری و کلاس‌های آنلاین.':viewState==='rules'?(liveRulesText||rulesText):'بررسی آماری و تخصصی سوالات آزمون ارشد و دکتری هنر سال گذشته، تعیین ضریب دشواری مباحث و ارائه کلید پیشنهادی اساتید شمسه.'}</p></div>}
+     <div className="sh-social"><div><a href="https://t.me" target="_blank" rel="noreferrer"><Send size={14}/></a><a href="https://instagram.com" target="_blank" rel="noreferrer"><Camera size={14}/></a><a href="https://youtube.com" target="_blank" rel="noreferrer"><Play size={14}/></a><a href="https://shamseh.ir" target="_blank" rel="noreferrer"><Globe size={14}/></a></div><small>تمامی حقوق مادی و معنوی برای آکادمی شمسه محفوظ است. © 2026</small></div>
+   </div>
+   <style>{`
+    .sh-login{min-height:100vh;display:grid;grid-template-columns:42% 58%;direction:ltr;background:#f5f6f5;color:#182022;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    .sh-login-visual{background:#1a2021;color:#f4f7f6;position:relative;overflow:hidden;padding:38px;display:flex;flex-direction:column;direction:rtl;box-sizing:border-box}.sh-login-visual:after{content:"";position:absolute;width:520px;height:520px;border:1px solid rgba(91,191,198,.13);border-radius:50%;left:-240px;bottom:-230px}.sh-login-orbit{position:absolute;border:1px solid rgba(91,191,198,.10);border-radius:50%;pointer-events:none}.sh-login-orbit.one{width:330px;height:330px;right:-180px;top:-190px}.sh-login-orbit.two{width:180px;height:180px;right:-80px;top:-90px}
+    .sh-login-brand{display:flex;align-items:center;gap:11px;cursor:pointer;z-index:1}.sh-login-brand img{width:45px;height:45px;object-fit:contain}.sh-login-brand span{font-size:10px;color:#91b5b5;font-weight:800}
+    .sh-login-copy{margin:auto 0;max-width:430px;z-index:1}.sh-login-copy>span{font-size:9px;letter-spacing:2px;color:#5bbfc6;font-weight:900}.sh-login-copy h1{font-size:42px;line-height:1.2;margin:13px 0 14px;font-weight:900;letter-spacing:-1px}.sh-login-copy h1 em{color:#b9dfe0;font-style:normal}.sh-login-copy p{font-size:12px;color:#aab5b4;line-height:2;max-width:370px}.sh-login-footer{font-size:9px;color:#6f7b7b;z-index:1}
+    .sh-login-content{direction:rtl;padding:30px 7vw;display:flex;flex-direction:column;min-width:0;box-sizing:border-box}.sh-login-top{display:flex;justify-content:space-between;align-items:center;color:#71807f;font-size:9px}.sh-login-top button{border:0;background:none;color:#38838a;font-size:9px;font-weight:800;cursor:pointer}.sh-welcome,.sh-form,.sh-info{width:min(100%,470px);margin:auto}.sh-kicker{font-size:9px;color:#38838a;font-weight:900;margin-bottom:7px}.sh-welcome h2,.sh-form h2,.sh-info h2{font-size:27px;margin:0 0 7px;font-weight:900;letter-spacing:-.5px}.sh-welcome p,.sh-form p,.sh-info p{font-size:11px;color:#71807f;line-height:1.9;margin:0 0 20px}.sh-entry-list{display:flex;flex-direction:column;gap:8px}.sh-entry{width:100%;border:1px solid #dfe7e5;background:#fff;color:#182022;border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px;text-align:right;cursor:pointer;transition:.18s;direction:rtl}.sh-entry:hover{transform:translateX(-3px);border-color:#a9cccc}.sh-entry.primary{background:#38838a;border-color:#38838a;color:#fff}.sh-entry-icon{width:35px;height:35px;border-radius:10px;background:rgba(56,131,138,.10);color:#38838a;display:grid;place-items:center;flex:none}.sh-entry.primary .sh-entry-icon{background:rgba(255,255,255,.14);color:#fff}.sh-entry>span:nth-child(2){flex:1;display:flex;flex-direction:column;gap:2px}.sh-entry strong{font-size:11px}.sh-entry small{font-size:8px;color:#758482}.sh-entry.primary small{color:#d7ecec}.sh-entry>svg{color:#758482}.sh-entry.primary>svg{color:#fff}
+    .sh-form label{display:block;font-size:10px;font-weight:800;margin-bottom:12px}.sh-input{height:45px;margin-top:6px;border:1px solid #dfe7e5;background:#fff;border-radius:11px;display:flex;align-items:center;gap:8px;padding:0 12px;color:#778584}.sh-input input{width:100%;border:0;outline:0;background:transparent;font:inherit;font-size:11px;color:#182022}.sh-submit{width:100%;margin-top:5px;border:0;background:#182022;color:#fff;border-radius:11px;padding:12px;display:flex;justify-content:center;align-items:center;gap:7px;font-size:10px;font-weight:900;cursor:pointer}.sh-back{border:0;background:none;color:#38838a;font-size:9px;font-weight:800;display:flex;align-items:center;gap:4px;padding:0;margin-bottom:18px;cursor:pointer}.sh-error{padding:9px 10px;background:#fff1f1;color:#b5414a;border:1px solid #f0d2d4;border-radius:9px;font-size:9px;margin-bottom:12px}.sh-info p{white-space:pre-line}.sh-social{margin-top:auto;padding-top:25px;text-align:center}.sh-social>div{display:flex;justify-content:center;gap:7px}.sh-social a{width:31px;height:31px;border:1px solid #dfe7e5;background:#fff;border-radius:50%;display:grid;place-items:center;color:#637371}.sh-social small{display:block;color:#8a9694;font-size:8px;margin-top:9px}
+    @media(max-width:850px){.sh-login{display:block}.sh-login-visual{min-height:330px;padding:24px}.sh-login-copy{margin:auto 0}.sh-login-copy h1{font-size:32px}.sh-login-content{min-height:calc(100vh - 330px);padding:24px}.sh-login-top{margin-bottom:8px}}
+    @media(max-width:520px){.sh-login-visual{min-height:290px}.sh-login-copy h1{font-size:28px}.sh-login-content{padding:20px 16px}.sh-welcome h2,.sh-form h2,.sh-info h2{font-size:23px}}
+   `}</style>
+ </div>;
 };

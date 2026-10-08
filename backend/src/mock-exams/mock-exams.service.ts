@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -22,129 +21,114 @@ export class MockExamsService {
     return this.prisma.mockExam.findMany({
       where: { status: { not: MockExamStatus.DRAFT } },
       orderBy: { examDate: 'asc' },
-      include: {
-        courses: { include: { course: { select: { id: true, title: true } } } },
-      },
     });
   }
 
   async getPublic(mockExamId: string) {
     const exam = await this.prisma.mockExam.findUnique({
       where: { id: mockExamId },
-      include: {
-        courses: { include: { course: { select: { id: true, title: true } } } },
-      },
     });
+
     if (!exam || exam.status === MockExamStatus.DRAFT) {
       throw new NotFoundException('Mock exam not found');
     }
+
     return exam;
   }
 
   async listForStudent(user: AuthenticatedUser) {
     this.requireStudent(user);
+
     return this.prisma.mockExam.findMany({
-      where: { status: { not: MockExamStatus.DRAFT } },
-      orderBy: { examDate: 'asc' },
-      include: {
-        courses: { include: { course: { select: { id: true, title: true } } } },
+      where: {
+        status: { not: MockExamStatus.DRAFT },
+        participants: {
+          some: { studentId: user.studentId! },
+        },
       },
+      orderBy: { examDate: 'asc' },
     });
   }
 
   async listForAdmin(user: AuthenticatedUser) {
     this.requireAdmin(user);
+
     return this.prisma.mockExam.findMany({
       orderBy: { examDate: 'desc' },
       include: {
-        courses: { include: { course: { select: { id: true, title: true } } } },
+        participants: {
+          include: {
+            student: {
+              select: { id: true, fullName: true, nationalId: true },
+            },
+          },
+        },
       },
     });
   }
 
   async create(user: AuthenticatedUser, dto: CreateMockExamDto) {
     this.requireAdmin(user);
-    const courseIds = this.uniqueIds(dto.courseIds);
-    await this.validateCourseIds(courseIds);
 
-    const exam = await this.prisma.mockExam.create({
+    return this.prisma.mockExam.create({
       data: {
         title: dto.title,
         level: dto.level,
         field: dto.field,
-        description: dto.description,
         examDate: new Date(dto.examDate),
         examUrl: dto.examUrl,
         status: dto.status ?? MockExamStatus.DRAFT,
-        courses: courseIds.length
-          ? { create: courseIds.map((courseId) => ({ courseId })) }
-          : undefined,
-      },
-      include: {
-        courses: { include: { course: { select: { id: true, title: true } } } },
       },
     });
-
-    if (exam.status !== MockExamStatus.DRAFT && courseIds.length) {
-      await this.notifyCourseStudents(
-        user.id,
-        courseIds,
-        exam.title,
-        'یک آزمون آزمایشی جدید در Shamseh تعریف شده است. جزئیات و زمان برگزاری را در بخش آزمون‌های آزمایشی ببینید.',
-      );
-    }
-
-    return exam;
   }
 
-  async update(user: AuthenticatedUser, mockExamId: string, dto: UpdateMockExamDto) {
+  async update(
+    user: AuthenticatedUser,
+    mockExamId: string,
+    dto: UpdateMockExamDto,
+  ) {
     this.requireAdmin(user);
-    const courseIds =
-      dto.courseIds === undefined ? undefined : this.uniqueIds(dto.courseIds);
-    await this.validateCourseIds(courseIds);
 
     const existing = await this.prisma.mockExam.findUnique({
       where: { id: mockExamId },
-      include: { courses: { select: { courseId: true } } },
+      include: { participants: { select: { studentId: true } } },
     });
-    if (!existing) throw new NotFoundException('Mock exam not found');
 
-    const nextExamDate = dto.examDate ? new Date(dto.examDate) : existing.examDate;
+    if (!existing) {
+      throw new NotFoundException('Mock exam not found');
+    }
+
+    const updated = await this.prisma.mockExam.update({
+      where: { id: mockExamId },
+      data: {
+        title: dto.title,
+        level: dto.level,
+        field: dto.field,
+        examDate: dto.examDate ? new Date(dto.examDate) : undefined,
+        examUrl: dto.examUrl,
+        status: dto.status,
+      },
+      include: {
+        participants: {
+          include: {
+            student: {
+              select: { id: true, fullName: true, nationalId: true },
+            },
+          },
+        },
+      },
+    });
+
+    const studentIds = existing.participants.map((item) => item.studentId);
+    const nextExamDate = dto.examDate
+      ? new Date(dto.examDate)
+      : existing.examDate;
     const nextStatus = dto.status ?? existing.status;
-    const nextExamUrl = dto.examUrl !== undefined ? dto.examUrl : existing.examUrl;
-    const nextCourseIds =
-      courseIds === undefined
-        ? existing.courses.map((course) => course.courseId)
-        : courseIds;
+    const nextExamUrl =
+      dto.examUrl !== undefined ? dto.examUrl : existing.examUrl;
 
-    const updated = await this.prisma.$transaction(async (tx) => {
-      if (courseIds !== undefined) {
-        await tx.mockExamCourse.deleteMany({ where: { mockExamId } });
-      }
-
-      return tx.mockExam.update({
-        where: { id: mockExamId },
-        data: {
-          title: dto.title,
-          level: dto.level,
-          field: dto.field,
-          description: dto.description,
-          examDate: dto.examDate ? new Date(dto.examDate) : undefined,
-          examUrl: dto.examUrl,
-          status: dto.status,
-          courses:
-            courseIds !== undefined
-              ? { create: courseIds.map((courseId) => ({ courseId })) }
-              : undefined,
-        },
-        include: {
-          courses: { include: { course: { select: { id: true, title: true } } } },
-        },
-      });
-    });
-
-    const studentIds = await this.findActiveCourseStudents(nextCourseIds);
-    const dateChanged = nextExamDate.getTime() !== existing.examDate.getTime();
+    const dateChanged =
+      nextExamDate.getTime() !== existing.examDate.getTime();
     const linkBecameAvailable =
       (!!nextExamUrl && !existing.examUrl) ||
       (nextStatus === MockExamStatus.LINK_AVAILABLE &&
@@ -187,44 +171,80 @@ export class MockExamsService {
     return updated;
   }
 
-  private async notifyCourseStudents(
-    createdById: string,
-    courseIds: string[],
-    examTitle: string,
-    content: string,
+  async listParticipants(
+    user: AuthenticatedUser,
+    mockExamId: string,
   ) {
-    const studentIds = await this.findActiveCourseStudents(courseIds);
-    if (!studentIds.length) return;
+    this.requireAdmin(user);
+    await this.ensureExam(mockExamId);
 
-    await this.notifications.createStudentNotification(
-      createdById,
-      studentIds,
-      `آزمون آزمایشی «${examTitle}»`,
-      content,
-      NotificationType.MOCK_EXAM,
-    );
-  }
-
-  private async findActiveCourseStudents(courseIds: string[]) {
-    const enrollments = await this.prisma.enrollment.findMany({
-      where: { courseId: { in: courseIds }, status: 'ACTIVE' },
-      select: { studentId: true },
+    return this.prisma.mockExamParticipant.findMany({
+      where: { mockExamId },
+      orderBy: { createdAt: 'asc' },
+      include: {
+        student: {
+          select: { id: true, fullName: true, nationalId: true },
+        },
+      },
     });
-    return [...new Set(enrollments.map((item) => item.studentId))];
   }
 
-  private uniqueIds(ids?: string[]) {
-    return [...new Set(ids ?? [])];
-  }
+  async addParticipant(
+    user: AuthenticatedUser,
+    mockExamId: string,
+    studentId: string,
+  ) {
+    this.requireAdmin(user);
+    await this.ensureExam(mockExamId);
 
-  private async validateCourseIds(courseIds?: string[]) {
-    if (!courseIds?.length) return;
-    const count = await this.prisma.course.count({
-      where: { id: { in: courseIds } },
+    const student = await this.prisma.student.findUnique({
+      where: { id: studentId },
+      select: { id: true, fullName: true, nationalId: true },
     });
-    if (count !== courseIds.length) {
-      throw new BadRequestException('One or more courses were not found');
+
+    if (!student) {
+      throw new NotFoundException('Student not found');
     }
+
+    return this.prisma.mockExamParticipant.upsert({
+      where: {
+        mockExamId_studentId: { mockExamId, studentId },
+      },
+      create: { mockExamId, studentId },
+      update: {},
+      include: {
+        student: {
+          select: { id: true, fullName: true, nationalId: true },
+        },
+      },
+    });
+  }
+
+  async removeParticipant(
+    user: AuthenticatedUser,
+    mockExamId: string,
+    studentId: string,
+  ) {
+    this.requireAdmin(user);
+
+    return this.prisma.mockExamParticipant.delete({
+      where: {
+        mockExamId_studentId: { mockExamId, studentId },
+      },
+    });
+  }
+
+  private async ensureExam(mockExamId: string) {
+    const exam = await this.prisma.mockExam.findUnique({
+      where: { id: mockExamId },
+      select: { id: true },
+    });
+
+    if (!exam) {
+      throw new NotFoundException('Mock exam not found');
+    }
+
+    return exam;
   }
 
   private requireStudent(user: AuthenticatedUser) {

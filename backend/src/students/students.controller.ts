@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Param, Patch, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+const { memoryStorage } = require('multer');
 import { Request, Response } from 'express';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthenticatedUser } from '../auth/auth.types';
@@ -19,6 +21,17 @@ export class StudentsController {
     return this.studentsService.exportStudents(req.user, res);
   }
 
+  @Get('admin/students/template')
+  exportStudentTemplate(@Req() req: AuthenticatedRequest, @Res() res: Response) {
+    return this.studentsService.exportStudentTemplate(req.user, res);
+  }
+
+  @Post('admin/students/import')
+  @UseInterceptors(FileInterceptor('file', { storage: memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } }))
+  importStudents(@Req() req: AuthenticatedRequest, @UploadedFile() file: any) {
+    return this.studentsService.importStudents(req.user, file, String(req.query.preview || '') === 'true');
+  }
+
   @Get('admin/students')
   listStudents(@Req() req: AuthenticatedRequest) {
     return this.studentsService.listStudents(req.user);
@@ -32,6 +45,11 @@ export class StudentsController {
   @Patch('admin/students/:studentId')
   updateStudent(@Req() req: AuthenticatedRequest, @Param('studentId') studentId: string, @Body() dto: UpdateStudentDto) {
     return this.studentsService.updateStudent(req.user, studentId, dto);
+  }
+
+  @Delete('admin/students/:studentId')
+  deleteStudent(@Req() req: AuthenticatedRequest, @Param('studentId') studentId: string) {
+    return this.studentsService.deleteStudent(req.user, studentId);
   }
 
   @Patch('admin/students/:studentId/password')

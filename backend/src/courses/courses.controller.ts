@@ -40,6 +40,29 @@ export class CoursesController {
     return this.coursesService.exportCourses(req.user, res);
   }
 
+  @Post('admin/courses/import')
+  @UseInterceptors(FileInterceptor('file', {
+    storage: memoryStorage(),
+    limits: { fileSize: 10 * 1024 * 1024 },
+  }))
+  importCourses(@Req() req: AuthenticatedRequest, @UploadedFile() file: any) {
+    return this.coursesService.importCourses(req.user, file);
+  }
+
+  @Post('admin/courses/:courseId/cover')
+  @UseInterceptors(FileInterceptor('file', {
+    storage: memoryStorage(),
+    limits: { fileSize: 10 * 1024 * 1024 },
+  }))
+  uploadCourseCover(@Req() req: AuthenticatedRequest, @Param('courseId') courseId: string, @UploadedFile() file: any) {
+    return this.coursesService.uploadCourseCover(req.user, courseId, file);
+  }
+
+  @Get('courses/:courseId/cover')
+  viewCourseCover(@Req() req: AuthenticatedRequest, @Param('courseId') courseId: string, @Res() res: Response) {
+    return this.coursesService.viewCourseCover(req.user, courseId, res);
+  }
+
   @Get('courses')
   listCourses(@Req() req: AuthenticatedRequest) {
     return this.coursesService.listCourses(req.user);
@@ -73,6 +96,30 @@ export class CoursesController {
   @Get('courses/:courseId/files')
   listCourseFiles(@Req() req: AuthenticatedRequest, @Param('courseId') courseId: string) {
     return this.coursesService.listCourseFiles(req.user, courseId);
+  }
+
+  @Get('admin/courses/:courseId/enrollments')
+  listCourseEnrollments(@Req() req: AuthenticatedRequest, @Param('courseId') courseId: string) {
+    return this.coursesService.listCourseEnrollments(req.user, courseId);
+  }
+
+  @Post('admin/courses/:courseId/enrollments/:studentId')
+  enrollStudentInCourse(@Req() req: AuthenticatedRequest, @Param('courseId') courseId: string, @Param('studentId') studentId: string) {
+    return this.coursesService.enrollStudentInCourse(req.user, courseId, studentId);
+  }
+
+  @Patch('admin/course-enrollments/:enrollmentId')
+  updateCourseEnrollment(
+    @Req() req: AuthenticatedRequest,
+    @Param('enrollmentId') enrollmentId: string,
+    @Body('status') status: 'ACTIVE' | 'COMPLETED' | 'CANCELLED',
+  ) {
+    return this.coursesService.updateCourseEnrollment(req.user, enrollmentId, status);
+  }
+
+  @Delete('admin/course-enrollments/:enrollmentId')
+  removeCourseEnrollment(@Req() req: AuthenticatedRequest, @Param('enrollmentId') enrollmentId: string) {
+    return this.coursesService.removeCourseEnrollment(req.user, enrollmentId);
   }
 
   @Post('admin/courses/:courseId/files')

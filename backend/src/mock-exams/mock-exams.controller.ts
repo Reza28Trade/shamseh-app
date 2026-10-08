@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -57,5 +58,42 @@ export class MockExamsController {
     @Body() dto: UpdateMockExamDto,
   ) {
     return this.mockExamsService.update(req.user, mockExamId, dto);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('admin/mock-exams/:mockExamId/participants')
+  listParticipants(
+    @Req() req: AuthenticatedRequest,
+    @Param('mockExamId') mockExamId: string,
+  ) {
+    return this.mockExamsService.listParticipants(req.user, mockExamId);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('admin/mock-exams/:mockExamId/participants/:studentId')
+  addParticipant(
+    @Req() req: AuthenticatedRequest,
+    @Param('mockExamId') mockExamId: string,
+    @Param('studentId') studentId: string,
+  ) {
+    return this.mockExamsService.addParticipant(
+      req.user,
+      mockExamId,
+      studentId,
+    );
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete('admin/mock-exams/:mockExamId/participants/:studentId')
+  removeParticipant(
+    @Req() req: AuthenticatedRequest,
+    @Param('mockExamId') mockExamId: string,
+    @Param('studentId') studentId: string,
+  ) {
+    return this.mockExamsService.removeParticipant(
+      req.user,
+      mockExamId,
+      studentId,
+    );
   }
 }

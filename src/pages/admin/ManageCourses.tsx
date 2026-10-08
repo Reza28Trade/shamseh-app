@@ -1,524 +1,109 @@
-import React, { useEffect, useState } from 'react';
-import { BookOpen, Plus, Pencil, Trash2, RefreshCw, Download, ChevronDown, ChevronUp, FileText, Link as LinkIcon, CalendarDays, X } from 'lucide-react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { BookOpen, Plus, Pencil, Trash2, RefreshCw, Download, Upload, ChevronDown, ChevronUp, FileText, Link as LinkIcon, CalendarDays, X, Users, Filter, Image as ImageIcon, GraduationCap, Archive, CheckCircle2 } from 'lucide-react';
+import '../../styles/AdminCourses.css';
 
-type CourseStatus = 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
-type FileType = 'PDF' | 'POWERPOINT' | 'AUDIO' | 'VIDEO' | 'DOCUMENT' | 'LINK';
+type CourseStatus='DRAFT'|'ACTIVE'|'ARCHIVED';
+type FileType='PDF'|'POWERPOINT'|'AUDIO'|'VIDEO'|'DOCUMENT'|'LINK';
+type Level='MASTER'|'DOCTORATE';
+type Course={id:string;title:string;professor:string;level:string|null;description:string|null;term:string|null;category:string|null;price:string|number|null;coverImage:string|null;academicYear?:number|null;classDays?:string[];classStartTime?:string|null;classEndTime?:string|null;status:CourseStatus;_count?:{enrollments:number;sessions:number;files:number}};
+type Session={id:string;courseId:string;sessionNumber:number;title:string;createdAt:string;updatedAt:string};
+type CourseFile={id:string;courseId:string;title:string;type:FileType;mimeType:string|null;fileSize:string|null;externalUrl:string|null;streamUrl:string|null};
+type Enrollment={id:string;status:'ACTIVE'|'COMPLETED'|'CANCELLED';enrolledAt:string;student:{id:string;fullName:string;nationalId:string;phone:string}};
+const DAYS=[['SATURDAY','شنبه'],['SUNDAY','یکشنبه'],['MONDAY','دوشنبه'],['TUESDAY','سه‌شنبه'],['WEDNESDAY','چهارشنبه'],['THURSDAY','پنجشنبه'],['FRIDAY','جمعه']] as const;
+const emptyCourse={title:'',professor:'',level:'' as ''|Level,description:'',term:'',category:'',price:'',coverImage:'',status:'DRAFT' as CourseStatus,academicYear:'',classDays:[] as string[],classStartTime:'',classEndTime:''};
+const emptySession={sessionNumber:''};
+const emptyFile={title:'',type:'PDF' as FileType,externalUrl:''};
+const dayLabel=(d:string)=>DAYS.find(x=>x[0]===d)?.[1]||d;
+const levelLabel=(l:string|null|undefined)=>l==='MASTER'?'ارشد':l==='DOCTORATE'?'دکتری':'نامشخص';
+const statusLabel=(s:CourseStatus)=>s==='ACTIVE'?'فعال':s==='ARCHIVED'?'بایگانی':'پیش‌نویس';
+const fileLabel=(t:FileType)=>({PDF:'PDF',POWERPOINT:'PowerPoint',AUDIO:'صوتی',VIDEO:'ویدئو',DOCUMENT:'سند',LINK:'لینک'}[t]);
 
-type Course = {
-  id: string;
-  title: string;
-  professor: string;
-  level: string | null;
-  description: string | null;
-  term: string | null;
-  category: string | null;
-  price: string | number | null;
-  coverImage: string | null;
-  status: CourseStatus;
-  _count?: { enrollments: number; sessions: number; files: number };
-};
+export const ManageCourses:React.FC=()=>{
+ const [courses,setCourses]=useState<Course[]>([]),[form,setForm]=useState(emptyCourse),[editingId,setEditingId]=useState<string|null>(null);
+ const [loading,setLoading]=useState(true),[saving,setSaving]=useState(false),[coverFile,setCoverFile]=useState<File|null>(null),[keepCover,setKeepCover]=useState(false);
+ const [error,setError]=useState(''),[success,setSuccess]=useState(''),[expanded,setExpanded]=useState<string|null>(null);
+ const [sessions,setSessions]=useState<Record<string,Session[]>>({}),[files,setFiles]=useState<Record<string,CourseFile[]>>({}),[contentLoading,setContentLoading]=useState<Record<string,boolean>>({});
+ const [sessionForm,setSessionForm]=useState(emptySession),[showSessionForm,setShowSessionForm]=useState(false),[editingSession,setEditingSession]=useState<string|null>(null),[sessionSaving,setSessionSaving]=useState(false);
+ const [fileForm,setFileForm]=useState(emptyFile),[fileTarget,setFileTarget]=useState<string|null>(null),[fileSaving,setFileSaving]=useState(false),[selectedFile,setSelectedFile]=useState<File|null>(null);
+ const [enrollments,setEnrollments]=useState<Record<string,Enrollment[]>>({}),[enrollmentLoading,setEnrollmentLoading]=useState<Record<string,boolean>>({});
+ const [students,setStudents]=useState<{id:string;fullName:string;nationalId:string}[]>([]),[enrollmentTarget,setEnrollmentTarget]=useState<string|null>(null),[selectedStudent,setSelectedStudent]=useState(''),[enrollmentSaving,setEnrollmentSaving]=useState(false);
+ const [search,setSearch]=useState(''),[levelFilter,setLevelFilter]=useState(''),[dayFilter,setDayFilter]=useState(''),[yearFilter,setYearFilter]=useState(''),[statusFilter,setStatusFilter]=useState('');
+ const importRef=useRef<HTMLInputElement>(null);
 
-type Session = {
-  id: string;
-  courseId: string;
-  sessionNumber: number;
-  title: string;
-  createdAt: string;
-  updatedAt: string;
-};
+ const loadCourses=async()=>{setLoading(true);setError('');try{const r=await fetch('/api/courses',{credentials:'include'});if(!r.ok)throw new Error('دریافت دوره‌ها انجام نشد.');setCourses(await r.json())}catch(e){setError(e instanceof Error?e.message:'دریافت دوره‌ها انجام نشد.')}finally{setLoading(false)}};
+ useEffect(()=>{void loadCourses()},[]);
+ const exportCourses=async()=>{const r=await fetch('/api/admin/courses/export',{credentials:'include'});if(!r.ok){setError('خروجی Excel دوره‌ها دریافت نشد.');return}const b=await r.blob(),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='courses.xlsx';a.click();URL.revokeObjectURL(u)};
+ const importCourses=async(file:File)=>{setError('');setSuccess('');const fd=new FormData();fd.append('file',file);try{const r=await fetch('/api/admin/courses/import',{method:'POST',credentials:'include',body:fd}),d=await r.json().catch(()=>null);if(!r.ok)throw new Error(d?.message||'وارد کردن Excel انجام نشد.');setSuccess(`Excel وارد شد: ${d.created} دوره ثبت شد${d.skipped?` و ${d.skipped} ردیف رد شد.`:'.'}`);if(d.errors?.length)setError(d.errors.join(' | '));await loadCourses()}catch(e){setError(e instanceof Error?e.message:'وارد کردن Excel انجام نشد.')}};
 
-type CourseFile = {
-  id: string;
-  courseId: string;
-  title: string;
-  type: FileType;
-  mimeType: string | null;
-  fileSize: string | null;
-  externalUrl: string | null;
-  streamUrl: string | null;
-};
+ const loadContent=async(id:string)=>{setContentLoading(x=>({...x,[id]:true}));try{const [a,b]=await Promise.all([fetch(`/api/courses/${id}/sessions`,{credentials:'include'}),fetch(`/api/courses/${id}/files`,{credentials:'include'})]);if(!a.ok||!b.ok)throw new Error('دریافت جلسات یا فایل‌ها انجام نشد.');const [sessionData,fileData]=await Promise.all([a.json(),b.json()]);setSessions(x=>({...x,[id]:sessionData}));setFiles(x=>({...x,[id]:fileData}))}catch(e){setError(e instanceof Error?e.message:'دریافت محتوای دوره انجام نشد.')}finally{setContentLoading(x=>({...x,[id]:false}))}};
+ const loadEnrollments=async(id:string)=>{setEnrollmentLoading(x=>({...x,[id]:true}));try{const r=await fetch(`/api/admin/courses/${id}/enrollments`,{credentials:'include'});if(!r.ok)throw new Error('دریافت هنرجویان انجام نشد.');const enrollmentData=await r.json();setEnrollments(x=>({...x,[id]:enrollmentData}))}catch(e){setError(e instanceof Error?e.message:'دریافت هنرجویان انجام نشد.')}finally{setEnrollmentLoading(x=>({...x,[id]:false}))}};
+ const loadStudents=async()=>{if(students.length)return;const r=await fetch('/api/admin/students',{credentials:'include'});if(!r.ok)throw new Error('دریافت فهرست هنرجویان انجام نشد.');const d=await r.json();setStudents(d.map((x:any)=>({id:x.id,fullName:x.fullName,nationalId:x.nationalId})))};
+ const toggle=async(id:string)=>{if(expanded===id){setExpanded(null);return}setExpanded(id);await Promise.all([sessions[id]?Promise.resolve():loadContent(id),enrollments[id]?Promise.resolve():loadEnrollments(id)])};
 
-const emptyCourse = {
-  title: '', professor: '', level: '', description: '', term: '', category: '',
-  price: '', coverImage: '', status: 'DRAFT' as CourseStatus,
-};
+ const reset=()=>{setForm(emptyCourse);setEditingId(null);setCoverFile(null);setKeepCover(false)};
+ const uploadCover=async(id:string,file:File)=>{const fd=new FormData();fd.append('file',file);const r=await fetch(`/api/admin/courses/${id}/cover`,{method:'POST',credentials:'include',body:fd}),d=await r.json().catch(()=>null);if(!r.ok)throw new Error(d?.message||'آپلود تصویر انجام نشد.')};
+ const saveCourse=async(e:React.FormEvent)=>{e.preventDefault();if(!form.title.trim()||!form.professor.trim()||saving)return;setSaving(true);setError('');setSuccess('');try{const body:any={title:form.title.trim(),professor:form.professor.trim(),level:form.level||undefined,description:form.description.trim()||undefined,term:form.term.trim()||undefined,category:form.category.trim()||undefined,price:form.price===''?undefined:Number(form.price),status:form.status,academicYear:form.academicYear===''?undefined:Number(form.academicYear),classDays:form.classDays,classStartTime:form.classStartTime||undefined,classEndTime:form.classEndTime||undefined};if(form.coverImage.trim()&&!keepCover&&!coverFile)body.coverImage=form.coverImage.trim();const r=await fetch(editingId?`/api/admin/courses/${editingId}`:'/api/admin/courses',{method:editingId?'PATCH':'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}),d=await r.json().catch(()=>null);if(!r.ok)throw new Error(d?.message||'ذخیره دوره انجام نشد.');if(coverFile)await uploadCover(editingId||d.id,coverFile);setSuccess(editingId?'دوره ویرایش شد.':'دوره ایجاد شد.');reset();await loadCourses()}catch(e){setError(e instanceof Error?e.message:'ذخیره دوره انجام نشد.')}finally{setSaving(false)}};
+ const editCourse=(c:Course)=>{const uploaded=!!c.coverImage?.startsWith('/api/courses/');setEditingId(c.id);setKeepCover(uploaded);setCoverFile(null);setForm({title:c.title,professor:c.professor,level:c.level==='MASTER'||c.level==='DOCTORATE'?c.level:'',description:c.description||'',term:c.term||'',category:c.category||'',price:c.price==null?'':String(c.price),coverImage:uploaded?'':c.coverImage||'',status:c.status,academicYear:c.academicYear==null?'':String(c.academicYear),classDays:c.classDays||[],classStartTime:c.classStartTime||'',classEndTime:c.classEndTime||''});window.scrollTo({top:0,behavior:'smooth'})};
+ const deleteCourse=async(id:string)=>{if(!confirm('آیا از حذف این دوره اطمینان دارید؟'))return;try{const r=await fetch(`/api/admin/courses/${id}`,{method:'DELETE',credentials:'include'}),d=await r.json().catch(()=>null);if(!r.ok)throw new Error(d?.message||'حذف دوره انجام نشد.');if(expanded===id)setExpanded(null);await loadCourses()}catch(e){setError(e instanceof Error?e.message:'حذف دوره انجام نشد.')}};
 
-const emptySession = {
-  sessionNumber: '',
-};
+ const saveSession=async(courseId:string)=>{if(!sessionForm.sessionNumber||sessionSaving)return;setSessionSaving(true);try{const r=await fetch(editingSession?`/api/admin/sessions/${editingSession}`:`/api/admin/courses/${courseId}/sessions`,{method:editingSession?'PATCH':'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionNumber:Number(sessionForm.sessionNumber)})}),d=await r.json().catch(()=>null);if(!r.ok)throw new Error(d?.message||'ذخیره جلسه انجام نشد.');setShowSessionForm(false);setEditingSession(null);setSessionForm(emptySession);await loadContent(courseId);await loadCourses()}catch(e){setError(e instanceof Error?e.message:'ذخیره جلسه انجام نشد.')}finally{setSessionSaving(false)}};
+ const deleteSession=async(courseId:string,id:string)=>{if(!confirm('آیا از حذف این جلسه اطمینان دارید؟'))return;try{const r=await fetch(`/api/admin/sessions/${id}`,{method:'DELETE',credentials:'include'});if(!r.ok)throw new Error('حذف جلسه انجام نشد.');await loadContent(courseId);await loadCourses()}catch(e){setError(e instanceof Error?e.message:'حذف جلسه انجام نشد.')}};
+ const saveFile=async()=>{if(!fileTarget||!fileForm.title.trim()||fileSaving)return;setFileSaving(true);try{let r:Response;if(selectedFile){const fd=new FormData();fd.append('title',fileForm.title.trim());fd.append('type',fileForm.type);fd.append('file',selectedFile);r=await fetch(`/api/admin/courses/${fileTarget}/files`,{method:'POST',credentials:'include',body:fd})}else{if(!fileForm.externalUrl.trim())throw new Error('فایل یا لینک را وارد کنید.');r=await fetch(`/api/admin/courses/${fileTarget}/files/link`,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:fileForm.title.trim(),type:fileForm.type,externalUrl:fileForm.externalUrl.trim()})})}const d=await r.json().catch(()=>null);if(!r.ok)throw new Error(d?.message||'افزودن فایل انجام نشد.');setFiles(x=>({...x,[fileTarget]:[d,...(x[fileTarget]||[])]}));setFileTarget(null);setFileForm(emptyFile);setSelectedFile(null);await loadCourses()}catch(e){setError(e instanceof Error?e.message:'افزودن فایل انجام نشد.')}finally{setFileSaving(false);}};
+ const deleteFile=async(courseId:string,file:CourseFile)=>{if(!confirm(`حذف «${file.title}»؟`))return;try{const r=await fetch(`/api/admin/files/${file.id}`,{method:'DELETE',credentials:'include'});if(!r.ok)throw new Error('حذف فایل انجام نشد.');setFiles(x=>({...x,[courseId]:(x[courseId]||[]).filter(f=>f.id!==file.id)}));await loadCourses()}catch(e){setError(e instanceof Error?e.message:'حذف فایل انجام نشد.')}};
 
-const emptyFile = {
-  title: '', type: 'PDF' as FileType, externalUrl: '',
-};
+ const addEnrollment=async()=>{if(!enrollmentTarget||!selectedStudent)return;setEnrollmentSaving(true);try{const r=await fetch(`/api/admin/courses/${enrollmentTarget}/enrollments/${selectedStudent}`,{method:'POST',credentials:'include'}),d=await r.json().catch(()=>null);if(!r.ok)throw new Error(d?.message||'افزودن هنرجو انجام نشد.');await loadEnrollments(enrollmentTarget);await loadCourses();setSelectedStudent('')}catch(e){setError(e instanceof Error?e.message:'افزودن هنرجو انجام نشد.')}finally{setEnrollmentSaving(false)}};
+ const changeEnrollment=async(id:string,status:Enrollment['status'],courseId:string)=>{const r=await fetch(`/api/admin/course-enrollments/${id}`,{method:'PATCH',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({status})});if(!r.ok){setError('تغییر وضعیت ثبت‌نام انجام نشد.');return}await loadEnrollments(courseId)};
+ const removeEnrollment=async(courseId:string,e:Enrollment)=>{if(!confirm(`هنرجوی «${e.student.fullName}» از این دوره خارج شود؟`))return;const r=await fetch(`/api/admin/course-enrollments/${e.id}`,{method:'DELETE',credentials:'include'});if(!r.ok){setError('خروج هنرجو از دوره انجام نشد.');return}await loadEnrollments(courseId);await loadCourses()};
 
-const input: React.CSSProperties = {
-  width: '100%', boxSizing: 'border-box', background: '#0e0e11', color: '#fff',
-  border: '1px solid rgba(255,255,255,.1)', padding: '11px 13px',
-  borderRadius: 9, fontSize: 12, outline: 'none',
-};
+ const filtered=useMemo(()=>courses.filter(c=>{const q=search.trim().toLowerCase();return(!q||(c.title+' '+c.professor).toLowerCase().includes(q))&&(!levelFilter||c.level===levelFilter)&&(!dayFilter||(c.classDays||[]).includes(dayFilter))&&(!yearFilter||String(c.academicYear||'')===yearFilter)&&(!statusFilter||c.status===statusFilter)}),[courses,search,levelFilter,dayFilter,yearFilter,statusFilter]);
+ const stats=useMemo(()=>({active:courses.filter(c=>c.status==='ACTIVE').length,archived:courses.filter(c=>c.status==='ARCHIVED').length,draft:courses.filter(c=>c.status==='DRAFT').length,students:courses.reduce((n,c)=>n+(c._count?.enrollments||0),0)}),[courses]);
+ const years=useMemo(()=>Array.from(new Set(courses.map(c=>c.academicYear).filter(Boolean))).sort((a,b)=>Number(b)-Number(a)),[courses]);
 
-const button = (background: string, color = '#fff'): React.CSSProperties => ({
-  background, color, border: '1px solid rgba(255,255,255,.1)', padding: '8px 11px',
-  borderRadius: 8, cursor: 'pointer', fontSize: 11, display: 'inline-flex',
-  alignItems: 'center', gap: 5,
-});
-
-export const ManageCourses: React.FC = () => {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [form, setForm] = useState(emptyCourse);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [expandedCourseId, setExpandedCourseId] = useState<string | null>(null);
-  const [sessions, setSessions] = useState<Record<string, Session[]>>({});
-  const [courseFiles, setCourseFiles] = useState<Record<string, CourseFile[]>>({});
-  const [contentLoading, setContentLoading] = useState<Record<string, boolean>>({});
-  const [sessionForm, setSessionForm] = useState(emptySession);
-  const [showSessionForm, setShowSessionForm] = useState(false);
-  const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
-  const [sessionSaving, setSessionSaving] = useState(false);
-  const [fileForm, setFileForm] = useState(emptyFile);
-  const [fileTarget, setFileTarget] = useState<{ courseId: string } | null>(null);
-  const [fileSaving, setFileSaving] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [uploadProgress, setUploadProgress] = useState(0);
-
-
-  const exportCourses = async () => {
-    const response = await fetch('/api/admin/courses/export', { credentials: 'include' });
-    if (!response.ok) { setError('خروجی Excel دوره‌ها دریافت نشد.'); return; }
-    const blob = await response.blob();
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = 'courses.xlsx';
-    anchor.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const loadCourses = async () => {
-    setLoading(true); setError('');
-    try {
-      const response = await fetch('/api/courses', { credentials: 'include' });
-      if (!response.ok) throw new Error('دریافت دوره‌ها انجام نشد.');
-      setCourses(await response.json());
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'دریافت دوره‌ها انجام نشد.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => { void loadCourses(); }, []);
-
-  const loadContent = async (courseId: string) => {
-    setContentLoading(current => ({ ...current, [courseId]: true }));
-    try {
-      const [sessionsResponse, filesResponse] = await Promise.all([
-        fetch(`/api/courses/${courseId}/sessions`, { credentials: 'include' }),
-        fetch(`/api/courses/${courseId}/files`, { credentials: 'include' }),
-      ]);
-      if (!sessionsResponse.ok || !filesResponse.ok) throw new Error('دریافت جلسات یا فایل‌های دوره انجام نشد.');
-      const [sessionData, fileData] = await Promise.all([sessionsResponse.json(), filesResponse.json()]);
-      setSessions(current => ({ ...current, [courseId]: sessionData }));
-      setCourseFiles(current => ({ ...current, [courseId]: fileData }));
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'دریافت محتوای دوره انجام نشد.');
-    } finally {
-      setContentLoading(current => ({ ...current, [courseId]: false }));
-    }
-  };
-
-  const toggleCourse = async (courseId: string) => {
-    if (expandedCourseId === courseId) {
-      setExpandedCourseId(null);
-      return;
-    }
-    setExpandedCourseId(courseId);
-    if (!sessions[courseId]) await loadContent(courseId);
-  };
-
-  const saveCourse = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.title.trim() || !form.professor.trim() || saving) return;
-    setSaving(true); setError(''); setSuccess('');
-    try {
-      const body = {
-        ...form,
-        title: form.title.trim(),
-        professor: form.professor.trim(),
-        price: form.price === '' ? undefined : Number(form.price),
-      };
-      const url = editingId ? `/api/admin/courses/${editingId}` : '/api/admin/courses';
-      const response = await fetch(url, {
-        method: editingId ? 'PATCH' : 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-      const data = await response.json().catch(() => null);
-      if (!response.ok) throw new Error(data?.message || 'ذخیره دوره انجام نشد.');
-      setForm(emptyCourse); setEditingId(null);
-      setSuccess(editingId ? 'دوره ویرایش شد.' : 'دوره ایجاد شد.');
-      await loadCourses();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'ذخیره دوره انجام نشد.');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const editCourse = (course: Course) => {
-    setEditingId(course.id);
-    setForm({
-      title: course.title, professor: course.professor, level: course.level || '',
-      description: course.description || '', term: course.term || '', category: course.category || '',
-      price: course.price == null ? '' : String(course.price), coverImage: course.coverImage || '',
-      status: course.status,
-    });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const deleteCourse = async (courseId: string) => {
-    if (!confirm('آیا از حذف این دوره اطمینان دارید؟')) return;
-    try {
-      const response = await fetch(`/api/admin/courses/${courseId}`, { method: 'DELETE', credentials: 'include' });
-      const data = await response.json().catch(() => null);
-      if (!response.ok) throw new Error(data?.message || 'حذف دوره انجام نشد.');
-      if (expandedCourseId === courseId) setExpandedCourseId(null);
-      await loadCourses();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'حذف دوره انجام نشد.');
-    }
-  };
-
-  const startNewSession = () => {
-    setEditingSessionId(null);
-    setSessionForm(emptySession);
-    setShowSessionForm(true);
-  };
-
-  const cancelSessionForm = () => {
-    setEditingSessionId(null);
-    setSessionForm(emptySession);
-    setShowSessionForm(false);
-  };
-
-  const editSession = (session: Session) => {
-    setEditingSessionId(session.id);
-    setShowSessionForm(true);
-    setSessionForm({ sessionNumber: String(session.sessionNumber) });
-  };
-
-  const saveSession = async (courseId: string) => {
-    if (!sessionForm.sessionNumber || Number(sessionForm.sessionNumber) < 1 || sessionSaving) return;
-    setSessionSaving(true); setError('');
-    try {
-      const body = { sessionNumber: Number(sessionForm.sessionNumber) };
-      const url = editingSessionId
-        ? `/api/admin/sessions/${editingSessionId}`
-        : `/api/admin/courses/${courseId}/sessions`;
-      const response = await fetch(url, {
-        method: editingSessionId ? 'PATCH' : 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-      const data = await response.json().catch(() => null);
-      if (!response.ok) throw new Error(data?.message || 'ذخیره جلسه انجام نشد.');
-      setSessionForm(emptySession); setEditingSessionId(null); setShowSessionForm(false);
-      await loadContent(courseId);
-      await loadCourses();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'ذخیره جلسه انجام نشد.');
-    } finally {
-      setSessionSaving(false);
-    }
-  };
-
-  const deleteSession = async (courseId: string, sessionId: string) => {
-    if (!confirm('آیا از حذف این جلسه اطمینان دارید؟')) return;
-    try {
-      const response = await fetch(`/api/admin/sessions/${sessionId}`, { method: 'DELETE', credentials: 'include' });
-      const data = await response.json().catch(() => null);
-      if (!response.ok) throw new Error(data?.message || 'حذف جلسه انجام نشد.');
-      await loadContent(courseId);
-      await loadCourses();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'حذف جلسه انجام نشد.');
-    }
-  };
-
-  const openFileForm = (courseId: string) => {
-    setFileTarget({ courseId });
-    setFileForm(emptyFile);
-    setSelectedFile(null);
-  };
-
-  const saveFile = async () => {
-    if (!fileTarget || !fileForm.title.trim() || fileSaving) return;
-    setFileSaving(true); setError('');
-    try {
-      const uploadUrl = `/api/admin/courses/${fileTarget.courseId}/files`;
-      const linkUrl = `/api/admin/courses/${fileTarget.courseId}/files/link`;
-
-      let response: Response;
-      if (selectedFile) {
-        const formData = new FormData();
-        formData.append('title', fileForm.title.trim());
-        formData.append('type', fileForm.type);
-        formData.append('file', selectedFile);
-        setUploadProgress(0);
-        response = await new Promise<Response>((resolve, reject) => {
-          const xhr = new XMLHttpRequest();
-          xhr.open('POST', uploadUrl);
-          xhr.withCredentials = true;
-          xhr.timeout = 120_000;
-          xhr.upload.onprogress = event => {
-            if (event.lengthComputable) setUploadProgress(Math.round((event.loaded / event.total) * 100));
-          };
-          xhr.onload = () => {
-            setUploadProgress(100);
-            resolve(new Response(xhr.responseText, {
-              status: xhr.status,
-              statusText: xhr.statusText,
-              headers: { 'Content-Type': xhr.getResponseHeader('Content-Type') || 'application/json' },
-            }));
-          };
-          xhr.onerror = () => reject(new Error('ارتباط با سرور هنگام آپلود برقرار نشد.'));
-          xhr.ontimeout = () => reject(new Error('آپلود بیشتر از ۱۲۰ ثانیه طول کشید و متوقف شد.'));
-          xhr.onabort = () => reject(new Error('آپلود متوقف شد.'));
-          xhr.send(formData);
-        });
-      } else {
-        const externalUrl = fileForm.externalUrl.trim();
-        if (!externalUrl) throw new Error('یک فایل از کامپیوتر انتخاب کنید یا لینک خارجی وارد کنید.');
-        response = await fetch(linkUrl, {
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            title: fileForm.title.trim(),
-            type: fileForm.type,
-            externalUrl,
-          }),
-        });
-      }
-      const data = await response.json().catch(() => null);
-      if (!response.ok) throw new Error(data?.message || 'افزودن فایل انجام نشد.');
-      const created = data as CourseFile;
-      setCourseFiles(current => ({ ...current, [fileTarget.courseId]: [created, ...(current[fileTarget.courseId] || [])] }));
-      setFileTarget(null);
-      setFileForm(emptyFile);
-      setSelectedFile(null);
-      await loadCourses();
-    } catch (e) {
-      if (e instanceof DOMException && e.name === 'AbortError') {
-        setError('آپلود بیشتر از ۶۰ ثانیه طول کشید و متوقف شد. احتمالاً مشکل از سرور، Nginx یا دریافت فایل است.');
-      } else {
-        setError(e instanceof Error ? e.message : 'افزودن فایل انجام نشد.');
-      }
-    } finally {
-      setFileSaving(false);
-      setUploadProgress(0);
-    }
-  };
-
-  const deleteFile = async (courseId: string, file: CourseFile) => {
-    if (!confirm(`حذف «${file.title}»؟`)) return;
-    try {
-      const response = await fetch(`/api/admin/files/${file.id}`, { method: 'DELETE', credentials: 'include' });
-      const data = await response.json().catch(() => null);
-      if (!response.ok) throw new Error(data?.message || 'حذف فایل انجام نشد.');
-      setCourseFiles(current => ({ ...current, [courseId]: (current[courseId] || []).filter(item => item.id !== file.id) }));
-      await loadCourses();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'حذف فایل انجام نشد.');
-    }
-  };
-
-  const fileLabel = (type: FileType) => ({
-    PDF: 'PDF', POWERPOINT: 'PowerPoint', AUDIO: 'صوتی', VIDEO: 'ویدئو', DOCUMENT: 'سند', LINK: 'لینک',
-  }[type]);
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 24, width: '100%', boxSizing: 'border-box', direction: 'rtl' }}>
-      <div style={{ background: 'linear-gradient(135deg,rgba(109,0,26,.2),rgba(10,10,10,.8))', border: '1px solid rgba(109,0,26,.4)', padding: '24px 32px', borderRadius: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <h2 style={{ fontSize: 20, fontWeight: 900, color: '#fff', margin: '0 0 6px', display: 'flex', alignItems: 'center', gap: 10 }}>
-            <BookOpen size={20} color="#ff3366" /> مدیریت دوره‌ها
-          </h2>
-          <p style={{ fontSize: 12, color: '#94a3b8', margin: 0 }}>دوره، جلسات و محتوای هر دوره از PostgreSQL مدیریت می‌شود</p>
-        </div>
-        <div style={{ display: 'flex', gap: 8 }}><button type="button" onClick={() => void exportCourses()} style={button('rgba(255,255,255,.06)')}><Download size={14} /> خروجی Excel</button><button onClick={() => void loadCourses()} style={button('rgba(255,255,255,.06)')}><RefreshCw size={14} /></button></div>
-      </div>
-
-      {error && <div style={{ background: 'rgba(239,68,68,.1)', color: '#f87171', padding: 12, borderRadius: 10, fontSize: 12 }}>{error}</div>}
-      {success && <div style={{ background: 'rgba(52,211,153,.1)', color: '#34d399', padding: 12, borderRadius: 10, fontSize: 12 }}>{success}</div>}
-
-      <form onSubmit={saveCourse} style={{ background: 'rgba(14,14,17,.75)', border: '1px solid rgba(255,255,255,.08)', padding: 28, borderRadius: 24, display: 'flex', flexDirection: 'column', gap: 15 }}>
-        <h3 style={{ color: '#fff', fontSize: 15, margin: 0, display: 'flex', alignItems: 'center', gap: 7 }}><Plus size={17} color="#ff3366" />{editingId ? 'ویرایش دوره' : 'ایجاد دوره جدید'}</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 12 }}>
-          <input required placeholder="عنوان دوره" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} style={input} />
-          <input required placeholder="نام استاد" value={form.professor} onChange={e => setForm({ ...form, professor: e.target.value })} style={input} />
-          <input placeholder="مقطع تحصیلی" value={form.level} onChange={e => setForm({ ...form, level: e.target.value })} style={input} />
-          <input placeholder="ترم" value={form.term} onChange={e => setForm({ ...form, term: e.target.value })} style={input} />
-          <input placeholder="دسته‌بندی" value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} style={input} />
-          <input type="number" min="0" placeholder="قیمت (تومان)" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} style={input} />
-          <input placeholder="آدرس تصویر جلد" value={form.coverImage} onChange={e => setForm({ ...form, coverImage: e.target.value })} style={input} />
-          <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value as CourseStatus })} style={input}>
-            <option value="DRAFT">پیش‌نویس</option><option value="ACTIVE">فعال</option><option value="ARCHIVED">بایگانی</option>
-          </select>
-        </div>
-        <textarea placeholder="توضیحات دوره" rows={4} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} style={{ ...input, resize: 'vertical' }} />
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button disabled={saving} type="submit" style={button('#6D001A')}>{saving ? 'در حال ذخیره...' : editingId ? 'ذخیره تغییرات' : 'ثبت دوره'}</button>
-          {editingId && <button type="button" onClick={() => { setEditingId(null); setForm(emptyCourse); }} style={button('transparent', '#94a3b8')}>انصراف</button>}
-        </div>
-      </form>
-
-      <div style={{ background: 'rgba(14,14,17,.75)', border: '1px solid rgba(255,255,255,.08)', padding: 24, borderRadius: 24 }}>
-        <h3 style={{ color: '#fff', fontSize: 15, margin: '0 0 16px' }}>دوره‌های ثبت‌شده ({courses.length})</h3>
-        {loading ? <p style={{ color: '#94a3b8', fontSize: 12 }}>در حال دریافت...</p> :
-          courses.length === 0 ? <p style={{ color: '#666', fontSize: 12, textAlign: 'center', padding: 20 }}>هنوز دوره‌ای ثبت نشده است.</p> :
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {courses.map(course => {
-              const expanded = expandedCourseId === course.id;
-              const courseSessions = sessions[course.id] || [];
-              const files = courseFiles[course.id] || [];
-              return (
-                <div key={course.id} style={{ background: '#141419', border: '1px solid #222228', borderRadius: 14, overflow: 'hidden' }}>
-                  <div style={{ padding: 18 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'flex-start' }}>
-                      <div>
-                        <strong style={{ color: '#fff', fontSize: 13 }}>{course.title}</strong>
-                        <p style={{ color: '#94a3b8', fontSize: 11, margin: '7px 0' }}>استاد: {course.professor}</p>
-                        <div style={{ color: '#64748b', fontSize: 10 }}>هنرجو: {course._count?.enrollments ?? 0} · جلسه: {course._count?.sessions ?? 0} · فایل: {course._count?.files ?? 0}</div>
-                      </div>
-                      <span style={{ color: course.status === 'ACTIVE' ? '#34d399' : '#fbbf24', fontSize: 9 }}>{course.status}</span>
-                    </div>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 14 }}>
-                      <button type="button" onClick={() => void toggleCourse(course.id)} style={button('rgba(255,255,255,.06)')}>{expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />} مدیریت جلسات و فایل‌ها</button>
-                      <button type="button" onClick={() => editCourse(course)} style={button('rgba(56,189,248,.1)', '#38bdf8')}><Pencil size={12} /> ویرایش دوره</button>
-                      <button type="button" onClick={() => void deleteCourse(course.id)} style={button('rgba(239,68,68,.1)', '#f87171')}><Trash2 size={12} /> حذف</button>
-                    </div>
-                  </div>
-
-                  {expanded && (
-                    <div style={{ borderTop: '1px solid #222228', padding: 18, background: 'rgba(0,0,0,.15)' }}>
-                      {contentLoading[course.id] ? <p style={{ color: '#94a3b8', fontSize: 12 }}>در حال دریافت محتوای دوره...</p> : (
-                        <>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                            <h4 style={{ color: '#fff', fontSize: 13, margin: 0, display: 'flex', alignItems: 'center', gap: 6 }}><CalendarDays size={14} /> جلسات ({courseSessions.length})</h4>
-                            <button type="button" onClick={startNewSession} style={button('#6D001A')}><Plus size={12} /> جلسه جدید</button>
-                          </div>
-
-                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 10 }}>
-                            {courseSessions.map(session => (
-                              <div key={session.id} style={{ background: '#0e0e11', border: '1px solid #25252b', borderRadius: 12, padding: 13 }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, alignItems: 'center' }}>
-                                  <strong style={{ color: '#fff', fontSize: 12 }}>جلسه {session.sessionNumber}</strong>
-                                </div>
-                                <div style={{ display: 'flex', gap: 6, marginTop: 10, flexWrap: 'wrap' }}>
-                                  <button type="button" onClick={() => editSession(session)} style={button('rgba(56,189,248,.1)', '#38bdf8')}><Pencil size={11} /> ویرایش شماره</button>
-                                  <button type="button" onClick={() => void deleteSession(course.id, session.id)} style={button('rgba(239,68,68,.1)', '#f87171')}><Trash2 size={11} /></button>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-
-                          {showSessionForm && editingSessionId && (
-                            <div style={{ marginTop: 14, padding: 15, background: '#111116', border: '1px solid #2b2b32', borderRadius: 12 }}>
-                              <h4 style={{ color: '#fff', fontSize: 12, margin: '0 0 10px' }}>ویرایش جلسه</h4>
-                              <SessionForm form={sessionForm} setForm={setSessionForm} saving={sessionSaving} onSave={() => void saveSession(course.id)} onCancel={cancelSessionForm} />
-                            </div>
-                          )}
-
-                          {!editingSessionId && showSessionForm && (
-                            <div style={{ marginTop: 14, padding: 15, background: '#111116', border: '1px solid #2b2b32', borderRadius: 12 }}>
-                              <h4 style={{ color: '#fff', fontSize: 12, margin: '0 0 10px' }}>جلسه جدید</h4>
-                              <SessionForm form={sessionForm} setForm={setSessionForm} saving={sessionSaving} onSave={() => void saveSession(course.id)} onCancel={cancelSessionForm} />
-                            </div>
-                          )}
-
-                          <div style={{ marginTop: 20, borderTop: '1px solid #25252b', paddingTop: 15 }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                              <h4 style={{ color: '#fff', fontSize: 12, margin: 0 }}><FileText size={13} style={{ verticalAlign: 'middle', marginLeft: 5 }} /> فایل‌های عمومی دوره ({files.length})</h4>
-                              <button type="button" onClick={() => openFileForm(course.id)} style={button('rgba(109,0,26,.35)')}><Plus size={11} /> افزودن فایل</button>
-                            </div>
-                            {files.length === 0 ? <p style={{ color: '#64748b', fontSize: 10 }}>فایل عمومی برای این دوره ثبت نشده است.</p> :
-                              files.map(file => (
-                                <div key={file.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, padding: '8px 0', borderBottom: '1px solid #1e1e24' }}>
-                                  <span style={{ color: '#cbd5e1', fontSize: 10 }}>{file.title} · {fileLabel(file.type)}</span>
-                                  <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                                    {(file.streamUrl || file.externalUrl) && <a href={file.streamUrl || file.externalUrl || '#'} target="_blank" rel="noreferrer" style={{ color: '#38bdf8', fontSize: 9 }}><LinkIcon size={10} style={{ verticalAlign: 'middle', marginLeft: 3 }} />باز کردن</a>}
-                                    <button type="button" onClick={() => void deleteFile(course.id, file)} style={{ background: 'transparent', border: 0, color: '#f87171', cursor: 'pointer' }}><Trash2 size={11} /></button>
-                                  </div>
-                                </div>
-                              ))
-                            }
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        }
-      </div>
-
-      {fileTarget && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.72)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 20 }}>
-          <div style={{ width: 'min(520px,100%)', background: '#15151a', border: '1px solid #2b2b32', borderRadius: 18, padding: 22 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
-              <h3 style={{ color: '#fff', margin: 0, fontSize: 14 }}>افزودن فایل</h3>
-              <button type="button" onClick={() => setFileTarget(null)} style={{ background: 'transparent', border: 0, color: '#94a3b8', cursor: 'pointer' }}><X size={16} /></button>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <input placeholder="عنوان فایل" value={fileForm.title} onChange={e => setFileForm({ ...fileForm, title: e.target.value })} style={input} />
-              <select value={fileForm.type} onChange={e => setFileForm({ ...fileForm, type: e.target.value as FileType })} style={input}>
-                <option value="PDF">PDF</option><option value="POWERPOINT">PowerPoint</option><option value="AUDIO">صوتی</option><option value="VIDEO">ویدئو</option><option value="DOCUMENT">سند</option><option value="LINK">لینک</option>
-              </select>
-              <label style={{ color: '#cbd5e1', fontSize: 11 }}>انتخاب فایل از کامپیوتر (حداکثر 100MB)</label>
-              <input
-                type="file"
-                onChange={e => setSelectedFile(e.target.files?.[0] || null)}
-                style={{ ...input, padding: 8 }}
-              />
-              {selectedFile && <div style={{ color: '#94a3b8', fontSize: 10 }}>فایل انتخاب‌شده: {selectedFile.name}</div>}
-              <input placeholder="یا لینک خارجی (اختیاری)" value={fileForm.externalUrl} onChange={e => setFileForm({ ...fileForm, externalUrl: e.target.value })} style={input} disabled={!!selectedFile} />
-              <button type="button" disabled={fileSaving} onClick={() => void saveFile()} style={button('#6D001A')}>{fileSaving ? (selectedFile ? 'در حال آپلود... ' + uploadProgress + '%' : 'در حال ثبت...') : selectedFile ? 'آپلود و ثبت فایل' : 'ثبت لینک'}</button>
-              {fileSaving && selectedFile && (
-                <div style={{ width: '100%', height: 6, background: '#25252b', borderRadius: 99, overflow: 'hidden' }}>
-                  <div style={{ width: uploadProgress + '%', height: '100%', background: '#ff3366', transition: 'width .15s ease' }} />
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-type SessionFormProps = {
-  form: typeof emptySession;
-  setForm: React.Dispatch<React.SetStateAction<typeof emptySession>>;
-  saving: boolean;
-  onSave: () => void;
-  onCancel: () => void;
-};
-
-const SessionForm: React.FC<SessionFormProps> = ({ form, setForm, saving, onSave, onCancel }) => (
-  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-    <input type="number" min="1" placeholder="شماره جلسه" value={form.sessionNumber} onChange={e => setForm({ ...form, sessionNumber: e.target.value })} style={input} />
-    <div style={{ display: 'flex', gap: 7 }}>
-      <button type="button" disabled={saving} onClick={onSave} style={button('#6D001A')}>{saving ? 'در حال ذخیره...' : 'ذخیره جلسه'}</button>
-      <button type="button" onClick={onCancel} style={button('transparent', '#94a3b8')}>انصراف</button>
-    </div>
+ const courseCard=(c:Course)=>{const open=expanded===c.id,ss=sessions[c.id]||[],fs=files[c.id]||[],es=enrollments[c.id]||[];return <article className="course-card" key={c.id}>
+  <div className="course-card-main">
+   <div className="course-card-cover">{c.coverImage?<img src={c.coverImage} alt=""/>:<ImageIcon size={18}/>}</div>
+   <div style={{minWidth:0}}><div className="course-card-title">{c.title}</div><div className="course-card-sub">استاد {c.professor} · {levelLabel(c.level)} · {c.academicYear||'سال نامشخص'}</div><div className="course-card-sub">{(c.classDays||[]).map(dayLabel).join('، ')||'روز کلاس ثبت نشده'}{c.classStartTime&&c.classEndTime?` · ${c.classStartTime} تا ${c.classEndTime}`:''}</div></div>
+   <div className="course-meta"><span className="course-pill accent"><GraduationCap size={10}/>{levelLabel(c.level)}</span><span className="course-pill"><CalendarDays size={10}/>{c._count?.sessions||0} جلسه</span><span className="course-pill"><Users size={10}/>{c._count?.enrollments||0} هنرجو</span><span className={`course-status ${c.status==='ARCHIVED'?'archived':c.status==='DRAFT'?'draft':''}`}>{statusLabel(c.status)}</span></div>
+   <div className="course-card-actions"><button className="course-btn" type="button" onClick={()=>void toggle(c.id)}>{open?<ChevronUp size={12}/>:<ChevronDown size={12}/>} جزئیات</button><button className="course-btn blue" type="button" onClick={()=>editCourse(c)}><Pencil size={11}/>ویرایش</button><button className="course-btn blue" type="button" onClick={async()=>{setEnrollmentTarget(c.id);setSelectedStudent('');try{await Promise.all([loadStudents(),loadEnrollments(c.id)])}catch(e){setError(e instanceof Error?e.message:'دریافت هنرجویان انجام نشد.')}}}><Users size={11}/>{c._count?.enrollments||0}</button><button className="course-btn danger" type="button" onClick={()=>void deleteCourse(c.id)}><Trash2 size={11}/></button></div>
   </div>
-);
+  {open&&<div className="course-expand">{contentLoading[c.id]?<span className="course-card-sub">در حال دریافت...</span>:<div className="expanded-grid">
+   <div className="expanded-panel"><div className="course-section-head"><h3><CalendarDays size={12}/> جلسات ({ss.length})</h3><button className="course-btn primary" type="button" onClick={()=>{setEditingSession(null);setSessionForm(emptySession);setShowSessionForm(true)}}><Plus size={10}/>جلسه</button></div><div className="mini-list">{ss.map(s=><div className="mini-row" key={s.id}><strong>جلسه {s.sessionNumber}</strong><div className="mini-actions"><button className="course-btn" type="button" onClick={()=>{setEditingSession(s.id);setSessionForm({sessionNumber:String(s.sessionNumber)});setShowSessionForm(true)}}><Pencil size={9}/></button><button className="course-btn danger" type="button" onClick={()=>void deleteSession(c.id,s.id)}><Trash2 size={9}/></button></div></div>)}{!ss.length&&<span className="course-card-sub">جلسه‌ای ثبت نشده است.</span>}</div>{showSessionForm&&<div style={{marginTop:8}}><input type="number" min="1" placeholder="شماره جلسه" value={sessionForm.sessionNumber} onChange={e=>setSessionForm({sessionNumber:e.target.value})}/><div className="course-actions" style={{marginTop:6}}><button className="course-btn primary" type="button" disabled={sessionSaving} onClick={()=>void saveSession(c.id)}>ذخیره</button><button className="course-btn" type="button" onClick={()=>setShowSessionForm(false)}>انصراف</button></div></div>}</div>
+   <div className="expanded-panel"><div className="course-section-head"><h3><Users size={12}/> هنرجویان ({es.length})</h3><button className="course-btn primary" type="button" onClick={async()=>{setEnrollmentTarget(c.id);setSelectedStudent('');try{await Promise.all([loadStudents(),loadEnrollments(c.id)])}catch(e){setError(e instanceof Error?e.message:'دریافت هنرجویان انجام نشد.')}}}><Plus size={10}/>افزودن</button></div><div className="mini-list">{enrollmentLoading[c.id]?<span className="course-card-sub">در حال دریافت...</span>:es.map(e=><div className="mini-row" key={e.id}><div><strong>{e.student.fullName}</strong><br/><span>{e.student.nationalId}</span></div><div className="mini-actions"><select value={e.status} onChange={x=>void changeEnrollment(e.id,x.target.value as Enrollment['status'],c.id)}><option value="ACTIVE">فعال</option><option value="COMPLETED">تکمیل‌شده</option><option value="CANCELLED">لغوشده</option></select><button className="course-btn danger" type="button" onClick={()=>void removeEnrollment(c.id,e)}><Trash2 size={9}/></button></div></div>)}{!enrollmentLoading[c.id]&&!es.length&&<span className="course-card-sub">هنرجویی ثبت نشده است.</span>}</div></div>
+   <div className="expanded-panel"><div className="course-section-head"><h3><FileText size={12}/> فایل‌ها ({fs.length})</h3><button className="course-btn primary" type="button" onClick={()=>{setFileTarget(c.id);setFileForm(emptyFile);setSelectedFile(null)}}><Plus size={10}/>افزودن</button></div><div className="mini-list">{fs.map(f=><div className="mini-row" key={f.id}><div><strong>{f.title}</strong><br/><span>{fileLabel(f.type)}</span></div><div className="mini-actions">{(f.streamUrl||f.externalUrl)&&<a className="course-btn" href={f.streamUrl||f.externalUrl||'#'} target="_blank" rel="noreferrer"><LinkIcon size={9}/></a>}<button className="course-btn danger" type="button" onClick={()=>void deleteFile(c.id,f)}><Trash2 size={9}/></button></div></div>)}{!fs.length&&<span className="course-card-sub">فایلی ثبت نشده است.</span>}</div></div>
+  </div>}</div>}
+ </article>};
+
+ return <div className="admin-legacy-page admin-courses-page">
+  <div className="course-toolbar"><div><h2 className="course-title"><BookOpen size={20}/> مدیریت دوره‌ها</h2><p className="course-subtitle">دوره، برنامه کلاس، محتوا و هنرجویان در یک نمای مدیریتی</p></div><div className="course-toolbar-actions"><button className="course-btn" type="button" onClick={()=>importRef.current?.click()}><Upload size={13}/> ورود Excel</button><button className="course-btn" type="button" onClick={()=>void exportCourses()}><Download size={13}/> خروجی Excel</button><button className="course-btn" type="button" onClick={()=>void loadCourses()}><RefreshCw size={13}/> بروزرسانی</button><input ref={importRef} hidden type="file" accept=".xlsx" onChange={e=>{const f=e.target.files?.[0];if(f)void importCourses(f);e.currentTarget.value=''}}/></div></div>
+  {error&&<div className="course-message error">{error}</div>}{success&&<div className="course-message success">{success}</div>}
+  <div className="course-stats">
+   <div className="course-stat"><div className="course-stat-head"><span className="course-stat-label">کل دوره‌ها</span><BookOpen size={14}/></div><div className="course-stat-value">{courses.length}</div><div className="course-stat-bar"><span style={{width:'100%'}}/></div></div>
+   <div className="course-stat"><div className="course-stat-head"><span className="course-stat-label">دوره‌های فعال</span><CheckCircle2 size={14}/></div><div className="course-stat-value">{stats.active}</div><div className="course-stat-bar"><span style={{width:courses.length?`${stats.active/courses.length*100}%`:'0%'}}/></div></div>
+   <div className="course-stat"><div className="course-stat-head"><span className="course-stat-label">دوره‌های بایگانی</span><Archive size={14}/></div><div className="course-stat-value">{stats.archived}</div><div className="course-stat-bar"><span style={{width:courses.length?`${stats.archived/courses.length*100}%`:'0%'}}/></div></div>
+   <div className="course-stat"><div className="course-stat-head"><span className="course-stat-label">هنرجویان</span><Users size={14}/></div><div className="course-stat-value">{stats.students}</div><div className="course-stat-bar"><span style={{width:courses.length?`${Math.min(stats.students/Math.max(courses.length*10,1)*100,100)}%`:'0%'}}/></div></div>
+  </div>
+  <form className="course-form" onSubmit={saveCourse}><div className="course-section-head"><div><h3>{editingId?'ویرایش دوره':'ایجاد دوره جدید'}</h3><p>اطلاعات دوره و برنامه برگزاری را یک‌جا ثبت کنید.</p></div>{editingId&&<button className="course-btn" type="button" onClick={reset}><X size={11}/> انصراف</button>}</div>
+   <div className="course-form-grid">
+    <div className="course-field span-2"><label>عنوان دوره *</label><input required value={form.title} onChange={e=>setForm({...form,title:e.target.value})} placeholder="مثلاً تاریخ هنر"/></div>
+    <div className="course-field"><label>نام استاد *</label><input required value={form.professor} onChange={e=>setForm({...form,professor:e.target.value})} placeholder="نام استاد"/></div>
+    <div className="course-field"><label>مقطع تحصیلی</label><select value={form.level} onChange={e=>setForm({...form,level:e.target.value as ''|Level})}><option value="">انتخاب مقطع</option><option value="MASTER">ارشد</option><option value="DOCTORATE">دکتری</option></select></div>
+    <div className="course-field"><label>سال تحصیلی</label><input type="number" min="1300" value={form.academicYear} onChange={e=>setForm({...form,academicYear:e.target.value})} placeholder="۱۴۰۵"/></div>
+    <div className="course-field"><label>ترم</label><input value={form.term} onChange={e=>setForm({...form,term:e.target.value})} placeholder="پاییز"/></div>
+    <div className="course-field"><label>دسته‌بندی</label><input value={form.category} onChange={e=>setForm({...form,category:e.target.value})} placeholder="دسته‌بندی"/></div>
+    <div className="course-field"><label>قیمت (تومان)</label><input type="number" min="0" value={form.price} onChange={e=>setForm({...form,price:e.target.value})}/></div>
+    <div className="course-field full"><label>روزهای برگزاری</label><div className="day-picker">{DAYS.map(([v,l])=><button type="button" key={v} className={`day-chip ${form.classDays.includes(v)?'selected':''}`} onClick={()=>setForm({...form,classDays:form.classDays.includes(v)?form.classDays.filter(x=>x!==v):[...form.classDays,v]})}>{form.classDays.includes(v)?'✓ ':''}{l}</button>)}</div></div>
+    <div className="course-field"><label>ساعت شروع</label><input type="time" value={form.classStartTime} onChange={e=>setForm({...form,classStartTime:e.target.value})}/></div>
+    <div className="course-field"><label>ساعت پایان</label><input type="time" value={form.classEndTime} onChange={e=>setForm({...form,classEndTime:e.target.value})}/></div>
+    <div className="course-field"><label>وضعیت</label><select value={form.status} onChange={e=>setForm({...form,status:e.target.value as CourseStatus})}><option value="DRAFT">پیش‌نویس</option><option value="ACTIVE">فعال</option><option value="ARCHIVED">بایگانی</option></select></div>
+    <div className="course-field span-2"><label>تصویر دوره</label><div className="cover-picker"><div className="cover-thumb">{coverFile?<img src={URL.createObjectURL(coverFile)} alt=""/>:keepCover&&editingId?<img src={`/api/courses/${editingId}/cover`} alt=""/>:form.coverImage?<img src={form.coverImage} alt=""/>:<ImageIcon size={19}/>}</div><div className="cover-controls"><input value={form.coverImage} disabled={!!coverFile} onChange={e=>{setForm({...form,coverImage:e.target.value});setKeepCover(false)}} placeholder="یا لینک مستقیم تصویر"/><label className="cover-file"><Upload size={12}/>{coverFile?coverFile.name:'آپلود تصویر از کامپیوتر'}<input hidden type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/avif" onChange={e=>{setCoverFile(e.target.files?.[0]||null);setKeepCover(false)}}/></label></div></div></div>
+    <div className="course-field full"><label>توضیحات</label><textarea value={form.description} onChange={e=>setForm({...form,description:e.target.value})} rows={3} placeholder="توضیحات دوره"/></div>
+   </div><div className="course-form-footer"><button className="course-btn primary" disabled={saving} type="submit">{saving?'در حال ذخیره...':editingId?'ذخیره تغییرات':'ثبت دوره'}</button></div>
+  </form>
+  <section className="course-list"><div className="course-section-head"><div><h3>دوره‌های ثبت‌شده ({filtered.length} از {courses.length})</h3><p>فیلتر بر اساس مقطع، روز، سال و وضعیت</p></div><Filter size={15} color="var(--admin-accent)"/></div>
+   <div className="course-filters"><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="جست‌وجوی عنوان یا استاد"/><select value={levelFilter} onChange={e=>setLevelFilter(e.target.value)}><option value="">همه مقاطع</option><option value="MASTER">ارشد</option><option value="DOCTORATE">دکتری</option></select><select value={dayFilter} onChange={e=>setDayFilter(e.target.value)}><option value="">همه روزها</option>{DAYS.map(([v,l])=><option key={v} value={v}>{l}</option>)}</select><select value={yearFilter} onChange={e=>setYearFilter(e.target.value)}><option value="">همه سال‌ها</option>{years.map(y=><option key={y} value={String(y)}>{y}</option>)}</select><select value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}><option value="">همه وضعیت‌ها</option><option value="ACTIVE">فعال</option><option value="DRAFT">پیش‌نویس</option><option value="ARCHIVED">بایگانی</option></select></div>
+   {loading?<div className="course-card-sub">در حال دریافت...</div>:!filtered.length?<div className="course-card-sub">دوره‌ای با این فیلترها پیدا نشد.</div>:<div className="course-list-grid">{filtered.map(courseCard)}</div>}
+  </section>
+  {enrollmentTarget&&<div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)setEnrollmentTarget(null)}}><div className="modal"><div className="modal-head"><h3>مدیریت هنرجویان دوره</h3><button className="modal-close" type="button" onClick={()=>setEnrollmentTarget(null)}><X size={14}/></button></div><div className="mini-list" style={{maxHeight:220}}>{(enrollments[enrollmentTarget]||[]).map(e=><div className="mini-row" key={e.id}><div><strong>{e.student.fullName}</strong><br/><span>{e.student.nationalId}</span></div><button className="course-btn danger" type="button" onClick={()=>void removeEnrollment(enrollmentTarget,e)}><Trash2 size={9}/></button></div>)}</div><select style={{width:'100%',marginTop:10}} value={selectedStudent} onChange={e=>setSelectedStudent(e.target.value)}><option value="">انتخاب هنرجوی جدید...</option>{students.filter(s=>!(enrollments[enrollmentTarget]||[]).some(e=>e.student.id===s.id)).map(s=><option key={s.id} value={s.id}>{s.fullName} — {s.nationalId}</option>)}</select><div className="course-actions" style={{marginTop:9}}><button className="course-btn primary" disabled={!selectedStudent||enrollmentSaving} type="button" onClick={()=>void addEnrollment()}>{enrollmentSaving?'در حال ثبت...':'افزودن هنرجو'}</button><button className="course-btn" type="button" onClick={()=>setEnrollmentTarget(null)}>بستن</button></div></div></div>}
+  {fileTarget&&<div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)setFileTarget(null)}}><div className="modal"><div className="modal-head"><h3>افزودن فایل یا لینک</h3><button className="modal-close" type="button" onClick={()=>setFileTarget(null)}><X size={14}/></button></div><div className="modal-grid"><input placeholder="عنوان فایل" value={fileForm.title} onChange={e=>setFileForm({...fileForm,title:e.target.value})}/><select value={fileForm.type} onChange={e=>setFileForm({...fileForm,type:e.target.value as FileType})}><option value="PDF">PDF</option><option value="POWERPOINT">PowerPoint</option><option value="AUDIO">صوتی</option><option value="VIDEO">ویدئو</option><option value="DOCUMENT">سند</option><option value="LINK">لینک</option></select></div><label className="cover-file" style={{marginTop:9}}><Upload size={12}/>{selectedFile?selectedFile.name:'انتخاب فایل از کامپیوتر'}<input hidden type="file" onChange={e=>setSelectedFile(e.target.files?.[0]||null)}/></label><input style={{width:'100%',marginTop:8}} placeholder="یا لینک خارجی" value={fileForm.externalUrl} onChange={e=>setFileForm({...fileForm,externalUrl:e.target.value})} disabled={!!selectedFile}/><div className="course-actions" style={{marginTop:9}}><button className="course-btn primary" disabled={fileSaving} type="button" onClick={()=>void saveFile()}>{fileSaving?'در حال ثبت...':selectedFile?'آپلود و ثبت':'ثبت لینک'}</button><button className="course-btn" type="button" onClick={()=>setFileTarget(null)}>بستن</button></div></div></div>}
+ </div>;
+};
