@@ -28,6 +28,10 @@ export interface Course {
   price?: number;
   category?: string;
   coverImage?: string;
+  academicYear?: number;
+  classDays?: string[];
+  classStartTime?: string;
+  classEndTime?: string;
   syllabus?: string[];
   attachments?: { id: string; name: string; url: string; type: 'pdf' | 'video' | 'link' }[];
 }
