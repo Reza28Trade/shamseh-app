@@ -102,6 +102,8 @@
 .admin-courses-page .course-form-grid{
   display:grid;
   grid-template-columns:repeat(4,minmax(0,1fr));
+  grid-auto-rows:max-content;
+  align-items:start;
   gap:10px;
 }
 .admin-courses-page .course-field{min-width:0}
