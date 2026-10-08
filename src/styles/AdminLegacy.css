@@ -692,28 +692,33 @@
 
 /* Offline header refinement */
 .admin-offline-page .offline-page-head{
-  padding:2px 0 0!important;
+  padding:18px 20px!important;
   align-items:center;
+  background:var(--admin-card)!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:16px!important;
+  box-shadow:var(--admin-shadow)!important;
 }
 .admin-offline-page .offline-page-head > div:first-child{
   display:flex;
   flex-direction:column;
   gap:0;
+  min-width:0;
 }
 .admin-offline-page .offline-eyebrow{
-  margin-bottom:3px;
+  margin-bottom:4px;
 }
 .admin-offline-page .offline-page-head h2{
-  font-size:17px!important;
-  line-height:1.35;
+  font-size:20px!important;
+  line-height:1.4;
   font-weight:800!important;
 }
 .admin-offline-page .offline-page-head p{
-  margin:2px 0 0!important;
-  font-size:11px!important;
+  margin:4px 0 0!important;
+  font-size:12px!important;
 }
 .admin-offline-page .offline-refresh{
-  padding:8px 11px;
+  padding:9px 12px;
 }
 
 /* Keep only 10 request rows visible; the rest scroll inside the list. */
