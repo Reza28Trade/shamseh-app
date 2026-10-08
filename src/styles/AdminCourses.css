@@ -165,8 +165,9 @@
   border-radius:18px;
   background:var(--admin-card);
   box-shadow:var(--admin-shadow);
-  max-height:620px!important;
-  overflow:hidden!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
 }
 .admin-courses-page .course-list-grid{
   display:flex;
