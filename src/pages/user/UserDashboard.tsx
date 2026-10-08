@@ -539,7 +539,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   const subText = isDark ? '#aab5b4' : '#697675';
   const borderColor = isDark ? '#343a3b' : '#e2e8e7';
   const innerCardBg = isDark ? '#282c2d' : '#f8faf9';
-  const accent = '#38838a';
+  const accent = isDark ? '#3b8faa' : '#3f8f8a';
   const accentSoft = isDark ? 'rgba(56, 131, 138, 0.16)' : '#e8f2f2';
 
   return (
@@ -738,7 +738,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                       <p style={{ fontSize: '12px', color: textColor, margin: 0, lineHeight: 1.5 }}>{course.description}</p>
 
                       {course.adobeConnectUrl && (
-                        <a href={course.adobeConnectUrl} target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', backgroundColor: '#6D001A', color: '#fff', padding: '10px', borderRadius: '12px', textDecoration: 'none', fontSize: '12px', fontWeight: 800, marginTop: '4px', boxShadow: '0 4px 12px rgba(109,0,26,0.3)' }}>
+                        <a href={course.adobeConnectUrl} target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', backgroundColor: accent, color: '#fff', padding: '10px', borderRadius: '12px', textDecoration: 'none', fontSize: '12px', fontWeight: 800, marginTop: '4px', boxShadow: isDark ? '0 4px 12px rgba(59,143,170,.24)' : '0 4px 12px rgba(63,143,138,.18)' }}>
                           <Video size={16} /> ورود به کلاس آنلاین (ادوبی کانکت)
                         </a>
                       )}
@@ -957,7 +957,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                             href={exam.examUrl!}
                             target="_blank"
                             rel="noreferrer"
-                            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '7px', padding: '11px 14px', borderRadius: '10px', background: 'linear-gradient(135deg, #6D001A 0%, #a21c3a 100%)', color: '#fff', textDecoration: 'none', fontSize: '11px', fontWeight: 800 }}
+                            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '7px', padding: '11px 14px', borderRadius: '10px', background: accent, color: '#fff', textDecoration: 'none', fontSize: '11px', fontWeight: 800 }}
                           >
                             <ExternalLink size={14} /> ورود به آزمون
                           </a>
