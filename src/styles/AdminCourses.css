@@ -165,6 +165,17 @@
   border-radius:18px;
   background:var(--admin-card);
   box-shadow:var(--admin-shadow);
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+.admin-courses-page .course-list-grid{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
 }
 .admin-courses-page .course-filters{
   display:grid;
@@ -178,7 +189,7 @@
   background:var(--admin-control)!important;color:var(--admin-text)!important;
   border:1px solid var(--admin-border)!important;font:inherit;font-size:10px;
 }
-.admin-courses-page .course-list-grid{display:flex;flex-direction:column;gap:8px}
+
 .admin-courses-page .course-card{
   border:1px solid var(--admin-border);
   border-radius:14px;
