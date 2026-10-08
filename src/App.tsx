@@ -23,7 +23,6 @@ export function App() {
     setCurrentAdmin,
     courses,
     students,
-    rulesText,
     addStudent,
     updateStudent,
     deleteStudent,
@@ -112,7 +111,6 @@ export function App() {
       admins={admins}
       onLoginSuccess={handleStudentLogin}
       onAdminLoginSuccess={handleAdminLoginSuccess}
-      rulesText={rulesText}
     />
   );
 }
