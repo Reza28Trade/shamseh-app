@@ -1,4 +1,6 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+const { memoryStorage } = require('multer');
 import { Request, Response } from 'express';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthenticatedUser } from '../auth/auth.types';
@@ -17,6 +19,17 @@ export class StudentsController {
   @Get('admin/students/export')
   exportStudents(@Req() req: AuthenticatedRequest, @Res() res: Response) {
     return this.studentsService.exportStudents(req.user, res);
+  }
+
+  @Get('admin/students/template')
+  exportStudentTemplate(@Req() req: AuthenticatedRequest, @Res() res: Response) {
+    return this.studentsService.exportStudentTemplate(req.user, res);
+  }
+
+  @Post('admin/students/import')
+  @UseInterceptors(FileInterceptor('file', { storage: memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } }))
+  importStudents(@Req() req: AuthenticatedRequest, @UploadedFile() file: any) {
+    return this.studentsService.importStudents(req.user, file, String(req.query.preview || '') === 'true');
   }
 
   @Get('admin/students')
