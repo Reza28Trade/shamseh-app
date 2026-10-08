@@ -174,9 +174,13 @@
   flex-direction:column;
   gap:8px;
   height:auto!important;
-  max-height:none!important;
-  overflow:visible!important;
+  max-height:390px!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding-left:4px;
 }
+.admin-courses-page .course-list-grid::-webkit-scrollbar{width:7px}
+.admin-courses-page .course-list-grid::-webkit-scrollbar-thumb{background:var(--admin-border);border-radius:99px}
 .admin-courses-page .course-filters{
   display:grid;
   grid-template-columns:1.4fr repeat(4,minmax(130px,1fr));
