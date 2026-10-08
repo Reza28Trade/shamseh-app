@@ -7,6 +7,7 @@ import { createReadStream, existsSync, mkdirSync, unlinkSync, writeFileSync, sta
 import { basename, extname, join } from 'path';
 import { PrismaService } from '../database/prisma.service';
 import { AuthenticatedUser } from '../auth/auth.types';
+import { CourseStatus } from '@prisma/client';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { CreateSessionDto } from './dto/create-session.dto';
