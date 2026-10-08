@@ -192,7 +192,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', width: '100%', boxSizing: 'border-box' }}>
+    <div className="admin-legacy-page admin-students-page" style={{ display: 'flex', flexDirection: 'column', gap: '30px', width: '100%', boxSizing: 'border-box' }}>
       
       {/* هدر صفحه */}
       <div style={{ background: 'linear-gradient(135deg, rgba(109, 0, 26, 0.2) 0%, rgba(10, 10, 10, 0.8) 100%)', border: '1px solid rgba(109, 0, 26, 0.4)', padding: '24px 32px', borderRadius: '20px', backdropFilter: 'blur(12px)', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
@@ -265,7 +265,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
             {apiCourses.map(course => {
               const isSelected = selectedCourses.includes(course.id);
               return (
-                <div className="admin-legacy-page admin-students-page" 
+                <div 
                   key={course.id} 
                   onClick={() => handleCheckboxChange(course.id)}
                   style={{ backgroundColor: isSelected ? 'rgba(109, 0, 26, 0.25)' : 'rgba(20, 20, 25, 0.6)', border: `1px solid ${isSelected ? '#6D001A' : 'rgba(255,255,255,0.06)'}`, padding: '12px', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', transition: 'all 0.2s' }}
