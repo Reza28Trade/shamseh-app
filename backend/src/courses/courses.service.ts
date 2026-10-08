@@ -304,8 +304,18 @@ export class CoursesService {
 
   async deleteCourse(user: AuthenticatedUser, courseId: string) {
     this.requireAdmin(user);
-    await this.ensureCourse(courseId);
-    return this.prisma.course.delete({ where: { id: courseId } });
+    const course = await this.prisma.course.findUnique({
+      where: { id: courseId },
+      select: { id: true, coverImageStorageKey: true },
+    });
+    if (!course) throw new NotFoundException('Course not found');
+    const deleted = await this.prisma.course.delete({ where: { id: courseId } });
+    if (course.coverImageStorageKey) {
+      const storageDirectory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
+      const coverPath = join(storageDirectory, basename(course.coverImageStorageKey));
+      if (existsSync(coverPath)) unlinkSync(coverPath);
+    }
+    return this.publicCourse(deleted);
   }
 
   async listSessions(user: AuthenticatedUser, courseId: string) {
