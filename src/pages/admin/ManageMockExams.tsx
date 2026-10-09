@@ -322,6 +322,15 @@ export const ManageMockExams: React.FC = () => {
 
       {error && <div style={errorBox}>{error}</div>}
 
+      <div className="mock-exam-dashboard">
+        <div className="mock-exam-stats">
+          <div className="mock-exam-stat"><span>کل آزمون‌ها</span><strong>{exams.length}</strong></div>
+          <div className="mock-exam-stat"><span>برگزارشده</span><strong>{completedCount}</strong></div>
+          <div className="mock-exam-stat"><span>باقی‌مانده</span><strong>{remainingCount}</strong></div>
+          <div className="mock-exam-stat"><span>لغوشده</span><strong>{cancelledCount}</strong></div>
+        </div>
+      </div>
+
       <form onSubmit={submit} style={card}>
         <div style={sectionTitle}>
           <Plus size={17} color="#ff3366" />
@@ -420,12 +429,7 @@ export const ManageMockExams: React.FC = () => {
       )}
 
       <div className="mock-exam-dashboard">
-        <div className="mock-exam-stats">
-          <div className="mock-exam-stat"><span>کل آزمون‌ها</span><strong>{exams.length}</strong></div>
-          <div className="mock-exam-stat"><span>برگزارشده</span><strong>{completedCount}</strong></div>
-          <div className="mock-exam-stat"><span>باقی‌مانده</span><strong>{remainingCount}</strong></div>
-          <div className="mock-exam-stat"><span>لغوشده</span><strong>{cancelledCount}</strong></div>
-        </div>
+
         <div style={card} className="mock-exam-list-card">
           <div className="mock-exam-list-head">
             <div style={sectionTitle}>
@@ -581,7 +585,6 @@ export const ManageMockExams: React.FC = () => {
             ))}
           </div>
           )}
-        </div>
       </div>
     </div>
   );
