@@ -43,7 +43,7 @@ type StudentFinance = {
   unpricedCourses: number;
   status: 'PAID' | 'PARTIAL' | 'UNPAID' | 'INCOMPLETE' | 'NO_COURSES';
   enrolledCourses: Array<{ enrollmentId: string; courseId: string; title: string; tuition: number | null; status: string }>;
-  payments: Array<{ id: string; amount: number; method: string; reference: string | null; note: string | null; paidAt: string }>;
+  payments: Array<{ id: string; amount: number; method: string; reference: string | null; note: string | null; paidAt: string; status: 'PENDING' | 'APPROVED' | 'REJECTED' }>;
 };
 
 interface UserDashboardProps {
@@ -1106,8 +1106,13 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                   <div style={{ padding: 14, background: innerCardBg, borderBottom: `1px solid ${borderColor}`, display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 900, color: textColor }}><CreditCard size={16} />سوابق پرداخت</div>
                   {finance.payments.length === 0 ? <div style={{ padding: 16, color: subText, fontSize: 12 }}>هنوز پرداختی در سیستم ثبت نشده است.</div>
                     : finance.payments.map((payment) => <div key={payment.id} style={{ padding: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap', borderBottom: `1px solid ${borderColor}` }}>
-                      <div style={{ fontSize: 11, color: subText }}>{new Date(payment.paidAt).toLocaleDateString('fa-IR')}{payment.reference ? ' · شماره پیگیری: ' + payment.reference : ''}</div>
-                      <strong style={{ fontSize: 12, color: '#10b981' }}>{new Intl.NumberFormat('fa-IR').format(Math.round(payment.amount))} تومان</strong>
+                      <div style={{ fontSize: 11, color: subText }}>
+                        {new Date(payment.paidAt).toLocaleDateString('fa-IR')}{payment.reference ? ' · شماره پیگیری: ' + payment.reference : ''}
+                        <span style={{ marginRight: 8, color: payment.status === 'APPROVED' ? '#10b981' : payment.status === 'REJECTED' ? '#ef4444' : '#f59e0b', fontWeight: 800 }}>
+                          {payment.status === 'APPROVED' ? 'تأییدشده' : payment.status === 'REJECTED' ? 'ردشده' : 'در انتظار تأیید'}
+                        </span>
+                      </div>
+                      <strong style={{ fontSize: 12, color: payment.status === 'APPROVED' ? '#10b981' : payment.status === 'REJECTED' ? '#ef4444' : '#f59e0b' }}>{new Intl.NumberFormat('fa-IR').format(Math.round(payment.amount))} تومان</strong>
                     </div>)}
                 </div>
                 <p style={{ margin: 0, color: subText, fontSize: 11, lineHeight: 1.8 }}>برای اصلاح مبلغ شهریه یا پیگیری پرداخت‌ها، با مدیریت مؤسسه هماهنگ کنید.</p>
