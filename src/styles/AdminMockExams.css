@@ -101,8 +101,8 @@
 .mock-exam-filters{display:flex;gap:10px;align-items:end;margin:14px 0;padding:12px;background:var(--admin-inner);border:1px solid var(--admin-border);border-radius:12px}
 .mock-exam-filters label{display:grid;gap:6px;min-width:150px;font-size:11px;color:var(--admin-sub);font-weight:700}
 .mock-exam-filters select{width:100%;min-height:38px;padding:8px 10px;border:1px solid var(--admin-border);border-radius:9px;background:var(--admin-control);color:var(--admin-text);font:inherit}
-.mock-exam-scroll-list{display:grid;gap:12px;height:1100px;max-height:1100px;overflow-y:auto;overflow-x:hidden;padding:2px 3px 2px 6px;scrollbar-width:thin;scrollbar-color:var(--admin-border) transparent}
+.mock-exam-scroll-list{display:grid;gap:12px;height:1100px;max-height:1100px;align-content:start;overflow-y:auto;overflow-x:hidden;padding:2px 3px 2px 6px;scrollbar-width:thin;scrollbar-color:var(--admin-border) transparent}
 .mock-exam-scroll-list::-webkit-scrollbar{width:7px}
 .mock-exam-scroll-list::-webkit-scrollbar-thumb{background:var(--admin-border);border-radius:99px}
 .mock-exam-scroll-list::-webkit-scrollbar-thumb:hover{background:var(--admin-accent)}
-@media(max-width:760px){.mock-exam-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.mock-exam-stat:nth-child(2){border-left:0}.mock-exam-stat:nth-child(-n+2){border-bottom:1px solid var(--admin-border)}.mock-exam-list-head{align-items:stretch;flex-direction:column}.mock-exam-list-head button{justify-content:center}.mock-exam-filters{align-items:stretch;flex-direction:column}.mock-exam-filters label{min-width:0}.mock-exam-scroll-list{height:1100px;max-height:1100px}}
+@media(max-width:760px){.mock-exam-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.mock-exam-stat:nth-child(2){border-left:0}.mock-exam-stat:nth-child(-n+2){border-bottom:1px solid var(--admin-border)}.mock-exam-list-head{align-items:stretch;flex-direction:column}.mock-exam-list-head button{justify-content:center}.mock-exam-filters{align-items:stretch;flex-direction:column}.mock-exam-filters label{min-width:0}.mock-exam-scroll-list{height:1100px;max-height:1100px;align-content:start}}
