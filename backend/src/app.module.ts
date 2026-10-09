@@ -9,6 +9,8 @@ import { OfflineRequestsModule } from './offline-requests/offline-requests.modul
 import { MockExamsModule } from './mock-exams/mock-exams.module';
 import { GeneralContentModule } from './general-content/general-content.module';
 import { CounselingModule } from './counseling/counseling.module';
+import { PublicContentModule } from './public-content/public-content.module';
+import { FinanceModule } from './finance/finance.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { CounselingModule } from './counseling/counseling.module';
     MockExamsModule,
     GeneralContentModule,
     CounselingModule,
+    PublicContentModule,
+    FinanceModule,
   ],
 })
 export class AppModule {}
