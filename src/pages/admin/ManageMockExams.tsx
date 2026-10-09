@@ -342,7 +342,11 @@ export const ManageMockExams: React.FC = () => {
             <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="مثال: آزمون آزمایشی مهر" style={input} required />
           </Field>
           <Field label="مقطع *">
-            <input value={form.level} onChange={(e) => setForm({ ...form, level: e.target.value })} placeholder="مثال: ارشد" style={input} required />
+            <select value={form.level} onChange={(e) => setForm({ ...form, level: e.target.value })} style={input} required>
+              <option value="">انتخاب مقطع</option>
+              <option value="ارشد">ارشد</option>
+              <option value="دکتری">دکتری</option>
+            </select>
           </Field>
           <Field label="رشته *">
             <input value={form.field} onChange={(e) => setForm({ ...form, field: e.target.value })} placeholder="مثال: پژوهش هنر" style={input} required />
