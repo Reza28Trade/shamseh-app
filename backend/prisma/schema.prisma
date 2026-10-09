@@ -203,6 +203,7 @@ model Course {
   notifications Notification[]
   offlineRequests OfflineRequest[]
   payments Payment[]
+  mockExams MockExamCourse[]
 }
 
 model Enrollment {
