@@ -78,7 +78,7 @@ export const ManageFinance: React.FC = () => {
 
   const openPayment = (student: FinanceStudent) => {
     setSelectedStudent(student);
-    setPaymentAmount(student.balance > 0 ? String(Math.round(student.balance)) : '');
+    setPaymentAmount('');
     setPaymentMethod('BANK_TRANSFER');
     setPaymentReference('');
     setPaymentNote('');
