@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { AlertCircle, CheckCircle2, CreditCard, Filter, RefreshCw, Search, Wallet } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 
-type FinanceStatus = 'PAID' | 'PARTIAL' | 'UNPAID' | 'INCOMPLETE';
+type FinanceStatus = 'PAID' | 'PARTIAL' | 'UNPAID' | 'INCOMPLETE' | 'NO_COURSES';
 type FinanceStudent = {
   id: string; fullName: string; nationalId: string; phone: string | null;
   courseCount: number; courseTitles: string[]; tuitionTotal: number; paidTotal: number;
@@ -16,7 +16,7 @@ type FinanceResult = {
 type CourseOption = { id: string; title: string };
 
 const statusLabels: Record<FinanceStatus, string> = {
-  PAID: 'تسویه‌شده', PARTIAL: 'پرداخت ناقص', UNPAID: 'بدهکار', INCOMPLETE: 'شهریه ناقص',
+  PAID: 'تسویه‌شده', PARTIAL: 'پرداخت ناقص', UNPAID: 'بدهکار', INCOMPLETE: 'شهریه ناقص', NO_COURSES: 'بدون دوره',
 };
 const methodLabels: Record<string, string> = { CASH: 'نقدی', BANK_TRANSFER: 'کارت‌به‌کارت / واریز', CARD: 'کارت‌خوان', OTHER: 'سایر' };
 const money = (value: number) => new Intl.NumberFormat('fa-IR').format(Math.round(value || 0)) + ' تومان';
@@ -140,7 +140,7 @@ export const ManageFinance: React.FC = () => {
       <section style={{ padding: 16, background: colors.bg, border: `1px solid ${colors.border}`, borderRadius: 16, display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
         <div style={{ position: 'relative', flex: '1 1 220px' }}><Search size={15} color={colors.muted} style={{ position: 'absolute', right: 11, top: 13 }} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="جست‌وجو بر اساس نام، کد ملی یا موبایل..." style={{ ...inputStyle, paddingRight: 34 }} /></div>
         <select aria-label="فیلتر وضعیت مالی" value={status} onChange={(event) => setStatus(event.target.value)} style={inputStyle}>
-          <option value="ALL">همه وضعیت‌های مالی</option><option value="UNPAID">بدهکار</option><option value="PARTIAL">پرداخت ناقص</option><option value="PAID">تسویه‌شده</option><option value="INCOMPLETE">شهریه ناقص</option>
+          <option value="ALL">همه وضعیت‌های مالی</option><option value="UNPAID">بدهکار</option><option value="PARTIAL">پرداخت ناقص</option><option value="PAID">تسویه‌شده</option><option value="INCOMPLETE">شهریه ناقص</option><option value="NO_COURSES">بدون دوره</option>
         </select>
         <select aria-label="فیلتر دوره" value={courseId} onChange={(event) => setCourseId(event.target.value)} style={inputStyle}>
           <option value="ALL">همه دوره‌ها</option>{courses.map((course) => <option key={course.id} value={course.id}>{course.title}</option>)}
@@ -175,7 +175,7 @@ export const ManageFinance: React.FC = () => {
                 <div style={{ color: colors.muted, fontSize: 11, lineHeight: 1.9, marginTop: 4 }}>{student.courseTitles.length ? student.courseTitles.join('، ') : 'دوره‌ای ثبت نشده'}</div>
                 {student.unpricedCourses > 0 && <div style={{ color: '#f59e0b', fontSize: 11, marginTop: 5 }}><AlertCircle size={13} style={{ verticalAlign: 'middle', marginLeft: 4 }} />شهریه {student.unpricedCourses} دوره هنوز مشخص نشده است.</div>}
               </div>
-              <span style={{ padding: '6px 10px', borderRadius: 999, background: student.status === 'PAID' ? 'rgba(16,185,129,.12)' : student.status === 'INCOMPLETE' ? 'rgba(245,158,11,.12)' : student.status === 'PARTIAL' ? 'rgba(245,158,11,.12)' : 'rgba(239,68,68,.1)', color: student.status === 'PAID' ? '#10b981' : student.status === 'INCOMPLETE' || student.status === 'PARTIAL' ? '#f59e0b' : '#ef4444', fontSize: 10, fontWeight: 900, whiteSpace: 'nowrap' }}>{statusLabels[student.status]}</span>
+              <span style={{ padding: '6px 10px', borderRadius: 999, background: student.status === 'PAID' ? 'rgba(16,185,129,.12)' : student.status === 'INCOMPLETE' || student.status === 'NO_COURSES' ? 'rgba(245,158,11,.12)' : student.status === 'PARTIAL' ? 'rgba(245,158,11,.12)' : 'rgba(239,68,68,.1)', color: student.status === 'PAID' ? '#10b981' : student.status === 'INCOMPLETE' || student.status === 'PARTIAL' || student.status === 'NO_COURSES' ? '#f59e0b' : '#ef4444', fontSize: 10, fontWeight: 900, whiteSpace: 'nowrap' }}>{statusLabels[student.status]}</span>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 145px), 1fr))', gap: 10, marginTop: 16 }}>
               <div style={{ padding: 12, background: colors.alt, borderRadius: 12 }}><div style={{ color: colors.muted, fontSize: 10, marginBottom: 6 }}>کل شهریه</div><strong style={{ fontSize: 12 }}>{money(student.tuitionTotal)}</strong></div>
