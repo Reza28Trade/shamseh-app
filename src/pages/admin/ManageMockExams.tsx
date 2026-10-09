@@ -585,6 +585,7 @@ export const ManageMockExams: React.FC = () => {
             ))}
           </div>
           )}
+        </div>
       </div>
     </div>
   );
