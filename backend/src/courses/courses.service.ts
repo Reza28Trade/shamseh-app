@@ -246,9 +246,11 @@ export class CoursesService {
     await this.ensureCourse(courseId);
     const student = await this.prisma.student.findUnique({ where: { id: studentId }, select: { id: true } });
     if (!student) throw new NotFoundException('Student not found');
+    const course = await this.prisma.course.findUnique({ where: { id: courseId }, select: { id: true, price: true } });
+    if (!course) throw new NotFoundException('Course not found');
     try {
       return await this.prisma.enrollment.create({
-        data: { courseId, studentId },
+        data: { courseId, studentId, tuitionAmount: course.price },
         select: {
           id: true,
           status: true,

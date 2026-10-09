@@ -133,7 +133,7 @@ export class StudentsService {
           ...(item.term ? { term: item.term } : {}),
           level: item.academicLevel,
         },
-        select: { id: true, title: true, academicYear: true, term: true, level: true },
+        select: { id: true, title: true, academicYear: true, term: true, level: true, price: true },
       });
       if (!course) {
         errors.push(`ردیف ${item.row}: دوره «${item.courseTitle}» با مقطع/سال/ترم مشخص‌شده پیدا نشد.`);
@@ -158,7 +158,7 @@ export class StudentsService {
           });
           updated += 1;
           if (!alreadyEnrolled) {
-            await this.prisma.enrollment.create({ data: { studentId: existing.id, courseId: course.id } });
+            await this.prisma.enrollment.create({ data: { studentId: existing.id, courseId: course.id, tuitionAmount: course.price } });
             enrolled += 1;
           }
         } else {
@@ -167,7 +167,7 @@ export class StudentsService {
             data: { username: item.nationalId, passwordHash, role: 'STUDENT', student: { create: { fullName: item.fullName, nationalId: item.nationalId, phone: item.phone, academicLevel: item.academicLevel } } },
             select: { student: { select: { id: true } } },
           });
-          await this.prisma.enrollment.create({ data: { studentId: createdUser.student!.id, courseId: course.id } });
+          await this.prisma.enrollment.create({ data: { studentId: createdUser.student!.id, courseId: course.id, tuitionAmount: course.price } });
           created += 1;
           enrolled += 1;
         }
@@ -266,12 +266,41 @@ export class StudentsService {
         });
 
         if (dto.courseIds !== undefined) {
-          await tx.enrollment.deleteMany({ where: { studentId } });
-          if (dto.courseIds.length > 0) {
-            await tx.enrollment.createMany({
-              data: dto.courseIds.map((courseId) => ({ studentId, courseId })),
-              skipDuplicates: true,
+          const desiredCourseIds = [...new Set(dto.courseIds)];
+          if (desiredCourseIds.length === 0) {
+            await tx.enrollment.updateMany({
+              where: { studentId, status: { not: 'CANCELLED' } },
+              data: { status: 'CANCELLED' },
             });
+          } else {
+            await tx.enrollment.updateMany({
+              where: { studentId, courseId: { notIn: desiredCourseIds }, status: { not: 'CANCELLED' } },
+              data: { status: 'CANCELLED' },
+            });
+            const existingEnrollments = await tx.enrollment.findMany({
+              where: { studentId, courseId: { in: desiredCourseIds } },
+              select: { courseId: true, status: true },
+            });
+            const existingCourseIds = new Set(existingEnrollments.map((enrollment) => enrollment.courseId));
+            await tx.enrollment.updateMany({
+              where: { studentId, courseId: { in: [...existingCourseIds] }, status: { not: 'ACTIVE' } },
+              data: { status: 'ACTIVE' },
+            });
+            const newCourseIds = desiredCourseIds.filter((courseId) => !existingCourseIds.has(courseId));
+            if (newCourseIds.length > 0) {
+              const coursePrices = await tx.course.findMany({
+                where: { id: { in: newCourseIds } },
+                select: { id: true, price: true },
+              });
+              await tx.enrollment.createMany({
+                data: newCourseIds.map((courseId) => ({
+                  studentId,
+                  courseId,
+                  tuitionAmount: coursePrices.find((course) => course.id === courseId)?.price ?? null,
+                })),
+                skipDuplicates: true,
+              });
+            }
           }
         }
 
@@ -312,11 +341,11 @@ export class StudentsService {
     this.requireAdmin(user);
     const student = await this.prisma.student.findUnique({ where: { id: studentId }, select: { id: true } });
     if (!student) throw new NotFoundException('Student not found');
-    const course = await this.prisma.course.findUnique({ where: { id: courseId }, select: { id: true } });
+    const course = await this.prisma.course.findUnique({ where: { id: courseId }, select: { id: true, price: true } });
     if (!course) throw new NotFoundException('Course not found');
     try {
       return await this.prisma.enrollment.create({
-        data: { studentId, courseId },
+        data: { studentId, courseId, tuitionAmount: course.price },
         include: { course: { select: { id: true, title: true, status: true } } },
       });
     } catch (error: any) {

@@ -82,6 +82,11 @@ enum MockExamStatus {
   CANCELLED
 }
 
+enum PublicContentType {
+  RULES
+  EXAM_ANALYSIS
+}
+
 enum CounselingSlotStatus {
   AVAILABLE
   BOOKED
@@ -109,6 +114,13 @@ enum PaymentPurpose {
   OTHER
 }
 
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
+  CARD
+  OTHER
+}
+
 model User {
   id String @id @default(cuid())
   username String @unique
@@ -127,6 +139,8 @@ model User {
   reviewedPayments Payment[] @relation("PaymentReviewer")
   supportMessages SupportMessage[]
   updatedContent GeneralContent[] @relation("GeneralContentUpdater")
+  publicContents PublicContent[]
+  recordedPayments Payment[] @relation("PaymentRecorder")
 }
 
 model Session {
@@ -170,6 +184,8 @@ model Course {
   description String?
   term String?
   category String?
+  startDate String?
+  schedule String?
   price Decimal? @db.Decimal(12, 2)
   coverImage String?
   coverImageStorageKey String?
@@ -187,6 +203,7 @@ model Course {
   notifications Notification[]
   offlineRequests OfflineRequest[]
   payments Payment[]
+  mockExams MockExamCourse[]
 }
 
 model Enrollment {
@@ -194,6 +211,7 @@ model Enrollment {
   studentId String
   courseId String
   status EnrollmentStatus @default(ACTIVE)
+  tuitionAmount Decimal? @db.Decimal(12, 2)
   enrolledAt DateTime @default(now())
 
   student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
@@ -329,6 +347,7 @@ model MockExam {
   title String
   level String
   field String
+  description String?
   examDate DateTime
   examUrl String?
   status MockExamStatus @default(DRAFT)
@@ -336,6 +355,7 @@ model MockExam {
   updatedAt DateTime @updatedAt
 
   participants MockExamParticipant[]
+  courses MockExamCourse[]
 
   @@index([status, examDate])
   @@index([level, field])
@@ -351,6 +371,17 @@ model MockExamParticipant {
 
   @@id([mockExamId, studentId])
   @@index([studentId])
+}
+
+model MockExamCourse {
+  mockExamId String
+  courseId String
+
+  mockExam MockExam @relation(fields: [mockExamId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@id([mockExamId, courseId])
+  @@index([courseId])
 }
 
 model PastExam {
@@ -440,6 +471,28 @@ model Book {
   @@index([isActive, displayOrder])
 }
 
+model PublicContent {
+  id String @id @default(cuid())
+  type PublicContentType
+  slug String @unique
+  title String
+  subtitle String?
+  content String @db.Text
+  examYear String?
+  examLevel String?
+  resourceUrl String?
+  published Boolean @default(false)
+  sortOrder Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  updatedById String?
+
+  updatedBy User? @relation(fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@index([type, published, sortOrder])
+  @@index([examYear, examLevel])
+}
+
 model Payment {
   id String @id @default(cuid())
   studentId String
@@ -451,6 +504,11 @@ model Payment {
   trackingCode String?
   status PaymentStatus @default(PENDING)
   rejectionReason String?
+  method PaymentMethod @default(OTHER)
+  reference String?
+  note String?
+  paidAt DateTime @default(now())
+  createdById String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   reviewedAt DateTime?
@@ -460,12 +518,15 @@ model Payment {
   course Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
   book Book? @relation(fields: [bookId], references: [id], onDelete: SetNull)
   reviewer User? @relation("PaymentReviewer", fields: [reviewedBy], references: [id], onDelete: SetNull)
+  createdBy User? @relation("PaymentRecorder", fields: [createdById], references: [id], onDelete: SetNull)
   receipts PaymentReceipt[]
 
   @@index([studentId, status])
   @@index([courseId])
   @@index([bookId])
   @@index([paymentDate])
+  @@index([studentId, paidAt])
+  @@index([createdById, createdAt])
 }
 
 model PaymentReceipt {

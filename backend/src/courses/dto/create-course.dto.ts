@@ -28,6 +28,14 @@ export class CreateCourseDto {
   category?: string;
 
   @IsOptional()
+  @IsString()
+  startDate?: string;
+
+  @IsOptional()
+  @IsString()
+  schedule?: string;
+
+  @IsOptional()
   @IsNumber()
   @Min(0)
   price?: number;
