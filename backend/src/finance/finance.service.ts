@@ -36,6 +36,7 @@ export class FinanceService {
           },
         },
         payments: {
+          where: { purpose: 'COURSE_FEE' },
           orderBy: { paidAt: 'desc' },
           select: {
             id: true, amount: true, method: true, reference: true, note: true,
