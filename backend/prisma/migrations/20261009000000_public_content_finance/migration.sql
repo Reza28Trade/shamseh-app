@@ -3,6 +3,14 @@ CREATE TYPE "PaymentMethod" AS ENUM ('CASH', 'BANK_TRANSFER', 'CARD', 'OTHER');
 
 ALTER TABLE "Enrollment" ADD COLUMN "tuitionAmount" DECIMAL(12,2);
 
+-- Snapshot the current course price for existing enrollments before future price changes.
+UPDATE "Enrollment" AS enrollment
+SET "tuitionAmount" = course."price"
+FROM "Course" AS course
+WHERE enrollment."courseId" = course."id"
+  AND enrollment."tuitionAmount" IS NULL
+  AND course."price" IS NOT NULL;
+
 ALTER TABLE "MockExam" ADD COLUMN "description" TEXT;
 
 CREATE TABLE "MockExamCourse" (
