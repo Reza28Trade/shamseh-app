@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { compareJalali, getTehranTodayJalali, jalaliMonthLength, jalaliToTehranDate, toGregorian } from '../../utils/jalali';
-import { CalendarDays, ExternalLink, Link2, Pencil, Plus, RefreshCw, Sparkles, Users } from 'lucide-react';
+import { CalendarDays, Download, ExternalLink, Link2, Pencil, Plus, RefreshCw, Sparkles, Users } from 'lucide-react';
 import '../../styles/AdminMockExams.css';
 
 type MockExamStatus = 'DRAFT' | 'SCHEDULED' | 'LINK_AVAILABLE' | 'LIVE' | 'COMPLETED' | 'CANCELLED';
@@ -44,6 +44,8 @@ export const ManageMockExams: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [participantExamId, setParticipantExamId] = useState<string | null>(null);
   const [participantGroup, setParticipantGroup] = useState<'ALL' | 'MASTER' | 'DOCTORATE'>('ALL');
+  const [levelFilter, setLevelFilter] = useState<'ALL' | 'MASTER' | 'DOCTORATE'>('ALL');
+  const [yearFilter, setYearFilter] = useState('ALL');
   const [error, setError] = useState('');
   const [calendarOpen, setCalendarOpen] = useState(false);
   const today = getTehranTodayJalali();
@@ -93,6 +95,52 @@ export const ManageMockExams: React.FC = () => {
   useEffect(() => {
     void load();
   }, []);
+
+  const getExamLevel = (level: string): 'MASTER' | 'DOCTORATE' | 'OTHER' => {
+    if (/دکتری|دکترا|دکتور|doctor/i.test(level)) return 'DOCTORATE';
+    if (/ارشد|کارشناسی ارشد|master/i.test(level)) return 'MASTER';
+    return 'OTHER';
+  };
+
+  const getJalaliYear = (date: string) => new Intl.DateTimeFormat('en-US-u-ca-persian', {
+    timeZone: 'Asia/Tehran', year: 'numeric',
+  }).format(new Date(date));
+
+  const availableYears = Array.from(new Set(exams.map(exam => getJalaliYear(exam.examDate)))).sort((a, b) => Number(b) - Number(a));
+  const filteredExams = exams.filter(exam => {
+    const levelMatches = levelFilter === 'ALL' || getExamLevel(exam.level) === levelFilter;
+    const yearMatches = yearFilter === 'ALL' || getJalaliYear(exam.examDate) === yearFilter;
+    return levelMatches && yearMatches;
+  });
+  const completedCount = exams.filter(exam => exam.status === 'COMPLETED').length;
+  const cancelledCount = exams.filter(exam => exam.status === 'CANCELLED').length;
+  const remainingCount = exams.filter(exam => !['COMPLETED', 'CANCELLED'].includes(exam.status)).length;
+
+  const exportExams = () => {
+    const headers = ['عنوان آزمون', 'مقطع', 'رشته', 'تاریخ', 'وضعیت', 'تعداد هنرجویان', 'لینک آزمون'];
+    const rows = filteredExams.map(exam => [
+      exam.title,
+      exam.level,
+      exam.field,
+      new Date(exam.examDate).toLocaleString('fa-IR', { timeZone: 'Asia/Tehran' }),
+      statusLabels[exam.status],
+      String(exam.participants.length),
+      exam.examUrl ?? '',
+    ]);
+    const csv = [headers, ...rows].map(row => row.map(value => {
+      const safe = String(value).replace(/"/g, '""');
+      return '"' + safe + '"';
+    }).join(',')).join('\r\n');
+    const blob = new Blob(['\\uFEFF', csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = 'shamseh-mock-exams.csv';
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+  };
 
   const resetForm = () => {
     setEditingId(null);
@@ -371,18 +419,46 @@ export const ManageMockExams: React.FC = () => {
         </div>
       )}
 
-      <div style={card}>
-        <div style={sectionTitle}>
-          <CalendarDays size={17} color="#ff3366" />
-          آزمون‌های تعریف‌شده ({exams.length})
+      <div className="mock-exam-dashboard">
+        <div className="mock-exam-stats">
+          <div className="mock-exam-stat"><span>کل آزمون‌ها</span><strong>{exams.length}</strong></div>
+          <div className="mock-exam-stat"><span>برگزارشده</span><strong>{completedCount}</strong></div>
+          <div className="mock-exam-stat"><span>باقی‌مانده</span><strong>{remainingCount}</strong></div>
+          <div className="mock-exam-stat"><span>لغوشده</span><strong>{cancelledCount}</strong></div>
         </div>
-        {loading ? (
-          <p style={muted}>در حال دریافت اطلاعات...</p>
-        ) : exams.length === 0 ? (
-          <p style={muted}>هنوز آزمونی تعریف نشده است.</p>
-        ) : (
-          <div style={{ display: 'grid', gap: 12 }}>
-            {exams.map((exam) => (
+        <div style={card} className="mock-exam-list-card">
+          <div className="mock-exam-list-head">
+            <div style={sectionTitle}>
+              <CalendarDays size={17} color="#ff3366" />
+              آزمون‌های ثبت‌شده ({filteredExams.length} از {exams.length})
+            </div>
+            <button type="button" onClick={exportExams} style={secondaryButton} disabled={filteredExams.length === 0}>
+              <Download size={14} /> خروجی Excel
+            </button>
+          </div>
+          <div className="mock-exam-filters">
+            <label>مقطع
+              <select value={levelFilter} onChange={e => setLevelFilter(e.target.value as typeof levelFilter)}>
+                <option value="ALL">همه مقاطع</option>
+                <option value="MASTER">ارشد</option>
+                <option value="DOCTORATE">دکتری</option>
+              </select>
+            </label>
+            <label>سال
+              <select value={yearFilter} onChange={e => setYearFilter(e.target.value)}>
+                <option value="ALL">همه سال‌ها</option>
+                {availableYears.map(year => <option key={year} value={year}>{year}</option>)}
+              </select>
+            </label>
+          </div>
+          {loading ? (
+            <p style={muted}>در حال دریافت اطلاعات...</p>
+          ) : exams.length === 0 ? (
+            <p style={muted}>هنوز آزمونی تعریف نشده است.</p>
+          ) : filteredExams.length === 0 ? (
+            <p style={muted}>با فیلترهای انتخاب‌شده آزمونی پیدا نشد.</p>
+          ) : (
+          <div className="mock-exam-scroll-list">
               <div key={exam.id} style={{
                 padding: 16,
                 borderRadius: 16,
@@ -503,7 +579,8 @@ export const ManageMockExams: React.FC = () => {
               </div>
             ))}
           </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
