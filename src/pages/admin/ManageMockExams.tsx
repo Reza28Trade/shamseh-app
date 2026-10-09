@@ -131,7 +131,7 @@ export const ManageMockExams: React.FC = () => {
       const safe = String(value).replace(/"/g, '""');
       return '"' + safe + '"';
     }).join(',')).join('\r\n');
-    const blob = new Blob(['\\uFEFF', csv], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob(['\uFEFF', csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
     anchor.href = url;
@@ -459,6 +459,7 @@ export const ManageMockExams: React.FC = () => {
             <p style={muted}>با فیلترهای انتخاب‌شده آزمونی پیدا نشد.</p>
           ) : (
           <div className="mock-exam-scroll-list">
+            {filteredExams.map((exam) => (
               <div key={exam.id} style={{
                 padding: 16,
                 borderRadius: 16,
