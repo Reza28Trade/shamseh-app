@@ -29,7 +29,7 @@ type StudentFinance = {
   balance: number;
   credit: number;
   unpricedCourses: number;
-  status: 'PAID' | 'PARTIAL' | 'UNPAID' | 'INCOMPLETE';
+  status: 'PAID' | 'PARTIAL' | 'UNPAID' | 'INCOMPLETE' | 'NO_COURSES';
   enrolledCourses: Array<{ enrollmentId: string; courseId: string; title: string; tuition: number | null; status: string }>;
   payments: Array<{ id: string; amount: number; method: string; reference: string | null; note: string | null; paidAt: string }>;
 };
@@ -679,9 +679,14 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
 
         {activeTab === 'finance' && (
           <section style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, padding: 'clamp(18px, 3vw, 30px)', borderRadius: '22px', display: 'flex', flexDirection: 'column', gap: 18 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 9, flexWrap: 'wrap' }}>
               <Wallet size={20} color="#ff3366" />
               <h2 style={{ margin: 0, fontSize: 17, fontWeight: 900 }}>وضعیت مالی من</h2>
+              {finance && <span style={{
+                padding: '5px 9px', borderRadius: 999, fontSize: 10, fontWeight: 900,
+                background: finance.status === 'PAID' ? 'rgba(16,185,129,.12)' : finance.status === 'NO_COURSES' || finance.status === 'INCOMPLETE' ? 'rgba(245,158,11,.12)' : 'rgba(239,68,68,.1)',
+                color: finance.status === 'PAID' ? '#10b981' : finance.status === 'NO_COURSES' || finance.status === 'INCOMPLETE' ? '#f59e0b' : finance.status === 'PARTIAL' ? '#f59e0b' : '#ef4444',
+              }}>{({ PAID: 'تسویه‌شده', PARTIAL: 'پرداخت ناقص', UNPAID: 'بدهکار', INCOMPLETE: 'شهریه ناقص', NO_COURSES: 'بدون دوره' })[finance.status]}</span>}
             </div>
             {financeLoading ? <div style={{ padding: 30, textAlign: 'center', color: subText }}>در حال دریافت وضعیت مالی...</div>
               : financeError ? <div style={{ padding: 14, borderRadius: 12, background: 'rgba(239,68,68,.1)', color: '#ef4444', fontSize: 12 }}>{financeError}</div>
