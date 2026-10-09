@@ -145,3 +145,56 @@
   border-color:var(--admin-border)!important;
 }
 .admin-mock-exams-page .mock-exam-scroll-list > div button svg{color:var(--admin-accent)!important}
+
+/* Explicitly override legacy inline colors: these were winning over the theme rules. */
+.admin-mock-exams-page h2,
+.admin-mock-exams-page h3,
+.admin-mock-exams-page p,
+.admin-mock-exams-page label,
+.admin-mock-exams-page strong,
+.admin-mock-exams-page span,
+.admin-mock-exams-page form > div,
+.admin-mock-exams-page .mock-exam-list-card > div,
+.admin-mock-exams-page .mock-exam-scroll-list > div > div,
+.admin-mock-exams-page .mock-exam-scroll-list > div > div > div{
+  color:var(--admin-text)!important;
+}
+.admin-mock-exams-page > div:first-child p,
+.admin-mock-exams-page .mock-exam-scroll-list > div > div[style*="marginTop"],
+.admin-mock-exams-page .mock-exam-scroll-list > div > div[style*="margin-top"]{
+  color:var(--admin-sub)!important;
+}
+.admin-mock-exams-page h2 svg,
+.admin-mock-exams-page .mock-exam-list-head svg{color:var(--admin-accent)!important}
+.admin-mock-exams-page .mock-exam-scroll-list > div strong{color:var(--admin-text)!important}
+.admin-mock-exams-page .mock-exam-scroll-list > div a{color:var(--admin-accent)!important}
+.admin-mock-exams-page button:not([type="submit"]){
+  color:var(--admin-text)!important;
+}
+.admin-mock-exams-page .mock-exam-list-head button{
+  color:var(--admin-text)!important;
+  background:var(--admin-control)!important;
+  opacity:1!important;
+}
+.admin-mock-exams-page .mock-exam-scroll-list > div{
+  display:block!important;
+  height:auto!important;
+  min-height:0!important;
+  align-content:initial!important;
+}
+.admin-mock-exams-page .mock-exam-scroll-list > div > div:first-child{
+  display:flex!important;
+  justify-content:space-between!important;
+  align-items:flex-start!important;
+  gap:16px!important;
+}
+.admin-mock-exams-page .mock-exam-scroll-list > div > div:first-child > div:first-child{
+  min-width:0;
+}
+.admin-mock-exams-page .mock-exam-scroll-list > div > div:first-child > div:last-child{
+  flex-shrink:0;
+}
+@media(max-width:760px){
+  .admin-mock-exams-page .mock-exam-scroll-list > div > div:first-child{flex-direction:column!important}
+  .admin-mock-exams-page .mock-exam-scroll-list > div > div:first-child > div:last-child{flex-direction:row!important}
+}
