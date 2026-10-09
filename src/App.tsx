@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useStore } from './store/useStore';
 import { AdminLayout } from './layouts/AdminLayout';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
@@ -30,10 +30,53 @@ export function App() {
     deleteStudent,
   } = useStore();
 
-  const [view, setView] = useState<'login' | 'admin' | 'user'>('login');
+  const [view, setView] = useState<'checking' | 'login' | 'admin' | 'user'>('checking');
   type AdminTab = 'dashboard' | 'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams' | 'counseling' | 'finance';
   const [adminTab, setAdminTab] = useState<AdminTab>('dashboard');
   const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    void (async () => {
+      try {
+        const response = await fetch('/api/auth/me', { credentials: 'include' });
+        if (!response.ok) {
+          if (active) setView('login');
+          return;
+        }
+        const data = await response.json();
+        const user: AuthUser | undefined = data.user;
+        if (!user || !active) {
+          if (active) setView('login');
+          return;
+        }
+        if (user.role === 'SUPER_ADMIN' || user.role === 'STAFF') {
+          const admin: Admin = {
+            id: user.id,
+            fullName: user.username,
+            username: user.username,
+            password: '',
+            role: user.role === 'SUPER_ADMIN' ? 'super_admin' : 'staff',
+          };
+          setCurrentAdmin(admin);
+          setView('admin');
+        } else if (user.role === 'STUDENT' && user.studentId && user.student) {
+          setCurrentStudent({
+            id: user.studentId,
+            fullName: user.student.fullName,
+            nationalId: user.student.nationalId,
+            enrolledCourseIds: [],
+          });
+          setView('user');
+        } else {
+          setView('login');
+        }
+      } catch {
+        if (active) setView('login');
+      }
+    })();
+    return () => { active = false; };
+  }, []);
 
   const handleStudentLogin = (user: AuthUser) => {
     if (!user.studentId || !user.student) return;
@@ -55,6 +98,10 @@ export function App() {
   };
 
   const adminName = currentAdmin?.fullName || 'مدیر کل سیستم';
+
+  if (view === 'checking') {
+    return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: '#11181b', color: '#eef5f6', fontFamily: 'system-ui, sans-serif' }}>در حال بررسی نشست کاربری...</div>;
+  }
 
   if (view === 'admin') {
     return (
