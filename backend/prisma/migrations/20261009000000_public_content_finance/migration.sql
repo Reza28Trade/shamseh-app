@@ -18,6 +18,8 @@ ALTER TABLE "Payment"
   ADD COLUMN "paidAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   ADD COLUMN "createdById" TEXT;
 
+UPDATE "Payment" SET "paidAt" = "paymentDate";
+
 CREATE TABLE "PublicContent" (
     "id" TEXT NOT NULL,
     "type" "PublicContentType" NOT NULL,
