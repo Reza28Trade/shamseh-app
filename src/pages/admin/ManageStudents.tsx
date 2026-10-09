@@ -69,7 +69,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
       const [data, courseData] = await Promise.all([studentsResponse.json(), coursesResponse.json()]);
       setApiCourses(courseData.map((course: any) => ({
         id: course.id, title: course.title, professor: course.professor ?? '', level: course.level ?? '',
-        schedule: '', startDate: '', description: course.description ?? '', term: course.term, price: course.price ? Number(course.price) : 0,
+        schedule: course.schedule ?? '', startDate: course.startDate ?? '', description: course.description ?? '', term: course.term, price: course.price ? Number(course.price) : 0,
         category: course.category, coverImage: course.coverImage, academicYear: course.academicYear, classDays: course.classDays ?? [],
         classStartTime: course.classStartTime, classEndTime: course.classEndTime,
       })));
