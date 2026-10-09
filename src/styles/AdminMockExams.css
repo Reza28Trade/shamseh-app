@@ -198,3 +198,13 @@
   .admin-mock-exams-page .mock-exam-scroll-list > div > div:first-child{flex-direction:column!important}
   .admin-mock-exams-page .mock-exam-scroll-list > div > div:first-child > div:last-child{flex-direction:row!important}
 }
+
+/* Fix the inline-styled section heading whose white color persisted in light mode. */
+.admin-mock-exams-page .mock-exam-list-head > div,
+.admin-mock-exams-page .mock-exam-list-head > div *{
+  color:var(--admin-text)!important;
+  opacity:1!important;
+}
+.admin-mock-exams-page .mock-exam-list-head > div svg{
+  color:var(--admin-accent)!important;
+}
