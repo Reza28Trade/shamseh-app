@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import type { Admin } from '../types';
 import { useStore } from '../store/useStore';
 import '../styles/AdminLegacy.css';
-import { LayoutDashboard, BookOpen, Users, MessageSquare, ShieldAlert, FileText, LogOut, Sun, Moon, Menu, X, CheckSquare, ClipboardList, Bell, CalendarClock } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Users, MessageSquare, ShieldAlert, FileText, LogOut, Sun, Moon, Menu, X, CheckSquare, ClipboardList, Bell, CalendarClock, Wallet } from 'lucide-react';
 
 interface AdminLayoutProps { admin?: Admin; onLogout:()=>void; activeTab:any; setActiveTab:any; children:React.ReactNode; }
 
@@ -11,7 +11,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({admin,onLogout,activeTa
   const menuItems=[
     {id:'dashboard',label:'داشبورد مدیریت',icon:LayoutDashboard},{id:'courses',label:'مدیریت دوره‌ها',icon:BookOpen},{id:'students',label:'مدیریت هنرجویان',icon:Users},
     {id:'offlineRequests',label:'درخواست‌های آفلاین',icon:CheckSquare},{id:'mockExams',label:'آزمون‌های آزمایشی',icon:ClipboardList},{id:'counseling',label:'مدیریت مشاوره',icon:CalendarClock},
-    {id:'messages',label:'پیام‌ها و پرسش‌ها',icon:MessageSquare},{id:'notifications',label:'ارسال اطلاعیه',icon:Bell},{id:'rules',label:'مدیریت قوانین',icon:FileText},{id:'logs',label:'گزارش‌های سیستمی',icon:ShieldAlert},
+    {id:'messages',label:'پیام‌ها و پرسش‌ها',icon:MessageSquare},{id:'notifications',label:'ارسال اطلاعیه',icon:Bell},{id:'rules',label:'قوانین و تحلیل کنکور',icon:FileText},{id:'finance',label:'وضعیت مالی هنرجویان',icon:Wallet},{id:'logs',label:'گزارش‌های سیستمی',icon:ShieldAlert},
   ];
   const vars:any={ '--admin-bg':isDark?'#11181b':'#f2f5f3','--admin-card':isDark?'#182125':'#ffffff','--admin-inner':isDark?'#1e2a30':'#f6f9f7','--admin-text':isDark?'#eef5f6':'#202a2a','--admin-sub':isDark?'#a9b9bd':'#647270','--admin-border':isDark?'#304047':'#dce6e2','--admin-accent':isDark?'#3b8faa':'#3f8f8a','--admin-accent-soft':isDark?'rgba(59,143,170,.16)':'#e5f2ef','--admin-brand-soft':isDark?'rgba(59,143,170,.13)':'#edf7f4','--admin-brand-border':isDark?'rgba(59,143,170,.34)':'#bcded8','--admin-control':isDark?'#1a252a':'#fbfdfc','--admin-shadow':isDark?'0 14px 32px rgba(0,0,0,.22)':'0 10px 28px rgba(35,55,50,.07)'};
   return <div className="admin-shell" style={vars}>
