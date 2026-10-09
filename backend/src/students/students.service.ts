@@ -266,12 +266,37 @@ export class StudentsService {
         });
 
         if (dto.courseIds !== undefined) {
-          await tx.enrollment.deleteMany({ where: { studentId } });
-          if (dto.courseIds.length > 0) {
-            await tx.enrollment.createMany({
-              data: dto.courseIds.map((courseId) => ({ studentId, courseId })),
-              skipDuplicates: true,
+          const desiredCourseIds = [...new Set(dto.courseIds)];
+          if (desiredCourseIds.length === 0) {
+            await tx.enrollment.deleteMany({ where: { studentId } });
+          } else {
+            await tx.enrollment.deleteMany({
+              where: { studentId, courseId: { notIn: desiredCourseIds } },
             });
+            const existingEnrollments = await tx.enrollment.findMany({
+              where: { studentId, courseId: { in: desiredCourseIds } },
+              select: { courseId: true, status: true },
+            });
+            const existingCourseIds = new Set(existingEnrollments.map((enrollment) => enrollment.courseId));
+            await tx.enrollment.updateMany({
+              where: { studentId, courseId: { in: [...existingCourseIds] }, status: { not: 'ACTIVE' } },
+              data: { status: 'ACTIVE' },
+            });
+            const newCourseIds = desiredCourseIds.filter((courseId) => !existingCourseIds.has(courseId));
+            if (newCourseIds.length > 0) {
+              const coursePrices = await tx.course.findMany({
+                where: { id: { in: newCourseIds } },
+                select: { id: true, price: true },
+              });
+              await tx.enrollment.createMany({
+                data: newCourseIds.map((courseId) => ({
+                  studentId,
+                  courseId,
+                  tuitionAmount: coursePrices.find((course) => course.id === courseId)?.price ?? null,
+                })),
+                skipDuplicates: true,
+              });
+            }
           }
         }
 
