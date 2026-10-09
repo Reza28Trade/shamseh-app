@@ -12,6 +12,8 @@ type Course = {
   description: string | null;
   term: string | null;
   category: string | null;
+  startDate: string | null;
+  schedule: string | null;
   price: string | number | null;
   coverImage: string | null;
   status: CourseStatus;
@@ -40,7 +42,7 @@ type CourseFile = {
 
 const emptyCourse = {
   title: '', professor: '', level: '', description: '', term: '', category: '',
-  price: '', coverImage: '', status: 'DRAFT' as CourseStatus,
+  startDate: '', schedule: '', price: '', coverImage: '', status: 'DRAFT' as CourseStatus,
 };
 
 const emptySession = {
@@ -187,6 +189,7 @@ export const ManageCourses: React.FC = () => {
     setForm({
       title: course.title, professor: course.professor, level: course.level || '',
       description: course.description || '', term: course.term || '', category: course.category || '',
+      startDate: course.startDate || '', schedule: course.schedule || '',
       price: course.price == null ? '' : String(course.price), coverImage: course.coverImage || '',
       status: course.status,
     });
@@ -378,6 +381,8 @@ export const ManageCourses: React.FC = () => {
           <input placeholder="مقطع تحصیلی" value={form.level} onChange={e => setForm({ ...form, level: e.target.value })} style={input} />
           <input placeholder="ترم" value={form.term} onChange={e => setForm({ ...form, term: e.target.value })} style={input} />
           <input placeholder="دسته‌بندی" value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} style={input} />
+          <input placeholder="تاریخ شروع (مثلاً ۱۴۰۵/۰۷/۱۰)" value={form.startDate} onChange={e => setForm({ ...form, startDate: e.target.value })} style={input} />
+          <input placeholder="زمان‌بندی کلاس (مثلاً پنجشنبه‌ها ۱۵ تا ۱۹)" value={form.schedule} onChange={e => setForm({ ...form, schedule: e.target.value })} style={input} />
           <input type="number" min="0" placeholder="قیمت (تومان)" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} style={input} />
           <input placeholder="آدرس تصویر جلد" value={form.coverImage} onChange={e => setForm({ ...form, coverImage: e.target.value })} style={input} />
           <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value as CourseStatus })} style={input}>
