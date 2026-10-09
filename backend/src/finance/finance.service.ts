@@ -4,7 +4,7 @@ import { PrismaService } from '../database/prisma.service';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 
-type FinanceStatus = 'PAID' | 'PARTIAL' | 'UNPAID' | 'INCOMPLETE';
+type FinanceStatus = 'PAID' | 'PARTIAL' | 'UNPAID' | 'INCOMPLETE' | 'NO_COURSES';
 
 @Injectable()
 export class FinanceService {
@@ -65,7 +65,9 @@ export class FinanceService {
 
     const paidTotal = student.payments.reduce((total, payment) => total + Number(payment.amount), 0);
     const balance = Math.max(0, tuitionTotal - paidTotal);
-    const status: FinanceStatus = unpricedCourses > 0
+    const status: FinanceStatus = enrolledCourses.length === 0
+      ? 'NO_COURSES'
+      : unpricedCourses > 0
       ? 'INCOMPLETE'
       : balance <= 0
         ? 'PAID'
@@ -140,6 +142,7 @@ export class FinanceService {
         partialCount: rows.filter((row) => row.status === 'PARTIAL').length,
         paidCount: rows.filter((row) => row.status === 'PAID').length,
         incompleteCount: rows.filter((row) => row.status === 'INCOMPLETE').length,
+        noCourseCount: rows.filter((row) => row.status === 'NO_COURSES').length,
       },
       students: rows,
     };
