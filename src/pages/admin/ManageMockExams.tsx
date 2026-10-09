@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { compareJalali, getTehranTodayJalali, jalaliMonthLength, jalaliToTehranDate, toGregorian } from '../../utils/jalali';
 import { CalendarDays, ExternalLink, Link2, Pencil, Plus, RefreshCw, Sparkles, Users } from 'lucide-react';
+import '../../styles/AdminMockExams.css';
 
 type MockExamStatus = 'DRAFT' | 'SCHEDULED' | 'LINK_AVAILABLE' | 'LIVE' | 'COMPLETED' | 'CANCELLED';
 
