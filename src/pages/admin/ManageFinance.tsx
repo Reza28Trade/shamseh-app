@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AlertCircle, CheckCircle2, CreditCard, Filter, RefreshCw, Search, Wallet } from 'lucide-react';
+import { AlertCircle, CreditCard, Filter, RefreshCw, Search, Wallet } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 
 type FinanceStatus = 'PAID' | 'PARTIAL' | 'UNPAID' | 'INCOMPLETE' | 'NO_COURSES';
