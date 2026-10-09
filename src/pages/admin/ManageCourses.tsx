@@ -12,6 +12,8 @@ type Course = {
   description: string | null;
   term: string | null;
   category: string | null;
+  startDate: string | null;
+  schedule: string | null;
   price: string | number | null;
   coverImage: string | null;
   status: CourseStatus;
@@ -40,7 +42,7 @@ type CourseFile = {
 
 const emptyCourse = {
   title: '', professor: '', level: '', description: '', term: '', category: '',
-  price: '', coverImage: '', status: 'DRAFT' as CourseStatus,
+  startDate: '', schedule: '', price: '', coverImage: '', status: 'DRAFT' as CourseStatus,
 };
 
 const emptySession = {
@@ -65,6 +67,9 @@ const button = (background: string, color = '#fff'): React.CSSProperties => ({
 
 export const ManageCourses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
+  const [courseSearch, setCourseSearch] = useState('');
+  const [courseStatusFilter, setCourseStatusFilter] = useState<'ALL' | CourseStatus>('ALL');
+  const [courseLevelFilter, setCourseLevelFilter] = useState('ALL');
   const [form, setForm] = useState(emptyCourse);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -74,6 +79,15 @@ export const ManageCourses: React.FC = () => {
   const [expandedCourseId, setExpandedCourseId] = useState<string | null>(null);
   const [sessions, setSessions] = useState<Record<string, Session[]>>({});
   const [courseFiles, setCourseFiles] = useState<Record<string, CourseFile[]>>({});
+
+  const availableLevels = Array.from(new Set(courses.map(course => course.level).filter((level): level is string => Boolean(level))));
+  const filteredCourses = courses.filter(course => {
+    const query = courseSearch.trim().toLocaleLowerCase();
+    const matchesQuery = !query || [course.title, course.professor, course.category || '', course.description || ''].some(value => value.toLocaleLowerCase().includes(query));
+    return matchesQuery
+      && (courseStatusFilter === 'ALL' || course.status === courseStatusFilter)
+      && (courseLevelFilter === 'ALL' || course.level === courseLevelFilter);
+  });
   const [contentLoading, setContentLoading] = useState<Record<string, boolean>>({});
   const [sessionForm, setSessionForm] = useState(emptySession);
   const [showSessionForm, setShowSessionForm] = useState(false);
@@ -175,6 +189,7 @@ export const ManageCourses: React.FC = () => {
     setForm({
       title: course.title, professor: course.professor, level: course.level || '',
       description: course.description || '', term: course.term || '', category: course.category || '',
+      startDate: course.startDate || '', schedule: course.schedule || '',
       price: course.price == null ? '' : String(course.price), coverImage: course.coverImage || '',
       status: course.status,
     });
@@ -366,6 +381,8 @@ export const ManageCourses: React.FC = () => {
           <input placeholder="مقطع تحصیلی" value={form.level} onChange={e => setForm({ ...form, level: e.target.value })} style={input} />
           <input placeholder="ترم" value={form.term} onChange={e => setForm({ ...form, term: e.target.value })} style={input} />
           <input placeholder="دسته‌بندی" value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} style={input} />
+          <input placeholder="تاریخ شروع (مثلاً ۱۴۰۵/۰۷/۱۰)" value={form.startDate} onChange={e => setForm({ ...form, startDate: e.target.value })} style={input} />
+          <input placeholder="زمان‌بندی کلاس (مثلاً پنجشنبه‌ها ۱۵ تا ۱۹)" value={form.schedule} onChange={e => setForm({ ...form, schedule: e.target.value })} style={input} />
           <input type="number" min="0" placeholder="قیمت (تومان)" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} style={input} />
           <input placeholder="آدرس تصویر جلد" value={form.coverImage} onChange={e => setForm({ ...form, coverImage: e.target.value })} style={input} />
           <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value as CourseStatus })} style={input}>
@@ -380,11 +397,21 @@ export const ManageCourses: React.FC = () => {
       </form>
 
       <div style={{ background: 'rgba(14,14,17,.75)', border: '1px solid rgba(255,255,255,.08)', padding: 24, borderRadius: 24 }}>
-        <h3 style={{ color: '#fff', fontSize: 15, margin: '0 0 16px' }}>دوره‌های ثبت‌شده ({courses.length})</h3>
+        <h3 style={{ color: '#fff', fontSize: 15, margin: '0 0 16px' }}>دوره‌ها ({filteredCourses.length} از {courses.length})</h3>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10, marginBottom: 16 }}>
+          <input value={courseSearch} onChange={event => setCourseSearch(event.target.value)} placeholder="جست‌وجوی عنوان، استاد یا موضوع..." style={input} />
+          <select value={courseStatusFilter} onChange={event => setCourseStatusFilter(event.target.value as 'ALL' | CourseStatus)} style={input}>
+            <option value="ALL">همه وضعیت‌ها</option><option value="ACTIVE">فعال</option><option value="DRAFT">پیش‌نویس</option><option value="ARCHIVED">بایگانی</option>
+          </select>
+          <select value={courseLevelFilter} onChange={event => setCourseLevelFilter(event.target.value)} style={input}>
+            <option value="ALL">همه مقاطع</option>{availableLevels.map(level => <option key={level} value={level}>{level}</option>)}
+          </select>
+          <button type="button" onClick={() => { setCourseSearch(''); setCourseStatusFilter('ALL'); setCourseLevelFilter('ALL'); }} style={button('rgba(255,255,255,.06)')}>پاک‌کردن فیلترها</button>
+        </div>
         {loading ? <p style={{ color: '#94a3b8', fontSize: 12 }}>در حال دریافت...</p> :
-          courses.length === 0 ? <p style={{ color: '#666', fontSize: 12, textAlign: 'center', padding: 20 }}>هنوز دوره‌ای ثبت نشده است.</p> :
+          filteredCourses.length === 0 ? <p style={{ color: '#666', fontSize: 12, textAlign: 'center', padding: 20 }}>{courses.length === 0 ? 'هنوز دوره‌ای ثبت نشده است.' : 'دوره‌ای با این فیلترها پیدا نشد.'}</p> :
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {courses.map(course => {
+            {filteredCourses.map(course => {
               const expanded = expandedCourseId === course.id;
               const courseSessions = sessions[course.id] || [];
               const files = courseFiles[course.id] || [];

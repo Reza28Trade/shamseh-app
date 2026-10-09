@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { Student, Admin } from '../../types';
-import { User, Shield, Lock, ArrowRight, Send, Globe, Camera, Play } from 'lucide-react';
+import { User, Shield, Lock, Send, Globe, Camera, Play } from 'lucide-react';
+import { CourseCatalogPage, RulesPage, ExamAnalysisPage } from '../public/PublicPages';
 
 interface AuthUser {
   id: string;
@@ -15,7 +16,6 @@ interface LoginProps {
   admins: Admin[];
   onLoginSuccess: (user: AuthUser) => void;
   onAdminLoginSuccess: (user: AuthUser) => void;
-  rulesText?: string;
 }
 
 export const Login: React.FC<LoginProps> = ({
@@ -23,7 +23,6 @@ export const Login: React.FC<LoginProps> = ({
   admins,
   onLoginSuccess,
   onAdminLoginSuccess,
-  rulesText = '',
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [viewState, setViewState] = useState<'welcome' | 'studentLogin' | 'adminLogin' | 'courses' | 'rules' | 'analysis'>('welcome');
@@ -88,6 +87,10 @@ export const Login: React.FC<LoginProps> = ({
       }
     })();
   };
+
+  if (viewState === 'courses') return <CourseCatalogPage onBack={() => setViewState('welcome')} />;
+  if (viewState === 'rules') return <RulesPage onBack={() => setViewState('welcome')} />;
+  if (viewState === 'analysis') return <ExamAnalysisPage onBack={() => setViewState('welcome')} />;
 
   return (
     <div style={{
@@ -319,48 +322,6 @@ export const Login: React.FC<LoginProps> = ({
               ورود به مدیریت سیستم
             </button>
           </form>
-        )}
-
-        {viewState === 'courses' && (
-          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '400px', margin: 'auto', textAlign: 'right' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-              <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: '#18181b' }}>معرفی دوره‌ها</h3>
-              <button type="button" onClick={() => setViewState('welcome')} style={{ background: 'none', border: 'none', color: '#6D001A', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <ArrowRight size={14} /> بازگشت
-              </button>
-            </div>
-            <p style={{ fontSize: '12px', color: '#52525b', lineHeight: 1.8, margin: 0 }}>
-              دوره‌های تخصصی آمادگی آزمون ارشد و دکتری هنر، پژوهش هنر و معماری با حضور اساتید برجسته، جزوات انحصاری و کلاس‌های آنلاین ادوبی کانکت.
-            </p>
-          </div>
-        )}
-
-        {viewState === 'rules' && (
-          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '400px', margin: 'auto', textAlign: 'right' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-              <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: '#18181b' }}>قوانین و مقررات آموزشی</h3>
-              <button type="button" onClick={() => setViewState('welcome')} style={{ background: 'none', border: 'none', color: '#6D001A', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <ArrowRight size={14} /> بازگشت
-              </button>
-            </div>
-            <p style={{ fontSize: '12px', color: '#52525b', lineHeight: 1.8, margin: 0, whiteSpace: 'pre-line' }}>
-              {rulesText}
-            </p>
-          </div>
-        )}
-
-        {viewState === 'analysis' && (
-          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '400px', margin: 'auto', textAlign: 'right' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-              <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: '#18181b' }}>آنالیز کنکور سال قبل</h3>
-              <button type="button" onClick={() => setViewState('welcome')} style={{ background: 'none', border: 'none', color: '#6D001A', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <ArrowRight size={14} /> بازگشت
-              </button>
-            </div>
-            <p style={{ fontSize: '12px', color: '#52525b', lineHeight: 1.8, margin: 0 }}>
-              بررسی آماری و تخصصی سوالات آزمون ارشد و دکتری هنر سال گذشته، تعیین ضریب دشواری مباحث و ارائه کلید طلایی پیشنهادی اساتید شمسه.
-            </p>
-          </div>
         )}
 
         {/* شبکه‌های اجتماعی و کپی‌رایت */}

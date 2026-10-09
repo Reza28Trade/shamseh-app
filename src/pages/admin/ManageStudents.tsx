@@ -20,11 +20,24 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
   const [nationalId, setNationalId] = useState('');
   const [phone, setPhone] = useState('');
   const [apiStudents, setApiStudents] = useState<Student[]>([]);
+  const [studentSearch, setStudentSearch] = useState('');
+  const [studentCourseFilter, setStudentCourseFilter] = useState('ALL');
+  const [studentEnrollmentFilter, setStudentEnrollmentFilter] = useState<'ALL' | 'ENROLLED' | 'NONE'>('ALL');
   const [apiCourses, setApiCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
   const [editingStudentId, setEditingStudentId] = useState<string | null>(null);
+
+  const filteredStudents = apiStudents.filter((student) => {
+    const query = studentSearch.trim().toLocaleLowerCase();
+    const matchesQuery = !query || student.fullName.toLocaleLowerCase().includes(query) || student.nationalId.includes(query);
+    const matchesCourse = studentCourseFilter === 'ALL' || student.enrolledCourseIds.includes(studentCourseFilter);
+    const matchesEnrollment = studentEnrollmentFilter === 'ALL'
+      || (studentEnrollmentFilter === 'ENROLLED' && student.enrolledCourseIds.length > 0)
+      || (studentEnrollmentFilter === 'NONE' && student.enrolledCourseIds.length === 0);
+    return matchesQuery && matchesCourse && matchesEnrollment;
+  });
 
   const handleCheckboxChange = (courseId: string) => {
     if (selectedCourses.includes(courseId)) {
@@ -247,13 +260,23 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
 
       {/* لیست دانشجویان */}
       <div style={{ backgroundColor: 'rgba(14, 14, 17, 0.75)', border: '1px solid rgba(255, 255, 255, 0.08)', backdropFilter: 'blur(16px)', padding: '24px 32px', borderRadius: '24px' }}>
-        <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#fff', margin: '0 0 16px 0' }}>هنرجویان ثبت‌شده ({apiStudents.length})</h3>
+        <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#fff', margin: '0 0 16px 0' }}>هنرجویان ({filteredStudents.length} از {apiStudents.length})</h3>
+         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10, marginBottom: 16 }}>
+           <input value={studentSearch} onChange={(event) => setStudentSearch(event.target.value)} placeholder="جست‌وجوی نام یا کد ملی..." style={{ width: '100%', boxSizing: 'border-box', backgroundColor: 'rgba(20,20,25,.8)', border: '1px solid rgba(255,255,255,.1)', color: '#fff', padding: '11px 12px', borderRadius: 10, fontSize: 12 }} />
+           <select value={studentCourseFilter} onChange={(event) => setStudentCourseFilter(event.target.value)} style={{ width: '100%', boxSizing: 'border-box', backgroundColor: '#0e0e11', border: '1px solid rgba(255,255,255,.1)', color: '#fff', padding: '11px 12px', borderRadius: 10, fontSize: 12 }}>
+             <option value="ALL">همه دوره‌ها</option>{apiCourses.map((course) => <option key={course.id} value={course.id}>{course.title}</option>)}
+           </select>
+           <select value={studentEnrollmentFilter} onChange={(event) => setStudentEnrollmentFilter(event.target.value as 'ALL' | 'ENROLLED' | 'NONE')} style={{ width: '100%', boxSizing: 'border-box', backgroundColor: '#0e0e11', border: '1px solid rgba(255,255,255,.1)', color: '#fff', padding: '11px 12px', borderRadius: 10, fontSize: 12 }}>
+             <option value="ALL">همه وضعیت‌های ثبت‌نام</option><option value="ENROLLED">دارای دوره</option><option value="NONE">بدون دوره</option>
+           </select>
+           <button type="button" onClick={() => { setStudentSearch(''); setStudentCourseFilter('ALL'); setStudentEnrollmentFilter('ALL'); }} style={{ padding: '10px 12px', background: 'rgba(255,255,255,.06)', color: '#fff', border: '1px solid rgba(255,255,255,.1)', borderRadius: 10, fontSize: 11, cursor: 'pointer' }}>پاک‌کردن فیلترها</button>
+         </div>
         {error && <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#f87171', padding: '10px 12px', borderRadius: '10px', fontSize: '11px', marginBottom: '14px' }}>{error}</div>}
         {loading ? (
           <p style={{ color: '#94a3b8', fontSize: '12px', textAlign: 'center', padding: '20px 0' }}>در حال دریافت فهرست هنرجویان...</p>
-        ) : apiStudents.length > 0 ? (
+        ) : filteredStudents.length > 0 ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {apiStudents.map(st => (
+            {filteredStudents.map(st => (
               <div key={st.id} style={{ backgroundColor: 'rgba(20, 20, 25, 0.9)', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '14px', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
                   <h4 style={{ fontSize: '13px', fontWeight: 800, color: '#fff', margin: '0 0 4px 0' }}>{st.fullName}</h4>
@@ -271,7 +294,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
             ))}
           </div>
         ) : (
-          <p style={{ color: '#666', fontSize: '12px', textAlign: 'center', padding: '20px 0' }}>هنوز هیچ دانشجویی ثبت نشده است.</p>
+          <p style={{ color: '#666', fontSize: '12px', textAlign: 'center', padding: '20px 0' }}>هنرجویی با این فیلترها پیدا نشد.</p>
         )}
       </div>
 

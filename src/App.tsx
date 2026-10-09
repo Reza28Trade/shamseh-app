@@ -8,7 +8,8 @@ import { ManageMessages } from './pages/admin/ManageMessages';
 import { ManageOfflineRequests } from './pages/admin/ManageOfflineRequests';
 import { ManageMockExams } from './pages/admin/ManageMockExams';
 import { ManageNotifications } from './pages/admin/ManageNotifications';
-import { ManageRules } from './components/ManageRules';
+import { ManagePublicContent } from './pages/admin/ManagePublicContent';
+import { ManageFinance } from './pages/admin/ManageFinance';
 import { Login } from './pages/user/Login';
 import { UserDashboard } from './pages/user/UserDashboard';
 import type { Student, Admin } from './types';
@@ -22,14 +23,13 @@ export function App() {
     setCurrentAdmin,
     courses,
     students,
-    rulesText,
     addStudent,
     updateStudent,
     deleteStudent,
   } = useStore();
 
   const [view, setView] = useState<'login' | 'admin' | 'user'>('login');
-  const [adminTab, setAdminTab] = useState<'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams'>('courses');
+  const [adminTab, setAdminTab] = useState<'dashboard' | 'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams' | 'finance'>('courses');
   const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
 
   const handleStudentLogin = (user: AuthUser) => {
@@ -82,7 +82,9 @@ export function App() {
         ) : adminTab === 'notifications' ? (
           <ManageNotifications />
         ) : adminTab === 'rules' ? (
-          <ManageRules />
+          <ManagePublicContent />
+        ) : adminTab === 'finance' ? (
+          <ManageFinance />
         ) : (
           <div style={{ backgroundColor: '#0e0e11', padding: '32px', borderRadius: '20px', border: '1px solid #222228' }}>
             <h2 style={{ fontSize: '16px', fontWeight: 800, color: '#fff', marginBottom: '16px' }}>مدیریت سطوح دسترسی ادمین‌ها</h2>
@@ -109,7 +111,6 @@ export function App() {
       admins={admins}
       onLoginSuccess={handleStudentLogin}
       onAdminLoginSuccess={handleAdminLoginSuccess}
-      rulesText={rulesText}
     />
   );
 }

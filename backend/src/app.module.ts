@@ -7,6 +7,8 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { SupportModule } from './support/support.module';
 import { OfflineRequestsModule } from './offline-requests/offline-requests.module';
 import { MockExamsModule } from './mock-exams/mock-exams.module';
+import { PublicContentModule } from './public-content/public-content.module';
+import { FinanceModule } from './finance/finance.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { MockExamsModule } from './mock-exams/mock-exams.module';
     SupportModule,
     OfflineRequestsModule,
     MockExamsModule,
+    PublicContentModule,
+    FinanceModule,
   ],
 })
 export class AppModule {}

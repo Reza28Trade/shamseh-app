@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import type { Student, Course } from '../../types';
 import { useStore } from '../../store/useStore';
 import { FileViewer } from '../../components/FileViewer';
-import { BookOpen, LogOut, Video, FileText, Send, Sun, Moon, CheckCircle, Bell, Volume2, Presentation, Link as LinkIcon, AlertCircle } from 'lucide-react';
+import { BookOpen, LogOut, Video, FileText, Send, Sun, Moon, CheckCircle, Bell, Volume2, Presentation, Link as LinkIcon, AlertCircle, Wallet, CreditCard } from 'lucide-react';
 
 interface BackendSession {
   id: string;
@@ -23,6 +23,17 @@ interface BackendFile {
   streamUrl: string | null;
 }
 
+type StudentFinance = {
+  tuitionTotal: number;
+  paidTotal: number;
+  balance: number;
+  credit: number;
+  unpricedCourses: number;
+  status: 'PAID' | 'PARTIAL' | 'UNPAID' | 'INCOMPLETE' | 'NO_COURSES';
+  enrolledCourses: Array<{ enrollmentId: string; courseId: string; title: string; tuition: number | null; status: string }>;
+  payments: Array<{ id: string; amount: number; method: string; reference: string | null; note: string | null; paidAt: string }>;
+};
+
 interface UserDashboardProps {
   student: Student;
   courses: Course[];
@@ -40,7 +51,10 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
 
   } = useStore();
 
-  const [activeTab, setActiveTab] = useState<'courses' | 'notifications' | 'messages'>('courses');
+  const [activeTab, setActiveTab] = useState<'courses' | 'notifications' | 'messages' | 'finance'>('courses');
+  const [finance, setFinance] = useState<StudentFinance | null>(null);
+  const [financeLoading, setFinanceLoading] = useState(false);
+  const [financeError, setFinanceError] = useState('');
   const [subject, setSubject] = useState('');
   const [content, setContent] = useState('');
   const [successMsg, setSuccessMsg] = useState(false);
@@ -206,6 +220,27 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
       cancelled = true;
     };
   }, [student.id]);
+
+  useEffect(() => {
+    if (activeTab !== 'finance') return;
+    let cancelled = false;
+    const loadFinance = async () => {
+      setFinanceLoading(true);
+      setFinanceError('');
+      try {
+        const response = await fetch('/api/student/finance', { credentials: 'include' });
+        if (!response.ok) throw new Error('finance');
+        const data = await response.json();
+        if (!cancelled) setFinance(data);
+      } catch {
+        if (!cancelled) setFinanceError('دریافت وضعیت مالی انجام نشد. لطفاً دوباره تلاش کنید.');
+      } finally {
+        if (!cancelled) setFinanceLoading(false);
+      }
+    };
+    void loadFinance();
+    return () => { cancelled = true; };
+  }, [activeTab, student.id]);
 
   void courses;
 
@@ -409,7 +444,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
       </div>
 
       {/* تب‌بندی ناوبری پنل */}
-      <div style={{ maxWidth: '1100px', margin: '0 auto 20px auto', display: 'flex', gap: '12px' }}>
+      <div style={{ maxWidth: '1100px', margin: '0 auto 20px auto', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
         <button 
           onClick={() => setActiveTab('courses')}
           style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'courses' ? '#6D001A' : cardBg, color: textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer' }}
@@ -432,6 +467,12 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
           style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'messages' ? '#6D001A' : cardBg, color: textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer' }}
         >
           ارسال پیام و تیکت پشتیبانی
+        </button>
+        <button
+          onClick={() => setActiveTab('finance')}
+          style={{ padding: '10px 20px', borderRadius: '12px', border: `1px solid ${borderColor}`, backgroundColor: activeTab === 'finance' ? '#6D001A' : cardBg, color: textColor, fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 7 }}
+        >
+          <Wallet size={14} /> وضعیت مالی من
         </button>
       </div>
 
@@ -634,6 +675,53 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
               </div>
             )}
           </div>
+        )}
+
+        {activeTab === 'finance' && (
+          <section style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, padding: 'clamp(18px, 3vw, 30px)', borderRadius: '22px', display: 'flex', flexDirection: 'column', gap: 18 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 9, flexWrap: 'wrap' }}>
+              <Wallet size={20} color="#ff3366" />
+              <h2 style={{ margin: 0, fontSize: 17, fontWeight: 900 }}>وضعیت مالی من</h2>
+              {finance && <span style={{
+                padding: '5px 9px', borderRadius: 999, fontSize: 10, fontWeight: 900,
+                background: finance.status === 'PAID' ? 'rgba(16,185,129,.12)' : finance.status === 'NO_COURSES' || finance.status === 'INCOMPLETE' ? 'rgba(245,158,11,.12)' : 'rgba(239,68,68,.1)',
+                color: finance.status === 'PAID' ? '#10b981' : finance.status === 'NO_COURSES' || finance.status === 'INCOMPLETE' ? '#f59e0b' : finance.status === 'PARTIAL' ? '#f59e0b' : '#ef4444',
+              }}>{({ PAID: 'تسویه‌شده', PARTIAL: 'پرداخت ناقص', UNPAID: 'بدهکار', INCOMPLETE: 'شهریه ناقص', NO_COURSES: 'بدون دوره' })[finance.status]}</span>}
+            </div>
+            {financeLoading ? <div style={{ padding: 30, textAlign: 'center', color: subText }}>در حال دریافت وضعیت مالی...</div>
+              : financeError ? <div style={{ padding: 14, borderRadius: 12, background: 'rgba(239,68,68,.1)', color: '#ef4444', fontSize: 12 }}>{financeError}</div>
+              : !finance ? <div style={{ padding: 24, textAlign: 'center', color: subText, fontSize: 12 }}>اطلاعات مالی هنوز در دسترس نیست.</div>
+              : <>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 170px), 1fr))', gap: 12 }}>
+                  {[
+                    { label: 'کل شهریه دوره‌ها', value: finance.tuitionTotal, color: textColor },
+                    { label: 'مبلغ پرداخت‌شده', value: finance.paidTotal, color: '#10b981' },
+                    { label: 'مانده بدهی', value: finance.balance, color: finance.balance > 0 ? '#ef4444' : '#10b981' },
+                  ].map((item) => <div key={item.label} style={{ padding: 16, borderRadius: 14, background: innerCardBg, border: `1px solid ${borderColor}` }}>
+                    <div style={{ fontSize: 11, color: subText, marginBottom: 8 }}>{item.label}</div>
+                    <div style={{ fontSize: 15, fontWeight: 900, color: item.color, lineHeight: 1.8 }}>{new Intl.NumberFormat('fa-IR').format(Math.round(item.value || 0))} تومان</div>
+                  </div>)}
+                </div>
+                {finance.unpricedCourses > 0 && <div style={{ display: 'flex', gap: 8, alignItems: 'center', padding: 12, borderRadius: 12, background: 'rgba(245,158,11,.1)', color: '#f59e0b', fontSize: 12 }}><AlertCircle size={16} />شهریه {finance.unpricedCourses} دوره هنوز توسط مؤسسه مشخص نشده است.</div>}
+                <div style={{ border: `1px solid ${borderColor}`, borderRadius: 14, overflow: 'hidden' }}>
+                  <div style={{ padding: 14, background: innerCardBg, borderBottom: `1px solid ${borderColor}`, fontSize: 13, fontWeight: 900 }}>شهریه دوره‌های من</div>
+                  {finance.enrolledCourses.length === 0 ? <div style={{ padding: 16, color: subText, fontSize: 12 }}>دوره فعالی برای محاسبه شهریه ثبت نشده است.</div>
+                    : finance.enrolledCourses.map((course) => <div key={course.enrollmentId} style={{ padding: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap', borderBottom: `1px solid ${borderColor}` }}>
+                      <span style={{ fontSize: 12, fontWeight: 700 }}>{course.title}</span>
+                      <strong style={{ fontSize: 12 }}>{course.tuition === null ? 'شهریه مشخص نشده' : new Intl.NumberFormat('fa-IR').format(Math.round(course.tuition)) + ' تومان'}</strong>
+                    </div>)}
+                </div>
+                <div style={{ border: `1px solid ${borderColor}`, borderRadius: 14, overflow: 'hidden' }}>
+                  <div style={{ padding: 14, background: innerCardBg, borderBottom: `1px solid ${borderColor}`, display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 900 }}><CreditCard size={16} />سوابق پرداخت</div>
+                  {finance.payments.length === 0 ? <div style={{ padding: 16, color: subText, fontSize: 12 }}>هنوز پرداختی در سیستم ثبت نشده است.</div>
+                    : finance.payments.map((payment) => <div key={payment.id} style={{ padding: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap', borderBottom: `1px solid ${borderColor}` }}>
+                      <div style={{ fontSize: 11, color: subText }}>{new Date(payment.paidAt).toLocaleDateString('fa-IR')}{payment.reference ? ' · شماره پیگیری: ' + payment.reference : ''}</div>
+                      <strong style={{ fontSize: 12, color: '#10b981' }}>{new Intl.NumberFormat('fa-IR').format(Math.round(payment.amount))} تومان</strong>
+                    </div>)}
+                </div>
+                <p style={{ margin: 0, color: subText, fontSize: 11, lineHeight: 1.8 }}>برای اصلاح مبلغ شهریه یا پیگیری پرداخت‌ها، با مدیریت مؤسسه هماهنگ کنید.</p>
+              </>}
+          </section>
         )}
 
         {activeTab === 'notifications' && (
