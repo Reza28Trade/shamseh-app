@@ -133,7 +133,7 @@ export class StudentsService {
           ...(item.term ? { term: item.term } : {}),
           level: item.academicLevel,
         },
-        select: { id: true, title: true, academicYear: true, term: true, level: true },
+        select: { id: true, title: true, academicYear: true, term: true, level: true, price: true },
       });
       if (!course) {
         errors.push(`ردیف ${item.row}: دوره «${item.courseTitle}» با مقطع/سال/ترم مشخص‌شده پیدا نشد.`);
@@ -158,7 +158,7 @@ export class StudentsService {
           });
           updated += 1;
           if (!alreadyEnrolled) {
-            await this.prisma.enrollment.create({ data: { studentId: existing.id, courseId: course.id } });
+            await this.prisma.enrollment.create({ data: { studentId: existing.id, courseId: course.id, tuitionAmount: course.price } });
             enrolled += 1;
           }
         } else {
@@ -167,7 +167,7 @@ export class StudentsService {
             data: { username: item.nationalId, passwordHash, role: 'STUDENT', student: { create: { fullName: item.fullName, nationalId: item.nationalId, phone: item.phone, academicLevel: item.academicLevel } } },
             select: { student: { select: { id: true } } },
           });
-          await this.prisma.enrollment.create({ data: { studentId: createdUser.student!.id, courseId: course.id } });
+          await this.prisma.enrollment.create({ data: { studentId: createdUser.student!.id, courseId: course.id, tuitionAmount: course.price } });
           created += 1;
           enrolled += 1;
         }
