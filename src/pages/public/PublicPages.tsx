@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowRight, BookOpen, CalendarDays, CheckCircle2, FileText, GraduationCap, Moon, Search, Sun, UserRound, ExternalLink, RefreshCw } from 'lucide-react';
+import { ArrowRight, BookOpen, CalendarDays, CheckCircle2, FileText, Moon, Search, Sun, UserRound, ExternalLink, RefreshCw } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 
 type PublicCourse = {
@@ -83,7 +83,6 @@ function PageFrame({
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 42, height: 42, borderRadius: 13, overflow: 'hidden', background: colors.surfaceAlt, display: 'grid', placeItems: 'center', border: `1px solid ${colors.border}` }}>
               <img src="/logo.png" alt="شمسه" style={{ width: '100%', height: '100%', objectFit: 'contain' }} onError={(event) => { event.currentTarget.style.display = 'none'; }} />
-              <GraduationCap size={22} />
             </div>
             <div>
               <div style={{ fontSize: 16, fontWeight: 900 }}>آکادمی شمسه</div>
