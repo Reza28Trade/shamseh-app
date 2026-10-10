@@ -124,12 +124,37 @@ export class StudentsService {
         });
 
         if (dto.courseIds !== undefined) {
-          await tx.enrollment.deleteMany({ where: { studentId } });
-          if (dto.courseIds.length > 0) {
-            await tx.enrollment.createMany({
-              data: dto.courseIds.map((courseId) => ({ studentId, courseId })),
-              skipDuplicates: true,
+          const desiredCourseIds = [...new Set(dto.courseIds)];
+          if (desiredCourseIds.length === 0) {
+            await tx.enrollment.deleteMany({ where: { studentId } });
+          } else {
+            await tx.enrollment.deleteMany({
+              where: { studentId, courseId: { notIn: desiredCourseIds } },
             });
+            const existingEnrollments = await tx.enrollment.findMany({
+              where: { studentId, courseId: { in: desiredCourseIds } },
+              select: { courseId: true, status: true },
+            });
+            const existingCourseIds = new Set(existingEnrollments.map((enrollment) => enrollment.courseId));
+            await tx.enrollment.updateMany({
+              where: { studentId, courseId: { in: [...existingCourseIds] }, status: { not: 'ACTIVE' } },
+              data: { status: 'ACTIVE' },
+            });
+            const newCourseIds = desiredCourseIds.filter((courseId) => !existingCourseIds.has(courseId));
+            if (newCourseIds.length > 0) {
+              const coursePrices = await tx.course.findMany({
+                where: { id: { in: newCourseIds } },
+                select: { id: true, price: true },
+              });
+              await tx.enrollment.createMany({
+                data: newCourseIds.map((courseId) => ({
+                  studentId,
+                  courseId,
+                  tuitionAmount: coursePrices.find((course) => course.id === courseId)?.price ?? null,
+                })),
+                skipDuplicates: true,
+              });
+            }
           }
         }
 
@@ -154,11 +179,11 @@ export class StudentsService {
     this.requireAdmin(user);
     const student = await this.prisma.student.findUnique({ where: { id: studentId }, select: { id: true } });
     if (!student) throw new NotFoundException('Student not found');
-    const course = await this.prisma.course.findUnique({ where: { id: courseId }, select: { id: true } });
+    const course = await this.prisma.course.findUnique({ where: { id: courseId }, select: { id: true, price: true } });
     if (!course) throw new NotFoundException('Course not found');
     try {
       return await this.prisma.enrollment.create({
-        data: { studentId, courseId },
+        data: { studentId, courseId, tuitionAmount: course.price },
         include: { course: { select: { id: true, title: true, status: true } } },
       });
     } catch (error: any) {
