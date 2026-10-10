@@ -1,0 +1,741 @@
+/* Unified admin design system — shared by every legacy management page */
+.admin-legacy-page{
+  --legacy-accent:var(--admin-accent);
+  width:100%;
+  max-width:1240px;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  color:var(--admin-text);
+  direction:rtl;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+.admin-legacy-page,
+.admin-legacy-page *{box-sizing:border-box}
+
+.admin-legacy-page[style*="#0e0e11"],
+.admin-legacy-page[style*="#141419"],
+.admin-legacy-page[style*="rgba(14,14,17"],
+.admin-legacy-page[style*="rgba(14, 14, 17"]{
+  background:var(--admin-card)!important;
+  background-color:var(--admin-card)!important;
+  background-image:none!important;
+  border-color:var(--admin-border)!important;
+  color:var(--admin-text)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+
+.admin-legacy-page > div,
+.admin-legacy-page > form,
+.admin-legacy-page > section{
+  color:var(--admin-text)!important;
+}
+
+/* Every first-level surface follows the active theme. */
+.admin-legacy-page > div:not([data-admin-overlay]),
+.admin-legacy-page > form:not([data-admin-overlay]),
+.admin-legacy-page > section:not([data-admin-overlay]){
+  background:var(--admin-card)!important;
+  background-image:none!important;
+  border-color:var(--admin-border)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+
+/* Legacy hard-coded dark surfaces are neutralized in both themes. */
+.admin-legacy-page [style*="#0e0e11"],
+.admin-legacy-page [style*="#111116"],
+.admin-legacy-page [style*="#141419"],
+.admin-legacy-page [style*="#1a1a20"],
+.admin-legacy-page [style*="#1d1d24"],
+.admin-legacy-page [style*="#222228"],
+.admin-legacy-page [style*="#25252b"],
+.admin-legacy-page [style*="#26262d"],
+.admin-legacy-page [style*="#2b2b32"],
+.admin-legacy-page [style*="rgba(14,14,17"],
+.admin-legacy-page [style*="rgba(14, 14, 17"],
+.admin-legacy-page [style*="rgba(20,20,25"],
+.admin-legacy-page [style*="rgba(20, 20, 25"],
+.admin-legacy-page [style*="rgba(10,10,10"],
+.admin-legacy-page [style*="rgba(10, 10, 10"],
+.admin-legacy-page [style*="rgba(0,0,0,.15"],
+.admin-legacy-page [style*="rgba(0, 0, 0, 0.15"]{
+  background:var(--admin-inner)!important;
+  background-color:var(--admin-inner)!important;
+  background-image:none!important;
+  border-color:var(--admin-border)!important;
+  box-shadow:none!important;
+}
+
+/* Burgundy legacy hero gradients become a restrained brand surface. */
+.admin-legacy-page [style*="linear-gradient(135deg"],
+.admin-legacy-page [style*="linear-gradient(135deg,rgba(109,0,26"],
+.admin-legacy-page [style*="linear-gradient(135deg, rgba(109, 0, 26"]{
+  background:linear-gradient(135deg,var(--admin-brand-soft),var(--admin-card))!important;
+  border-color:var(--admin-brand-border)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+
+/* Inputs and controls share one component language. */
+.admin-legacy-page input,
+.admin-legacy-page select,
+.admin-legacy-page textarea{
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:11px!important;
+  outline:none;
+  box-shadow:none!important;
+}
+.admin-legacy-page input:focus,
+.admin-legacy-page select:focus,
+.admin-legacy-page textarea:focus{
+  border-color:var(--admin-accent)!important;
+  box-shadow:0 0 0 3px var(--admin-accent-soft)!important;
+}
+.admin-legacy-page input::placeholder,
+.admin-legacy-page textarea::placeholder{color:var(--admin-sub)!important}
+
+/* Preserve semantic status colors, but remove old white/dark text assumptions from content. */
+.admin-legacy-page h1,
+.admin-legacy-page h2,
+.admin-legacy-page h3,
+.admin-legacy-page h4{
+  color:var(--admin-text)!important;
+  letter-spacing:-.2px;
+}
+.admin-legacy-page p,
+.admin-legacy-page label{
+  color:var(--admin-sub)!important;
+}
+.admin-legacy-page strong{color:var(--admin-text)}
+.admin-legacy-page a{color:var(--admin-accent)}
+.admin-legacy-page hr{border-color:var(--admin-border)!important}
+
+.admin-legacy-page button{
+  font-family:inherit;
+  border-radius:10px!important;
+  transition:transform .16s ease,background .16s ease,border-color .16s ease,box-shadow .16s ease;
+}
+.admin-legacy-page button:hover{transform:translateY(-1px)}
+.admin-legacy-page button:disabled{cursor:not-allowed;transform:none;opacity:.62}
+
+.admin-legacy-page table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+}
+.admin-legacy-page th{
+  color:var(--admin-sub)!important;
+  background:var(--admin-inner)!important;
+  border-color:var(--admin-border)!important;
+}
+.admin-legacy-page td{
+  color:var(--admin-text)!important;
+  border-color:var(--admin-border)!important;
+}
+
+/* Old burgundy buttons become the same primary action everywhere. */
+.admin-legacy-page button[style*="#6D001A"],
+.admin-legacy-page [style*="background:'#6D001A'"],
+.admin-legacy-page [style*="background: #6D001A"],
+.admin-legacy-page [style*="backgroundColor: '#6D001A'"],
+.admin-legacy-page [style*="background-color: #6D001A"],
+.admin-legacy-page [style*="background: 'linear-gradient(135deg, #6D001A"]{
+  background:var(--admin-accent)!important;
+  border-color:var(--admin-accent)!important;
+  color:#fff!important;
+}
+
+/* Responsive foundations */
+@media(max-width:900px){
+  .admin-legacy-page{max-width:none}
+}
+@media(max-width:620px){
+  .admin-legacy-page{gap:14px}
+  .admin-legacy-page > div,
+  .admin-legacy-page > form,
+  .admin-legacy-page > section{border-radius:14px!important}
+}
+
+
+/* Counseling — dedicated compact management layout */
+.admin-counseling-page{
+  max-width:none;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  gap:20px!important;
+}
+
+.admin-counseling-page > div:first-child{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  padding:4px 2px 0!important;
+  margin:0!important;
+}
+
+.admin-counseling-page > div:first-child h2{
+  font-size:20px!important;
+  font-weight:800!important;
+}
+
+.admin-counseling-page > div:first-child h2 svg{
+  color:var(--admin-accent)!important;
+}
+
+.admin-counseling-page > div:first-child p{
+  font-size:12px!important;
+  margin-top:5px!important;
+}
+
+.admin-counseling-page > div:first-child button{
+  background:var(--admin-card)!important;
+  color:var(--admin-text)!important;
+  border:1px solid var(--admin-border)!important;
+  box-shadow:none!important;
+}
+
+.admin-counseling-page > section{
+  background:var(--admin-card)!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:16px!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+
+.admin-counseling-page > section:nth-of-type(1){
+  padding:18px 20px!important;
+  margin:0!important;
+}
+
+.admin-counseling-page > section:nth-of-type(1) h3,
+.admin-counseling-page > section h3{
+  font-size:14px!important;
+  font-weight:800!important;
+}
+
+.admin-counseling-page > section:nth-of-type(1) > div{
+  gap:10px!important;
+}
+
+.admin-counseling-page > section:nth-of-type(1) button[type="button"]{
+  flex:1 1 260px!important;
+  min-width:220px!important;
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+  border:1px solid var(--admin-border)!important;
+  padding:10px 12px!important;
+}
+
+.admin-counseling-page > section:nth-of-type(1) select{
+  min-width:62px;
+  padding:9px 10px!important;
+}
+
+.admin-counseling-page > section:nth-of-type(1) > div > button:last-child{
+  background:var(--admin-accent-soft)!important;
+  color:var(--admin-accent)!important;
+  border:1px solid var(--admin-accent)!important;
+  padding:10px 16px!important;
+}
+
+.admin-counseling-page > section:nth-of-type(2),
+.admin-counseling-page > section:nth-of-type(3){
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+
+.admin-counseling-page > section:nth-of-type(2) > div > div,
+.admin-counseling-page > section:nth-of-type(3) > div > div{
+  background:var(--admin-card)!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:14px!important;
+  box-shadow:none!important;
+}
+
+.admin-counseling-page > section:nth-of-type(2) > div > div{
+  padding:14px 16px!important;
+}
+
+.admin-counseling-page > section:nth-of-type(2) > div > div > div:first-child{
+  gap:4px!important;
+}
+
+.admin-counseling-page > section:nth-of-type(2) strong,
+.admin-counseling-page > section:nth-of-type(3) strong{
+  font-size:13px!important;
+}
+
+.admin-counseling-page > section:nth-of-type(2) > div > div > div:last-child{
+  gap:6px!important;
+}
+
+.admin-counseling-page > section:nth-of-type(3) > div > div{
+  padding:15px 16px!important;
+}
+
+.admin-counseling-page > section:nth-of-type(3) > div > div > div:first-child{
+  align-items:center!important;
+}
+
+.admin-counseling-page > section:nth-of-type(3) > div > div > div:last-child{
+  margin-top:10px!important;
+  padding-top:10px;
+  border-top:1px solid var(--admin-border);
+}
+
+.admin-counseling-page > section:nth-of-type(3) > div > div span{
+  font-size:11px!important;
+}
+
+.admin-counseling-page > section:nth-of-type(3) button{
+  padding:7px 11px!important;
+}
+
+.admin-counseling-page > div[style*="position: fixed"]{
+  background:rgba(15,23,28,.58)!important;
+  backdrop-filter:blur(5px);
+}
+
+.admin-counseling-page > div[style*="position: fixed"] > div{
+  background:var(--admin-card)!important;
+  border:1px solid var(--admin-border)!important;
+  box-shadow:0 24px 70px rgba(0,0,0,.22)!important;
+}
+
+.admin-counseling-page > div[style*="position: fixed"] button{
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+  border-color:var(--admin-border)!important;
+}
+
+.admin-counseling-page > div[style*="position: fixed"] button[style*="#38bdf8"]{
+  background:var(--admin-accent)!important;
+  color:#fff!important;
+  border-color:var(--admin-accent)!important;
+}
+
+@media(max-width:700px){
+  .admin-counseling-page > section:nth-of-type(1) > div{
+    align-items:stretch!important;
+  }
+  .admin-counseling-page > section:nth-of-type(1) > div > div{
+    width:100%;
+  }
+  .admin-counseling-page > section:nth-of-type(1) > div > button:last-child{
+    width:100%;
+  }
+}
+
+
+/* Offline requests — compact academic management layout */
+.admin-offline-page{
+  max-width:none;
+  gap:16px!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.admin-offline-page > div,
+.admin-offline-page > section{
+  margin:0!important;
+}
+.admin-offline-page .offline-page-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:18px;
+  padding:4px 2px 2px!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.offline-page-head > div:first-child{min-width:0}
+.offline-eyebrow{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  color:var(--admin-accent)!important;
+  font-size:11px;
+  font-weight:800;
+  margin-bottom:5px;
+}
+.offline-page-head h2{
+  margin:0!important;
+  font-size:20px!important;
+  line-height:1.45;
+  font-weight:800!important;
+}
+.offline-page-head p{
+  margin:4px 0 0!important;
+  font-size:12px!important;
+}
+.offline-refresh{
+  flex:0 0 auto;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:9px 13px;
+  background:var(--admin-card)!important;
+  color:var(--admin-text)!important;
+  border:1px solid var(--admin-border)!important;
+  box-shadow:none!important;
+  font-size:11px;
+  font-weight:700;
+}
+.offline-error{
+  padding:10px 13px!important;
+  background:rgba(239,68,68,.08)!important;
+  color:#dc5c5c!important;
+  border:1px solid rgba(239,68,68,.2)!important;
+  border-radius:11px!important;
+  font-size:11px;
+}
+.offline-stats{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.offline-stat-card{
+  position:relative;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  grid-template-rows:auto auto;
+  align-items:center;
+  gap:5px 10px;
+  min-width:0;
+  padding:13px 14px;
+  text-align:right;
+  background:var(--admin-card)!important;
+  color:var(--admin-text)!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:14px!important;
+  box-shadow:var(--admin-shadow)!important;
+  cursor:pointer;
+}
+.offline-stat-card:hover{transform:translateY(-1px)}
+.offline-stat-card.is-active{
+  border-color:var(--admin-accent)!important;
+  box-shadow:0 0 0 2px var(--admin-accent-soft),var(--admin-shadow)!important;
+}
+.offline-stat-icon{
+  width:32px;
+  height:32px;
+  display:grid;
+  place-items:center;
+  grid-row:1 / span 2;
+  color:var(--admin-accent);
+  background:var(--admin-accent-soft);
+  border-radius:9px;
+}
+.offline-stat-copy{
+  display:flex;
+  flex-direction:column;
+  gap:1px;
+  min-width:0;
+}
+.offline-stat-copy strong{
+  font-size:19px!important;
+  line-height:1.2;
+}
+.offline-stat-copy small{
+  color:var(--admin-sub);
+  font-size:10px;
+  white-space:nowrap;
+}
+.offline-stat-percent{
+  color:var(--admin-sub);
+  font-size:10px;
+  direction:ltr;
+}
+.offline-stat-meter{
+  grid-column:2 / span 2;
+  display:block;
+  height:3px;
+  overflow:hidden;
+  background:var(--admin-inner);
+  border-radius:99px;
+  direction:rtl;
+}
+.offline-stat-meter span{
+  display:block;
+  height:100%;
+  background:var(--admin-accent);
+  border-radius:99px;
+}
+.offline-list-card{
+  padding:0!important;
+  overflow:hidden;
+  background:var(--admin-card)!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:16px!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.offline-list-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:14px 16px;
+  border-bottom:1px solid var(--admin-border);
+}
+.offline-list-head > div:first-child{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-width:0;
+}
+.offline-list-head h3{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin:0!important;
+  font-size:13px!important;
+  white-space:nowrap;
+}
+.offline-list-head h3 svg{color:var(--admin-accent)}
+.offline-list-head > div:first-child span{
+  color:var(--admin-sub);
+  font-size:10px;
+  white-space:nowrap;
+}
+.offline-filter-group{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  flex-wrap:wrap;
+}
+.offline-filter-group button{
+  padding:6px 10px;
+  background:var(--admin-control)!important;
+  color:var(--admin-sub)!important;
+  border:1px solid transparent!important;
+  font-size:10px;
+  font-weight:700;
+  cursor:pointer;
+}
+.offline-filter-group button.active{
+  color:var(--admin-accent)!important;
+  background:var(--admin-accent-soft)!important;
+  border-color:var(--admin-accent)!important;
+}
+.offline-request-list{
+  display:flex;
+  flex-direction:column;
+  max-height:570px;
+  overflow-y:auto;
+}
+.offline-request-row{
+  padding:13px 16px;
+  border-bottom:1px solid var(--admin-border);
+}
+.offline-request-row:last-child{border-bottom:0}
+.offline-request-main{
+  display:grid;
+  grid-template-columns:minmax(150px,1.15fr) minmax(190px,1.45fr) 100px 125px;
+  align-items:center;
+  gap:14px;
+}
+.offline-student,
+.offline-course,
+.offline-date{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  min-width:0;
+}
+.offline-student strong,
+.offline-course strong{
+  font-size:12px!important;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.offline-student span,
+.offline-course span,
+.offline-date span{
+  color:var(--admin-sub);
+  font-size:10px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.offline-course strong{color:var(--admin-accent)!important}
+.offline-date strong{
+  color:var(--admin-text);
+  font-size:10px;
+}
+.offline-status{
+  justify-self:end;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  width:max-content;
+  padding:6px 9px;
+  border-radius:8px;
+  font-size:10px;
+  font-weight:800;
+  white-space:nowrap;
+}
+.status-pending{
+  color:#b77912!important;
+  background:rgba(245,158,11,.1)!important;
+  border:1px solid rgba(245,158,11,.2);
+}
+.status-approved{
+  color:#23856a!important;
+  background:rgba(16,185,129,.1)!important;
+  border:1px solid rgba(16,185,129,.2);
+}
+.status-rejected{
+  color:#c65353!important;
+  background:rgba(239,68,68,.08)!important;
+  border:1px solid rgba(239,68,68,.18);
+}
+.offline-approved-link{
+  display:block;
+  margin-top:9px;
+  padding-top:9px;
+  border-top:1px solid var(--admin-border);
+  font-size:10px!important;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.offline-approved-link span{
+  color:var(--admin-sub);
+  margin-right:6px;
+  direction:ltr;
+}
+.offline-review{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:9px;
+  margin-top:10px;
+  padding-top:10px;
+  border-top:1px solid var(--admin-border);
+}
+.offline-link-field{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  min-width:0;
+}
+.offline-link-field svg{color:var(--admin-accent);flex:0 0 auto}
+.offline-link-field input{
+  width:100%;
+  padding:8px 10px!important;
+  font-size:10px!important;
+}
+.offline-review-actions{
+  display:flex;
+  gap:6px;
+  flex:0 0 auto;
+}
+.offline-review-actions button{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:8px 10px;
+  font-size:10px;
+  font-weight:800;
+  cursor:pointer;
+}
+.offline-review-actions .approve{
+  color:#fff!important;
+  background:var(--admin-accent)!important;
+  border:1px solid var(--admin-accent)!important;
+}
+.offline-review-actions .reject{
+  color:#c65353!important;
+  background:rgba(239,68,68,.07)!important;
+  border:1px solid rgba(239,68,68,.2)!important;
+}
+.offline-empty{
+  padding:42px 20px;
+  color:var(--admin-sub);
+  text-align:center;
+  font-size:11px;
+}
+@media(max-width:900px){
+  .offline-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .offline-request-main{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .offline-status{justify-self:start}
+  .offline-review{grid-template-columns:1fr}
+  .offline-review-actions{justify-content:flex-start}
+}
+@media(max-width:620px){
+  .admin-offline-page{gap:12px!important}
+  .admin-offline-page .offline-page-head{align-items:flex-start;flex-direction:column}
+  .offline-page-head h2{font-size:18px!important}
+  .offline-refresh{align-self:stretch;justify-content:center}
+  .offline-stats{grid-template-columns:1fr}
+  .offline-list-head{align-items:flex-start;flex-direction:column}
+  .offline-filter-group{width:100%}
+  .offline-filter-group button{flex:1}
+  .offline-request-main{grid-template-columns:1fr;gap:8px}
+  .offline-status{justify-self:start}
+  .offline-review-actions{display:grid;grid-template-columns:1fr 1fr}
+  .offline-review-actions button{justify-content:center}
+}
+
+/* Offline header refinement */
+.admin-offline-page .offline-page-head{
+  padding:18px 20px!important;
+  align-items:center;
+  background:var(--admin-card)!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:16px!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-offline-page .offline-page-head > div:first-child{
+  display:flex;
+  flex-direction:column;
+  gap:0;
+  min-width:0;
+}
+.admin-offline-page .offline-eyebrow{
+  margin-bottom:4px;
+}
+.admin-offline-page .offline-page-head h2{
+  font-size:20px!important;
+  line-height:1.4;
+  font-weight:800!important;
+}
+.admin-offline-page .offline-page-head p{
+  margin:4px 0 0!important;
+  font-size:12px!important;
+}
+.admin-offline-page .offline-refresh{
+  padding:9px 12px;
+}
+
+/* Keep only 10 request rows visible; the rest scroll inside the list. */
+.admin-offline-page .offline-request-list{
+  height:510px;
+  max-height:510px;
+  overflow-y:auto;
+  overflow-x:hidden;
+  scrollbar-width:thin;
+  scrollbar-color:var(--admin-border) transparent;
+}
+.admin-offline-page .offline-request-list::-webkit-scrollbar{width:7px}
+.admin-offline-page .offline-request-list::-webkit-scrollbar-track{background:transparent}
+.admin-offline-page .offline-request-list::-webkit-scrollbar-thumb{
+  background:var(--admin-border);
+  border-radius:99px;
+}
+.admin-offline-page .offline-request-list::-webkit-scrollbar-thumb:hover{
+  background:var(--admin-accent);
+}

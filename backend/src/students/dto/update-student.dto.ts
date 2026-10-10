@@ -1,4 +1,9 @@
-import { IsArray, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsEnum, IsOptional, IsString } from 'class-validator';
+
+enum StudentLevel {
+  MASTER = 'MASTER',
+  DOCTORATE = 'DOCTORATE',
+}
 
 export class UpdateStudentDto {
   @IsOptional()
@@ -12,6 +17,10 @@ export class UpdateStudentDto {
   @IsOptional()
   @IsString()
   phone?: string;
+
+  @IsOptional()
+  @IsEnum(StudentLevel)
+  academicLevel?: StudentLevel;
 
   @IsOptional()
   @IsArray()

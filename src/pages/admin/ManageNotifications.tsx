@@ -80,7 +80,7 @@ export const ManageNotifications: React.FC = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%' }}>
+    <div className="admin-legacy-page admin-notifications-page" style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%' }}>
       <div style={{ background: 'linear-gradient(135deg, rgba(109,0,26,.2), rgba(10,10,10,.8))', border: '1px solid rgba(109,0,26,.4)', padding: '24px 32px', borderRadius: '20px' }}>
         <h2 style={{ fontSize: '20px', fontWeight: 900, color: '#fff', margin: '0 0 6px', display: 'flex', alignItems: 'center', gap: '10px' }}><Bell size={20} color="#ff3366" /> ارسال اطلاعیه</h2>
         <p style={{ fontSize: '12px', color: '#94a3b8', margin: 0 }}>ارسال پیام عمومی، مخصوص یک دوره یا مخصوص یک هنرجو</p>

@@ -1,216 +1,39 @@
 import React, { useState } from 'react';
 import type { Admin } from '../types';
 import { useStore } from '../store/useStore';
-import { LayoutDashboard, BookOpen, Users, MessageSquare, ShieldAlert, FileText, LogOut, Sun, Moon, Menu, X, CheckSquare, ClipboardList, Bell } from 'lucide-react';
+import '../styles/AdminLegacy.css';
+import { LayoutDashboard, BookOpen, Users, MessageSquare, ShieldAlert, FileText, LogOut, Sun, Moon, Menu, X, CheckSquare, ClipboardList, Bell, CalendarClock } from 'lucide-react';
 
-interface AdminLayoutProps {
-  admin?: Admin;
-  onLogout: () => void;
-  activeTab: any;
-  setActiveTab: any;
-  children: React.ReactNode;
-}
+interface AdminLayoutProps { admin?: Admin; onLogout:()=>void; activeTab:any; setActiveTab:any; children:React.ReactNode; }
 
-export const AdminLayout: React.FC<AdminLayoutProps> = ({
-  admin,
-  onLogout,
-  activeTab,
-  setActiveTab,
-  children,
-}) => {
-  const { theme, toggleTheme } = useStore();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  const isDark = theme === 'dark';
-  const bgColors = isDark ? '#050505' : '#f8fafc';
-  const cardBg = isDark ? '#111116' : '#ffffff';
-  const textColor = isDark ? '#f8fafc' : '#0f172a';
-  const subText = isDark ? '#94a3b8' : '#64748b';
-  const borderColor = isDark ? 'rgba(255, 255, 255, 0.08)' : '#e2e8f0';
-
-  const menuItems = [
-    { id: 'dashboard', label: 'داشبورد مدیریت', icon: LayoutDashboard },
-    { id: 'courses', label: 'مدیریت دوره‌ها', icon: BookOpen },
-    { id: 'students', label: 'مدیریت هنرجویان', icon: Users },
-    { id: 'offlineRequests', label: 'درخواست‌های آفلاین', icon: CheckSquare },
-    { id: 'mockExams', label: 'آزمون‌های آزمایشی', icon: ClipboardList },
-    { id: 'messages', label: 'پیام‌ها و پرسش‌ها', icon: MessageSquare },
-    { id: 'notifications', label: 'ارسال اطلاعیه', icon: Bell },
-    { id: 'rules', label: 'مدیریت قوانین', icon: FileText },
-    { id: 'logs', label: 'گزارش‌های سیستمی', icon: ShieldAlert },
+export const AdminLayout: React.FC<AdminLayoutProps> = ({admin,onLogout,activeTab,setActiveTab,children}) => {
+  const {theme,toggleTheme}=useStore(); const [isSidebarOpen,setIsSidebarOpen]=useState(false); const isDark=theme==='dark';
+  const menuItems=[
+    {id:'dashboard',label:'داشبورد مدیریت',icon:LayoutDashboard},{id:'courses',label:'مدیریت دوره‌ها',icon:BookOpen},{id:'students',label:'مدیریت هنرجویان',icon:Users},
+    {id:'offlineRequests',label:'درخواست‌های آفلاین',icon:CheckSquare},{id:'mockExams',label:'آزمون‌های آزمایشی',icon:ClipboardList},{id:'counseling',label:'مدیریت مشاوره',icon:CalendarClock},
+    {id:'messages',label:'پیام‌ها و پرسش‌ها',icon:MessageSquare},{id:'notifications',label:'ارسال اطلاعیه',icon:Bell},{id:'rules',label:'مدیریت قوانین',icon:FileText},{id:'logs',label:'گزارش‌های سیستمی',icon:ShieldAlert},
   ];
-
-  return (
-    <div style={{
-      width: '100%',
-      minHeight: '100vh',
-      backgroundColor: bgColors,
-      color: textColor,
-      display: 'flex',
-      flexDirection: 'column',
-      direction: 'rtl',
-      fontFamily: 'system-ui, sans-serif',
-      boxSizing: 'border-box',
-      margin: 0,
-      padding: 0
-    }}>
-      
-      {/* هدر بالای صفحه در موبایل */}
-      <div style={{
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '16px 20px',
-        backgroundColor: cardBg,
-        borderBottom: `1px solid ${borderColor}`,
-        boxSizing: 'border-box',
-        zIndex: 100
-      }}>
-        <button 
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '8px 12px',
-            backgroundColor: isDark ? '#1a1a20' : '#f1f5f9',
-            color: textColor,
-            border: `1px solid ${borderColor}`,
-            borderRadius: '8px',
-            fontSize: '12px',
-            fontWeight: 700,
-            cursor: 'pointer'
-          }}
-        >
-          <span>منوی مدیریت</span>
-          {isSidebarOpen ? <X size={18} /> : <Menu size={18} />}
-        </button>
-
-        <div style={{ textAlign: 'left' }}>
-          <h2 style={{ fontSize: '14px', fontWeight: 900, margin: 0 }}>پنل مدیریت شمسه</h2>
-          <p style={{ fontSize: '10px', color: subText, margin: '2px 0 0 0' }}>{admin?.fullName || 'مدیر سیستم'}</p>
-        </div>
-      </div>
-
-      <div style={{
-        display: 'flex',
-        flex: 1,
-        width: '100%',
-        position: 'relative',
-        boxSizing: 'border-box'
-      }}>
-        <aside style={{
-          width: '260px',
-          backgroundColor: cardBg,
-          borderLeft: `1px solid ${borderColor}`,
-          display: isSidebarOpen ? 'flex' : 'none',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          padding: '20px 16px',
-          position: window.innerWidth < 1024 ? 'absolute' : 'relative',
-          top: 0,
-          right: 0,
-          height: '100%',
-          minHeight: window.innerWidth < 1024 ? 'calc(100vh - 70px)' : 'auto',
-          boxSizing: 'border-box',
-          zIndex: 99,
-          boxShadow: window.innerWidth < 1024 ? '-5px 0 25px rgba(0,0,0,0.5)' : 'none'
-        }}>
-          <div>
-            <nav style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {menuItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeTab === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      setActiveTab(item.id);
-                      setIsSidebarOpen(false);
-                    }}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      width: '100%',
-                      padding: '12px 16px',
-                      backgroundColor: isActive ? 'rgba(109, 0, 26, 0.15)' : 'transparent',
-                      color: isActive ? '#ff3366' : textColor,
-                      border: 'none',
-                      borderRadius: '12px',
-                      fontSize: '13px',
-                      fontWeight: isActive ? 800 : 600,
-                      cursor: 'pointer',
-                      textAlign: 'right',
-                      transition: 'all 0.2s ease'
-                    }}
-                  >
-                    <Icon size={18} />
-                    {item.label}
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '20px', borderTop: `1px solid ${borderColor}`, paddingTop: '16px' }}>
-            <button 
-              onClick={toggleTheme}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                width: '100%',
-                padding: '10px 14px',
-                backgroundColor: isDark ? '#1a1a20' : '#f1f5f9',
-                color: textColor,
-                border: `1px solid ${borderColor}`,
-                borderRadius: '10px',
-                fontSize: '12px',
-                fontWeight: 700,
-                cursor: 'pointer'
-              }}
-            >
-              {isDark ? <Sun size={16} color="#fbbf24" /> : <Moon size={16} color="#64748b" />}
-              {isDark ? 'حالت روز' : 'حالت شب'}
-            </button>
-
-            <button
-              onClick={onLogout}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                width: '100%',
-                padding: '10px 14px',
-                backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                color: '#ef4444',
-                border: '1px solid rgba(239, 68, 68, 0.2)',
-                borderRadius: '10px',
-                fontSize: '12px',
-                fontWeight: 700,
-                cursor: 'pointer'
-              }}
-            >
-              <LogOut size={16} />
-              خروج از حساب
-            </button>
-          </div>
-        </aside>
-
-        <main style={{
-          flex: 1,
-          padding: '20px',
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          boxSizing: 'border-box',
-          width: '100%'
-        }}>
-          {children}
-        </main>
-      </div>
-
+  const vars:any={ '--admin-bg':isDark?'#11181b':'#f2f5f3','--admin-card':isDark?'#182125':'#ffffff','--admin-inner':isDark?'#1e2a30':'#f6f9f7','--admin-text':isDark?'#eef5f6':'#202a2a','--admin-sub':isDark?'#a9b9bd':'#647270','--admin-border':isDark?'#304047':'#dce6e2','--admin-accent':isDark?'#3b8faa':'#3f8f8a','--admin-accent-soft':isDark?'rgba(59,143,170,.16)':'#e5f2ef','--admin-brand-soft':isDark?'rgba(59,143,170,.13)':'#edf7f4','--admin-brand-border':isDark?'rgba(59,143,170,.34)':'#bcded8','--admin-control':isDark?'#1a252a':'#fbfdfc','--admin-shadow':isDark?'0 14px 32px rgba(0,0,0,.22)':'0 10px 28px rgba(35,55,50,.07)'};
+  return <div className="admin-shell" style={vars}>
+    <header className="admin-topbar">
+      <div className="admin-brand"><div className="admin-brand-mark">ش</div><div><strong>شمسه</strong><small>مرکز مدیریت آموزشی</small></div></div>
+      <div className="admin-top-actions"><span className="admin-user">{admin?.fullName||'مدیر سیستم'}</span><button onClick={toggleTheme} title="تغییر تم">{isDark?<Sun size={17}/>:<Moon size={17}/>}</button><button className="admin-mobile-menu" onClick={()=>setIsSidebarOpen(!isSidebarOpen)}>{isSidebarOpen?<X size={18}/>:<Menu size={18}/>}</button></div>
+    </header>
+    <div className="admin-body">
+      <aside className={`admin-sidebar ${isSidebarOpen?'open':''}`}>
+        <div className="admin-nav">{menuItems.map(item=>{const Icon=item.icon;const active=activeTab===item.id;return <button key={item.id} className={active?'active':''} onClick={()=>{setActiveTab(item.id);setIsSidebarOpen(false)}}><Icon size={17}/><span>{item.label}</span></button>})}</div>
+        <div className="admin-sidebar-bottom"><button className="admin-logout" onClick={onLogout}><LogOut size={16}/> خروج از حساب</button></div>
+      </aside>
+      <main className="admin-main">{children}</main>
     </div>
-  );
+    <style>{`
+      .admin-shell{min-height:100vh;background:var(--admin-bg);color:var(--admin-text);direction:rtl;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;box-sizing:border-box}
+      .admin-topbar{height:72px;border-bottom:1px solid var(--admin-border);background:var(--admin-card);display:flex;align-items:center;justify-content:space-between;padding:0 22px;position:sticky;top:0;z-index:50;box-sizing:border-box}
+      .admin-brand{display:flex;align-items:center;gap:10px}.admin-brand-mark{width:37px;height:37px;border-radius:12px;background:var(--admin-accent-soft);color:var(--admin-accent);display:grid;place-items:center;font-size:17px;font-weight:900}.admin-brand strong{display:block;font-size:14px}.admin-brand small{display:block;color:var(--admin-sub);font-size:8px;margin-top:2px}
+      .admin-top-actions{display:flex;align-items:center;gap:8px}.admin-user{font-size:10px;color:var(--admin-sub);margin-left:4px}.admin-top-actions button{width:36px;height:36px;border:1px solid var(--admin-border);background:var(--admin-inner);color:var(--admin-text);border-radius:10px;display:grid;place-items:center;cursor:pointer}.admin-mobile-menu{display:none!important}
+      .admin-body{display:grid;grid-template-columns:225px minmax(0,1fr);min-height:calc(100vh - 72px)}.admin-sidebar{border-left:1px solid var(--admin-border);background:var(--admin-card);padding:14px 11px;display:flex;flex-direction:column;justify-content:space-between;box-sizing:border-box}.admin-nav{display:flex;flex-direction:column;gap:4px}.admin-nav button{width:100%;min-height:42px;border:1px solid transparent;background:transparent;color:var(--admin-sub);border-radius:11px;padding:9px 11px;display:flex;align-items:center;gap:9px;text-align:right;cursor:pointer;font-size:10px;font-weight:800;transition:.18s}.admin-nav button:hover{background:var(--admin-inner);color:var(--admin-text)}.admin-nav button.active{background:var(--admin-accent-soft);color:var(--admin-accent);border-color:var(--admin-brand-border)}.admin-sidebar-bottom{border-top:1px solid var(--admin-border);padding-top:11px}.admin-logout{width:100%;border:1px solid rgba(190,60,70,.22);background:rgba(190,60,70,.06);color:#b24b55;border-radius:11px;padding:10px;display:flex;align-items:center;gap:8px;cursor:pointer;font-size:10px;font-weight:800}
+      .admin-main{min-width:0;padding:22px;box-sizing:border-box;overflow-x:hidden}
+      @media(max-width:820px){.admin-topbar{height:64px;padding:0 14px}.admin-mobile-menu{display:grid!important}.admin-body{display:block;min-height:calc(100vh - 64px)}.admin-sidebar{display:none;position:fixed;top:64px;right:0;bottom:0;width:270px;z-index:45;box-shadow:-15px 0 40px rgba(0,0,0,.18)}.admin-sidebar.open{display:flex}.admin-main{padding:14px}}
+    `}</style>
+  </div>;
 };

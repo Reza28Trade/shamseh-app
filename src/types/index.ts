@@ -3,6 +3,8 @@ export interface Student {
   fullName: string;
   nationalId: string;
   enrolledCourseIds: string[];
+  academicLevel?: 'MASTER' | 'DOCTORATE' | '';
+  levels?: string[];
 }
 
 export interface Admin {
@@ -26,6 +28,10 @@ export interface Course {
   price?: number;
   category?: string;
   coverImage?: string;
+  academicYear?: number;
+  classDays?: string[];
+  classStartTime?: string;
+  classEndTime?: string;
   syllabus?: string[];
   attachments?: { id: string; name: string; url: string; type: 'pdf' | 'video' | 'link' }[];
 }
