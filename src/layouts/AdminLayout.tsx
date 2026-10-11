@@ -134,7 +134,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
         .admin-sidebar-heading{display:flex;align-items:center;justify-content:space-between;padding:0 13px 14px;color:var(--admin-sub);font-size:10px;font-weight:800;letter-spacing:.2px}
         .admin-sidebar-dot{width:7px;height:7px;border-radius:50%;background:#70B9B5;box-shadow:0 0 0 4px var(--admin-accent-soft)}
         .admin-nav{display:flex;flex-direction:column;gap:5px}
-        .admin-nav button{position:relative;width:100%;min-height:46px;border:1px solid transparent;background:transparent;color:var(--admin-sub);border-radius:13px;padding:10px 11px;display:flex;align-items:center;gap:11px;text-align:right;cursor:pointer;font-size:11px;font-weight:750;transition:background .18s,border-color .18s,color .18s}
+        .admin-nav button{position:relative;width:100%;min-height:48px;border:1px solid transparent;background:transparent;color:var(--admin-sub);border-radius:13px;padding:11px 11px;display:flex;align-items:center;gap:11px;text-align:right;cursor:pointer;font-size:13px;font-weight:750;line-height:1.6;transition:background .18s,border-color .18s,color .18s}
         .admin-nav button:hover{background:var(--admin-inner);color:var(--admin-text)}
         .admin-nav-icon{width:32px;height:32px;flex:0 0 32px;border-radius:10px;display:grid;place-items:center;color:var(--admin-sub);background:transparent;transition:background .18s,color .18s}
         .admin-nav-label{flex:1}
