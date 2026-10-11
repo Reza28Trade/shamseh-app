@@ -22,6 +22,37 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
   useEffect(() => { void fetch('/api/auth/me', { credentials: 'include' }).then(r => r.json()).then(d => setCurrentUserId(d.user?.id || '')).catch(() => undefined); }, []);
   useEffect(() => { void loadConversations().catch(e => setError(e.message)).finally(() => setLoading(false)); }, []);
   useEffect(() => { if (selected) void loadMessages(selected).catch(e => setError(e.message)); else setMessages([]); }, [selected]);
+  useEffect(() => {
+    let cancelled = false;
+    async function refreshConversations() {
+      try {
+        const r = await fetch('/api/counseling/conversations', { credentials: 'include' });
+        if (!r.ok) return;
+        const data: Conversation[] = await r.json();
+        if (cancelled) return;
+        setConversations(data);
+        setSelected(current => current && data.some(c => c.id === current) ? current : data[0]?.id || '');
+      } catch {
+        // Keep the last successfully loaded conversation list during temporary network errors.
+      }
+    }
+    const timer = window.setInterval(() => void refreshConversations(), 15000);
+    return () => { cancelled = true; window.clearInterval(timer); };
+  }, []);
+  useEffect(() => {
+    if (!selected) return;
+    let cancelled = false;
+    async function refreshMessages() {
+      try {
+        const r = await fetch(`/api/counseling/conversations/${selected}/messages`, { credentials: 'include' });
+        if (r.ok && !cancelled) setMessages(await r.json());
+      } catch {
+        // A later polling cycle will retry without interrupting the chat.
+      }
+    }
+    const timer = window.setInterval(() => void refreshMessages(), 5000);
+    return () => { cancelled = true; window.clearInterval(timer); };
+  }, [selected]);
   async function sendMessage(e: FormEvent) {
     e.preventDefault(); const content = draft.trim(); if (!content || !selected) return;
     const r = await fetch(`/api/counseling/conversations/${selected}/messages`, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content }) });
