@@ -225,3 +225,14 @@
 }
 
 @media(max-width:700px){.student-chart-heading{flex-wrap:wrap}.student-term-chart-layout{grid-template-columns:100px minmax(0,1fr);gap:10px}.student-term-donut{width:100px}.student-term-donut-center strong{font-size:19px}.student-term-switch button{padding:5px 6px;font-size:9px}}
+
+
+/* Keep the two student panels as separate cards; never paint their grid wrapper. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page > .students-main-grid{
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+}
