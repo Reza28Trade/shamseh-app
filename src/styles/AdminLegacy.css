@@ -788,3 +788,75 @@
   .admin-legacy-page *::before,
   .admin-legacy-page *::after{transition:none!important;animation:none!important}
 }
+
+
+/* Cohesive Shamseh palette for every admin module, including inline-styled legacy screens. */
+.admin-shell .admin-page-content .admin-legacy-page{
+  color:var(--admin-text)!important;
+  font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page > header,
+.admin-shell .admin-page-content .admin-legacy-page > div[style*="linear-gradient"],
+.admin-shell .admin-page-content .admin-legacy-page > div[style*="rgba(14,14,17"],
+.admin-shell .admin-page-content .admin-legacy-page > div[style*="rgba(14, 14, 17"]{
+  background:var(--admin-card)!important;
+  background-image:linear-gradient(135deg,var(--admin-card),var(--admin-inner))!important;
+  border-color:var(--admin-border)!important;
+  box-shadow:var(--admin-shadow)!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page section,
+.admin-shell .admin-page-content .admin-legacy-page form,
+.admin-shell .admin-page-content .admin-legacy-page article{
+  border-color:var(--admin-border)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page input,
+.admin-shell .admin-page-content .admin-legacy-page select,
+.admin-shell .admin-page-content .admin-legacy-page textarea{
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:10px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page input::placeholder,
+.admin-shell .admin-page-content .admin-legacy-page textarea::placeholder{color:var(--admin-sub)!important;opacity:1}
+.admin-shell .admin-page-content .admin-legacy-page button{
+  font-family:inherit;
+  transition:background-color .16s,border-color .16s,color .16s,transform .16s;
+}
+.admin-shell .admin-page-content .admin-legacy-page button:focus-visible{
+  outline:2px solid var(--admin-accent)!important;outline-offset:2px;
+}
+.admin-shell .admin-page-content .admin-legacy-page button[style*="#ff3366"],
+.admin-shell .admin-page-content .admin-legacy-page button[style*="#ff6688"],
+.admin-shell .admin-page-content .admin-legacy-page button[style*="#38bdf8"]{
+  border-color:var(--admin-accent)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page h2,
+.admin-shell .admin-page-content .admin-legacy-page h3{color:var(--admin-text)}
+.admin-shell .admin-page-content .admin-legacy-page p{line-height:1.9}
+.admin-finance-page > header,
+.admin-public-content-page > header{
+  padding:20px 22px!important;
+  border-radius:17px!important;
+}
+.admin-finance-page > header h2,
+.admin-public-content-page > header h2{font-size:20px!important;letter-spacing:-.2px}
+.admin-finance-page > section,
+.admin-public-content-page > form,
+.admin-public-content-page > div[style*="grid"]{
+  border-radius:15px!important;
+}
+.admin-finance-page table,
+.admin-public-content-page table{width:100%;border-collapse:separate;border-spacing:0}
+.admin-finance-page th,
+.admin-public-content-page th{background:var(--admin-inner)!important;color:var(--admin-sub)!important}
+.admin-finance-page td,
+.admin-public-content-page td{border-bottom:1px solid var(--admin-border)!important;color:var(--admin-text)}
+@media(max-width:700px){
+  .admin-finance-page > header,
+  .admin-public-content-page > header{padding:17px!important}
+  .admin-finance-page{gap:13px!important}
+  .admin-public-content-page{gap:13px!important}
+  .admin-finance-page > section{padding:12px!important}
+}
