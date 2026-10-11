@@ -609,7 +609,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                     </div>
                     <div style={{backgroundColor:cardBg,border:`1px solid ${borderColor}`,padding:'18px'}}>
                       <div style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'10px'}}><CalendarClock size={16} color={accent}/><div><div style={{color:accent,fontSize:'9px',fontWeight:900}}>پشتیبانی و مشاوره</div><h3 style={{color:textColor,fontSize:'17px',fontWeight:900,margin:0}}>مشاوره</h3></div></div>
-                      {counselingRequests.length>0?<div style={{backgroundColor:innerCardBg,borderRadius:'11px',padding:'11px',color:textColor,fontSize:'10px',fontWeight:800}}>{formatCounselingDate(counselingRequests[0].slot.startAt)}</div>:<div style={{color:subText,fontSize:'10px',lineHeight:1.8}}>برای دریافت مشاوره، یک زمان مناسب از بخش مشاوره انتخاب کنید.</div>}
+                      <div style={{color:subText,fontSize:'10px',lineHeight:1.8}}>پیام‌های خود را برای مشاور ارسال کنید و پاسخ را در گفت‌وگوی آنلاین ببینید.</div>
                       <button type="button" onClick={() => setActiveTab('counseling')} style={{marginTop:'10px',border:'none',background:'transparent',color:accent,padding:0,fontSize:'10px',fontWeight:900,cursor:'pointer'}}>ورود به مشاوره ←</button>
                     </div>
                   </div>
