@@ -6,7 +6,7 @@ import { CourseCatalogPage, RulesPage, ExamAnalysisPage } from '../public/Public
 interface AuthUser {
   id: string;
   username: string;
-  role: 'SUPER_ADMIN' | 'STAFF' | 'STUDENT';
+  role: 'SUPER_ADMIN' | 'STAFF' | 'STUDENT' | 'COUNSELOR';
   studentId: string | null;
   student?: { fullName: string; nationalId: string } | null;
 }
@@ -80,7 +80,7 @@ export const Login: React.FC<LoginProps> = ({
         });
         if (!response.ok) throw new Error('login');
         const data = await response.json();
-        if (data.user?.role !== 'SUPER_ADMIN' && data.user?.role !== 'STAFF') throw new Error('role');
+        if (data.user?.role !== 'SUPER_ADMIN' && data.user?.role !== 'STAFF' && data.user?.role !== 'COUNSELOR') throw new Error('role');
         onAdminLoginSuccess(data.user);
       } catch {
         setError('نام کاربری یا رمز عبور ادمین اشتباه است.');
