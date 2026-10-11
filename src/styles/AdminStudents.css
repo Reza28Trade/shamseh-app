@@ -182,7 +182,7 @@
   min-width:0;
   border:1px solid var(--admin-border);
   border-radius:18px;
-  box-shadow:0 12px 28px rgba(0,0,0,.12);
+  box-shadow:var(--admin-shadow);
 }
 .admin-students-page .student-chart-card{
   background:linear-gradient(145deg,color-mix(in srgb,var(--students-blue) 8%,var(--admin-card)),var(--admin-card) 62%);
