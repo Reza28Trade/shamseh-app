@@ -169,20 +169,72 @@ export class CounselingChatService {
   }
 
   async getMessages(user: AuthenticatedUser, conversationId: string) {
-    const conversation = await this.authorizeConversation(user, conversationId);
-    const messages = await this.prisma.counselingMessage.findMany({ where: { conversationId: conversation.id }, orderBy: { createdAt: 'asc' }, select: { id: true, content: true, senderUserId: true, readAt: true, createdAt: true } });
-    // Only the actual conversation participants should affect read receipts.
-    // Admin history review is read-only and must not mark participant messages as read.
-    if (user.role === 'STUDENT' || user.role === 'COUNSELOR') {
-      await this.prisma.counselingMessage.updateMany({
-        where: { conversationId, senderUserId: { not: user.id }, readAt: null },
-        data: { readAt: new Date() },
-      });
+    // Authorize, read, and update read receipts in one serializable transaction.
+    // Keeping authorization inside the transaction prevents a transfer between
+    // the permission check and the message query from exposing the old transcript.
+    try {
+      return await this.prisma.$transaction(async tx => {
+        const conversation = await tx.counselingConversation.findUnique({
+          where: { id: conversationId },
+          select: { id: true, studentId: true, counselorId: true },
+        });
+        if (!conversation) throw new NotFoundException('Conversation not found');
+
+        if (user.role === 'STUDENT') {
+          const active = user.studentId === conversation.studentId
+            ? await tx.counselingAssignment.findFirst({
+                where: { studentId: user.studentId, counselorId: conversation.counselorId, endedAt: null },
+                select: { id: true },
+              })
+            : null;
+          if (!active) throw new ForbiddenException('This is not your current counselor conversation');
+        } else if (user.role === 'COUNSELOR') {
+          const profile = await tx.counselorProfile.findUnique({
+            where: { userId: user.id },
+            select: { id: true, isActive: true },
+          });
+          const active = profile?.isActive && profile.id === conversation.counselorId
+            ? await tx.counselingAssignment.findFirst({
+                where: { studentId: conversation.studentId, counselorId: profile.id, endedAt: null },
+                select: { id: true },
+              })
+            : null;
+          if (!active) throw new ForbiddenException('Conversation is not currently assigned to you');
+        } else {
+          this.requireAdmin(user);
+        }
+
+        const messages = await tx.counselingMessage.findMany({
+          where: { conversationId: conversation.id },
+          orderBy: { createdAt: 'asc' },
+          select: { id: true, content: true, senderUserId: true, readAt: true, createdAt: true },
+        });
+
+        // Only participants affect read receipts; admin history review is read-only.
+        if (user.role === 'STUDENT' || user.role === 'COUNSELOR') {
+          await tx.counselingMessage.updateMany({
+            where: { conversationId, senderUserId: { not: user.id }, readAt: null },
+            data: { readAt: new Date() },
+          });
+        }
+        if (user.role === 'SUPER_ADMIN' || user.role === 'STAFF') {
+          await tx.auditLog.create({
+            data: {
+              actorUserId: user.id,
+              action: 'COUNSELING_HISTORY_VIEWED',
+              entityType: 'CounselingConversation',
+              entityId: conversationId,
+            },
+          });
+        }
+        return messages;
+      }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    } catch (error: any) {
+      if (error?.code === 'P2034') {
+        throw new ConflictException('The conversation assignment changed concurrently. Reload and try again.');
+      }
+      throw error;
     }
-    if (user.role === 'SUPER_ADMIN' || user.role === 'STAFF') {
-      await this.prisma.auditLog.create({ data: { actorUserId: user.id, action: 'COUNSELING_HISTORY_VIEWED', entityType: 'CounselingConversation', entityId: conversationId } });
-    }
-    return messages;
   }
 
   async sendMessage(user: AuthenticatedUser, conversationId: string, contentInput: string) {
