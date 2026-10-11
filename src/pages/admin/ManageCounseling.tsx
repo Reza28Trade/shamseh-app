@@ -1,75 +1,93 @@
-import React, { useEffect, useState } from 'react';
-import { compareJalali, getTehranTodayJalali, jalaliMonthLength, jalaliToTehranDate, toGregorian } from '../../utils/jalali';
-import { CalendarClock, CheckCircle, Plus, RefreshCw, Trash2, User, XCircle } from 'lucide-react';
+import React, { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { MessageSquare, Plus, RefreshCw, Search, ShieldCheck, UserRound, Users, ArrowLeftRight, History, Eye, EyeOff } from 'lucide-react';
 
-type SlotStatus = 'AVAILABLE' | 'BOOKED' | 'DISABLED';
-type RequestStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'COMPLETED' | 'CANCELLED';
-
-interface Slot {
+type Counselor = {
   id: string;
-  startAt: string;
-  status: SlotStatus;
-  request?: {
-    id: string;
-    status: RequestStatus;
-    student: { id: string; fullName: string; nationalId: string };
-  } | null;
-}
-
-interface Request {
-  id: string;
-  status: RequestStatus;
+  displayName: string;
+  bio: string | null;
+  isActive: boolean;
   createdAt: string;
-  student: { id: string; fullName: string; nationalId: string; phone: string };
-  slot: { id: string; startAt: string; status: SlotStatus };
-}
-
-const statusLabel: Record<SlotStatus, string> = {
-  AVAILABLE: 'آزاد',
-  BOOKED: 'رزرو شده',
-  DISABLED: 'غیرفعال',
+  user: { id: string; username: string; status: 'ACTIVE' | 'INACTIVE' };
 };
-
-const requestLabel: Record<RequestStatus, string> = {
-  PENDING: 'در انتظار',
-  APPROVED: 'تأیید شده',
-  REJECTED: 'رد شده',
-  COMPLETED: 'انجام شده',
-  CANCELLED: 'لغو شده',
+type StudentOption = { id: string; fullName: string; nationalId: string; academicLevel?: string | null };
+type Assignment = {
+  id: string;
+  studentId: string;
+  counselorId: string;
+  startedAt: string;
+  endedAt: string | null;
+  student: { id: string; fullName: string; nationalId: string };
+  counselor: { id: string; displayName: string };
+  assignedBy: { id: string; username: string };
 };
+type Conversation = {
+  id: string;
+  studentId: string;
+  counselorId: string;
+  updatedAt: string;
+  student: { id: string; fullName: string; nationalId: string };
+  counselor: { id: string; displayName: string };
+  messages: { id: string; content: string; senderUserId: string; readAt: string | null; createdAt: string }[];
+  _count: { messages: number };
+};
+type Message = { id: string; content: string; senderUserId: string; readAt: string | null; createdAt: string };
 
-const slotStyle: Record<SlotStatus, { color: string; bg: string }> = {
-  AVAILABLE: { color: '#34d399', bg: 'rgba(52,211,153,.1)' },
-  BOOKED: { color: '#38bdf8', bg: 'rgba(56,189,248,.1)' },
-  DISABLED: { color: '#f87171', bg: 'rgba(248,113,113,.1)' },
+const inputStyle: React.CSSProperties = {
+  width: '100%', minWidth: 0, padding: '10px 12px', border: '1px solid var(--admin-border)',
+  borderRadius: 10, background: 'var(--admin-control)', color: 'var(--admin-text)', font: 'inherit', fontSize: 12,
+};
+const buttonStyle: React.CSSProperties = {
+  display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '9px 12px',
+  border: '1px solid var(--admin-brand-border)', borderRadius: 10, background: 'var(--admin-accent-soft)',
+  color: 'var(--admin-text)', fontSize: 11, fontWeight: 800, cursor: 'pointer',
+};
+const cardStyle: React.CSSProperties = {
+  minWidth: 0, padding: 18, border: '1px solid var(--admin-border)', borderRadius: 16,
+  background: 'var(--admin-card)',
 };
 
 export const ManageCounseling: React.FC = () => {
-  const [slots, setSlots] = useState<Slot[]>([]);
-  const [requests, setRequests] = useState<Request[]>([]);
+  const [counselors, setCounselors] = useState<Counselor[]>([]);
+  const [students, setStudents] = useState<StudentOption[]>([]);
+  const [assignments, setAssignments] = useState<Assignment[]>([]);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [selectedConversation, setSelectedConversation] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-  const [calendarOpen, setCalendarOpen] = useState(false);
-  const today = getTehranTodayJalali();
-  const [calendarMonth, setCalendarMonth] = useState({ jy: today.jy, jm: today.jm });
-  const [selectedDate, setSelectedDate] = useState<{ jy: number; jm: number; jd: number } | null>(null);
-  const [hour, setHour] = useState('10');
-  const [minute, setMinute] = useState('00');
+  const [notice, setNotice] = useState('');
+  const [search, setSearch] = useState('');
+  const [studentId, setStudentId] = useState('');
+  const [counselorId, setCounselorId] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
+  const [bio, setBio] = useState('');
+  const [showCreate, setShowCreate] = useState(false);
+  const [messagesLoading, setMessagesLoading] = useState(false);
 
   const load = async () => {
     setLoading(true);
     setError('');
     try {
-      const [slotsRes, requestsRes] = await Promise.all([
-        fetch('/api/counseling/slots', { credentials: 'include' }),
-        fetch('/api/admin/counseling/requests', { credentials: 'include' }),
+      const responses = await Promise.all([
+        fetch('/api/admin/counselors', { credentials: 'include' }),
+        fetch('/api/admin/students', { credentials: 'include' }),
+        fetch('/api/admin/counseling/assignments', { credentials: 'include' }),
+        fetch('/api/counseling/conversations', { credentials: 'include' }),
       ]);
-      if (!slotsRes.ok || !requestsRes.ok) throw new Error('دریافت اطلاعات مشاوره انجام نشد.');
-      setSlots(await slotsRes.json());
-      setRequests(await requestsRes.json());
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'دریافت اطلاعات مشاوره انجام نشد.');
+      if (responses.some(response => !response.ok)) throw new Error('دریافت اطلاعات مدیریت مشاوره انجام نشد.');
+      const [counselorData, studentData, assignmentData, conversationData] = await Promise.all(responses.map(response => response.json()));
+      setCounselors(counselorData);
+      setStudents(studentData.map((student: any) => ({
+        id: student.id, fullName: student.fullName, nationalId: student.nationalId, academicLevel: student.academicLevel ?? null,
+      })));
+      setAssignments(assignmentData);
+      setConversations(conversationData);
+      setSelectedConversation(current => conversationData.some((c: Conversation) => c.id === current) ? current : '');
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'دریافت اطلاعات انجام نشد.');
     } finally {
       setLoading(false);
     }
@@ -77,239 +95,169 @@ export const ManageCounseling: React.FC = () => {
 
   useEffect(() => { void load(); }, []);
 
-  const openCalendar = () => {
-    const base = selectedDate || { jy: today.jy, jm: today.jm, jd: today.jd };
-    setCalendarMonth({ jy: base.jy, jm: base.jm });
-    setCalendarOpen(true);
-  };
+  const activeAssignments = useMemo(() => assignments.filter(item => !item.endedAt), [assignments]);
+  const filteredConversations = useMemo(() => {
+    const q = search.trim().toLocaleLowerCase();
+    if (!q) return conversations;
+    return conversations.filter(item =>
+      item.student.fullName.toLocaleLowerCase().includes(q) ||
+      item.student.nationalId.includes(q) ||
+      item.counselor.displayName.toLocaleLowerCase().includes(q) ||
+      (item.messages[0]?.content || '').toLocaleLowerCase().includes(q)
+    );
+  }, [conversations, search]);
+  const selected = conversations.find(item => item.id === selectedConversation) ?? null;
 
-  const selectDay = (jd: number) => {
-    setSelectedDate({ ...calendarMonth, jd });
-  };
-
-  const createSlot = async () => {
-    if (!selectedDate) {
-      setError('ابتدا تاریخ مشاوره را انتخاب کنید.');
-      return;
-    }
-    const h = Number(hour);
-    const m = Number(minute);
-    if (h < 0 || h > 23 || m < 0 || m > 59) {
-      setError('ساعت واردشده معتبر نیست.');
-      return;
-    }
-    const date = jalaliToTehranDate(selectedDate.jy, selectedDate.jm, selectedDate.jd, h, m);
-    if (date <= new Date()) {
-      setError('زمان مشاوره باید در آینده باشد.');
-      return;
-    }
-    setSaving(true);
-    setError('');
+  async function createCounselor(event: FormEvent) {
+    event.preventDefault();
+    setSaving(true); setError(''); setNotice('');
     try {
-      const response = await fetch('/api/admin/counseling/slots', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ startAt: date.toISOString() }),
+      const response = await fetch('/api/admin/counselors', {
+        method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: username.trim(), password, displayName: displayName.trim(), bio: bio.trim() || undefined }),
       });
-      if (!response.ok) {
-        const data = await response.json().catch(() => null);
-        throw new Error(data?.message || 'ساخت زمان مشاوره انجام نشد.');
-      }
-      setSelectedDate(null);
-      setCalendarOpen(false);
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'ساخت حساب مشاور انجام نشد.');
+      setUsername(''); setPassword(''); setDisplayName(''); setBio(''); setShowCreate(false);
+      setNotice('حساب مشاور ساخته شد.');
       await load();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'ساخت زمان مشاوره انجام نشد.');
-    } finally {
-      setSaving(false);
-    }
-  };
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'ساخت حساب مشاور انجام نشد.');
+    } finally { setSaving(false); }
+  }
 
-  const updateSlot = async (slotId: string, status: SlotStatus) => {
-    setError('');
+  async function toggleCounselor(counselor: Counselor) {
+    const isActive = !counselor.isActive;
+    setError(''); setNotice('');
     try {
-      const response = await fetch(`/api/admin/counseling/slots/${slotId}`, {
-        method: 'PATCH', credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status }),
+      const response = await fetch(`/api/admin/counselors/${counselor.id}`, {
+        method: 'PATCH', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isActive }),
       });
-      if (!response.ok) {
-        const data = await response.json().catch(() => null);
-        throw new Error(data?.message || 'تغییر وضعیت زمان انجام نشد.');
-      }
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'تغییر وضعیت مشاور انجام نشد.');
+      setNotice(isActive ? 'مشاور فعال شد.' : 'مشاور غیرفعال شد؛ سوابق گفتگو حفظ شده‌اند.');
       await load();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'تغییر وضعیت زمان انجام نشد.');
-    }
-  };
+    } catch (e) { setError(e instanceof Error ? e.message : 'تغییر وضعیت انجام نشد.'); }
+  }
 
-  const removeSlot = async (slotId: string) => {
-    if (!window.confirm('این زمان مشاوره حذف شود؟')) return;
+  async function assignStudent(event: FormEvent) {
+    event.preventDefault();
+    if (!studentId || !counselorId) { setError('هنرجو و مشاور را انتخاب کنید.'); return; }
+    setSaving(true); setError(''); setNotice('');
     try {
-      const response = await fetch(`/api/admin/counseling/slots/${slotId}`, {
-        method: 'DELETE', credentials: 'include',
+      const response = await fetch('/api/admin/counseling/assignments', {
+        method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ studentId, counselorId }),
       });
-      if (!response.ok) {
-        const data = await response.json().catch(() => null);
-        throw new Error(data?.message || 'حذف زمان انجام نشد.');
-      }
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'تخصیص یا انتقال هنرجو انجام نشد.');
+      setNotice('تخصیص مشاور ثبت شد. تاریخچه تخصیص قبلی حفظ شده است.');
+      setStudentId(''); setCounselorId('');
       await load();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'حذف زمان انجام نشد.');
-    }
-  };
+    } catch (e) { setError(e instanceof Error ? e.message : 'تخصیص هنرجو انجام نشد.'); }
+    finally { setSaving(false); }
+  }
 
-  const updateRequest = async (requestId: string, status: RequestStatus) => {
+  async function openConversation(id: string) {
+    setSelectedConversation(id); setMessagesLoading(true); setError('');
     try {
-      const response = await fetch(`/api/admin/counseling/requests/${requestId}`, {
-        method: 'PATCH', credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status }),
-      });
-      if (!response.ok) {
-        const data = await response.json().catch(() => null);
-        throw new Error(data?.message || 'تغییر وضعیت درخواست انجام نشد.');
-      }
-      await load();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'تغییر وضعیت درخواست انجام نشد.');
-    }
-  };
+      const response = await fetch(`/api/counseling/conversations/${id}/messages`, { credentials: 'include' });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'دریافت تاریخچه گفتگو انجام نشد.');
+      setMessages(data);
+    } catch (e) { setError(e instanceof Error ? e.message : 'دریافت پیام‌ها انجام نشد.'); setMessages([]); }
+    finally { setMessagesLoading(false); }
+  }
 
-  const formatDate = (value: string) => new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
-    dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Tehran',
-  }).format(new Date(value));
-
-  const monthNames = ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
-  const weekdays = ['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه'];
-  const firstGregorian = toGregorian(calendarMonth.jy, calendarMonth.jm, 1);
-  const firstWeekday = (new Date(Date.UTC(firstGregorian.gy, firstGregorian.gm - 1, firstGregorian.gd)).getUTCDay() + 1) % 7;
-  const days = Array.from({ length: firstWeekday + jalaliMonthLength(calendarMonth.jy, calendarMonth.jm) }, (_, i) => i < firstWeekday ? null : i - firstWeekday + 1);
-
-  const shiftMonth = (delta: number) => {
-    let jy = calendarMonth.jy;
-    let jm = calendarMonth.jm + delta;
-    if (jm < 1) { jm = 12; jy -= 1; }
-    if (jm > 12) { jm = 1; jy += 1; }
-    setCalendarMonth({ jy, jm });
-  };
-
-  const isPast = (jd: number) => compareJalali({ jy: calendarMonth.jy, jm: calendarMonth.jm, jd }, today) < 0;
-  const isSelected = (jd: number) => selectedDate?.jy === calendarMonth.jy && selectedDate.jm === calendarMonth.jm && selectedDate.jd === jd;
+  const dateLabel = (value: string) => new Intl.DateTimeFormat('fa-IR', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Tehran' }).format(new Date(value));
+  const levelLabel = (level?: string | null) => level === 'MASTER' ? 'ارشد' : level === 'DOCTORATE' ? 'دکتری' : 'بدون مقطع';
 
   return (
-    <div className="admin-legacy-page admin-counseling-page" style={{ backgroundColor: '#0e0e11', border: '1px solid #222228', borderRadius: '20px', padding: '32px', color: '#fff', direction: 'rtl' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', flexWrap: 'wrap', marginBottom: '24px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 18, color: 'var(--admin-text)', direction: 'rtl' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
         <div>
-          <h2 style={{ fontSize: '18px', fontWeight: 900, margin: 0, display: 'flex', alignItems: 'center', gap: '9px' }}>
-            <CalendarClock size={20} color="#38bdf8" /> مدیریت مشاوره
-          </h2>
-          <p style={{ color: '#888', fontSize: '11px', margin: '7px 0 0' }}>ساخت زمان‌های مشاوره و مدیریت درخواست هنرجویان</p>
+          <h2 style={{ margin: 0, fontSize: 17, fontWeight: 900 }}>مدیریت مشاوران و گفت‌وگوها</h2>
+          <p style={{ margin: '6px 0 0', color: 'var(--admin-sub)', fontSize: 11 }}>تخصیص هنرجو، انتقال مشاور و نظارت بر تاریخچه گفت‌وگوهای آنلاین</p>
         </div>
-        <button onClick={() => void load()} disabled={loading} style={{ background: 'rgba(255,255,255,.06)', color: '#fff', border: '1px solid rgba(255,255,255,.1)', padding: '9px 13px', borderRadius: '9px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px' }}>
-          <RefreshCw size={14} /> بروزرسانی
-        </button>
+        <button type="button" onClick={() => void load()} disabled={loading} style={buttonStyle}><RefreshCw size={14} /> بروزرسانی</button>
       </div>
 
-      {error && <div style={{ background: 'rgba(239,68,68,.1)', color: '#f87171', padding: '12px', borderRadius: '10px', fontSize: '11px', marginBottom: '16px' }}>{error}</div>}
+      {error && <div role="alert" style={{ padding: 12, borderRadius: 10, color: '#d92d20', background: 'rgba(217,45,32,.08)', fontSize: 12 }}>{error}</div>}
+      {notice && <div role="status" style={{ padding: 12, borderRadius: 10, color: '#16805d', background: 'rgba(22,128,93,.09)', fontSize: 12 }}>{notice}</div>}
 
-      <section style={{ background: '#141419', border: '1px solid #222228', borderRadius: '16px', padding: '18px', marginBottom: '22px' }}>
-        <h3 style={{ fontSize: '13px', fontWeight: 800, margin: '0 0 14px', display: 'flex', alignItems: 'center', gap: '7px' }}>
-          <Plus size={16} color="#34d399" /> ایجاد زمان جدید
-        </h3>
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
-          <button type="button" onClick={openCalendar} style={{ flex: 1, minWidth: '220px', background: '#1a1a20', color: '#fff', border: '1px solid #333', padding: '11px 12px', borderRadius: '9px', fontSize: '12px', textAlign: 'right', cursor: 'pointer' }}>
-            {selectedDate ? `${selectedDate.jd} ${monthNames[selectedDate.jm - 1]} ${selectedDate.jy}` : 'انتخاب تاریخ شمسی'}
-          </button>
-          <div style={{ display: 'flex', gap: '7px', alignItems: 'center' }}>
-            <select value={hour} onChange={e => setHour(e.target.value)} style={{ background: '#1a1a20', color: '#fff', border: '1px solid #333', padding: '10px', borderRadius: '9px', fontSize: '12px' }}>
-              {Array.from({ length: 24 }, (_, i) => <option key={i} value={String(i).padStart(2,'0')}>{String(i).padStart(2,'0')}</option>)}
-            </select>
-            <span style={{ color: '#888', fontWeight: 800 }}>:</span>
-            <select value={minute} onChange={e => setMinute(e.target.value)} style={{ background: '#1a1a20', color: '#fff', border: '1px solid #333', padding: '10px', borderRadius: '9px', fontSize: '12px' }}>
-              {['00','15','30','45'].map(v => <option key={v} value={v}>{v}</option>)}
-            </select>
-          </div>
-          <button onClick={() => void createSlot()} disabled={saving} style={{ background: 'rgba(52,211,153,.15)', color: '#34d399', border: '1px solid rgba(52,211,153,.3)', padding: '10px 18px', borderRadius: '9px', fontSize: '11px', fontWeight: 800, cursor: 'pointer' }}>
-            {saving ? 'در حال ثبت...' : 'ثبت زمان مشاوره'}
-          </button>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: 12 }}>
+        {[
+          { label: 'مشاوران فعال', value: counselors.filter(item => item.isActive).length, icon: UserRound },
+          { label: 'هنرجوهای دارای مشاور', value: new Set(activeAssignments.map(item => item.studentId)).size, icon: Users },
+          { label: 'پرونده‌های گفتگو', value: conversations.length, icon: MessageSquare },
+        ].map(item => { const Icon = item.icon; return <div key={item.label} style={{ ...cardStyle, display: 'flex', alignItems: 'center', gap: 12, padding: 15 }}><div style={{ width: 38, height: 38, display: 'grid', placeItems: 'center', borderRadius: 11, color: 'var(--admin-accent)', background: 'var(--admin-accent-soft)' }}><Icon size={18}/></div><div><div style={{ color: 'var(--admin-sub)', fontSize: 10 }}>{item.label}</div><strong style={{ display: 'block', marginTop: 4, fontSize: 20 }}>{item.value}</strong></div></div>; })}
+      </div>
+
+      <section style={cardStyle}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 14 }}>
+          <h3 style={{ margin: 0, fontSize: 14, fontWeight: 900 }}>حساب مشاوران</h3>
+          <button type="button" onClick={() => setShowCreate(value => !value)} style={buttonStyle}><Plus size={14}/>{showCreate ? 'بستن فرم' : 'تعریف مشاور جدید'}</button>
         </div>
-      </section>
-
-      {calendarOpen && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.65)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }} onClick={() => setCalendarOpen(false)}>
-          <div onClick={e => e.stopPropagation()} style={{ width: 'min(390px, 100%)', background: '#141419', border: '1px solid #333', borderRadius: '18px', padding: '18px', boxShadow: '0 20px 60px rgba(0,0,0,.45)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-              <button onClick={() => shiftMonth(1)} style={{ background: '#1d1d24', color: '#fff', border: '1px solid #333', borderRadius: '8px', width: '38px', height: '38px', cursor: 'pointer' }}>‹</button>
-              <strong style={{ fontSize: '14px' }}>{monthNames[calendarMonth.jm - 1]} {calendarMonth.jy}</strong>
-              <button onClick={() => shiftMonth(-1)} style={{ background: '#1d1d24', color: '#fff', border: '1px solid #333', borderRadius: '8px', width: '38px', height: '38px', cursor: 'pointer' }}>›</button>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '5px', textAlign: 'center' }}>
-              {weekdays.map(day => <div key={day} style={{ color: '#888', fontSize: '10px', padding: '6px 0' }}>{day}</div>)}
-              {days.map((jd, i) => jd === null ? <div key={`empty-${i}`} /> : (
-                <button key={jd} disabled={isPast(jd)} onClick={() => selectDay(jd)} style={{
-                  height: '40px', borderRadius: '9px', border: isSelected(jd) ? '1px solid #38bdf8' : '1px solid transparent',
-                  background: isSelected(jd) ? 'rgba(56,189,248,.16)' : 'transparent',
-                  color: isPast(jd) ? '#444' : isSelected(jd) ? '#38bdf8' : '#fff',
-                  cursor: isPast(jd) ? 'not-allowed' : 'pointer', fontSize: '12px', fontWeight: isSelected(jd) ? 900 : 500,
-                }}>{jd}</button>
-              ))}
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', borderTop: '1px solid #26262d', paddingTop: '14px' }}>
-              <span style={{ color: '#888', fontSize: '10px' }}>روزهای گذشته قابل انتخاب نیستند</span>
-              <button onClick={() => setCalendarOpen(false)} style={{ background: '#38bdf8', color: '#071018', border: 0, padding: '8px 15px', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', fontSize: '11px' }}>تأیید تاریخ</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <section style={{ marginBottom: '26px' }}>
-        <h3 style={{ fontSize: '14px', fontWeight: 900, margin: '0 0 12px' }}>زمان‌های مشاوره</h3>
-        {loading ? <div style={{ color: '#888', padding: '30px', textAlign: 'center', fontSize: '12px' }}>در حال دریافت...</div> : slots.length === 0 ? <div style={{ color: '#888', padding: '30px', textAlign: 'center', fontSize: '12px', background: '#141419', borderRadius: '14px' }}>هنوز زمانی ایجاد نشده است.</div> : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {slots.map(slot => {
-              return <div key={slot.id} style={{ background: '#141419', border: '1px solid #222228', borderRadius: '14px', padding: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '14px', flexWrap: 'wrap' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  <strong style={{ fontSize: '13px' }}>{formatDate(slot.startAt)}</strong>
-                  {slot.request?.student && <span style={{ color: '#38bdf8', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '5px' }}><User size={13} /> {slot.request.student.fullName} — {slot.request.student.nationalId}</span>}
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '7px', flexWrap: 'wrap' }}>
-                  <span style={{ background: slotStyle[slot.status].bg, color: slotStyle[slot.status].color, padding: '6px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: 800 }}>{statusLabel[slot.status]}</span>
-                  {slot.status === 'AVAILABLE' && <button onClick={() => void updateSlot(slot.id, 'DISABLED')} style={{ background: 'rgba(248,113,113,.1)', color: '#f87171', border: '1px solid rgba(248,113,113,.2)', padding: '6px 9px', borderRadius: '8px', cursor: 'pointer', fontSize: '10px' }}>غیرفعال</button>}
-                  {slot.status === 'DISABLED' && <button onClick={() => void updateSlot(slot.id, 'AVAILABLE')} style={{ background: 'rgba(52,211,153,.1)', color: '#34d399', border: '1px solid rgba(52,211,153,.2)', padding: '6px 9px', borderRadius: '8px', cursor: 'pointer', fontSize: '10px' }}>فعال</button>}
-                  {slot.status !== 'BOOKED' && <button onClick={() => void removeSlot(slot.id)} style={{ background: 'rgba(239,68,68,.1)', color: '#f87171', border: '1px solid rgba(239,68,68,.2)', padding: '6px 9px', borderRadius: '8px', cursor: 'pointer' }}><Trash2 size={13} /></button>}
-                </div>
-              </div>;
-            })}
-          </div>
-        )}
-      </section>
-
-      <section>
-        <h3 style={{ fontSize: '14px', fontWeight: 900, margin: '0 0 12px' }}>درخواست‌های مشاوره</h3>
-        {requests.length === 0 ? <div style={{ color: '#888', padding: '30px', textAlign: 'center', fontSize: '12px', background: '#141419', borderRadius: '14px' }}>هنوز درخواستی ثبت نشده است.</div> : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {requests.map(req => <div key={req.id} style={{ background: '#141419', border: '1px solid #222228', borderRadius: '14px', padding: '15px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  <strong style={{ fontSize: '13px' }}>{req.student.fullName}</strong>
-                  <span style={{ color: '#888', fontSize: '10px' }}>کد ملی: {req.student.nationalId} · موبایل: {req.student.phone}</span>
-                  <span style={{ color: '#fbbf24', fontSize: '11px' }}>زمان: {formatDate(req.slot.startAt)}</span>
-                </div>
-                <span style={{ fontSize: '10px', fontWeight: 800, padding: '6px 10px', borderRadius: '8px', background: 'rgba(255,255,255,.06)', color: '#ddd' }}>{requestLabel[req.status]}</span>
+        {showCreate && <form onSubmit={createCounselor} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))', gap: 10, padding: 14, marginBottom: 16, borderRadius: 12, background: 'var(--admin-inner)' }}>
+          <label style={{ fontSize: 11 }}>نام نمایشی<input required value={displayName} onChange={e => setDisplayName(e.target.value)} style={{ ...inputStyle, display: 'block', marginTop: 6 }} /></label>
+          <label style={{ fontSize: 11 }}>نام کاربری<input required value={username} onChange={e => setUsername(e.target.value)} autoComplete="off" style={{ ...inputStyle, display: 'block', marginTop: 6 }} /></label>
+          <label style={{ fontSize: 11 }}>رمز عبور (حداقل ۱۰ نویسه)<input required minLength={10} type="password" value={password} onChange={e => setPassword(e.target.value)} autoComplete="new-password" style={{ ...inputStyle, display: 'block', marginTop: 6 }} /></label>
+          <label style={{ fontSize: 11 }}>توضیح اختیاری<input value={bio} onChange={e => setBio(e.target.value)} style={{ ...inputStyle, display: 'block', marginTop: 6 }} /></label>
+          <div style={{ display: 'flex', alignItems: 'end' }}><button disabled={saving} style={buttonStyle}>{saving ? 'در حال ثبت…' : 'ساخت حساب مشاور'}</button></div>
+        </form>}
+        {loading ? <p style={{ color: 'var(--admin-sub)', fontSize: 12 }}>در حال دریافت اطلاعات…</p> : counselors.length === 0 ? <p style={{ color: 'var(--admin-sub)', fontSize: 12 }}>هنوز حساب مشاوری تعریف نشده است.</p> : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 10 }}>
+            {counselors.map(counselor => <div key={counselor.id} style={{ border: '1px solid var(--admin-border)', borderRadius: 12, padding: 13, background: 'var(--admin-inner)' }}>
+              <div style={{ display: 'flex', alignItems: 'start', justifyContent: 'space-between', gap: 8 }}>
+                <div><strong style={{ fontSize: 13 }}>{counselor.displayName}</strong><div style={{ color: 'var(--admin-sub)', fontSize: 10, marginTop: 5 }}>نام کاربری: {counselor.user.username}</div></div>
+                <span style={{ color: counselor.isActive ? '#16805d' : '#b54708', background: counselor.isActive ? 'rgba(22,128,93,.1)' : 'rgba(181,71,8,.1)', borderRadius: 7, padding: '4px 7px', fontSize: 9, fontWeight: 800 }}>{counselor.isActive ? 'فعال' : 'غیرفعال'}</span>
               </div>
-              {req.status === 'PENDING' && <div style={{ display: 'flex', gap: '8px', marginTop: '12px', flexWrap: 'wrap' }}>
-                <button onClick={() => void updateRequest(req.id, 'APPROVED')} style={{ background: 'rgba(52,211,153,.15)', color: '#34d399', border: '1px solid rgba(52,211,153,.3)', padding: '7px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '10px', fontWeight: 800 }}><CheckCircle size={13} style={{ verticalAlign: 'middle' }} /> تأیید</button>
-                <button onClick={() => void updateRequest(req.id, 'REJECTED')} style={{ background: 'rgba(239,68,68,.12)', color: '#f87171', border: '1px solid rgba(239,68,68,.25)', padding: '7px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '10px', fontWeight: 800 }}><XCircle size={13} style={{ verticalAlign: 'middle' }} /> رد</button>
-              </div>}
-              {req.status === 'APPROVED' && <div style={{ display: 'flex', gap: '8px', marginTop: '12px', flexWrap: 'wrap' }}>
-                <button onClick={() => void updateRequest(req.id, 'COMPLETED')} style={{ background: 'rgba(52,211,153,.15)', color: '#34d399', border: '1px solid rgba(52,211,153,.3)', padding: '7px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '10px', fontWeight: 800 }}>ثبت انجام جلسه</button>
-                <button onClick={() => void updateRequest(req.id, 'CANCELLED')} style={{ background: 'rgba(239,68,68,.12)', color: '#f87171', border: '1px solid rgba(239,68,68,.25)', padding: '7px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '10px' }}>لغو</button>
-              </div>}
+              {counselor.bio && <p style={{ margin: '8px 0 0', color: 'var(--admin-sub)', fontSize: 11 }}>{counselor.bio}</p>}
+              <button type="button" onClick={() => void toggleCounselor(counselor)} style={{ ...buttonStyle, marginTop: 12, borderColor: 'var(--admin-border)', background: 'var(--admin-card)' }}>{counselor.isActive ? <EyeOff size={13}/> : <Eye size={13}/>} {counselor.isActive ? 'غیرفعال‌سازی' : 'فعال‌سازی'}</button>
             </div>)}
           </div>
         )}
+      </section>
+
+      <section style={cardStyle}>
+        <h3 style={{ margin: '0 0 6px', fontSize: 14, fontWeight: 900 }}>تخصیص یا انتقال هنرجو</h3>
+        <p style={{ margin: '0 0 14px', color: 'var(--admin-sub)', fontSize: 11 }}>با انتخاب مشاور جدید، تخصیص قبلی پایان می‌یابد و سوابق آن حفظ می‌شود.</p>
+        <form onSubmit={assignStudent} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 10, alignItems: 'end' }}>
+          <label style={{ fontSize: 11 }}>هنرجو<select required value={studentId} onChange={e => setStudentId(e.target.value)} style={{ ...inputStyle, display: 'block', marginTop: 6 }}><option value="">انتخاب هنرجو</option>{students.map(student => <option key={student.id} value={student.id}>{student.fullName} · {student.nationalId} · {levelLabel(student.academicLevel)}</option>)}</select></label>
+          <label style={{ fontSize: 11 }}>مشاور فعال<select required value={counselorId} onChange={e => setCounselorId(e.target.value)} style={{ ...inputStyle, display: 'block', marginTop: 6 }}><option value="">انتخاب مشاور</option>{counselors.filter(item => item.isActive).map(item => <option key={item.id} value={item.id}>{item.displayName}</option>)}</select></label>
+          <button disabled={saving || loading || !studentId || !counselorId} style={{ ...buttonStyle, minHeight: 39 }}><ArrowLeftRight size={14}/>{saving ? 'در حال ثبت…' : 'ثبت تخصیص / انتقال'}</button>
+        </form>
+      </section>
+
+      <section style={cardStyle}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 14 }}>
+          <div><h3 style={{ margin: 0, fontSize: 14, fontWeight: 900 }}>نظارت بر گفت‌وگوها</h3><p style={{ margin: '5px 0 0', color: 'var(--admin-sub)', fontSize: 10 }}>ادمین می‌تواند تاریخچه را مشاهده کند؛ ارسال پیام از طرف ادمین غیرفعال است.</p></div>
+          <div style={{ position: 'relative', minWidth: 220, maxWidth: 340, flex: '1 1 240px' }}><Search size={14} style={{ position: 'absolute', right: 10, top: 12, color: 'var(--admin-sub)' }}/><input value={search} onChange={e => setSearch(e.target.value)} placeholder="جست‌وجوی هنرجو، مشاور یا پیام" style={{ ...inputStyle, paddingRight: 32 }}/></div>
+        </div>
+        {loading ? <p style={{ color: 'var(--admin-sub)', fontSize: 12 }}>در حال دریافت گفت‌وگوها…</p> : filteredConversations.length === 0 ? <p style={{ color: 'var(--admin-sub)', fontSize: 12 }}>گفت‌وگویی مطابق جست‌وجو پیدا نشد.</p> : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(240px, .85fr) minmax(0, 1.5fr)', gap: 12 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 500, overflowY: 'auto' }}>
+              {filteredConversations.map(item => <button key={item.id} type="button" onClick={() => void openConversation(item.id)} style={{ width: '100%', textAlign: 'right', padding: 12, borderRadius: 11, border: `1px solid ${selectedConversation === item.id ? 'var(--admin-accent)' : 'var(--admin-border)'}`, background: selectedConversation === item.id ? 'var(--admin-accent-soft)' : 'var(--admin-inner)', color: 'var(--admin-text)', cursor: 'pointer' }}>
+                <strong style={{ display: 'block', fontSize: 12 }}>{item.student.fullName}</strong><span style={{ display: 'block', color: 'var(--admin-sub)', fontSize: 10, marginTop: 4 }}>مشاور: {item.counselor.displayName}</span><span style={{ display: 'block', color: 'var(--admin-sub)', fontSize: 10, marginTop: 5 }}>{item._count.messages} پیام · {item.messages[0] ? dateLabel(item.messages[0].createdAt) : 'بدون پیام'}</span>
+                {item.messages[0] && <span style={{ display: 'block', fontSize: 10, marginTop: 7, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{item.messages[0].content}</span>}
+              </button>)}
+            </div>
+            <div style={{ minWidth: 0, border: '1px solid var(--admin-border)', borderRadius: 12, padding: 12, background: 'var(--admin-inner)' }}>
+              {!selected ? <div style={{ padding: 30, textAlign: 'center', color: 'var(--admin-sub)', fontSize: 12 }}><History size={22} style={{ marginBottom: 8 }}/><div>برای مشاهده تاریخچه، یک گفت‌وگو را انتخاب کنید.</div></div> : <>
+                <div style={{ paddingBottom: 10, borderBottom: '1px solid var(--admin-border)', marginBottom: 10 }}><strong style={{ fontSize: 12 }}>{selected.student.fullName}</strong><div style={{ color: 'var(--admin-sub)', fontSize: 10, marginTop: 4 }}>مشاور: {selected.counselor.displayName} · کد هنرجو: {selected.student.nationalId}</div></div>
+                <div style={{ maxHeight: 400, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 9 }}>
+                  {messagesLoading ? <p style={{ color: 'var(--admin-sub)', fontSize: 11 }}>در حال دریافت تاریخچه…</p> : messages.length === 0 ? <p style={{ color: 'var(--admin-sub)', fontSize: 11, textAlign: 'center', padding: 25 }}>هنوز پیامی ثبت نشده است.</p> : messages.map(message => <div key={message.id} style={{ border: '1px solid var(--admin-border)', borderRadius: 10, padding: 10, background: 'var(--admin-card)' }}><div style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', fontSize: 12, lineHeight: 1.8 }}>{message.content}</div><div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, marginTop: 7, color: 'var(--admin-sub)', fontSize: 9 }}><span>شناسه فرستنده: {message.senderUserId.slice(0, 8)}</span><time>{dateLabel(message.createdAt)}</time></div></div>)}
+                </div>
+              </>}
+            </div>
+          </div>
+        )}
+      </section>
+
+      <section style={cardStyle}>
+        <h3 style={{ display: 'flex', alignItems: 'center', gap: 7, margin: '0 0 12px', fontSize: 14, fontWeight: 900 }}><ShieldCheck size={16} color="var(--admin-accent)"/> تاریخچه تخصیص‌ها</h3>
+        {assignments.length === 0 ? <p style={{ color: 'var(--admin-sub)', fontSize: 11 }}>هنوز تخصیصی ثبت نشده است.</p> : <div style={{ overflowX: 'auto' }}><table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}><thead><tr>{['هنرجو','مشاور','شروع مسئولیت','پایان مسئولیت','ثبت‌کننده'].map(label => <th key={label} style={{ textAlign: 'right', padding: '10px 8px', color: 'var(--admin-sub)', borderBottom: '1px solid var(--admin-border)', whiteSpace: 'nowrap' }}>{label}</th>)}</tr></thead><tbody>{assignments.map(item => <tr key={item.id}><td style={{ padding: '10px 8px', borderBottom: '1px solid var(--admin-border)' }}>{item.student.fullName}<div style={{ color: 'var(--admin-sub)', fontSize: 9 }}>{item.student.nationalId}</div></td><td style={{ padding: '10px 8px', borderBottom: '1px solid var(--admin-border)' }}>{item.counselor.displayName}</td><td style={{ padding: '10px 8px', borderBottom: '1px solid var(--admin-border)', whiteSpace: 'nowrap' }}>{dateLabel(item.startedAt)}</td><td style={{ padding: '10px 8px', borderBottom: '1px solid var(--admin-border)', whiteSpace: 'nowrap' }}>{item.endedAt ? dateLabel(item.endedAt) : <span style={{ color: '#16805d', fontWeight: 800 }}>فعال</span>}</td><td style={{ padding: '10px 8px', borderBottom: '1px solid var(--admin-border)' }}>{item.assignedBy.username}</td></tr>)}</tbody></table></div>}
       </section>
     </div>
   );
