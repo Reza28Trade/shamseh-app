@@ -91,10 +91,19 @@ export function App() {
     setView('admin');
   };
 
-  const handleLogout = () => {
-    setCurrentStudent(null);
-    setCurrentAdmin(null);
-    setView('login');
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch {
+      // Always clear the local UI even if the server cannot be reached.
+    } finally {
+      setCurrentStudent(null);
+      setCurrentAdmin(null);
+      setView('login');
+    }
   };
 
   const adminName = currentAdmin?.fullName || 'مدیر کل سیستم';
