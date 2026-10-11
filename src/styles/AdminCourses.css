@@ -306,3 +306,61 @@
   .admin-courses-page .course-stats{grid-template-columns:1fr}
   .admin-courses-page .course-filters{grid-template-columns:1fr}
 }
+
+
+/* Match the finalized Manage Students visual language. */
+.admin-courses-page .course-toolbar,
+.admin-courses-page .course-form,
+.admin-courses-page .course-list{
+  border-radius:16px;
+  background:var(--admin-card);
+  border-color:var(--admin-border);
+  box-shadow:var(--admin-shadow);
+}
+.admin-courses-page .course-toolbar{padding:18px 20px}
+.admin-courses-page .course-title{font-size:20px;font-weight:850;gap:8px}
+.admin-courses-page .course-subtitle{font-size:12px;line-height:1.8}
+.admin-courses-page .course-stats{gap:12px}
+.admin-courses-page .course-stat{
+  position:relative;padding:15px 18px;border-radius:14px;overflow:hidden;
+}
+.admin-courses-page .course-stat:before{
+  content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--admin-accent);
+}
+.admin-courses-page .course-stat:nth-child(2):before{background:#2e9b83}
+.admin-courses-page .course-stat:nth-child(3):before{background:#528bd8}
+.admin-courses-page .course-stat:nth-child(4):before{background:#d69b42}
+.admin-courses-page .course-stat-label{font-size:11px}
+.admin-courses-page .course-stat-value{font-size:23px}
+.admin-courses-page .course-form,.admin-courses-page .course-list{padding:18px}
+.admin-courses-page .course-section-head h3{font-size:15px}
+.admin-courses-page .course-field label{font-size:11px}
+.admin-courses-page .course-field input,
+.admin-courses-page .course-field select,
+.admin-courses-page .course-field textarea,
+.admin-courses-page .course-filters input,
+.admin-courses-page .course-filters select{font-size:12px;min-height:40px}
+.admin-courses-page .course-btn{font-size:12px;min-height:36px}
+.admin-courses-page .course-list-grid{
+  height:min(760px,68vh)!important;max-height:min(760px,68vh)!important;
+  flex:0 0 min(760px,68vh);gap:8px;
+}
+.admin-courses-page .course-card{background:var(--admin-inner);border-radius:12px}
+.admin-courses-page .course-card-main{padding:11px 12px;min-height:78px}
+.admin-courses-page .course-card-title{font-size:13px}
+.admin-courses-page .course-card-sub{font-size:10px;line-height:1.7}
+.admin-courses-page .course-pill{font-size:10px}
+.admin-courses-page .course-card-actions .course-btn{font-size:10px;min-height:32px}
+.admin-courses-page .course-expand{padding:16px}
+.admin-courses-page .expanded-panel{border-radius:12px}
+.admin-courses-page .mini-row strong{font-size:10px}
+.admin-courses-page .mini-row span{font-size:9px}
+@media(max-width:700px){
+  .admin-courses-page .course-toolbar{padding:16px}
+  .admin-courses-page .course-list{padding:14px}
+  .admin-courses-page .course-list-grid{
+    height:min(700px,65vh)!important;max-height:min(700px,65vh)!important;
+    flex-basis:min(700px,65vh);
+  }
+  .admin-courses-page .course-card-main{padding:10px}
+}
