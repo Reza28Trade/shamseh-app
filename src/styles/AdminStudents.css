@@ -196,3 +196,15 @@
   .admin-students-page .student-chart-card,
   .admin-students-page .student-form-card{padding:15px}
 }
+
+
+/* Prevent the shared legacy-page rules from painting a wrapper card behind these two cards. */
+.admin-legacy-page.admin-students-page > .students-main-grid{
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+  padding:0!important;
+}
