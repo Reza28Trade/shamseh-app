@@ -1,10 +1,10 @@
 import React from 'react';
 import { useStore } from '../../store/useStore';
-import { BookOpen, Users, ClipboardList, Bell, ArrowLeft, Activity } from 'lucide-react';
+import { BookOpen, Users, ClipboardList, Bell, ArrowLeft, Activity, Wallet, CalendarClock } from 'lucide-react';
 
 interface AdminDashboardProps {
   adminName?: string;
-  onNavigate: (tab: 'dashboard' | 'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams' | 'counseling') => void;
+  onNavigate: (tab: 'dashboard' | 'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams' | 'counseling' | 'finance') => void;
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'مدیر سیستم', onNavigate }) => {
@@ -40,6 +40,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
           <button onClick={()=>onNavigate('students')}><Users size={17}/><span>هنرجویان</span><small>حساب‌ها و ثبت‌نام‌ها</small></button>
           <button onClick={()=>onNavigate('mockExams')}><ClipboardList size={17}/><span>آزمون‌ها</span><small>آزمون‌های آزمایشی</small></button>
           <button onClick={()=>onNavigate('notifications')}><Bell size={17}/><span>اطلاعیه‌ها</span><small>ارسال خبر و اعلان</small></button>
+          <button onClick={()=>onNavigate('finance')}><Wallet size={17}/><span>امور مالی</span><small>وضعیت مالی هنرجویان</small></button>
+          <button onClick={()=>onNavigate('counseling')}><CalendarClock size={17}/><span>مشاوره</span><small>درخواست‌ها و جلسات</small></button>
         </div>
       </section>
       <section className="admin-panel-card">
