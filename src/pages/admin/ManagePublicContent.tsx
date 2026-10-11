@@ -152,7 +152,7 @@ export const ManagePublicContent: React.FC = () => {
   const buttonStyle: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7, border: `1px solid ${colors.border}`, borderRadius: 10, padding: '10px 13px', background: colors.bg, color: colors.text, fontSize: 12, fontWeight: 800, cursor: 'pointer' };
 
   return (
-    <div style={{ color: colors.text, display: 'flex', flexDirection: 'column', gap: 18, width: '100%', minWidth: 0 }}>
+    <div className="admin-legacy-page admin-public-content-page" style={{ color: colors.text, display: 'flex', flexDirection: 'column', gap: 18, width: '100%', minWidth: 0 }}>
       <header style={{ padding: '24px', borderRadius: 18, background: dark ? 'linear-gradient(120deg, rgba(109,0,26,.28), #111116)' : 'linear-gradient(120deg, #fff, #f1f5f9)', border: `1px solid ${colors.border}` }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}><BookOpenText size={21} color={dark ? '#fda4af' : colors.accent} /><h2 style={{ fontSize: 19, margin: 0, fontWeight: 900 }}>مدیریت محتوای عمومی</h2></div>
         <p style={{ color: colors.muted, fontSize: 12, lineHeight: 1.9, margin: 0 }}>قوانین و تحلیل کنکورهایی که در صفحه اصلی برای هنرجویان نمایش داده می‌شوند را از این بخش مدیریت کنید.</p>
