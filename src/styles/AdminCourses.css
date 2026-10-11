@@ -680,3 +680,30 @@
   .admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-stat{min-height:70px;padding:11px 12px!important}
   .admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-stat-value{font-size:20px!important}
 }
+
+
+/* Bring over the subtle gradient accents used by Manage Students. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-toolbar{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(112deg,var(--admin-card) 0%,var(--admin-inner) 100%)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-toolbar:before{
+  content:"";
+  position:absolute;
+  top:0;bottom:0;left:0;width:4px;
+  background:linear-gradient(180deg,var(--course-teal),var(--course-blue),var(--course-gold),var(--course-coral));
+  border-radius:16px 0 0 16px;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-form{
+  background:linear-gradient(145deg,color-mix(in srgb,var(--course-teal) 9%,var(--admin-card)),var(--admin-card) 62%)!important;
+  border-top:2px solid color-mix(in srgb,var(--course-teal) 70%,var(--admin-border))!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-list{
+  background:linear-gradient(145deg,color-mix(in srgb,var(--course-blue) 8%,var(--admin-card)),var(--admin-card) 62%)!important;
+  border-top:2px solid color-mix(in srgb,var(--course-blue) 70%,var(--admin-border))!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-stat:nth-child(1){background:linear-gradient(180deg,color-mix(in srgb,var(--course-teal) 9%,var(--admin-card)),var(--admin-card) 72%)!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-stat:nth-child(2){background:linear-gradient(180deg,color-mix(in srgb,var(--course-green) 10%,var(--admin-card)),var(--admin-card) 72%)!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-stat:nth-child(3){background:linear-gradient(180deg,color-mix(in srgb,var(--course-blue) 10%,var(--admin-card)),var(--admin-card) 72%)!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-stat:nth-child(4){background:linear-gradient(180deg,color-mix(in srgb,var(--course-coral) 10%,var(--admin-card)),var(--admin-card) 72%)!important}
