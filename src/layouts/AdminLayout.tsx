@@ -26,7 +26,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
   ];
   const activeItem = menuItems.find((item) => item.id === activeTab) ?? menuItems[0];
 
-  const vars: React.CSSProperties = {
+  const vars: any = {
     '--admin-bg': isDark ? '#101416' : '#F0F5F4',
     '--admin-card': isDark ? '#191F21' : '#FFFFFF',
     '--admin-inner': isDark ? '#202729' : '#E7EFED',
@@ -39,7 +39,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
     '--admin-brand-border': isDark ? 'rgba(112,185,181,.35)' : '#B7DAD6',
     '--admin-control': isDark ? '#171D1F' : '#FBFDFC',
     '--admin-shadow': isDark ? '0 16px 38px rgba(0,0,0,.20)' : '0 12px 32px rgba(32,62,58,.07)',
-  } as React.CSSProperties;
+  };
 
   return (
     <div className={`admin-shell ${isDark ? 'admin-theme-dark' : 'admin-theme-light'}`} style={vars}>
