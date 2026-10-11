@@ -88,8 +88,13 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
         if (cancelled) return;
         const active = data[0] ?? null;
         if (active?.id !== conversation?.id) {
+          // Never leave the previous counselor's transcript visible after a transfer.
+          setMessages([]);
           setConversation(active);
-          if (!active) setMessages([]);
+          if (active) {
+            const nextMessages = await fetch(`/api/counseling/conversations/${active.id}/messages`, { credentials: 'include' });
+            if (nextMessages.ok && !cancelled) setMessages(await nextMessages.json());
+          }
           return;
         }
         if (active) {
