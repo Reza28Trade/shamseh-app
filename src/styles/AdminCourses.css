@@ -722,3 +722,64 @@
   background:linear-gradient(90deg,var(--course-teal) 0%,var(--course-blue) 34%,var(--course-gold) 67%,var(--course-coral) 100%);
   pointer-events:none;
 }
+
+
+/* Improve spacing and readability of the compact course metadata/status chips. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-card-main{
+  align-items:center;
+  gap:14px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-meta{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  flex-wrap:wrap;
+  gap:8px!important;
+  min-width:0;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-pill,
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-status{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  min-height:27px;
+  padding:5px 9px!important;
+  line-height:1.5;
+  white-space:nowrap;
+  border-radius:9px!important;
+  font-size:10px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-status{
+  padding-inline:10px!important;
+  background:color-mix(in srgb,var(--course-green) 9%,var(--admin-card));
+  border:1px solid color-mix(in srgb,var(--course-green) 28%,var(--admin-border));
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-status.archived{
+  background:var(--admin-inner);
+  border-color:var(--admin-border);
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-status.draft{
+  background:color-mix(in srgb,var(--course-gold) 10%,var(--admin-card));
+  border-color:color-mix(in srgb,var(--course-gold) 30%,var(--admin-border));
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-card-actions{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:7px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-card-actions .course-btn{
+  min-height:32px;
+  padding:6px 9px!important;
+  border-radius:9px!important;
+}
+@media(max-width:700px){
+  .admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-meta{
+    justify-content:flex-start;
+    gap:6px!important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-card-actions{
+    gap:6px!important;
+  }
+}
