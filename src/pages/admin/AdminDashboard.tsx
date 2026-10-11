@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import { useStore } from '../../store/useStore';
 import { BookOpen, Users, ClipboardList, Bell, ArrowLeft, Activity, Wallet, CalendarClock } from 'lucide-react';
 
@@ -64,28 +64,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
       </button>; })}
     </div>
 
-    <section className="admin-panel-card admin-term-card">
-      <div className="admin-panel-heading">
-        <div><span>آمار ثبت‌نام</span><h2>توزیع هنرجویان بر اساس ترم</h2></div>
-        <div className="admin-term-switch">
-          <button className={termRange === 'latest' ? 'active' : ''} onClick={() => setTermRange('latest')}>آخرین سال{latestYear ? ' (' + latestYear + ')' : ''}</button>
-          <button className={termRange === 'all' ? 'active' : ''} onClick={() => setTermRange('all')}>همه سال‌ها</button>
-        </div>
-      </div>
-      <div className="admin-term-layout">
-        <div className="admin-term-donut" style={{ background: termStats.gradient }}>
-          <div className="admin-term-center"><strong>{termStats.total}</strong><span>هنرجو</span></div>
-        </div>
-        <div className="admin-term-legend">
-          {termStats.rows.length ? termStats.rows.map(row => <div className="admin-term-row" key={row.term}>
-            <span className="admin-term-dot" style={{ background: row.color }} />
-            <span>{row.term}</span><strong>{row.count}</strong>
-            <small>{termStats.total ? Math.round(row.count / termStats.total * 100) : 0}٪</small>
-          </div>) : <div className="admin-empty">برای این بازه، ثبت‌نامی پیدا نشد.</div>}
-        </div>
-      </div>
-      <p className="admin-term-note">هر هنرجو در هر ترم فقط یک‌بار شمرده می‌شود.</p>
-    </section>
     <div className="admin-dashboard-grid">
       <section className="admin-panel-card">
         <div className="admin-panel-heading"><div><span>دسترسی سریع</span><h2>مدیریت روزانه</h2></div></div>
@@ -119,24 +97,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
       .admin-stat-icon{width:35px;height:35px;border-radius:11px;display:grid;place-items:center;color:var(--admin-accent);background:var(--admin-accent-soft);flex:none}
       .admin-stat-copy{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}.admin-stat-copy strong{font-size:21px;line-height:1;font-weight:900}.admin-stat-copy span{font-size:10px;font-weight:800}.admin-stat-copy small{font-size:8px;color:var(--admin-sub)}.admin-stat-arrow{color:var(--admin-sub)}
       .admin-dashboard-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:12px}.admin-panel-card{border:1px solid var(--admin-border);background:var(--admin-card);border-radius:17px;padding:18px;box-shadow:var(--admin-shadow)}
-      .admin-term-switch{display:flex;gap:4px;padding:4px;border:1px solid var(--admin-border);background:var(--admin-inner);border-radius:11px}
-      .admin-term-switch button{border:0;background:transparent;color:var(--admin-sub);padding:8px 10px;border-radius:8px;font:inherit;font-size:9px;font-weight:850;cursor:pointer;white-space:nowrap}
-      .admin-term-switch button.active{background:var(--admin-accent);color:#fff}
-      .admin-term-layout{display:grid;grid-template-columns:minmax(180px,.75fr) minmax(220px,1fr);align-items:center;gap:28px;padding:10px 12px 4px}
-      .admin-term-donut{width:min(100%,230px);aspect-ratio:1;border-radius:50%;margin:0 auto;display:grid;place-items:center;position:relative}
-      .admin-term-donut:after{content:"";position:absolute;inset:17%;border-radius:50%;background:var(--admin-card);box-shadow:0 0 0 1px var(--admin-border)}
-      .admin-term-center{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:3px}
-      .admin-term-center strong{font-size:29px;font-weight:900}.admin-term-center span{font-size:10px;color:var(--admin-sub)}
-      .admin-term-legend{display:flex;flex-direction:column;gap:7px;min-width:0}
-      .admin-term-row{display:grid;grid-template-columns:10px minmax(60px,1fr) auto auto;align-items:center;gap:9px;padding:10px 11px;border:1px solid var(--admin-border);background:var(--admin-inner);border-radius:10px;font-size:10px}
-      .admin-term-row strong{font-size:12px}.admin-term-row small{font-size:9px;color:var(--admin-sub);min-width:30px;text-align:left}
-      .admin-term-dot{width:9px;height:9px;border-radius:3px}.admin-term-note{margin:12px 0 0;color:var(--admin-sub);font-size:9px;line-height:1.8}
-
       .admin-panel-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.admin-panel-heading span{font-size:9px;color:var(--admin-accent);font-weight:900}.admin-panel-heading h2{font-size:17px;margin:3px 0 0;font-weight:900}.admin-panel-heading button{border:0;background:none;color:var(--admin-accent);font-size:9px;font-weight:900;cursor:pointer;display:flex;gap:5px;align-items:center}
       .admin-quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.admin-quick-grid button{border:1px solid var(--admin-border);background:var(--admin-inner);color:var(--admin-text);border-radius:12px;padding:12px;text-align:right;cursor:pointer;display:grid;grid-template-columns:auto 1fr;gap:3px 9px;align-items:center}.admin-quick-grid button svg{grid-row:span 2;color:var(--admin-accent)}.admin-quick-grid span{font-size:10px;font-weight:900}.admin-quick-grid small{font-size:8px;color:var(--admin-sub)}
       .admin-course-list{display:flex;flex-direction:column;gap:7px}.admin-course-list button{border:1px solid var(--admin-border);background:var(--admin-inner);color:var(--admin-text);border-radius:11px;padding:10px 11px;display:flex;align-items:center;gap:9px;text-align:right;cursor:pointer}.admin-course-list button>span:nth-child(2){flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.admin-course-list strong{font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.admin-course-list small{font-size:8px;color:var(--admin-sub)}.admin-course-dot{width:7px;height:7px;border-radius:50%;background:var(--admin-accent);flex:none}.admin-empty{padding:28px;text-align:center;color:var(--admin-sub);font-size:10px;background:var(--admin-inner);border-radius:11px}
       @media(max-width:900px){.admin-stat-grid{grid-template-columns:1fr 1fr}.admin-dashboard-grid{grid-template-columns:1fr}}
-      @media(max-width:560px){.admin-term-layout{grid-template-columns:1fr;gap:18px}.admin-term-donut{width:min(68vw,210px)}.admin-term-switch button{padding:7px 8px;font-size:8px}.admin-welcome{padding:20px}.admin-welcome h1{font-size:21px}.admin-stat-grid{grid-template-columns:1fr}.admin-quick-grid{grid-template-columns:1fr}}
+      @media(max-width:560px){admin-welcome{padding:20px}.admin-welcome h1{font-size:21px}.admin-stat-grid{grid-template-columns:1fr}.admin-quick-grid{grid-template-columns:1fr}}
     `}</style>
   </div>;
 };
