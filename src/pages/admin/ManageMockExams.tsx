@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { compareJalali, getTehranTodayJalali, jalaliMonthLength, jalaliToTehranDate, toGregorian } from '../../utils/jalali';
-import { CalendarDays, Download, ExternalLink, Link2, Pencil, Plus, RefreshCw, Sparkles, Users } from 'lucide-react';
+import { CalendarDays, Download, ExternalLink, Link2, Pencil, Plus, RefreshCw, Users } from 'lucide-react';
 import '../../styles/AdminMockExams.css';
 
 type MockExamStatus = 'DRAFT' | 'SCHEDULED' | 'LINK_AVAILABLE' | 'LIVE' | 'COMPLETED' | 'CANCELLED';
@@ -308,7 +308,6 @@ export const ManageMockExams: React.FC = () => {
       }}>
         <div>
           <h2 style={{ color: '#fff', margin: '0 0 6px', fontSize: 20, display: 'flex', alignItems: 'center', gap: 9 }}>
-            <Sparkles size={20} color="#ff3366" />
             مدیریت آزمون‌های آزمایشی
           </h2>
           <p style={{ color: '#94a3b8', margin: 0, fontSize: 12 }}>
