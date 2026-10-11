@@ -181,10 +181,55 @@ export class CounselingChatService {
     }
     const content = typeof contentInput === 'string' ? contentInput.trim() : '';
     if (!content || content.length > 5000) throw new BadRequestException('Message must contain 1–5000 characters');
-    const conversation = await this.authorizeConversation(user, conversationId);
-    const message = await this.prisma.counselingMessage.create({ data: { conversationId, senderUserId: user.id, content } });
-    await this.prisma.counselingConversation.update({ where: { id: conversation.id }, data: { updatedAt: new Date() } });
-    return message;
+
+    // Re-check the active assignment in the same serializable transaction as the write.
+    // This prevents a message from being sent through a stale conversation after a transfer.
+    try {
+      return await this.prisma.$transaction(async tx => {
+        const conversation = await tx.counselingConversation.findUnique({
+          where: { id: conversationId },
+          select: { id: true, studentId: true, counselorId: true },
+        });
+        if (!conversation) throw new NotFoundException('Conversation not found');
+
+        let participantIsAuthorized = false;
+        if (user.role === 'STUDENT' && user.studentId === conversation.studentId) {
+          participantIsAuthorized = !!(await tx.counselingAssignment.findFirst({
+            where: { studentId: user.studentId, counselorId: conversation.counselorId, endedAt: null },
+            select: { id: true },
+          }));
+        } else if (user.role === 'COUNSELOR') {
+          const profile = await tx.counselorProfile.findUnique({
+            where: { userId: user.id },
+            select: { id: true, isActive: true },
+          });
+          if (profile?.isActive && profile.id === conversation.counselorId) {
+            participantIsAuthorized = !!(await tx.counselingAssignment.findFirst({
+              where: { studentId: conversation.studentId, counselorId: profile.id, endedAt: null },
+              select: { id: true },
+            }));
+          }
+        }
+
+        if (!participantIsAuthorized) {
+          throw new ForbiddenException('Conversation is not currently assigned to you');
+        }
+
+        const message = await tx.counselingMessage.create({
+          data: { conversationId, senderUserId: user.id, content },
+        });
+        await tx.counselingConversation.update({
+          where: { id: conversationId },
+          data: { updatedAt: new Date() },
+        });
+        return message;
+      }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    } catch (error: any) {
+      if (error?.code === 'P2034') {
+        throw new ConflictException('The conversation assignment changed concurrently. Reload and try again.');
+      }
+      throw error;
+    }
   }
 
   private async authorizeConversation(user: AuthenticatedUser, conversationId: string) {
