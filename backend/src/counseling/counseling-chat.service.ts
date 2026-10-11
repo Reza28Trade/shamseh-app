@@ -146,6 +146,9 @@ export class CounselingChatService {
   }
 
   async sendMessage(user: AuthenticatedUser, conversationId: string, contentInput: string) {
+    if (user.role !== 'STUDENT' && user.role !== 'COUNSELOR') {
+      throw new ForbiddenException('Administrators can view counseling history but cannot send messages');
+    }
     const content = typeof contentInput === 'string' ? contentInput.trim() : '';
     if (!content || content.length > 5000) throw new BadRequestException('Message must contain 1–5000 characters');
     const conversation = await this.authorizeConversation(user, conversationId);
