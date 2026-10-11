@@ -11,6 +11,7 @@ enum UserRole {
   SUPER_ADMIN
   STAFF
   STUDENT
+  COUNSELOR
 }
 
 enum UserStatus {
@@ -141,6 +142,8 @@ model User {
   updatedContent GeneralContent[] @relation("GeneralContentUpdater")
   publicContents PublicContent[]
   recordedPayments Payment[] @relation("PaymentRecorder")
+  counselorProfile CounselorProfile?
+  sentCounselingMessages CounselingMessage[]
 }
 
 model Session {
@@ -173,6 +176,8 @@ model Student {
   offlineRequests OfflineRequest[]
   mockExamParticipants MockExamParticipant[]
   counselingRequests CounselingRequest[]
+  counselingAssignments CounselingAssignment[]
+  counselingConversations CounselingConversation[]
   payments Payment[]
 }
 
@@ -424,6 +429,72 @@ model PastExamQuestion {
 
   @@unique([pastExamCodeId, questionNumber])
   @@index([pastExamCodeId])
+}
+
+
+model CounselorProfile {
+  id String @id @default(cuid())
+  userId String @unique
+  displayName String
+  bio String?
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  assignments CounselingAssignment[]
+  conversations CounselingConversation[]
+
+  @@index([isActive, displayName])
+}
+
+model CounselingAssignment {
+  id String @id @default(cuid())
+  studentId String
+  counselorId String
+  assignedById String
+  startedAt DateTime @default(now())
+  endedAt DateTime?
+  createdAt DateTime @default(now())
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  counselor CounselorProfile @relation(fields: [counselorId], references: [id], onDelete: Restrict)
+  assignedBy User @relation("CounselingAssignmentActor", fields: [assignedById], references: [id], onDelete: Restrict)
+
+  @@index([studentId, endedAt])
+  @@index([counselorId, endedAt])
+  @@index([assignedById, createdAt])
+}
+
+model CounselingConversation {
+  id String @id @default(cuid())
+  studentId String
+  counselorId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  counselor CounselorProfile @relation(fields: [counselorId], references: [id], onDelete: Restrict)
+  messages CounselingMessage[]
+
+  @@unique([studentId, counselorId])
+  @@index([studentId, updatedAt])
+  @@index([counselorId, updatedAt])
+}
+
+model CounselingMessage {
+  id String @id @default(cuid())
+  conversationId String
+  senderUserId String
+  content String @db.Text
+  readAt DateTime?
+  createdAt DateTime @default(now())
+
+  conversation CounselingConversation @relation(fields: [conversationId], references: [id], onDelete: Restrict)
+  sender User @relation(fields: [senderUserId], references: [id], onDelete: Restrict)
+
+  @@index([conversationId, createdAt])
+  @@index([senderUserId, createdAt])
 }
 
 model CounselingSlot {
