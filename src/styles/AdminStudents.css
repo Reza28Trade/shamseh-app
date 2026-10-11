@@ -236,3 +236,13 @@
   box-shadow:none!important;
   border-radius:0!important;
 }
+
+
+/* Match course management: keep student panels flat and consistent, without the extra raised shadow or tinted gradient. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-chart-card,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-form-card{
+  background:var(--admin-card)!important;
+  background-image:none!important;
+  border-top:1px solid var(--admin-border)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
