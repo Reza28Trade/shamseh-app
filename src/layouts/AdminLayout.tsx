@@ -48,7 +48,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
           <button className="admin-mobile-menu" onClick={() => setIsSidebarOpen(!isSidebarOpen)} aria-label={isSidebarOpen ? 'بستن منو' : 'باز کردن منو'}>
             {isSidebarOpen ? <X size={19} /> : <Menu size={19} />}
           </button>
-          <div className="admin-brand-mark" aria-label="لوگوی شمسه"><span>ش</span><i>م</i></div>
+          <img className="admin-brand-logo" src="/logo.png" alt="لوگوی شمسه" />
         </div>
 
         <div className="admin-topbar-center">
@@ -109,9 +109,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
         .admin-shell *{box-sizing:border-box}
         .admin-topbar{height:76px;border-bottom:1px solid var(--admin-border);background:var(--admin-card);display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 30px;position:sticky;top:0;z-index:60;box-shadow:0 4px 18px rgba(0,0,0,.025)}
         .admin-brand-area{display:flex;align-items:center;gap:12px;min-width:220px}
-        .admin-brand-mark{width:46px;height:46px;border-radius:14px;background:linear-gradient(145deg,#398A90,#D8B477);color:#fff;display:flex;align-items:center;justify-content:center;gap:0;border:1px solid var(--admin-brand-border);font-weight:950;font-size:23px;box-shadow:0 5px 16px rgba(57,138,144,.18)}
-        .admin-brand-mark span{transform:translateX(-2px)}
-        .admin-brand-mark i{font-style:normal;font-size:15px;transform:translate(2px,5px);color:#fff}
+        .admin-brand-logo{display:block;width:46px;height:46px;object-fit:contain;flex:0 0 46px;border-radius:12px}
         .admin-topbar-center{display:flex;align-items:center;gap:9px;flex:1;font-size:12px;color:var(--admin-text)}
         .admin-breadcrumb-muted{color:var(--admin-sub)}
         .admin-topbar-center svg{color:var(--admin-sub)}
@@ -126,8 +124,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
         .admin-profile-copy strong{display:block;font-size:11px;font-weight:800;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         .admin-profile-copy small{display:block;font-size:10px;color:var(--admin-sub);margin-top:4px}
         .admin-mobile-menu{display:none;border:1px solid var(--admin-border);background:var(--admin-inner);color:var(--admin-text);border-radius:12px;width:40px;height:40px;place-items:center;cursor:pointer}
-        .admin-body{display:grid;grid-template-columns:252px minmax(0,1fr);min-height:calc(100vh - 76px)}
-        .admin-sidebar{border-left:1px solid var(--admin-border);background:var(--admin-card);padding:22px 15px 15px;display:flex;flex-direction:column;position:sticky;top:76px;height:calc(100vh - 76px);align-self:start;overflow-y:auto;overflow-x:hidden}
+        .admin-body{display:grid;grid-template-columns:252px minmax(0,1fr);min-height:calc(100vh - 76px);align-items:stretch}
+        .admin-sidebar{border-left:1px solid var(--admin-border);background:var(--admin-card);padding:22px 15px 15px;display:flex;flex-direction:column;position:relative;top:auto;height:auto;min-height:calc(100vh - 76px);align-self:stretch;overflow:visible}
         .admin-sidebar-heading{display:flex;align-items:center;justify-content:space-between;padding:0 13px 14px;color:var(--admin-sub);font-size:10px;font-weight:800;letter-spacing:.2px}
         .admin-sidebar-dot{width:7px;height:7px;border-radius:50%;background:#70B9B5;box-shadow:0 0 0 4px var(--admin-accent-soft)}
         .admin-nav{display:flex;flex-direction:column;gap:5px}
@@ -152,7 +150,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
         .admin-page-content{max-width:1480px;margin:0 auto;min-width:0}
         .admin-sidebar-backdrop{display:none}
         @media(max-width:1100px){.admin-topbar{padding:0 20px;gap:14px}.admin-brand-area{min-width:190px}.admin-body{grid-template-columns:228px minmax(0,1fr)}.admin-main{padding:24px 22px 34px}}
-        @media(max-width:820px){.admin-topbar{height:66px;padding:0 14px;gap:10px}.admin-brand-area{min-width:0;gap:9px}.admin-brand-mark{width:38px;height:38px;border-radius:12px}.admin-brand-copy strong{font-size:14px}.admin-brand-copy small{font-size:9px}.admin-mobile-menu{display:grid;order:0}.admin-topbar-center{display:none}.admin-top-actions{gap:9px;margin-right:auto}.admin-profile{padding-right:10px;gap:0}.admin-profile-copy{display:none}.admin-top-logout{padding:9px!important;min-width:38px;justify-content:center}.admin-top-logout span{display:none}.admin-profile-avatar{width:36px;height:36px}.admin-theme-toggle{width:38px;height:38px}.admin-body{display:block;min-height:calc(100vh - 66px)}.admin-sidebar{display:none;position:fixed;top:66px;right:0;bottom:0;width:min(290px,86vw);height:auto;max-height:calc(100vh - 66px);z-index:80;box-shadow:-18px 0 48px rgba(0,0,0,.22)}.admin-sidebar.open{display:flex}.admin-sidebar-backdrop{display:block;position:fixed;inset:66px 0 0;border:0;background:rgba(0,0,0,.42);z-index:70}.admin-main{padding:20px 14px 28px}.admin-page-heading{align-items:flex-start;margin-bottom:18px}.admin-page-heading h1{font-size:19px}.admin-page-context{font-size:9px;padding:8px 10px}}
+        @media(max-width:820px){.admin-topbar{height:66px;padding:0 14px;gap:10px}.admin-brand-area{min-width:0;gap:9px}.admin-brand-logo{width:38px;height:38px;flex-basis:38px;border-radius:11px}.admin-brand-copy strong{font-size:14px}.admin-brand-copy small{font-size:9px}.admin-mobile-menu{display:grid;order:0}.admin-topbar-center{display:none}.admin-top-actions{gap:9px;margin-right:auto}.admin-profile{padding-right:10px;gap:0}.admin-profile-copy{display:none}.admin-top-logout{padding:9px!important;min-width:38px;justify-content:center}.admin-top-logout span{display:none}.admin-profile-avatar{width:36px;height:36px}.admin-theme-toggle{width:38px;height:38px}.admin-body{display:block;min-height:calc(100vh - 66px)}.admin-sidebar{display:none;position:fixed;top:66px;right:0;bottom:0;width:min(290px,86vw);height:auto;max-height:calc(100vh - 66px);z-index:80;box-shadow:-18px 0 48px rgba(0,0,0,.22)}.admin-sidebar.open{display:flex}.admin-sidebar-backdrop{display:block;position:fixed;inset:66px 0 0;border:0;background:rgba(0,0,0,.42);z-index:70}.admin-main{padding:20px 14px 28px}.admin-page-heading{align-items:flex-start;margin-bottom:18px}.admin-page-heading h1{font-size:19px}.admin-page-context{font-size:9px;padding:8px 10px}}
         @media(max-width:480px){.admin-topbar{padding:0 10px}.admin-brand-copy{display:none}.admin-main{padding-inline:12px}.admin-page-heading h1{font-size:18px}}
         @media(prefers-reduced-motion:reduce){.admin-shell *{transition:none!important;scroll-behavior:auto!important}}
       `}</style>
