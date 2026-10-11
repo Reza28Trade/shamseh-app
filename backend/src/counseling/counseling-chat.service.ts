@@ -110,6 +110,9 @@ export class CounselingChatService {
       if (error?.code === 'P2034') {
         throw new ConflictException('The assignment changed concurrently. Reload the page and try again.');
       }
+      if (error?.code === 'P2002') {
+        throw new ConflictException('A current counselor assignment already exists. Reload the page and try again.');
+      }
       throw error;
     }
   }
