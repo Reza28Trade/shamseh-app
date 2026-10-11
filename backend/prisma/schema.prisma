@@ -144,6 +144,7 @@ model User {
   recordedPayments Payment[] @relation("PaymentRecorder")
   counselorProfile CounselorProfile?
   sentCounselingMessages CounselingMessage[]
+  assignedCounselingAssignments CounselingAssignment[] @relation("CounselingAssignmentActor")
 }
 
 model Session {
