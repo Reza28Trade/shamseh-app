@@ -89,6 +89,11 @@ export class CounselingChatService {
 
     try {
       return await this.prisma.$transaction(async tx => {
+        const activeCounselor = await tx.counselorProfile.findUnique({
+          where: { id: counselorId },
+          select: { isActive: true },
+        });
+        if (!activeCounselor?.isActive) throw new ConflictException('Counselor is no longer active. Reload and try again.');
         const active = await tx.counselingAssignment.findFirst({ where: { studentId, endedAt: null } });
         if (active?.counselorId === counselorId) return active;
         if (active) await tx.counselingAssignment.update({ where: { id: active.id }, data: { endedAt: new Date() } });
