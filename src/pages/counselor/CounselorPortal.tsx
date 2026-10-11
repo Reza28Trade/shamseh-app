@@ -35,7 +35,7 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
     if (selected) {
       void (async () => {
         try {
-          const r = await fetch(`/api/counseling/conversations/${conversationId}/messages`, { credentials: 'include' });
+          const r = await fetch(`/api/counseling/conversations/${selected}/messages`, { credentials: 'include' });
           if (!r.ok) throw new Error('دریافت پیام‌ها ناموفق بود.');
           const data = await r.json();
           if (!cancelled) setMessages(data);
