@@ -54,20 +54,27 @@ export class CounselingChatService {
   async setCounselorActive(user: AuthenticatedUser, counselorId: string, isActive: boolean) {
     this.requireAdmin(user);
     if (typeof isActive !== 'boolean') throw new BadRequestException('isActive must be a boolean');
-    const profile = await this.prisma.counselorProfile.findUnique({ where: { id: counselorId }, select: { id: true, userId: true } });
-    if (!profile) throw new NotFoundException('Counselor not found');
-    if (!isActive) {
-      const activeAssignments = await this.prisma.counselingAssignment.count({ where: { counselorId, endedAt: null } });
-      if (activeAssignments > 0) {
-        throw new ConflictException('Transfer all currently assigned students before deactivating this counselor');
+    try {
+      return await this.prisma.$transaction(async tx => {
+        const profile = await tx.counselorProfile.findUnique({ where: { id: counselorId }, select: { id: true, userId: true } });
+        if (!profile) throw new NotFoundException('Counselor not found');
+        if (!isActive) {
+          const activeAssignments = await tx.counselingAssignment.count({ where: { counselorId, endedAt: null } });
+          if (activeAssignments > 0) {
+            throw new ConflictException('Transfer all currently assigned students before deactivating this counselor');
+          }
+        }
+        await tx.counselorProfile.update({ where: { id: counselorId }, data: { isActive } });
+        await tx.user.update({ where: { id: profile.userId }, data: { status: isActive ? 'ACTIVE' : 'INACTIVE' } });
+        await tx.auditLog.create({ data: { actorUserId: user.id, action: isActive ? 'COUNSELOR_ACTIVATED' : 'COUNSELOR_DEACTIVATED', entityType: 'CounselorProfile', entityId: counselorId } });
+        return { id: counselorId, isActive };
+      }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    } catch (error: any) {
+      if (error?.code === 'P2034') {
+        throw new ConflictException('Counselor assignments changed concurrently. Reload and try again.');
       }
+      throw error;
     }
-    return this.prisma.$transaction(async tx => {
-      await tx.counselorProfile.update({ where: { id: counselorId }, data: { isActive } });
-      await tx.user.update({ where: { id: profile.userId }, data: { status: isActive ? 'ACTIVE' : 'INACTIVE' } });
-      await tx.auditLog.create({ data: { actorUserId: user.id, action: isActive ? 'COUNSELOR_ACTIVATED' : 'COUNSELOR_DEACTIVATED', entityType: 'CounselorProfile', entityId: counselorId } });
-      return { id: counselorId, isActive };
-    });
   }
 
   async assignStudent(user: AuthenticatedUser, studentId: string, counselorId: string) {
