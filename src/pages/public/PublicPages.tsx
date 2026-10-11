@@ -166,7 +166,7 @@ export function CourseCatalogPage({ onBack }: { onBack: () => void }) {
           {filtered.map((course) => (
             <article key={course.id} style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: 20, overflow: 'hidden', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
               <div style={{ aspectRatio: '16 / 8', background: colors.surfaceAlt, overflow: 'hidden', position: 'relative' }}>
-                {course.coverImage ? <img src={course.coverImage} alt={course.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ height: '100%', display: 'grid', placeItems: 'center', color: colors.muted }}><BookOpen size={38} strokeWidth={1.2} /></div>}
+                <img src={course.coverImage || `/api/public/courses/${course.id}/cover`} alt={course.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(event) => { event.currentTarget.style.display = 'none'; }} />
               </div>
               <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 12, flex: 1 }}>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
