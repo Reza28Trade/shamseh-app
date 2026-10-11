@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
-import { Request } from 'express';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, Req, Res, UseGuards } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { CreateAnalysisDto } from './dto/create-analysis.dto';
@@ -16,6 +16,11 @@ export class PublicContentController {
   @Get('public/courses')
   listPublicCourses() {
     return this.publicContentService.listPublicCourses();
+  }
+
+  @Get('public/courses/:courseId/cover')
+  streamPublicCourseCover(@Param('courseId') courseId: string, @Res() res: Response) {
+    return this.publicContentService.streamPublicCourseCover(courseId, res);
   }
 
   @Get('public/content/rules')
