@@ -160,7 +160,10 @@ export const ManageCounseling: React.FC = () => {
   }
 
   async function openConversation(id: string) {
-    setSelectedConversation(id); setMessagesLoading(true); setError('');
+    setSelectedConversation(id);
+    setMessages([]);
+    setMessagesLoading(true);
+    setError('');
     try {
       const response = await fetch(`/api/counseling/conversations/${id}/messages`, { credentials: 'include' });
       const data = await response.json().catch(() => null);
