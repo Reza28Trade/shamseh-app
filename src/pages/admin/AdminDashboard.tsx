@@ -10,37 +10,6 @@ interface AdminDashboardProps {
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'مدیر سیستم', onNavigate }) => {
   const { courses, students } = useStore();
   const activeCourses = courses.filter((course: typeof courses[number]) => (course as any).status !== 'ARCHIVED');
-  const [termRange, setTermRange] = useState<'latest' | 'all'>('latest');
-  const getYear = (course: any) => {
-    const raw = String(course.academicYear ?? course.academic_year ?? course.year ?? course.startDate ?? course.start_date ?? '');
-    const normalized = raw.replace(/[۰-۹]/g, d => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))).replace(/[٠-٩]/g, d => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
-    return normalized.match(/(?:^|\\D)(14\\d{2}|20\\d{2})(?:\\D|$)/)?.[1] ?? '';
-  };
-  const years = [...new Set(activeCourses.map((course: any) => getYear(course)).filter(Boolean))].sort((x, y) => Number(y) - Number(x));
-  const latestYear = years[0] ?? '';
-  const termStats = useMemo(() => {
-    const palette: Record<string, string> = { 'پاییز': '#FF6838', 'زمستان': '#FFC820', 'بهار': '#97C95C', 'تابستان': '#1CB2F6', 'سایر': '#1685B8' };
-    const groups = new Map<string, Set<string>>();
-    activeCourses.filter((course: any) => termRange === 'all' || !latestYear || getYear(course) === latestYear).forEach((course: any) => {
-      const raw = String(course.term ?? '');
-      const term = Object.keys(palette).find(name => raw.includes(name)) ?? 'سایر';
-      if (!groups.has(term)) groups.set(term, new Set<string>());
-      students.forEach((student: any) => {
-        if (Array.isArray(student.enrolledCourseIds) && student.enrolledCourseIds.includes(course.id)) groups.get(term)!.add(student.id);
-      });
-    });
-    const rows = [...groups.entries()].map(([term, ids]) => ({ term, count: ids.size, color: palette[term] })).filter(row => row.count > 0);
-    const total = rows.reduce((sum, row) => sum + row.count, 0);
-    let start = 0;
-    const slices = rows.map(row => {
-      const end = start + (total ? row.count / total * 100 : 0);
-      const slice = row.color + ' ' + start + '% ' + end + '%';
-      start = end;
-      return slice;
-    });
-    return { rows, total, gradient: slices.length ? 'conic-gradient(' + slices.join(', ') + ')' : 'conic-gradient(var(--admin-inner) 0% 100%)' };
-  }, [activeCourses, students, termRange, latestYear]);
-
   const stats = [
     { label: 'دوره‌های آموزشی', value: activeCourses.length, note: 'دوره فعال', icon: BookOpen, tab: 'courses' },
     { label: 'هنرجویان', value: students.length, note: 'حساب ثبت‌شده', icon: Users, tab: 'students' },
