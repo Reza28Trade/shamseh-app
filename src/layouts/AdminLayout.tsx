@@ -98,7 +98,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
         {isSidebarOpen && <button className="admin-sidebar-backdrop" onClick={() => setIsSidebarOpen(false)} aria-label="بستن منو" />}
 
         <main className="admin-main">
-          <div className="admin-page-heading">
+          <div className={`admin-page-heading ${activeTab === 'dashboard' ? 'is-dashboard' : ''}`}>
             <div><span className="admin-page-eyebrow">مرکز مدیریت شمسه</span><h1>{activeItem.label}</h1></div>
             <span className="admin-page-context"><span /> محیط امن مدیریت</span>
           </div>
