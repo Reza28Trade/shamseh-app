@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 type Conversation = { id: string; student: { id: string; fullName: string }; counselor: { id: string; displayName: string }; messages: { id: string; content: string; senderUserId: string; createdAt: string }[]; _count: { messages: number } };
 type Message = { id: string; content: string; senderUserId: string; createdAt: string; readAt: string | null };
 export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
@@ -10,15 +10,21 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
   const [currentUserId, setCurrentUserId] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const selectedRef = useRef(selected);
+  selectedRef.current = selected;
   async function loadConversations() {
     const r = await fetch('/api/counseling/conversations', { credentials: 'include' });
     if (!r.ok) throw new Error('دریافت گفت‌وگوها ناموفق بود.');
-    const data = await r.json(); setConversations(data); setSelected(v => v || data[0]?.id || '');
+    const data: Conversation[] = await r.json();
+    setConversations(data);
+    setSelected(current => current && data.some(c => c.id === current) ? current : data[0]?.id || '');
   }
   async function loadMessages(id: string) {
     const r = await fetch(`/api/counseling/conversations/${id}/messages`, { credentials: 'include' });
     if (!r.ok) throw new Error('دریافت پیام‌ها ناموفق بود.');
-    setMessages(await r.json());
+    const data: Message[] = await r.json();
+    // A response for an old selection must never replace the currently open chat.
+    if (selectedRef.current === id) setMessages(data);
   }
   useEffect(() => { void fetch('/api/auth/me', { credentials: 'include' }).then(r => r.json()).then(d => setCurrentUserId(d.user?.id || '')).catch(() => undefined); }, []);
   useEffect(() => { void loadConversations().catch(e => setError(e.message)).finally(() => setLoading(false)); }, []);
@@ -29,7 +35,7 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
     if (selected) {
       void (async () => {
         try {
-          const r = await fetch(`/api/counseling/conversations/${selected}/messages`, { credentials: 'include' });
+          const r = await fetch(`/api/counseling/conversations/${conversationId}/messages`, { credentials: 'include' });
           if (!r.ok) throw new Error('دریافت پیام‌ها ناموفق بود.');
           const data = await r.json();
           if (!cancelled) setMessages(data);
@@ -74,7 +80,8 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
   async function sendMessage(e: FormEvent) {
     e.preventDefault();
     const content = draft.trim();
-    if (!content || !selected || sending) return;
+    const conversationId = selected;
+    if (!content || !conversationId || sending) return;
     setSending(true);
     setError('');
     try {
@@ -85,8 +92,8 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
         body: JSON.stringify({ content }),
       });
       if (!r.ok) throw new Error('ارسال پیام انجام نشد. لطفاً دوباره تلاش کنید.');
-      setDraft('');
-      await loadMessages(selected);
+      if (selectedRef.current === conversationId) setDraft('');
+      await loadMessages(conversationId);
       await loadConversations();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'خطا در ارتباط با سرور.');
