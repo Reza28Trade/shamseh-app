@@ -37,18 +37,25 @@ export class CounselingChatService {
       throw new ConflictException('Username is already in use');
     }
     const passwordHash = await argon2.hash(input.password);
-    return this.prisma.$transaction(async tx => {
-      const account = await tx.user.create({
-        data: { username, passwordHash, role: UserRole.COUNSELOR, status: 'ACTIVE' },
-        select: { id: true, username: true, status: true },
+    try {
+      return await this.prisma.$transaction(async tx => {
+        const account = await tx.user.create({
+          data: { username, passwordHash, role: UserRole.COUNSELOR, status: 'ACTIVE' },
+          select: { id: true, username: true, status: true },
+        });
+        const profile = await tx.counselorProfile.create({
+          data: { userId: account.id, displayName, bio: input.bio?.trim() || null },
+          select: { id: true, displayName: true, bio: true, isActive: true, createdAt: true },
+        });
+        await tx.auditLog.create({ data: { actorUserId: user.id, action: 'COUNSELOR_CREATED', entityType: 'CounselorProfile', entityId: profile.id, metadata: { username } } });
+        return { ...profile, user: account };
       });
-      const profile = await tx.counselorProfile.create({
-        data: { userId: account.id, displayName, bio: input.bio?.trim() || null },
-        select: { id: true, displayName: true, bio: true, isActive: true, createdAt: true },
-      });
-      await tx.auditLog.create({ data: { actorUserId: user.id, action: 'COUNSELOR_CREATED', entityType: 'CounselorProfile', entityId: profile.id, metadata: { username } } });
-      return { ...profile, user: account };
-    });
+    } catch (error: any) {
+      if (error?.code === 'P2002') {
+        throw new ConflictException('Username is already in use. Reload the page and choose another username.');
+      }
+      throw error;
+    }
   }
 
   async setCounselorActive(user: AuthenticatedUser, counselorId: string, isActive: boolean) {
