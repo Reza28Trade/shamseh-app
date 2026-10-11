@@ -707,3 +707,18 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-stat:nth-child(2){background:linear-gradient(180deg,color-mix(in srgb,var(--course-green) 10%,var(--admin-card)),var(--admin-card) 72%)!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-stat:nth-child(3){background:linear-gradient(180deg,color-mix(in srgb,var(--course-blue) 10%,var(--admin-card)),var(--admin-card) 72%)!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-stat:nth-child(4){background:linear-gradient(180deg,color-mix(in srgb,var(--course-coral) 10%,var(--admin-card)),var(--admin-card) 72%)!important}
+
+
+/* Match the slim multicolor top accent used on the Manage Students statistics strip. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-stats{
+  position:relative;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-stats:before{
+  content:"";
+  position:absolute;
+  top:0;left:0;right:0;
+  height:3px;
+  z-index:2;
+  background:linear-gradient(90deg,var(--course-teal) 0%,var(--course-blue) 34%,var(--course-gold) 67%,var(--course-coral) 100%);
+  pointer-events:none;
+}
