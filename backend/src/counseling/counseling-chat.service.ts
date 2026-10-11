@@ -231,19 +231,21 @@ export class CounselingChatService {
           this.requireAdmin(user);
         }
 
-        const messages = await tx.counselingMessage.findMany({
-          where: { conversationId: conversation.id },
-          orderBy: { createdAt: 'asc' },
-          select: { id: true, content: true, senderUserId: true, readAt: true, createdAt: true },
-        });
-
         // Only participants affect read receipts; admin history review is read-only.
+        // Mark incoming messages read before selecting them so this response includes
+        // the updated readAt values rather than returning stale receipts for one poll.
         if (user.role === 'STUDENT' || user.role === 'COUNSELOR') {
           await tx.counselingMessage.updateMany({
             where: { conversationId, senderUserId: { not: user.id }, readAt: null },
             data: { readAt: new Date() },
           });
         }
+
+        const messages = await tx.counselingMessage.findMany({
+          where: { conversationId: conversation.id },
+          orderBy: { createdAt: 'asc' },
+          select: { id: true, content: true, senderUserId: true, readAt: true, createdAt: true },
+        });
         if (user.role === 'SUPER_ADMIN' || user.role === 'STAFF') {
           await tx.auditLog.create({
             data: {
