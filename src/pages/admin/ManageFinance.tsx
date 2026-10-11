@@ -121,7 +121,7 @@ export const ManageFinance: React.FC = () => {
   ] : [];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 18, color: colors.text, width: '100%', minWidth: 0 }}>
+    <div className="admin-legacy-page admin-finance-page" style={{ display: 'flex', flexDirection: 'column', gap: 18, color: colors.text, width: '100%', minWidth: 0 }}>
       <header style={{ padding: '24px', borderRadius: 18, background: dark ? 'linear-gradient(120deg, rgba(109,0,26,.3), #111116)' : 'linear-gradient(120deg, #fff, #f1f5f9)', border: `1px solid ${colors.border}` }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}><Wallet size={22} color={dark ? '#fda4af' : colors.accent} /><h2 style={{ fontSize: 19, margin: 0, fontWeight: 900 }}>وضعیت مالی هنرجویان</h2></div>
         <p style={{ color: colors.muted, fontSize: 12, lineHeight: 1.9, margin: 0 }}>شهریه از روی مبلغ ثبت‌شده هر دوره در زمان ثبت‌نام محاسبه می‌شود. پرداخت‌ها در پایگاه داده ثبت می‌شوند و مانده بدهی به‌صورت خودکار به‌روزرسانی می‌شود.</p>
