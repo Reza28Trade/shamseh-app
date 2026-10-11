@@ -23,8 +23,22 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
   useEffect(() => { void fetch('/api/auth/me', { credentials: 'include' }).then(r => r.json()).then(d => setCurrentUserId(d.user?.id || '')).catch(() => undefined); }, []);
   useEffect(() => { void loadConversations().catch(e => setError(e.message)).finally(() => setLoading(false)); }, []);
   useEffect(() => {
+    let cancelled = false;
     setMessages([]);
-    if (selected) void loadMessages(selected).catch(e => setError(e.message));
+    setError('');
+    if (selected) {
+      void (async () => {
+        try {
+          const r = await fetch(`/api/counseling/conversations/${selected}/messages`, { credentials: 'include' });
+          if (!r.ok) throw new Error('دریافت پیام‌ها ناموفق بود.');
+          const data = await r.json();
+          if (!cancelled) setMessages(data);
+        } catch (e) {
+          if (!cancelled) setError(e instanceof Error ? e.message : 'دریافت پیام‌ها ناموفق بود.');
+        }
+      })();
+    }
+    return () => { cancelled = true; };
   }, [selected]);
   useEffect(() => {
     let cancelled = false;
