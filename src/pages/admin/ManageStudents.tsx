@@ -49,6 +49,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
   const [studentLevelFilter, setStudentLevelFilter] = useState<'ALL' | 'MASTER' | 'DOCTORATE'>('ALL');
   const [yearFilter, setYearFilter] = useState<'ALL' | string>('ALL');
   const [termFilter, setTermFilter] = useState<'ALL' | string>('ALL');
+  const [termChartRange, setTermChartRange] = useState<'latest' | 'all'>('latest');
   const [search, setSearch] = useState('');
   const [studentCourseFilter, setStudentCourseFilter] = useState('ALL');
   const [studentEnrollmentFilter, setStudentEnrollmentFilter] = useState<'ALL' | 'ENROLLED' | 'NONE'>('ALL');
@@ -108,8 +109,32 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
   const activeEnrollments = apiStudents.reduce((n,s) => n + s.enrollments.filter(e => e.status === 'ACTIVE').length, 0);
   const masterCount = apiStudents.filter(s => s.academicLevel === 'MASTER').length;
   const doctorateCount = apiStudents.filter(s => s.academicLevel === 'DOCTORATE').length;
-  const termCounts = availableTerms.map(term => ({ term, count: apiStudents.filter(s => s.enrollments.some(e => e.status === 'ACTIVE' && e.course.term === term)).length }));
-  const maxTermCount = Math.max(1, ...termCounts.map(x => x.count));
+  const latestAcademicYear = availableYears[0];
+  const termCounts = useMemo(() => {
+    const colors = ['#FF6838', '#FFC820', '#97C95C', '#1CB2F6', '#9B7BDE', '#1685B8'];
+    const grouped = new Map<string, Set<string>>();
+    apiStudents.forEach(student => {
+      student.enrollments.filter(enrollment => {
+        if (enrollment.status !== 'ACTIVE') return false;
+        if (termChartRange === 'latest' && latestAcademicYear !== undefined && enrollment.course.academicYear !== latestAcademicYear) return false;
+        return true;
+      }).forEach(enrollment => {
+        const term = termLabel(enrollment.course.term);
+        if (!grouped.has(term)) grouped.set(term, new Set<string>());
+        grouped.get(term)!.add(student.id);
+      });
+    });
+    const rows = [...grouped.entries()].map(([term, ids], index) => ({ term, count: ids.size, color: colors[index % colors.length] })).filter(row => row.count > 0);
+    const total = rows.reduce((sum, row) => sum + row.count, 0);
+    let offset = 0;
+    const slices = rows.map(row => {
+      const next = offset + (total ? row.count / total * 100 : 0);
+      const slice = row.color + ' ' + offset + '% ' + next + '%';
+      offset = next;
+      return slice;
+    });
+    return { rows, total, gradient: slices.length ? 'conic-gradient(' + slices.join(', ') + ')' : 'conic-gradient(var(--admin-inner) 0% 100%)' };
+  }, [apiStudents, termChartRange, latestAcademicYear]);
 
   const pickerCourses = useMemo(() => apiCourses.filter(course => {
     if (coursePickerLevel && course.level !== coursePickerLevel) return false;
@@ -206,10 +231,24 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
 
       <div className="students-main-grid">
         <section className="student-chart-card">
-          <div className="section-title"><BarChart3 size={17}/><h3>توزیع هنرجویان بر اساس ترم</h3></div>
-          <div className="term-bars">
-            {termCounts.length ? termCounts.map(item => <div className="term-bar-row" key={item.term}><span>{item.term}</span><div><i style={{width: `${Math.max(7, item.count / maxTermCount * 100)}%`}}/></div><b>{item.count}</b></div>) : <p>هنوز داده‌ای برای نمایش آماری ثبت نشده است.</p>}
+          <div className="student-chart-heading">
+            <div className="section-title"><BarChart3 size={17}/><h3>توزیع هنرجویان بر اساس ترم</h3></div>
+            <div className="student-term-switch">
+              <button type="button" className={termChartRange === 'latest' ? 'active' : ''} onClick={() => setTermChartRange('latest')}>امسال{latestAcademicYear !== undefined ? ` (${latestAcademicYear})` : ''}</button>
+              <button type="button" className={termChartRange === 'all' ? 'active' : ''} onClick={() => setTermChartRange('all')}>همه سال‌ها</button>
+            </div>
           </div>
+          <div className="student-term-chart-layout">
+            <div className="student-term-donut" style={{background: termCounts.gradient}}>
+              <div className="student-term-donut-center"><strong>{termCounts.total}</strong><span>هنرجو</span></div>
+            </div>
+            <div className="student-term-legend">
+              {termCounts.rows.length ? termCounts.rows.map(item => <div className="student-term-legend-row" key={item.term}>
+                <i style={{background:item.color}}/><span>{item.term}</span><strong>{item.count}</strong><small>{termCounts.total ? Math.round(item.count / termCounts.total * 100) : 0}٪</small>
+              </div>) : <p className="student-term-empty">هنوز داده‌ای برای نمایش آماری ثبت نشده است.</p>}
+            </div>
+          </div>
+          <p className="student-term-note">هر هنرجو در هر ترم فقط یک‌بار شمرده می‌شود.</p>
         </section>
 
         <section className="student-form-card">
