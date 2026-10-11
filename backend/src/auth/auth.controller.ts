@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
-import { Response } from 'express';
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './session.decorator';
@@ -33,14 +33,22 @@ export class AuthController {
     return { user: publicUser };
   }
 
-  @UseGuards(AuthGuard)
+  // Logout must also work when the session is expired or the guard cannot validate it.
   @Post('logout')
-  async logout(
-    @CurrentUser() user: AuthenticatedUser,
-    @Res({ passthrough: true }) response: Response,
-  ) {
-    await this.authService.logout(user.sessionToken);
-    response.clearCookie(AUTH_COOKIE_NAME, { httpOnly: true, sameSite: 'lax', path: '/' });
+  async logout(@Req() request: Request, @Res({ passthrough: true }) response: Response) {
+    const sessionToken = request.cookies?.[AUTH_COOKIE_NAME];
+
+    if (sessionToken) {
+      await this.authService.logout(sessionToken);
+    }
+
+    response.clearCookie(AUTH_COOKIE_NAME, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+    });
+
     return { success: true };
   }
 }
