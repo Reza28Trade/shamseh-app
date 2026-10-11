@@ -91,7 +91,7 @@ export class AuthService {
   private publicUser(user: {
     id: string;
     username: string;
-    role: 'SUPER_ADMIN' | 'STAFF' | 'STUDENT';
+    role: 'SUPER_ADMIN' | 'STAFF' | 'STUDENT' | 'COUNSELOR';
     student: { id: string; fullName: string; nationalId: string } | null;
   }) {
     return {
