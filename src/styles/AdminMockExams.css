@@ -266,3 +266,43 @@
 @media(max-width:760px){
   .admin-shell .admin-page-content .admin-mock-exams-page > div:first-child{padding:16px!important}
 }
+
+
+/* Final cross-module sizing pass: consistent page width, surfaces and scroll area. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page{
+  max-width:1240px!important;
+  gap:16px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div:first-child{
+  min-height:82px;
+  padding:18px 20px!important;
+  border-radius:16px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stats{
+  min-height:81px;
+  border-radius:16px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat{
+  min-height:78px;
+  padding:13px 16px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-form-card,
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-list-card{
+  padding:16px!important;
+  border-radius:16px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list{
+  height:510px!important;
+  max-height:510px!important;
+}
+@media(max-width:760px){
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page{gap:14px!important}
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div:first-child{
+    min-height:0;padding:16px!important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-form-card,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-list-card{padding:14px!important}
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list{
+    height:min(510px,65vh)!important;max-height:min(510px,65vh)!important;
+  }
+}
