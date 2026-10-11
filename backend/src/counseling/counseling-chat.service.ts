@@ -133,39 +133,66 @@ export class CounselingChatService {
   }
 
   async listConversations(user: AuthenticatedUser) {
-    let where: any = {};
-    if (user.role === 'STUDENT') {
-      if (!user.studentId) throw new ForbiddenException('Student account required');
-      const active = await this.prisma.counselingAssignment.findFirst({ where: { studentId: user.studentId, endedAt: null }, select: { counselorId: true } });
-      if (!active) return [];
-      where = { studentId: user.studentId, counselorId: active.counselorId };
-    } else if (user.role === 'COUNSELOR') {
-      const profile = await this.profileForUser(user.id);
-      where = {
-        counselorId: profile.id,
-        student: {
-          counselingAssignments: {
-            some: { counselorId: profile.id, endedAt: null },
+    // Keep assignment authorization and the conversation/last-message read in one
+    // serializable transaction so a transfer cannot expose a previous counselor's
+    // last message through this summary endpoint.
+    try {
+      return await this.prisma.$transaction(async tx => {
+        let where: any = {};
+        if (user.role === 'STUDENT') {
+          if (!user.studentId) throw new ForbiddenException('Student account required');
+          const active = await tx.counselingAssignment.findFirst({
+            where: { studentId: user.studentId, endedAt: null },
+            select: { counselorId: true },
+          });
+          if (!active) return [];
+          where = { studentId: user.studentId, counselorId: active.counselorId };
+        } else if (user.role === 'COUNSELOR') {
+          const profile = await tx.counselorProfile.findUnique({
+            where: { userId: user.id },
+            select: { id: true, isActive: true },
+          });
+          if (!profile?.isActive) throw new ForbiddenException('Active counselor profile required');
+          where = {
+            counselorId: profile.id,
+            student: {
+              counselingAssignments: {
+                some: { counselorId: profile.id, endedAt: null },
+              },
+            },
+          };
+        } else {
+          this.requireAdmin(user);
+        }
+
+        const conversations = await tx.counselingConversation.findMany({
+          where,
+          orderBy: { updatedAt: 'desc' },
+          include: {
+            student: { select: { id: true, fullName: true, nationalId: true } },
+            counselor: { select: { id: true, displayName: true } },
+            messages: { orderBy: { createdAt: 'desc' }, take: 1, select: { id: true, content: true, senderUserId: true, readAt: true, createdAt: true } },
+            _count: { select: { messages: true } },
           },
-        },
-      };
-    } else {
-      this.requireAdmin(user);
+        });
+        if (user.role === 'STAFF' || user.role === 'SUPER_ADMIN') {
+          await tx.auditLog.create({
+            data: {
+              actorUserId: user.id,
+              action: 'COUNSELING_CONVERSATIONS_VIEWED',
+              entityType: 'CounselingConversation',
+              metadata: { count: conversations.length },
+            },
+          });
+        }
+        return conversations;
+      }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    } catch (error: any) {
+      if (error?.code === 'P2034') {
+        throw new ConflictException('Counseling assignments changed concurrently. Reload and try again.');
+      }
+      throw error;
     }
-    const conversations = await this.prisma.counselingConversation.findMany({
-      where,
-      orderBy: { updatedAt: 'desc' },
-      include: {
-        student: { select: { id: true, fullName: true, nationalId: true } },
-        counselor: { select: { id: true, displayName: true } },
-        messages: { orderBy: { createdAt: 'desc' }, take: 1, select: { id: true, content: true, senderUserId: true, readAt: true, createdAt: true } },
-        _count: { select: { messages: true } },
-      },
-    });
-    if (user.role === 'STAFF' || user.role === 'SUPER_ADMIN') {
-      await this.prisma.auditLog.create({ data: { actorUserId: user.id, action: 'COUNSELING_CONVERSATIONS_VIEWED', entityType: 'CounselingConversation', metadata: { count: conversations.length } } });
-    }
-    return conversations;
   }
 
   async getMessages(user: AuthenticatedUser, conversationId: string) {
