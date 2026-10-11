@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 
 type Conversation = {
   id: string;
@@ -24,22 +24,26 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
+  const loadRequestId = useRef(0);
 
   const colors = isDark
     ? { card: '#191f21', inner: '#202729', text: '#f1f4f3', sub: '#a2aeae', border: '#303a3c', accent: '#70b9b5' }
     : { card: '#fff', inner: '#f7faf9', text: '#202a2a', sub: '#667675', border: '#d8e3e0', accent: '#398a90' };
 
   async function loadConversation() {
+    const requestId = ++loadRequestId.current;
     const response = await fetch('/api/counseling/conversations', { credentials: 'include' });
     if (!response.ok) throw new Error('دریافت گفت‌وگوی مشاوره انجام نشد.');
     const data: Conversation[] = await response.json();
+    if (requestId !== loadRequestId.current) return;
     const active = data[0] ?? null;
     setConversation(active);
     if (active) {
       const messagesResponse = await fetch(`/api/counseling/conversations/${active.id}/messages`, { credentials: 'include' });
       if (!messagesResponse.ok) throw new Error('دریافت پیام‌ها انجام نشد.');
-      setMessages(await messagesResponse.json());
-    } else {
+      const nextMessages: Message[] = await messagesResponse.json();
+      if (requestId === loadRequestId.current) setMessages(nextMessages);
+    } else if (requestId === loadRequestId.current) {
       setMessages([]);
     }
   }
@@ -59,6 +63,7 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
         const conversations: Conversation[] = await conversationsResponse.json();
         const active = conversations[0] ?? null;
         if (cancelled) return;
+        loadRequestId.current += 1;
         setCurrentUserId(me.user?.id ?? '');
         setConversation(active);
         if (active) {
@@ -80,26 +85,29 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
 
   useEffect(() => {
     let cancelled = false;
+    let latestRefresh = 0;
     async function refreshChat() {
+      const refreshId = ++latestRefresh;
       try {
         const response = await fetch('/api/counseling/conversations', { credentials: 'include' });
         if (!response.ok) return;
         const data: Conversation[] = await response.json();
-        if (cancelled) return;
+        if (cancelled || refreshId !== latestRefresh) return;
         const active = data[0] ?? null;
         if (active?.id !== conversation?.id) {
+          loadRequestId.current += 1;
           // Never leave the previous counselor's transcript visible after a transfer.
           setMessages([]);
           setConversation(active);
           if (active) {
             const nextMessages = await fetch(`/api/counseling/conversations/${active.id}/messages`, { credentials: 'include' });
-            if (nextMessages.ok && !cancelled) setMessages(await nextMessages.json());
+            if (nextMessages.ok && !cancelled && refreshId === latestRefresh) setMessages(await nextMessages.json());
           }
           return;
         }
         if (active) {
           const messagesResponse = await fetch(`/api/counseling/conversations/${active.id}/messages`, { credentials: 'include' });
-          if (messagesResponse.ok && !cancelled) setMessages(await messagesResponse.json());
+          if (messagesResponse.ok && !cancelled && refreshId === latestRefresh) setMessages(await messagesResponse.json());
         }
       } catch {
         // Keep the current messages visible and retry on the next cycle.
