@@ -1,0 +1,27 @@
+import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Request } from 'express';
+import { AuthGuard } from '../auth/auth.guard';
+import { AuthenticatedUser } from '../auth/auth.types';
+import { CounselingChatService } from './counseling-chat.service';
+type AuthRequest = Request & { user: AuthenticatedUser };
+@Controller()
+@UseGuards(AuthGuard)
+export class CounselingChatController {
+  constructor(private readonly chat: CounselingChatService) {}
+  @Get('admin/counselors')
+  listCounselors(@Req() req: AuthRequest) { return this.chat.listCounselors(req.user); }
+  @Post('admin/counselors')
+  createCounselor(@Req() req: AuthRequest, @Body() body: { username?: string; password?: string; displayName?: string; bio?: string }) { return this.chat.createCounselor(req.user, body); }
+  @Patch('admin/counselors/:id')
+  setCounselorActive(@Req() req: AuthRequest, @Param('id') id: string, @Body() body: { isActive?: boolean }) { return this.chat.setCounselorActive(req.user, id, body.isActive as boolean); }
+  @Post('admin/counseling/assignments')
+  assign(@Req() req: AuthRequest, @Body() body: { studentId?: string; counselorId?: string }) { return this.chat.assign(req.user, body.studentId || '', body.counselorId || ''); }
+  @Get('admin/counseling/assignments')
+  assignments(@Req() req: AuthRequest) { return this.chat.listAssignments(req.user); }
+  @Get('counseling/conversations')
+  conversations(@Req() req: AuthRequest) { return this.chat.conversations(req.user); }
+  @Get('counseling/conversations/:id/messages')
+  messages(@Req() req: AuthRequest, @Param('id') id: string) { return this.chat.messages(req.user, id); }
+  @Post('counseling/conversations/:id/messages')
+  send(@Req() req: AuthRequest, @Param('id') id: string, @Body() body: { content?: string }) { return this.chat.send(req.user, id, body.content || ''); }
+}
