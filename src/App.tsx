@@ -14,9 +14,10 @@ import { ManagePublicContent } from './pages/admin/ManagePublicContent';
 import { ManageFinance } from './pages/admin/ManageFinance';
 import { Login } from './pages/user/Login';
 import { UserDashboard } from './pages/user/UserDashboard';
+import { CounselorPortal } from './pages/counselor/CounselorPortal';
 import type { Student, Admin } from './types';
 
-type AuthUser = { id: string; username: string; role: 'SUPER_ADMIN' | 'STAFF' | 'STUDENT'; studentId: string | null; student?: { fullName: string; nationalId: string } | null };
+type AuthUser = { id: string; username: string; role: 'SUPER_ADMIN' | 'STAFF' | 'STUDENT' | 'COUNSELOR'; studentId: string | null; student?: { fullName: string; nationalId: string } | null };
 
 export function App() {
   const {
@@ -30,7 +31,7 @@ export function App() {
     deleteStudent,
   } = useStore();
 
-  const [view, setView] = useState<'checking' | 'login' | 'admin' | 'user'>('checking');
+  const [view, setView] = useState<'checking' | 'login' | 'admin' | 'user' | 'counselor'>('checking');
   type AdminTab = 'dashboard' | 'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams' | 'counseling' | 'finance';
   const [adminTab, setAdminTab] = useState<AdminTab>('dashboard');
   const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
@@ -60,6 +61,8 @@ export function App() {
           };
           setCurrentAdmin(admin);
           setView('admin');
+        } else if (user.role === 'COUNSELOR') {
+          setView('counselor');
         } else if (user.role === 'STUDENT' && user.studentId && user.student) {
           setCurrentStudent({
             id: user.studentId,
@@ -86,6 +89,8 @@ export function App() {
   };
 
   const handleAdminLoginSuccess = (user: AuthUser) => {
+    if (user.role === 'COUNSELOR') { setView('counselor'); return; }
+    if (user.role !== 'SUPER_ADMIN' && user.role !== 'STAFF') return;
     const admin: Admin = { id: user.id, fullName: user.username, username: user.username, password: '', role: user.role === 'SUPER_ADMIN' ? 'super_admin' : 'staff' };
     setCurrentAdmin(admin);
     setView('admin');
@@ -156,6 +161,10 @@ export function App() {
         )}
       </AdminLayout>
     );
+  }
+
+  if (view === 'counselor') {
+    return <CounselorPortal onLogout={handleLogout} />;
   }
 
   if (view === 'user' && currentStudent) {
