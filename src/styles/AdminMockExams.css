@@ -306,3 +306,17 @@
     height:min(510px,65vh)!important;max-height:min(510px,65vh)!important;
   }
 }
+
+
+/* The form is a direct child (not a .mock-exam-form-card), so style the real element. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > form{
+  padding:16px!important;
+  border-radius:16px!important;
+  background:linear-gradient(145deg,color-mix(in srgb,#398A90 8%,var(--admin-card)),var(--admin-card) 62%)!important;
+  border:1px solid var(--admin-border)!important;
+  border-top:2px solid color-mix(in srgb,#398A90 70%,var(--admin-border))!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+@media(max-width:760px){
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > form{padding:14px!important}
+}
