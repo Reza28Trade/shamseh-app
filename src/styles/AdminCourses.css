@@ -364,3 +364,14 @@
   }
   .admin-courses-page .course-card-main{padding:10px}
 }
+
+
+/* The statistics grid is a layout wrapper, not a card. Prevent the legacy page rule from painting a rectangle behind its cards. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page > .course-stats{
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+}
