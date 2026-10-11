@@ -76,7 +76,7 @@ interface StoreState {
 }
 
 export const useStore = create<StoreState>((set, get) => ({
-  theme: 'dark',
+  theme: 'light',
   toggleTheme: () => set((state) => ({ theme: state.theme === 'dark' ? 'light' : 'dark' })),
 
   courses: [
