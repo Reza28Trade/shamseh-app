@@ -105,7 +105,14 @@ export class CounselingChatService {
       where = { studentId: user.studentId, counselorId: active.counselorId };
     } else if (user.role === 'COUNSELOR') {
       const profile = await this.profileForUser(user.id);
-      where = { counselorId: profile.id, counselor: { assignments: { some: { endedAt: null } } } };
+      where = {
+        counselorId: profile.id,
+        student: {
+          counselingAssignments: {
+            some: { counselorId: profile.id, endedAt: null },
+          },
+        },
+      };
     } else {
       this.requireAdmin(user);
     }
