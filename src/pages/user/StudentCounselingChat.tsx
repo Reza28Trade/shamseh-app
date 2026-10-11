@@ -78,6 +78,32 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
     return () => { cancelled = true; };
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+    async function refreshChat() {
+      try {
+        const response = await fetch('/api/counseling/conversations', { credentials: 'include' });
+        if (!response.ok) return;
+        const data: Conversation[] = await response.json();
+        if (cancelled) return;
+        const active = data[0] ?? null;
+        if (active?.id !== conversation?.id) {
+          setConversation(active);
+          if (!active) setMessages([]);
+          return;
+        }
+        if (active) {
+          const messagesResponse = await fetch(`/api/counseling/conversations/${active.id}/messages`, { credentials: 'include' });
+          if (messagesResponse.ok && !cancelled) setMessages(await messagesResponse.json());
+        }
+      } catch {
+        // Keep the current messages visible and retry on the next cycle.
+      }
+    }
+    const timer = window.setInterval(() => void refreshChat(), 5000);
+    return () => { cancelled = true; window.clearInterval(timer); };
+  }, [conversation?.id]);
+
   async function sendMessage(event: FormEvent) {
     event.preventDefault();
     const content = draft.trim();
