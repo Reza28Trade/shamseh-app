@@ -66,6 +66,7 @@ export const ManageCounseling: React.FC = () => {
   const [bio, setBio] = useState('');
   const [showCreate, setShowCreate] = useState(false);
   const [messagesLoading, setMessagesLoading] = useState(false);
+  const messageRequestId = React.useRef(0);
 
   const load = async () => {
     setLoading(true);
@@ -160,6 +161,7 @@ export const ManageCounseling: React.FC = () => {
   }
 
   async function openConversation(id: string) {
+    const requestId = ++messageRequestId.current;
     setSelectedConversation(id);
     setMessages([]);
     setMessagesLoading(true);
@@ -167,10 +169,16 @@ export const ManageCounseling: React.FC = () => {
     try {
       const response = await fetch(`/api/counseling/conversations/${id}/messages`, { credentials: 'include' });
       const data = await response.json().catch(() => null);
+      if (requestId !== messageRequestId.current) return;
       if (!response.ok) throw new Error(data?.message || 'دریافت تاریخچه گفتگو انجام نشد.');
       setMessages(data);
-    } catch (e) { setError(e instanceof Error ? e.message : 'دریافت پیام‌ها انجام نشد.'); setMessages([]); }
-    finally { setMessagesLoading(false); }
+    } catch (e) {
+      if (requestId !== messageRequestId.current) return;
+      setError(e instanceof Error ? e.message : 'دریافت پیام‌ها انجام نشد.');
+      setMessages([]);
+    } finally {
+      if (requestId === messageRequestId.current) setMessagesLoading(false);
+    }
   }
 
   const dateLabel = (value: string) => new Intl.DateTimeFormat('fa-IR', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Tehran' }).format(new Date(value));
