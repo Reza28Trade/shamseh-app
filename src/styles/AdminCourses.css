@@ -783,3 +783,42 @@
     gap:6px!important;
   }
 }
+
+
+/* Final cross-module sizing pass: align with the shared admin page rhythm. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page{
+  max-width:1240px!important;
+  gap:16px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-toolbar{
+  min-height:82px;
+  padding:18px 20px!important;
+  border-radius:16px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-stats{
+  min-height:81px;
+  border-radius:16px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-stat{
+  min-height:78px;
+  padding:13px 16px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-form,
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-list{
+  padding:16px!important;
+  border-radius:16px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-list-grid{
+  height:510px!important;
+  max-height:510px!important;
+  flex-basis:510px!important;
+}
+@media(max-width:700px){
+  .admin-shell .admin-page-content .admin-legacy-page.admin-courses-page{gap:14px!important}
+  .admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-toolbar{min-height:0;padding:16px!important}
+  .admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-form,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-list{padding:14px!important}
+  .admin-shell .admin-page-content .admin-legacy-page.admin-courses-page .course-list-grid{
+    height:min(510px,65vh)!important;max-height:min(510px,65vh)!important;flex-basis:min(510px,65vh)!important;
+  }
+}
