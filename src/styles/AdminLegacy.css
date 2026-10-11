@@ -969,3 +969,35 @@
     height:510px!important;max-height:510px!important;
   }
 }
+
+
+/* Dashboard statistics: match the multicolor gradient accent used across admin modules. */
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat-grid{
+  position:relative;
+  overflow:hidden;
+  padding-top:3px!important;
+  background:var(--admin-card)!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:16px!important;
+  box-shadow:var(--admin-shadow)!important;
+  gap:0!important;
+}
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat-grid:before{
+  content:"";
+  position:absolute;
+  z-index:2;
+  top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,#398A90 0%,#528bd8 34%,#d69b42 67%,#E58A70 100%);
+  pointer-events:none;
+}
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--admin-accent) 7%,var(--admin-card)),var(--admin-card) 76%)!important;
+  border:0!important;
+  border-left:1px solid var(--admin-border)!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat:last-child{border-left:0!important}
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat:hover{
+  background:linear-gradient(180deg,var(--admin-accent-soft),var(--admin-card) 82%)!important;
+}
