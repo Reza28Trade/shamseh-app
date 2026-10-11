@@ -3,6 +3,12 @@ import { Request } from 'express';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { CounselingChatService } from './counseling-chat.service';
+import {
+  AssignCounselorDto,
+  CreateCounselorDto,
+  SendCounselingMessageDto,
+  SetCounselorActiveDto,
+} from './dto/counseling-chat.dto';
 
 type AuthRequest = Request & { user: AuthenticatedUser };
 
@@ -17,10 +23,7 @@ export class CounselingChatController {
   }
 
   @Post('admin/counselors')
-  createCounselor(
-    @Req() req: AuthRequest,
-    @Body() body: { username?: string; password?: string; displayName?: string; bio?: string },
-  ) {
+  createCounselor(@Req() req: AuthRequest, @Body() body: CreateCounselorDto) {
     return this.chat.createCounselor(req.user, body);
   }
 
@@ -28,14 +31,14 @@ export class CounselingChatController {
   setCounselorActive(
     @Req() req: AuthRequest,
     @Param('id') id: string,
-    @Body() body: { isActive?: boolean },
+    @Body() body: SetCounselorActiveDto,
   ) {
-    return this.chat.setCounselorActive(req.user, id, body.isActive as boolean);
+    return this.chat.setCounselorActive(req.user, id, body.isActive);
   }
 
   @Post('admin/counseling/assignments')
-  assign(@Req() req: AuthRequest, @Body() body: { studentId?: string; counselorId?: string }) {
-    return this.chat.assignStudent(req.user, body.studentId || '', body.counselorId || '');
+  assign(@Req() req: AuthRequest, @Body() body: AssignCounselorDto) {
+    return this.chat.assignStudent(req.user, body.studentId, body.counselorId);
   }
 
   @Get('admin/counseling/assignments')
@@ -57,8 +60,8 @@ export class CounselingChatController {
   send(
     @Req() req: AuthRequest,
     @Param('id') id: string,
-    @Body() body: { content?: string },
+    @Body() body: SendCounselingMessageDto,
   ) {
-    return this.chat.sendMessage(req.user, id, body.content || '');
+    return this.chat.sendMessage(req.user, id, body.content);
   }
 }
