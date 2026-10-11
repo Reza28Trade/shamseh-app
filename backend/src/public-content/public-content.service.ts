@@ -1,5 +1,8 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { randomUUID } from 'crypto';
+import { createReadStream, existsSync } from 'fs';
+import { basename, extname, join } from 'path';
+import { Response } from 'express';
 import { PrismaService } from '../database/prisma.service';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { CreateAnalysisDto } from './dto/create-analysis.dto';
@@ -25,6 +28,36 @@ export class PublicContentService {
         term: true, category: true, startDate: true, schedule: true, price: true, coverImage: true, status: true,
       },
     });
+  }
+
+  async streamPublicCourseCover(courseId: string, res: Response) {
+    const course = await this.prisma.course.findFirst({
+      where: { id: courseId, status: 'ACTIVE' },
+      select: { coverImage: true, coverImageStorageKey: true },
+    });
+    if (!course) throw new NotFoundException('Course not found');
+
+    // Legacy URL-based covers remain supported.
+    if (course.coverImage) return res.redirect(course.coverImage);
+    if (!course.coverImageStorageKey) throw new NotFoundException('Course cover not found');
+
+    const storageDirectory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
+    const filePath = join(storageDirectory, basename(course.coverImageStorageKey));
+    if (!existsSync(filePath)) throw new NotFoundException('Course cover file not found');
+
+    const extension = extname(filePath).toLowerCase();
+    const contentTypes: Record<string, string> = {
+      '.jpg': 'image/jpeg',
+      '.jpeg': 'image/jpeg',
+      '.png': 'image/png',
+      '.webp': 'image/webp',
+      '.gif': 'image/gif',
+      '.avif': 'image/avif',
+    };
+    res.setHeader('Content-Type', contentTypes[extension] || 'application/octet-stream');
+    res.setHeader('Content-Disposition', 'inline');
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+    return createReadStream(filePath).pipe(res);
   }
 
   async getPublicRules() {
