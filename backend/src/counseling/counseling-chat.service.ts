@@ -1,5 +1,5 @@
 import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { UserRole } from '@prisma/client';
+import { Prisma, UserRole } from '@prisma/client';
 import * as argon2 from 'argon2';
 import { PrismaService } from '../database/prisma.service';
 import { AuthenticatedUser } from '../auth/auth.types';
@@ -73,19 +73,27 @@ export class CounselingChatService {
     ]);
     if (!student) throw new NotFoundException('Student not found');
     if (!counselor || !counselor.isActive) throw new NotFoundException('Active counselor not found');
-    return this.prisma.$transaction(async tx => {
-      const active = await tx.counselingAssignment.findFirst({ where: { studentId, endedAt: null } });
-      if (active?.counselorId === counselorId) return active;
-      if (active) await tx.counselingAssignment.update({ where: { id: active.id }, data: { endedAt: new Date() } });
-      const assignment = await tx.counselingAssignment.create({ data: { studentId, counselorId, assignedById: user.id } });
-      await tx.counselingConversation.upsert({
-        where: { studentId_counselorId: { studentId, counselorId } },
-        create: { studentId, counselorId },
-        update: {},
-      });
-      await tx.auditLog.create({ data: { actorUserId: user.id, action: active ? 'COUNSELOR_TRANSFERRED' : 'COUNSELOR_ASSIGNED', entityType: 'CounselingAssignment', entityId: assignment.id, metadata: { studentId, counselorId, previousCounselorId: active?.counselorId ?? null } } });
-      return assignment;
-    });
+
+    try {
+      return await this.prisma.$transaction(async tx => {
+        const active = await tx.counselingAssignment.findFirst({ where: { studentId, endedAt: null } });
+        if (active?.counselorId === counselorId) return active;
+        if (active) await tx.counselingAssignment.update({ where: { id: active.id }, data: { endedAt: new Date() } });
+        const assignment = await tx.counselingAssignment.create({ data: { studentId, counselorId, assignedById: user.id } });
+        await tx.counselingConversation.upsert({
+          where: { studentId_counselorId: { studentId, counselorId } },
+          create: { studentId, counselorId },
+          update: {},
+        });
+        await tx.auditLog.create({ data: { actorUserId: user.id, action: active ? 'COUNSELOR_TRANSFERRED' : 'COUNSELOR_ASSIGNED', entityType: 'CounselingAssignment', entityId: assignment.id, metadata: { studentId, counselorId, previousCounselorId: active?.counselorId ?? null } } });
+        return assignment;
+      }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    } catch (error: any) {
+      if (error?.code === 'P2034') {
+        throw new ConflictException('The assignment changed concurrently. Reload the page and try again.');
+      }
+      throw error;
+    }
   }
 
   async listAssignments(user: AuthenticatedUser) {
