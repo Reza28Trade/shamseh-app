@@ -154,3 +154,45 @@
  .admin-students-page .student-detail-footer{flex-direction:column-reverse}
  .admin-students-page .student-detail-footer button{width:100%;justify-content:center}
 }
+
+
+/* Clear visual separation between term analytics and student registration. */
+.admin-students-page .students-main-grid{
+  gap:24px;
+  align-items:stretch;
+}
+.admin-students-page .student-chart-card,
+.admin-students-page .student-form-card{
+  position:relative;
+  min-width:0;
+  border:1px solid var(--admin-border);
+  border-radius:18px;
+  box-shadow:0 12px 28px rgba(0,0,0,.12);
+}
+.admin-students-page .student-chart-card{
+  background:linear-gradient(145deg,color-mix(in srgb,var(--students-blue) 8%,var(--admin-card)),var(--admin-card) 62%);
+  border-top:3px solid var(--students-blue);
+}
+.admin-students-page .student-form-card{
+  background:linear-gradient(145deg,color-mix(in srgb,var(--students-teal) 9%,var(--admin-card)),var(--admin-card) 62%);
+  border-top:3px solid var(--students-teal);
+  box-shadow:0 12px 30px color-mix(in srgb,var(--students-teal) 8%,transparent);
+}
+.admin-students-page .student-chart-card .section-title{
+  padding-bottom:13px;
+  border-bottom:1px solid color-mix(in srgb,var(--students-blue) 24%,var(--admin-border));
+}
+.admin-students-page .student-chart-card .section-title svg{color:var(--students-blue)}
+.admin-students-page .student-form-card .section-title{
+  padding-bottom:13px;
+  border-bottom:1px solid color-mix(in srgb,var(--students-teal) 28%,var(--admin-border));
+}
+.admin-students-page .student-form-card .section-title h3{font-size:15px}
+@media(max-width:900px){
+  .admin-students-page .students-main-grid{gap:20px}
+}
+@media(max-width:620px){
+  .admin-students-page .students-main-grid{gap:16px}
+  .admin-students-page .student-chart-card,
+  .admin-students-page .student-form-card{padding:15px}
+}
