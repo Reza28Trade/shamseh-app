@@ -739,3 +739,52 @@
 .admin-offline-page .offline-request-list::-webkit-scrollbar-thumb:hover{
   background:var(--admin-accent);
 }
+
+
+/* Shamseh admin redesign — shared finishing layer */
+.admin-legacy-page{
+  font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif;
+  font-size:12px;
+  line-height:1.75;
+  gap:20px;
+}
+.admin-page-heading.is-dashboard{display:none}
+.admin-legacy-page input,
+.admin-legacy-page select,
+.admin-legacy-page textarea{
+  min-height:40px;
+  padding:9px 12px!important;
+  font:inherit;
+  font-size:12px!important;
+  line-height:1.5;
+}
+.admin-legacy-page textarea{min-height:100px;resize:vertical}
+.admin-legacy-page button:focus-visible,
+.admin-legacy-page a:focus-visible{
+  outline:2px solid var(--admin-accent)!important;
+  outline-offset:3px;
+}
+.admin-legacy-page table thead th:first-child{border-top-right-radius:10px}
+.admin-legacy-page table thead th:last-child{border-top-left-radius:10px}
+.admin-legacy-page tbody tr{transition:background .16s ease}
+.admin-legacy-page tbody tr:hover td{background:var(--admin-accent-soft)}
+.admin-legacy-page td,
+.admin-legacy-page th{padding:12px 13px}
+.admin-legacy-page .admin-page-head,
+.admin-legacy-page .page-header{gap:14px}
+.admin-shell ::selection{background:rgba(57,138,144,.3);color:var(--admin-text)}
+.admin-shell ::-webkit-scrollbar{width:8px;height:8px}
+.admin-shell ::-webkit-scrollbar-track{background:transparent}
+.admin-shell ::-webkit-scrollbar-thumb{background:var(--admin-border);border-radius:99px}
+.admin-shell ::-webkit-scrollbar-thumb:hover{background:var(--admin-accent)}
+@media(max-width:620px){
+  .admin-legacy-page{gap:14px}
+  .admin-legacy-page input,
+  .admin-legacy-page select,
+  .admin-legacy-page textarea{font-size:12px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .admin-legacy-page *,
+  .admin-legacy-page *::before,
+  .admin-legacy-page *::after{transition:none!important;animation:none!important}
+}
