@@ -56,6 +56,12 @@ export class CounselingChatService {
     if (typeof isActive !== 'boolean') throw new BadRequestException('isActive must be a boolean');
     const profile = await this.prisma.counselorProfile.findUnique({ where: { id: counselorId }, select: { id: true, userId: true } });
     if (!profile) throw new NotFoundException('Counselor not found');
+    if (!isActive) {
+      const activeAssignments = await this.prisma.counselingAssignment.count({ where: { counselorId, endedAt: null } });
+      if (activeAssignments > 0) {
+        throw new ConflictException('Transfer all currently assigned students before deactivating this counselor');
+      }
+    }
     return this.prisma.$transaction(async tx => {
       await tx.counselorProfile.update({ where: { id: counselorId }, data: { isActive } });
       await tx.user.update({ where: { id: profile.userId }, data: { status: isActive ? 'ACTIVE' : 'INACTIVE' } });
@@ -143,10 +149,14 @@ export class CounselingChatService {
   async getMessages(user: AuthenticatedUser, conversationId: string) {
     const conversation = await this.authorizeConversation(user, conversationId);
     const messages = await this.prisma.counselingMessage.findMany({ where: { conversationId: conversation.id }, orderBy: { createdAt: 'asc' }, select: { id: true, content: true, senderUserId: true, readAt: true, createdAt: true } });
-    await this.prisma.counselingMessage.updateMany({
-      where: { conversationId, senderUserId: { not: user.id }, readAt: null },
-      data: { readAt: new Date() },
-    });
+    // Only the actual conversation participants should affect read receipts.
+    // Admin history review is read-only and must not mark participant messages as read.
+    if (user.role === 'STUDENT' || user.role === 'COUNSELOR') {
+      await this.prisma.counselingMessage.updateMany({
+        where: { conversationId, senderUserId: { not: user.id }, readAt: null },
+        data: { readAt: new Date() },
+      });
+    }
     if (user.role === 'SUPER_ADMIN' || user.role === 'STAFF') {
       await this.prisma.auditLog.create({ data: { actorUserId: user.id, action: 'COUNSELING_HISTORY_VIEWED', entityType: 'CounselingConversation', entityId: conversationId } });
     }
