@@ -50,6 +50,7 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
 
   useEffect(() => {
     let cancelled = false;
+    const initialRequestId = ++loadRequestId.current;
     void (async () => {
       setLoading(true);
       setError('');
@@ -62,22 +63,21 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
         const me = await meResponse.json();
         const conversations: Conversation[] = await conversationsResponse.json();
         const active = conversations[0] ?? null;
-        if (cancelled) return;
-        loadRequestId.current += 1;
+        if (cancelled || initialRequestId !== loadRequestId.current) return;
         setCurrentUserId(me.user?.id ?? '');
         setConversation(active);
         if (active) {
           const response = await fetch(`/api/counseling/conversations/${active.id}/messages`, { credentials: 'include' });
           if (!response.ok) throw new Error('دریافت پیام‌ها انجام نشد.');
           const data = await response.json();
-          if (!cancelled) setMessages(data);
+          if (!cancelled && initialRequestId === loadRequestId.current) setMessages(data);
         } else {
           setMessages([]);
         }
       } catch (e) {
-        if (!cancelled) setError(e instanceof Error ? e.message : 'دریافت اطلاعات مشاوره انجام نشد.');
+        if (!cancelled && initialRequestId === loadRequestId.current) setError(e instanceof Error ? e.message : 'دریافت اطلاعات مشاوره انجام نشد.');
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled && initialRequestId === loadRequestId.current) setLoading(false);
       }
     })();
     return () => { cancelled = true; };
