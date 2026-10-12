@@ -140,6 +140,7 @@ model User {
   reviewedRequests OfflineRequest[] @relation("OfflineRequestReviewer")
   reviewedPayments Payment[] @relation("PaymentReviewer")
   supportMessages SupportMessage[]
+  managementContactMessages ManagementContactMessage[]
   updatedContent GeneralContent[] @relation("GeneralContentUpdater")
   publicContents PublicContent[]
   recordedPayments Payment[] @relation("PaymentRecorder")
@@ -175,6 +176,7 @@ model Student {
   notificationTargets NotificationTargetStudent[]
   notificationReads NotificationRead[]
   supportTickets SupportTicket[]
+  managementContactTickets ManagementContactTicket[]
   offlineRequests OfflineRequest[]
   mockExamParticipants MockExamParticipant[]
   counselingRequests CounselingRequest[]
@@ -325,6 +327,33 @@ model SupportMessage {
   createdAt DateTime @default(now())
 
   ticket SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  sender User @relation(fields: [senderUserId], references: [id])
+
+  @@index([ticketId, createdAt])
+}
+
+model ManagementContactTicket {
+  id String @id @default(cuid())
+  studentId String
+  subject String
+  status SupportTicketStatus @default(OPEN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  messages ManagementContactMessage[]
+
+  @@index([studentId, status])
+}
+
+model ManagementContactMessage {
+  id String @id @default(cuid())
+  ticketId String
+  senderUserId String
+  content String
+  createdAt DateTime @default(now())
+
+  ticket ManagementContactTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
   sender User @relation(fields: [senderUserId], references: [id])
 
   @@index([ticketId, createdAt])
