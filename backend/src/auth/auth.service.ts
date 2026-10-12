@@ -18,6 +18,7 @@ export class AuthService {
         passwordHash: true,
         role: true,
         status: true,
+        permissions: true,
         student: { select: { id: true, fullName: true, nationalId: true } },
       },
     });
@@ -58,6 +59,7 @@ export class AuthService {
             username: true,
             role: true,
             status: true,
+            permissions: true,
             student: { select: { id: true, fullName: true, nationalId: true } },
           },
         },
@@ -73,6 +75,7 @@ export class AuthService {
       username: session.user.username,
       role: session.user.role,
       studentId: session.user.student?.id ?? null,
+      permissions: session.user.role === 'SUPER_ADMIN' ? ['*'] : session.user.permissions,
       student: session.user.student ? { fullName: session.user.student.fullName, nationalId: session.user.student.nationalId } : null,
       sessionToken,
     };
@@ -93,11 +96,13 @@ export class AuthService {
     username: string;
     role: 'SUPER_ADMIN' | 'STAFF' | 'STUDENT' | 'COUNSELOR';
     student: { id: string; fullName: string; nationalId: string } | null;
+    permissions: string[];
   }) {
     return {
       id: user.id,
       username: user.username,
       role: user.role,
+      permissions: user.role === 'SUPER_ADMIN' ? ['*'] : user.permissions,
       studentId: user.student?.id ?? null,
       student: user.student ? { fullName: user.student.fullName, nationalId: user.student.nationalId } : null,
     };
