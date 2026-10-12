@@ -65,30 +65,30 @@ function AdminAccounts() {
       await load();
     } catch (e) { setError(e instanceof Error ? e.message : 'خطا در ذخیره'); }
   };
-  return <section style={{display:'grid',gap:18}}>
-    <div style={{padding:22,border:'1px solid var(--admin-border)',borderRadius:16,background:'var(--admin-card)'}}>
-      <h2 style={{fontSize:18,margin:'0 0 8px'}}>ایجاد حساب مدیر</h2>
-      <p style={{color:'var(--admin-sub)',fontSize:13,margin:'0 0 18px'}}>نام کاربری و رمز عبور مستقل تعیین کنید و دسترسی هر بخش را مشخص کنید.</p>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:12}}>
+  return <section className="admin-legacy-page admin-accounts-page">
+    <div className="accounts-card accounts-create-card">
+      <header className="accounts-card-head"><span className="accounts-eyebrow">مدیریت دسترسی‌ها</span><h2>ایجاد حساب مدیر</h2></header>
+      <p className="accounts-description">نام کاربری و رمز عبور مستقل تعیین کنید و دسترسی هر بخش را مشخص کنید.</p>
+      <div className="accounts-fields">
         <label style={{display:'grid',gap:6,fontSize:13}}>نام کاربری<input value={username} onChange={e=>setUsername(e.target.value)} minLength={3} style={adminInputStyle}/></label>
         <label style={{display:'grid',gap:6,fontSize:13}}>رمز عبور اولیه (حداقل ۱۲ کاراکتر)<input type="password" value={password} onChange={e=>setPassword(e.target.value)} style={adminInputStyle}/></label>
       </div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:10,margin:'18px 0'}}>
+      <div className="accounts-permissions accounts-create-permissions">
         {ADMIN_PERMISSION_OPTIONS.map(([key,label])=><label key={key} style={{display:'flex',gap:8,alignItems:'center',fontSize:13}}><input type="checkbox" checked={permissions.includes(key)} onChange={e=>setPermissions(p=>e.target.checked?[...p,key]:p.filter(x=>x!==key))}/>{label}</label>)}
       </div>
-      <button disabled={busy||username.trim().length<3||password.length<12} onClick={()=>void create()} style={adminButtonStyle}>{busy?'در حال ذخیره…':'ایجاد حساب مدیر'}</button>
+      <button className="accounts-primary-action" disabled={busy||username.trim().length<3||password.length<12} onClick={()=>void create()} style={adminButtonStyle}>{busy?'در حال ذخیره…':'ایجاد حساب مدیر'}</button>
       {error && <p role="alert" style={{color:'#d85b5b',fontSize:13}}>{error}</p>}
     </div>
-    <div style={{padding:22,border:'1px solid var(--admin-border)',borderRadius:16,background:'var(--admin-card)',overflowX:'auto'}}>
-      <h2 style={{fontSize:18,margin:'0 0 14px'}}>مدیران تعریف‌شده</h2>
-      {admins.length===0 ? <p style={{color:'var(--admin-sub)',fontSize:13}}>هنوز حساب مدیر عادی ایجاد نشده است.</p> : admins.map(a=><div key={a.id} style={{padding:'18px 0',borderTop:'1px solid var(--admin-border)',display:'grid',gap:12}}>
-        <div style={{display:'flex',gap:12,alignItems:'center',justifyContent:'space-between',flexWrap:'wrap'}}>
+    <div className="accounts-card accounts-list-card">
+      <header className="accounts-card-head"><span className="accounts-eyebrow">حساب‌های کاربری</span><h2>مدیران تعریف‌شده</h2></header>
+      {admins.length===0 ? <p style={{color:'var(--admin-sub)',fontSize:13}}>هنوز حساب مدیر عادی ایجاد نشده است.</p> : admins.map(a=><div key={a.id} className="accounts-admin-row">
+        <div className="accounts-admin-toolbar">
           <strong>{a.username}</strong><span style={{fontSize:12,color:a.status==='ACTIVE'?'#27846b':'#c75c5c'}}>{a.status==='ACTIVE'?'فعال':'غیرفعال'}</span>
           <button onClick={()=>void update(a.id,{status:a.status==='ACTIVE'?'INACTIVE':'ACTIVE'})} style={adminButtonStyle}>{a.status==='ACTIVE'?'غیرفعال‌سازی':'فعال‌سازی'}</button>
           <button onClick={()=>{const next=window.prompt('نام کاربری جدید',a.username);if(next&&next.trim()!==a.username)void update(a.id,{username:next.trim()});}} style={adminButtonStyle}>تغییر نام کاربری</button>
           <button onClick={()=>{const next=window.prompt('رمز عبور جدید (حداقل ۱۲ کاراکتر)');if(next)void update(a.id,{password:next});}} style={adminButtonStyle}>بازنشانی رمز</button>
         </div>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:9}}>
+        <div className="accounts-permissions accounts-saved-permissions">
           {ADMIN_PERMISSION_OPTIONS.map(([key,label])=><label key={key} style={{display:'flex',gap:8,alignItems:'center',fontSize:12}}><input type="checkbox" checked={a.permissions.includes(key)} onChange={e=>void update(a.id,{permissions:e.target.checked?[...a.permissions,key]:a.permissions.filter(x=>x!==key)})}/>{label}</label>)}
         </div>
       </div>)}
