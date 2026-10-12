@@ -26,6 +26,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
 
   const allMenuItems = [
     { id: 'dashboard', label: 'داشبورد مدیریت', icon: LayoutDashboard },
+    { id: 'admins', label: 'مدیریت مدیران و دسترسی‌ها', icon: ShieldCheck },
     { id: 'courses', label: 'مدیریت دوره‌ها', icon: BookOpen },
     { id: 'students', label: 'مدیریت هنرجویان', icon: Users },
     { id: 'offlineRequests', label: 'درخواست‌های آفلاین', icon: CheckSquare },
@@ -36,7 +37,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
     { id: 'rules', label: 'قوانین و تحلیل کنکور', icon: FileText },
     { id: 'finance', label: 'وضعیت مالی هنرجویان', icon: Wallet },
     { id: 'logs', label: 'گزارش‌های سیستمی', icon: ShieldAlert },
-    { id: 'admins', label: 'مدیریت مدیران و دسترسی‌ها', icon: ShieldCheck },
   ];
   const menuItems = allMenuItems.filter((item) => {
     if (item.id === 'dashboard') return true;
