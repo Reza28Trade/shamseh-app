@@ -3,7 +3,8 @@ import type { Student, Course } from '../../types';
 import { useStore } from '../../store/useStore';
 import { FileViewer } from '../../components/FileViewer';
 import { StudentCounselingChat } from './StudentCounselingChat';
-import { BookOpen, LogOut, Video, FileText, Send, Sun, Moon, CheckCircle, Bell, Volume2, Presentation, Link as LinkIcon, AlertCircle, CalendarClock, ClipboardList, ExternalLink, Home, Wallet, CreditCard } from 'lucide-react';
+import { StudentManagementContact } from './StudentManagementContact';
+import { BookOpen, LogOut, Video, FileText, Send, Sun, Moon, CheckCircle, Bell, Volume2, Presentation, Link as LinkIcon, AlertCircle, CalendarClock, ClipboardList, ExternalLink, Home, Wallet, CreditCard, MessageSquareText } from 'lucide-react';
 
 interface BackendSession {
   id: string;
@@ -70,7 +71,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
 
   } = useStore();
 
-  const [activeTab, setActiveTab] = useState<'home' | 'courses' | 'mockExams' | 'notifications' | 'messages' | 'counseling' | 'finance'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'courses' | 'mockExams' | 'notifications' | 'messages' | 'managementContact' | 'counseling' | 'finance'>('home');
   const [finance, setFinance] = useState<StudentFinance | null>(null);
   const [financeLoading, setFinanceLoading] = useState(false);
   const [financeError, setFinanceError] = useState('');
@@ -564,6 +565,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
             <button onClick={() => setActiveTab('finance')} style={{border:`1px solid ${borderColor}`,backgroundColor:activeTab==='finance'?accent:cardBg,color:activeTab==='finance'?'#fff':textColor,display:'flex',alignItems:'center',gap:'7px'}}><Wallet size={14}/> وضعیت مالی من</button>
             <button onClick={() => setActiveTab('counseling')} style={{border:`1px solid ${borderColor}`,backgroundColor:activeTab==='counseling'?accent:cardBg,color:activeTab==='counseling'?'#fff':textColor,display:'flex',alignItems:'center',gap:'7px'}}><CalendarClock size={14}/> مشاوره</button>
             <button onClick={() => setActiveTab('messages')} style={{border:`1px solid ${borderColor}`,backgroundColor:activeTab==='messages'?accent:cardBg,color:activeTab==='messages'?'#fff':textColor,display:'flex',alignItems:'center',gap:'7px'}}><Send size={14}/> پشتیبانی</button>
+            <button onClick={() => setActiveTab('managementContact')} style={{border:`1px solid ${borderColor}`,backgroundColor:activeTab==='managementContact'?accent:cardBg,color:activeTab==='managementContact'?'#fff':textColor,display:'flex',alignItems:'center',gap:'7px'}}><MessageSquareText size={14}/> ارتباط با مدیریت</button>
             <div className="student-sidebar-spacer"/>
             <button className="student-sidebar-logout" onClick={onLogout} style={{display:'flex',alignItems:'center',gap:'7px',border:`1px solid ${isDark?'rgba(170,92,100,.45)':'#ead9d9'}`,color:isDark?'#dba2a7':'#b75d5d',background:isDark?'rgba(130,45,52,.08)':'#fffafa'}}><LogOut size={14}/> خروج از حساب</button>
           </div>
@@ -1054,6 +1056,8 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         )}
 
         {activeTab === 'counseling' && <StudentCounselingChat isDark={isDark} />}
+
+        {activeTab === 'managementContact' && <StudentManagementContact isDark={isDark} />}
 
         {activeTab === 'messages' && (
           <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, backdropFilter: 'blur(16px)', padding: '32px', borderRadius: '24px', boxShadow: '0 16px 40px rgba(0,0,0,0.1)' }}>
