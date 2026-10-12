@@ -5,7 +5,7 @@ type Conversation = {
   id: string;
   student: { id: string; fullName: string };
   counselor: { id: string; displayName: string };
-  messages: { id: string; content: string; senderUserId: string; createdAt: string }[];
+  messages: { id: string; content: string; senderUserId: string; createdAt: string; attachmentName?: string | null }[];
   _count: { messages: number };
 };
 type Message = { id: string; content: string; senderUserId: string; createdAt: string; readAt: string | null; attachmentName?: string | null; attachmentMimeType?: string | null; attachmentSize?: number | null };
@@ -150,7 +150,7 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
             {loading ? <p style={{ color: palette.sub, padding: 12, fontSize: 12 }}>در حال دریافت گفت‌وگوها…</p> : filteredConversations.length === 0 ? <div style={{ padding: 20, textAlign: 'center', color: palette.sub, fontSize: 12, lineHeight: 2 }}>{search ? 'هنرجویی با این نام پیدا نشد.' : 'هنرجویی به شما اختصاص داده نشده است.'}</div> : filteredConversations.map(c => {
               const chosen = c.id === selected;
               const last = c.messages[c.messages.length - 1];
-              return <button key={c.id} onClick={() => { setSelected(c.id); setMobileListOpen(false); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 11, textAlign: 'right', padding: 12, marginBottom: 6, borderRadius: 12, border: `1px solid ${chosen ? palette.accentBorder : 'transparent'}`, background: chosen ? palette.accentSoft : 'transparent', color: palette.text, cursor: 'pointer' }}>
+              return <button key={c.id} onClick={() => { setSelected(c.id); setSelectedFile(null); setMobileListOpen(false); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 11, textAlign: 'right', padding: 12, marginBottom: 6, borderRadius: 12, border: `1px solid ${chosen ? palette.accentBorder : 'transparent'}`, background: chosen ? palette.accentSoft : 'transparent', color: palette.text, cursor: 'pointer' }}>
                 <span style={{ width: 40, height: 40, flex: '0 0 40px', display: 'grid', placeItems: 'center', borderRadius: 13, background: chosen ? palette.accent : palette.inner, color: chosen ? '#fff' : '#70b9b5', fontSize: 15, fontWeight: 900 }}>{c.student.fullName.trim().slice(0,1) || 'ه'}</span>
                 <span style={{ flex: 1, minWidth: 0 }}><strong style={{ display: 'block', fontSize: 12, fontWeight: 850, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.student.fullName}</strong><small style={{ display: 'block', color: palette.sub, fontSize: 10, marginTop: 5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{last?.attachmentName || last?.content || 'گفت‌وگوی جدید'}</small></span>
                 <span style={{ alignSelf: 'flex-start', whiteSpace: 'nowrap', fontSize: 9, color: palette.sub }}>{c._count.messages} پیام</span>
