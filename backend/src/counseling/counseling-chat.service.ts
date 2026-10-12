@@ -353,7 +353,7 @@ export class CounselingChatService {
     };
     if (!mimeByExtension[extension]) throw new BadRequestException('این نوع فایل پشتیبانی نمی‌شود.');
     if (file.size > 10 * 1024 * 1024) throw new BadRequestException('حداکثر حجم فایل ۱۰ مگابایت است.');
-    const originalName = basename(String(file.originalname || 'attachment').replace(/\\/g, '/')).replace(/[\\r\\n\\0]/g, '').slice(0, 180) || 'attachment';
+    const originalName = basename(String(file.originalname || 'attachment').replace(/\\/g, '/')).replace(/[\r\n\0]/g, '').slice(0, 180) || 'attachment';
     const storageKey = randomUUID() + extension;
     const directory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
     mkdirSync(directory, { recursive: true });
