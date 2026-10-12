@@ -125,7 +125,6 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
     } finally { setSending(false); }
   }
 
-  const initials = (active?.student.fullName || 'ه').trim().slice(0, 1);
   return (
     <main style={{ minHeight: '100vh', background: palette.bg, color: palette.text, direction: 'rtl', fontFamily: 'Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif', padding: 0 }}>
       <header style={{ height: 76, position: 'sticky', top: 0, zIndex: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '0 28px', background: palette.card, borderBottom: `1px solid ${palette.border}`, boxShadow: '0 4px 18px rgba(0,0,0,.12)' }}>
