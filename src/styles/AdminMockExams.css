@@ -89,7 +89,11 @@
 }
 
 
-.mock-exam-dashboard{display:grid;gap:16px}
+.mock-exam-dashboard{display:grid;gap:16px;background:transparent!important;background-color:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important;border-radius:0!important;padding:0!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard{
+  background:transparent!important;background-color:transparent!important;background-image:none!important;
+  border:0!important;box-shadow:none!important;border-radius:0!important;padding:0!important;
+}
 .mock-exam-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));overflow:hidden;background:var(--admin-card);border:1px solid var(--admin-border);box-shadow:var(--admin-shadow);border-radius:16px}
 .mock-exam-stat{padding:16px 18px;border-left:1px solid var(--admin-border)}
 .mock-exam-stat:last-child{border-left:0}
