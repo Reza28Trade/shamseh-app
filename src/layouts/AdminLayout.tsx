@@ -10,6 +10,19 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
   const { theme, toggleTheme } = useStore();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isDark = theme === 'dark';
+  const changePassword = async () => {
+    const currentPassword = window.prompt('رمز عبور فعلی');
+    if (!currentPassword) return;
+    const newPassword = window.prompt('رمز عبور جدید (حداقل ۱۲ کاراکتر)');
+    if (!newPassword) return;
+    if (newPassword.length < 12) { window.alert('رمز عبور باید حداقل ۱۲ کاراکتر باشد.'); return; }
+    try {
+      const response = await fetch('/api/auth/admin/account/password', { method: 'PATCH', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ currentPassword, newPassword }) });
+      if (!response.ok) throw new Error('تغییر رمز عبور ناموفق بود.');
+      window.alert('رمز عبور تغییر کرد. لطفاً دوباره وارد شوید.');
+      onLogout();
+    } catch (error) { window.alert(error instanceof Error ? error.message : 'خطا در تغییر رمز عبور'); }
+  };
 
   const allMenuItems = [
     { id: 'dashboard', label: 'داشبورد مدیریت', icon: LayoutDashboard },
@@ -68,6 +81,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
         </div>
 
         <div className="admin-top-actions">
+          <button className="admin-logout admin-top-logout" onClick={() => void changePassword()}><ShieldCheck size={17} /><span>تغییر رمز</span></button>
           <button className="admin-logout admin-top-logout" onClick={onLogout}><LogOut size={17} /><span>خروج از حساب</span></button>
           <button className="admin-theme-toggle" onClick={toggleTheme} title={isDark ? 'فعال‌سازی تم روشن' : 'فعال‌سازی تم تیره'} aria-label="تغییر تم">
             {isDark ? <Sun size={18} /> : <Moon size={18} />}
