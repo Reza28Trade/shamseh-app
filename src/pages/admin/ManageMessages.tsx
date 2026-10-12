@@ -116,7 +116,7 @@ export const ManageMessages: React.FC = () => {
 
       <section className="messages-ticket-section">
         <div className="messages-section-head">
-          <div><h3>فهرست تیکت‌ها</h3><p>برای پاسخ‌گویی یا تغییر وضعیت، تیکت موردنظر را انتخاب کنید.</p></div>
+          <div><h3>فهرست تیکت‌ها</h3><p>برای مشاهده جزئیات و پاسخ‌گویی، روی ردیف تیکت بزنید.</p></div>
           <span className="messages-total">{tickets.length} مورد</span>
         </div>
         {loading ? (
@@ -124,46 +124,54 @@ export const ManageMessages: React.FC = () => {
         ) : tickets.length === 0 ? (
           <div className="messages-empty"><span className="messages-empty-mark"><MessageSquare size={20} /></span><strong>هنوز تیکتی ثبت نشده است</strong><p>درخواست‌های هنرجویان پس از ثبت در این قسمت نمایش داده می‌شوند.</p></div>
         ) : (
-          <div className="messages-ticket-list">
-            {tickets.map(ticket => (
-              <article key={ticket.id} className={`messages-ticket-card messages-ticket-${ticket.status.toLowerCase()}`}>
-                <div className="messages-ticket-top">
-                  <div className="messages-ticket-main">
-                    <span className="messages-ticket-label">موضوع تیکت</span>
-                    <h4>{ticket.subject}</h4>
-                    <div className="messages-student-meta"><span className="messages-student-avatar">{ticket.student.fullName.trim().charAt(0) || 'ه'}</span><span className="messages-student-name">{ticket.student.fullName}</span><span className="messages-meta-divider" /><span className="messages-national-id">کد ملی: {ticket.student.nationalId}</span></div>
-                  </div>
-                  <label className="messages-status-control"><span>وضعیت</span><select aria-label={`وضعیت تیکت ${ticket.subject}`} value={ticket.status} onChange={e => void handleStatus(ticket.id, e.target.value as SupportTicket['status'])}><option value="OPEN">{statusLabel('OPEN')}</option><option value="ANSWERED">{statusLabel('ANSWERED')}</option><option value="CLOSED">{statusLabel('CLOSED')}</option></select></label>
-                </div>
-
-                <div className="messages-thread-head"><span>گفت‌وگو</span><span>{ticket.messages.length} پیام</span></div>
-                <div className="messages-thread">
-                  {ticket.messages.map(message => {
-                    const fromStudent = message.senderUserId === ticket.studentId;
-                    return <div key={message.id} className={`messages-bubble ${fromStudent ? 'messages-bubble-student' : 'messages-bubble-support'}`}>
-                      <div className="messages-bubble-meta"><strong>{fromStudent ? 'هنرجو' : 'پشتیبانی شمسه'}</strong><time>{new Date(message.createdAt).toLocaleString('fa-IR')}</time></div>
-                      <p>{message.content}</p>
-                    </div>;
-                  })}
-                </div>
-
-                {selectedTicketId === ticket.id ? (
-                  <form className="messages-reply-form" onSubmit={e => { e.preventDefault(); void handleReply(ticket.id); }}>
-                    <label htmlFor={`reply-${ticket.id}`}>پاسخ پشتیبانی</label>
-                    <textarea id={`reply-${ticket.id}`} value={replyText[ticket.id] || ''} onChange={e => setReplyText(current => ({ ...current, [ticket.id]: e.target.value }))} placeholder="پاسخ خود را اینجا بنویسید..." rows={3} />
-                    <div className="messages-reply-actions">
-                      <button type="submit" className="messages-send" disabled={sendingTicketId === ticket.id || !replyText[ticket.id]?.trim()}><Send size={14} />{sendingTicketId === ticket.id ? 'در حال ارسال...' : 'ارسال پاسخ'}</button>
-                      <button type="button" className="messages-cancel" onClick={() => setSelectedTicketId(null)}><X size={14} /> انصراف</button>
-                    </div>
-                  </form>
-                ) : (
-                  <div className="messages-ticket-actions"><button className="messages-reply-trigger" onClick={() => setSelectedTicketId(ticket.id)}><Send size={14} /> پاسخ به تیکت</button></div>
-                )}
-              </article>
-            ))}
+          <div className="messages-table-wrap">
+            <table className="messages-table">
+              <thead><tr><th>موضوع تیکت</th><th>هنرجو</th><th>تعداد پیام</th><th>آخرین بروزرسانی</th><th>وضعیت</th><th>جزئیات</th></tr></thead>
+              <tbody>
+                {tickets.map(ticket => (
+                  <tr key={ticket.id} className={`messages-table-row messages-ticket-${ticket.status.toLowerCase()} ${selectedTicketId === ticket.id ? 'is-selected' : ''}`} onClick={() => setSelectedTicketId(current => current === ticket.id ? null : ticket.id)} tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedTicketId(current => current === ticket.id ? null : ticket.id); } }}>
+                    <td><strong className="messages-table-subject">{ticket.subject}</strong><small className="messages-table-id">کد: {ticket.id.slice(0, 8)}</small></td>
+                    <td><span className="messages-table-student">{ticket.student.fullName}</span><small className="messages-table-id">{ticket.student.nationalId}</small></td>
+                    <td><span className="messages-count-pill">{ticket.messages.length} پیام</span></td>
+                    <td><span className="messages-table-date">{new Date(ticket.updatedAt || ticket.createdAt).toLocaleDateString('fa-IR')}</span></td>
+                    <td onClick={e => e.stopPropagation()}><select className="messages-table-status" aria-label={`وضعیت تیکت ${ticket.subject}`} value={ticket.status} onChange={e => void handleStatus(ticket.id, e.target.value as SupportTicket['status'])}><option value="OPEN">{statusLabel('OPEN')}</option><option value="ANSWERED">{statusLabel('ANSWERED')}</option><option value="CLOSED">{statusLabel('CLOSED')}</option></select></td>
+                    <td><button type="button" className="messages-open-ticket" aria-label={`مشاهده تیکت ${ticket.subject}`} onClick={e => { e.stopPropagation(); setSelectedTicketId(current => current === ticket.id ? null : ticket.id); }}>{selectedTicketId === ticket.id ? <X size={15}/> : <MessageSquare size={15}/>}<span>{selectedTicketId === ticket.id ? 'بستن' : 'مشاهده'}</span></button></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </section>
+
+      {selectedTicketId && (() => {
+        const ticket = tickets.find(item => item.id === selectedTicketId);
+        if (!ticket) return null;
+        return <section className="messages-detail-section">
+          <div className="messages-detail-head">
+            <div><span className="messages-detail-kicker">پرونده انتخاب‌شده</span><h3>{ticket.subject}</h3><p>{ticket.student.fullName} · کد ملی: {ticket.student.nationalId}</p></div>
+            <button type="button" className="messages-detail-close" onClick={() => setSelectedTicketId(null)}><X size={15}/> بستن جزئیات</button>
+          </div>
+          <div className="messages-thread-head"><span>تاریخچه گفت‌وگو</span><span>{ticket.messages.length} پیام</span></div>
+          <div className="messages-thread">
+            {ticket.messages.map(message => {
+              const fromStudent = message.senderUserId === ticket.studentId;
+              return <div key={message.id} className={`messages-bubble ${fromStudent ? 'messages-bubble-student' : 'messages-bubble-support'}`}>
+                <div className="messages-bubble-meta"><strong>{fromStudent ? 'هنرجو' : 'پشتیبانی شمسه'}</strong><time>{new Date(message.createdAt).toLocaleString('fa-IR')}</time></div>
+                <p>{message.content}</p>
+              </div>;
+            })}
+          </div>
+          <form className="messages-reply-form" onSubmit={e => { e.preventDefault(); void handleReply(ticket.id); }}>
+            <label htmlFor={`reply-${ticket.id}`}>پاسخ پشتیبانی</label>
+            <textarea id={`reply-${ticket.id}`} value={replyText[ticket.id] || ''} onChange={e => setReplyText(current => ({ ...current, [ticket.id]: e.target.value }))} placeholder="پاسخ خود را اینجا بنویسید..." rows={3} />
+            <div className="messages-reply-actions">
+              <button type="submit" className="messages-send" disabled={sendingTicketId === ticket.id || !replyText[ticket.id]?.trim()}><Send size={14} />{sendingTicketId === ticket.id ? 'در حال ارسال...' : 'ارسال پاسخ'}</button>
+              <button type="button" className="messages-cancel" onClick={() => setSelectedTicketId(null)}><X size={14} /> انصراف</button>
+            </div>
+          </form>
+        </section>;
+      })()}
     </div>
   );
 };
