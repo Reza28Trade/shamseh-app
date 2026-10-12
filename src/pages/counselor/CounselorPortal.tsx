@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
-import { LogOut, MessageCircle, Search, Send, UserRound, ArrowRight, Circle, Menu, X } from 'lucide-react';
+import { LogOut, MessageCircle, Search, Send, UserRound, ArrowRight, Circle, Paperclip, Download } from 'lucide-react';
 
 type Conversation = {
   id: string;
@@ -8,7 +8,7 @@ type Conversation = {
   messages: { id: string; content: string; senderUserId: string; createdAt: string }[];
   _count: { messages: number };
 };
-type Message = { id: string; content: string; senderUserId: string; createdAt: string; readAt: string | null };
+type Message = { id: string; content: string; senderUserId: string; createdAt: string; readAt: string | null; attachmentName?: string | null; attachmentMimeType?: string | null; attachmentSize?: number | null };
 
 const palette = {
   bg: '#101416', card: '#191f21', inner: '#202729', text: '#f1f4f3',
@@ -21,6 +21,7 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
   const [selected, setSelected] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [draft, setDraft] = useState('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [search, setSearch] = useState('');
   const [error, setError] = useState('');
   const [currentUserId, setCurrentUserId] = useState('');
@@ -99,14 +100,24 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
     setSending(true);
     setError('');
     try {
-      const r = await fetch(`/api/counseling/conversations/${conversationId}/messages`, {
-        method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content }),
-      });
+      let r: Response;
+      if (selectedFile) {
+        const form = new FormData();
+        form.append('file', selectedFile);
+        form.append('content', content);
+        r = await fetch(`/api/counseling/conversations/${conversationId}/messages/attachments`, {
+          method: 'POST', credentials: 'include', body: form,
+        });
+      } else {
+        r = await fetch(`/api/counseling/conversations/${conversationId}/messages`, {
+          method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content }),
+        });
+      }
       if (!r.ok) {
         const data = await r.json().catch(() => null);
         throw new Error(data?.message || 'ارسال پیام انجام نشد. لطفاً دوباره تلاش کنید.');
       }
-      if (selectedRef.current === conversationId) setDraft('');
+      if (selectedRef.current === conversationId) { setDraft(''); setSelectedFile(null); }
       await loadMessages(conversationId);
       await loadConversations();
     } catch (e) {
@@ -141,7 +152,7 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
               const last = c.messages[c.messages.length - 1];
               return <button key={c.id} onClick={() => { setSelected(c.id); setMobileListOpen(false); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 11, textAlign: 'right', padding: 12, marginBottom: 6, borderRadius: 12, border: `1px solid ${chosen ? palette.accentBorder : 'transparent'}`, background: chosen ? palette.accentSoft : 'transparent', color: palette.text, cursor: 'pointer' }}>
                 <span style={{ width: 40, height: 40, flex: '0 0 40px', display: 'grid', placeItems: 'center', borderRadius: 13, background: chosen ? palette.accent : palette.inner, color: chosen ? '#fff' : '#70b9b5', fontSize: 15, fontWeight: 900 }}>{c.student.fullName.trim().slice(0,1) || 'ه'}</span>
-                <span style={{ flex: 1, minWidth: 0 }}><strong style={{ display: 'block', fontSize: 12, fontWeight: 850, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.student.fullName}</strong><small style={{ display: 'block', color: palette.sub, fontSize: 10, marginTop: 5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{last?.content || 'گفت‌وگوی جدید'}</small></span>
+                <span style={{ flex: 1, minWidth: 0 }}><strong style={{ display: 'block', fontSize: 12, fontWeight: 850, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.student.fullName}</strong><small style={{ display: 'block', color: palette.sub, fontSize: 10, marginTop: 5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{last?.attachmentName || last?.content || 'گفت‌وگوی جدید'}</small></span>
                 <span style={{ alignSelf: 'flex-start', whiteSpace: 'nowrap', fontSize: 9, color: palette.sub }}>{c._count.messages} پیام</span>
               </button>;
             })}
@@ -162,15 +173,19 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
                 const own = m.senderUserId === currentUserId;
                 return <div key={m.id} style={{ display: 'flex', justifyContent: own ? 'flex-start' : 'flex-end', marginBottom: 13 }}>
                   <div style={{ maxWidth: 'min(78%, 650px)', padding: '11px 14px', borderRadius: own ? '14px 14px 4px 14px' : '14px 14px 14px 4px', background: own ? '#246d72' : palette.inner, border: `1px solid ${own ? 'rgba(112,185,181,.25)' : palette.border}`, color: palette.text, overflowWrap: 'anywhere' }}>
-                    <div style={{ whiteSpace: 'pre-wrap', fontSize: 12, lineHeight: 1.9 }}>{m.content}</div><time style={{ display: 'block', textAlign: 'left', marginTop: 6, color: palette.sub, fontSize: 9 }}>{new Date(m.createdAt).toLocaleString('fa-IR')}</time>
+                    {m.content && <div style={{ whiteSpace: 'pre-wrap', fontSize: 12, lineHeight: 1.9 }}>{m.content}</div>}
+                    {m.attachmentName && <a href={`/api/counseling/conversations/${selected}/messages/${m.id}/attachment`} style={{ display: 'flex', alignItems: 'center', gap: 9, marginTop: 9, padding: '10px 11px', borderRadius: 10, background: 'rgba(112,185,181,.10)', border: `1px solid ${palette.accentBorder}`, color: '#a5ded8', textDecoration: 'none', fontSize: 11 }}><Paperclip size={15} /><span style={{ flex: 1, overflowWrap: 'anywhere' }}>{m.attachmentName}<small style={{ display: 'block', marginTop: 4, opacity: .7 }}>{m.attachmentSize ? (m.attachmentSize / 1024 / 1024).toFixed(2) + ' MB' : 'پیوست'}</small></span><Download size={14} /></a>}
+                    <time style={{ display: 'block', textAlign: 'left', marginTop: 6, color: palette.sub, fontSize: 9 }}>{new Date(m.createdAt).toLocaleString('fa-IR')}</time>
                   </div>
                 </div>;
               })}
             </div>
             {error && <div role="alert" style={{ padding: '9px 16px', color: '#ff9b9b', background: 'rgba(190,75,85,.08)', fontSize: 11 }}>{error}</div>}
+            {selectedFile && <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderTop: `1px solid ${palette.border}`, background: palette.inner, color: palette.sub, fontSize: 10 }}><Paperclip size={14} /><span style={{ flex: 1, overflowWrap: 'anywhere' }}>{selectedFile.name}</span><button type="button" onClick={() => setSelectedFile(null)} style={{ border: 0, background: 'transparent', color: palette.danger, cursor: 'pointer' }}>حذف پیوست</button></div>}
             <form onSubmit={sendMessage} style={{ display: 'flex', alignItems: 'flex-end', gap: 10, padding: 14, borderTop: `1px solid ${palette.border}`, background: palette.card }}>
-              <textarea value={draft} onChange={e => setDraft(e.target.value)} maxLength={5000} rows={2} required disabled={sending} placeholder="پیام خود را بنویسید…" aria-label="متن پیام" style={{ flex: 1, minWidth: 0, resize: 'vertical', border: `1px solid ${palette.border}`, borderRadius: 11, padding: 12, background: palette.inner, color: palette.text, font: 'inherit', fontSize: 12, lineHeight: 1.8, outline: 'none' }} />
-              <button type="submit" disabled={sending || !draft.trim()} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 44, border: 0, borderRadius: 11, padding: '0 17px', background: palette.accent, color: '#fff', fontWeight: 850, fontSize: 11, cursor: sending || !draft.trim() ? 'wait' : 'pointer', opacity: sending || !draft.trim() ? .6 : 1 }}><Send size={15} />{sending ? 'در حال ارسال…' : 'ارسال پیام'}</button>
+              <label title="افزودن فایل (حداکثر ۱۰ مگابایت)" style={{ display: 'grid', placeItems: 'center', flex: '0 0 42px', height: 44, border: `1px solid ${palette.border}`, borderRadius: 11, background: palette.inner, color: '#70b9b5', cursor: sending ? 'wait' : 'pointer' }}><Paperclip size={17} /><input type="file" disabled={sending} accept=".pdf,.png,.jpg,.jpeg,.webp,.txt,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.mp3,.wav,.mp4,.webm" onChange={e => setSelectedFile(e.target.files?.[0] || null)} style={{ display: 'none' }} /></label>
+              <textarea value={draft} onChange={e => setDraft(e.target.value)} maxLength={5000} rows={2} disabled={sending} placeholder="پیام خود را بنویسید…" aria-label="متن پیام" style={{ flex: 1, minWidth: 0, resize: 'vertical', border: `1px solid ${palette.border}`, borderRadius: 11, padding: 12, background: palette.inner, color: palette.text, font: 'inherit', fontSize: 12, lineHeight: 1.8, outline: 'none' }} />
+              <button type="submit" disabled={sending || (!draft.trim() && !selectedFile)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 44, border: 0, borderRadius: 11, padding: '0 17px', background: palette.accent, color: '#fff', fontWeight: 850, fontSize: 11, cursor: sending || (!draft.trim() && !selectedFile) ? 'wait' : 'pointer', opacity: sending || (!draft.trim() && !selectedFile) ? .6 : 1 }}><Send size={15} />{sending ? 'در حال ارسال…' : 'ارسال'}</button>
             </form>
           </> : <div style={{ flex: 1, display: 'grid', placeItems: 'center', padding: 30, color: palette.sub, textAlign: 'center' }}><div><MessageCircle size={36} style={{ marginBottom: 12, opacity: .6 }} /><h2 style={{ fontSize: 15, color: palette.text }}>یک گفت‌وگو انتخاب کنید</h2><p style={{ fontSize: 11, lineHeight: 1.9 }}>از فهرست کنار صفحه، هنرجوی موردنظر را انتخاب کنید.</p></div></div>}
         </section>
