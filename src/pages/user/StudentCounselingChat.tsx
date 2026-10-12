@@ -140,7 +140,7 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
         <div style={{ padding: 14 }}>
           <div className="student-chat-scroll-area" aria-live="polite" style={{ minHeight: 300, maxHeight: 520, overflowY: 'auto', padding: 18, background: isDark ? '#141a1c' : '#f7faf9', border: `1px solid ${colors.border}`, borderRadius: '13px 13px 0 0' }}>
             {messages.length === 0 ? <div style={{ textAlign: 'center', padding: '65px 18px', color: colors.sub }}><MessageCircle size={30} style={{ opacity: .6, marginBottom: 10 }} /><p style={{ margin: 0, fontSize: 12, fontWeight: 800 }}>گفت‌وگو را شروع کنید</p><p style={{ fontSize: 11, lineHeight: 1.8 }}>پیام شما مستقیماً برای مشاور اختصاص‌یافته ارسال می‌شود.</p></div> : messages.map(message => {
-              const own = message.sender.role === 'STUDENT';
+              const own = message.sender.role === 'COUNSELOR';
               return <div key={message.id} style={{ display: 'flex', direction: 'ltr', justifyContent: own ? 'flex-end' : 'flex-start', marginBottom: 12 }}>
                 <div style={{ direction: 'rtl', maxWidth: 'min(84%, 700px)', padding: '11px 14px', borderRadius: own ? '14px 14px 4px 14px' : '14px 14px 14px 4px', background: own ? colors.accentSolid : colors.card, color: own ? '#fff' : colors.text, border: own ? '1px solid transparent' : `1px solid ${colors.border}`, overflowWrap: 'anywhere', boxShadow: isDark ? 'none' : '0 3px 12px rgba(32,62,58,.045)' }}>
                   {message.content && <div style={{ whiteSpace: 'pre-wrap', fontSize: 12, lineHeight: 1.9 }}>{message.content}</div>}
