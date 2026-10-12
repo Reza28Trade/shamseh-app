@@ -1745,3 +1745,159 @@
   background:linear-gradient(90deg,#f0d6a2,#fff0cf 35%,#b76c82 78%,transparent);
   pointer-events:none;
 }
+
+
+/* Shared admin page header pattern: same light/dark surface, multicolor edge,
+   typography and dimensions as Mock Exams and the other management sections. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-messages-page > header.messages-page-head,
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  min-height:82px!important;
+  padding:18px 20px!important;
+  overflow:hidden;
+  background:linear-gradient(112deg,var(--admin-card) 0%,var(--admin-inner) 100%)!important;
+  color:var(--admin-text)!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:16px!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-messages-page > header.messages-page-head:before,
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head:before{
+  content:"";
+  position:absolute;
+  top:0;bottom:0;left:0;width:4px;
+  background:linear-gradient(180deg,#398A90,#528bd8,#d69b42,#E58A70);
+  pointer-events:none;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-messages-page > header.messages-page-head .messages-page-title,
+.admin-shell .admin-page-content .admin-legacy-page.admin-messages-page > header.messages-page-head .messages-page-eyebrow,
+.admin-shell .admin-page-content .admin-legacy-page.admin-messages-page > header.messages-page-head h2,
+.admin-shell .admin-page-content .admin-legacy-page.admin-messages-page > header.messages-page-head h2 svg,
+.admin-shell .admin-page-content .admin-legacy-page.admin-messages-page > header.messages-page-head p,
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head h2,
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head h2 svg,
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head p{
+  color:var(--admin-text)!important;
+  opacity:1!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-messages-page > header.messages-page-head .messages-page-eyebrow,
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head .notifications-eyebrow,
+.admin-shell .admin-page-content .admin-legacy-page.admin-messages-page > header.messages-page-head h2 svg,
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head h2 svg{
+  color:var(--admin-accent)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-messages-page > header.messages-page-head p,
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head p{
+  color:var(--admin-sub)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page{
+  width:100%!important;
+  max-width:1240px!important;
+  margin:0 auto!important;
+  gap:16px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-eyebrow{
+  display:flex;align-items:center;gap:7px;margin-bottom:5px;
+  color:var(--admin-accent);font-size:11px;font-weight:800;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page h2{
+  display:flex;align-items:center;gap:9px;margin:0!important;
+  color:var(--admin-text)!important;font-size:20px!important;font-weight:850!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-page-head p{
+  margin:5px 0 0!important;font-size:12px!important;color:var(--admin-sub)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-card{
+  min-width:0;padding:20px!important;
+  background:linear-gradient(145deg,color-mix(in srgb,#398A90 6%,var(--admin-card)),var(--admin-card) 64%)!important;
+  border:1px solid var(--admin-border)!important;
+  border-top:2px solid color-mix(in srgb,#398A90 70%,var(--admin-border))!important;
+  border-radius:16px!important;box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form{
+  display:flex;flex-direction:column;gap:16px;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field{
+  display:flex;flex-direction:column;gap:7px;min-width:0;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field > label{
+  color:var(--admin-text)!important;font-size:11px;font-weight:800;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target-grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target{
+  display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;
+  padding:10px 12px!important;border:1px solid var(--admin-border)!important;
+  border-radius:11px!important;background:var(--admin-control)!important;
+  color:var(--admin-text)!important;font-size:11px;font-weight:800;cursor:pointer;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target svg{
+  color:var(--admin-sub);
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target.is-active{
+  background:var(--admin-accent-soft)!important;border-color:var(--admin-accent)!important;
+  color:var(--admin-accent)!important;box-shadow:inset 0 0 0 1px var(--admin-accent-soft);
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target.is-active svg{
+  color:var(--admin-accent)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field input,
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field select,
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field textarea{
+  width:100%;min-height:42px;padding:10px 12px!important;
+  border:1px solid var(--admin-border)!important;border-radius:10px!important;
+  background:var(--admin-control)!important;color:var(--admin-text)!important;
+  font:inherit;font-size:12px!important;box-shadow:none!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field textarea{
+  min-height:130px;resize:vertical;line-height:1.9;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field input:focus,
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field select:focus,
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field textarea:focus{
+  border-color:var(--admin-accent)!important;box-shadow:0 0 0 3px var(--admin-accent-soft)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field option{
+  color:var(--admin-text);background:var(--admin-card);
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-footer{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding-top:14px;border-top:1px solid var(--admin-border);
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-footer > span{
+  color:var(--admin-sub);font-size:10px;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-submit{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;
+  padding:0 17px!important;background:var(--admin-accent)!important;
+  color:#fff!important;border:1px solid var(--admin-accent)!important;
+  border-radius:10px!important;font-size:11px;font-weight:850;cursor:pointer;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-submit:disabled{
+  opacity:.6;cursor:not-allowed;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback{
+  margin-bottom:16px;padding:11px 13px;border-radius:10px;font-size:11px;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback.is-success{
+  background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.22);color:#16805d;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback.is-error{
+  background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#c65353;
+}
+@media(max-width:760px){
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page > header.messages-page-head,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head{
+    min-height:0!important;padding:16px!important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-card{padding:14px!important}
+  .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target-grid{grid-template-columns:1fr}
+  .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-footer{
+    align-items:stretch;flex-direction:column;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-submit{width:100%}
+}
