@@ -1,0 +1,1 @@
+-- Adds configurable permissions for staff accounts.
