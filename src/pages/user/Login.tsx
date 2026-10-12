@@ -25,14 +25,12 @@ export const Login: React.FC<LoginProps> = ({
   onAdminLoginSuccess,
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [viewState, setViewState] = useState<'welcome' | 'studentLogin' | 'adminLogin' | 'counselorLogin' | 'courses' | 'rules' | 'analysis'>('welcome');
+  const [viewState, setViewState] = useState<'welcome' | 'studentLogin' | 'adminLogin' | 'courses' | 'rules' | 'analysis'>('welcome');
   
   const [studentNationalId, setStudentNationalId] = useState('');
   const [studentPhone, setStudentPhone] = useState('');
   const [adminUsername, setAdminUsername] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
-  const [counselorUsername, setCounselorUsername] = useState('');
-  const [counselorPassword, setCounselorPassword] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -88,26 +86,6 @@ export const Login: React.FC<LoginProps> = ({
         setError('نام کاربری یا رمز عبور ادمین اشتباه است.');
       }
     })();
-  };
-
-
-  const handleCounselorSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ username: counselorUsername.trim(), password: counselorPassword }),
-      });
-      if (!response.ok) throw new Error('login');
-      const data = await response.json();
-      if (data.user?.role !== 'COUNSELOR') throw new Error('role');
-      onAdminLoginSuccess(data.user);
-    } catch {
-      setError('نام کاربری یا رمز عبور مشاور اشتباه است.');
-    }
   };
 
   if (viewState === 'courses') return <CourseCatalogPage onBack={() => setViewState('welcome')} />;
@@ -225,14 +203,6 @@ export const Login: React.FC<LoginProps> = ({
               ورود به پنل هنرجویی
             </button>
 
-
-            <button
-              onClick={() => { setViewState('counselorLogin'); setError(''); }}
-              style={{ width: '100%', padding: '16px', borderRadius: '30px', border: '1px solid #6D001A', backgroundColor: '#fff', color: '#6D001A', fontSize: '13px', fontWeight: 800, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}
-            >
-              ورود به پنل مشاور
-            </button>
-
             <button 
               onClick={() => setViewState('courses')} 
               style={{
@@ -318,34 +288,6 @@ export const Login: React.FC<LoginProps> = ({
             <button type="submit" style={{ width: '100%', padding: '15px', borderRadius: '30px', border: 'none', backgroundColor: '#18181b', color: '#FFFFFF', fontSize: '13px', fontWeight: 800, cursor: 'pointer', boxShadow: '0 4px 14px rgba(0,0,0,0.2)' }}>
               ورود به پنل کاربری
             </button>
-          </form>
-        )}
-
-
-        {viewState === 'counselorLogin' && (
-          <form onSubmit={handleCounselorSubmit} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '16px', maxWidth: '400px', margin: 'auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-              <h3 style={{ fontSize: '15px', fontWeight: 800, margin: 0, color: '#18181b' }}>ورود مشاور</h3>
-              <button type="button" onClick={() => { setViewState('welcome'); setError(''); }} style={{ background: 'none', border: 'none', color: '#6D001A', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <ArrowRight size={14} /> بازگشت
-              </button>
-            </div>
-            {error && <div role="alert" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#dc2626', padding: '10px', borderRadius: '8px', fontSize: '11px', textAlign: 'center', border: '1px solid rgba(239, 68, 68, 0.2)' }}>{error}</div>}
-            <div>
-              <label style={{ fontSize: '11px', color: '#52525b', display: 'block', marginBottom: '6px', fontWeight: 700 }}>نام کاربری مشاور</label>
-              <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#ffffff', border: '1px solid #d4d4d8', borderRadius: '12px', padding: '0 12px' }}>
-                <User size={16} color="#71717a" />
-                <input autoComplete="username" type="text" placeholder="نام کاربری" value={counselorUsername} onChange={e => setCounselorUsername(e.target.value)} required style={{ width: '100%', padding: '14px 10px', backgroundColor: 'transparent', border: 'none', color: '#18181b', fontSize: '13px', outline: 'none' }} />
-              </div>
-            </div>
-            <div>
-              <label style={{ fontSize: '11px', color: '#52525b', display: 'block', marginBottom: '6px', fontWeight: 700 }}>رمز عبور</label>
-              <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#ffffff', border: '1px solid #d4d4d8', borderRadius: '12px', padding: '0 12px' }}>
-                <Lock size={16} color="#71717a" />
-                <input autoComplete="current-password" type="password" placeholder="رمز عبور مشاور" value={counselorPassword} onChange={e => setCounselorPassword(e.target.value)} required style={{ width: '100%', padding: '14px 10px', backgroundColor: 'transparent', border: 'none', color: '#18181b', fontSize: '13px', outline: 'none' }} />
-              </div>
-            </div>
-            <button type="submit" style={{ width: '100%', padding: '15px', borderRadius: '30px', border: 'none', backgroundColor: '#6D001A', color: '#FFFFFF', fontSize: '13px', fontWeight: 800, cursor: 'pointer', boxShadow: '0 4px 14px rgba(0,0,0,0.2)' }}>ورود به پنل مشاور</button>
           </form>
         )}
 
