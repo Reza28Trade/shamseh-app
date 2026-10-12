@@ -20,6 +20,11 @@ type AuthRequest = Request & { user: AuthenticatedUser };
 export class CounselingChatController {
   constructor(private readonly chat: CounselingChatService) {}
 
+  @Get('counseling/profile')
+  myCounselorProfile(@Req() req: AuthRequest) {
+    return this.chat.getMyCounselorProfile(req.user);
+  }
+
   @Get('admin/counselors')
   listCounselors(@Req() req: AuthRequest) {
     return this.chat.listCounselors(req.user);
