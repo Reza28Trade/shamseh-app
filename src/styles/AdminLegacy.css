@@ -1901,3 +1901,17 @@
   }
   .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-submit{width:100%}
 }
+
+
+/* Recipient picker supports mock-exam participants as a fourth destination. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-recipient-hint{
+  color:var(--admin-sub);font-size:10px;line-height:1.8;
+}
+@media(max-width:900px){
+  .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
