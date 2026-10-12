@@ -41,7 +41,7 @@ function AdminAccounts() {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const load = async () => {
-    const response = await fetch('/api/admin/admins', { credentials: 'include' });
+    const response = await fetch('/api/auth/admin/admins', { credentials: 'include' });
     if (!response.ok) throw new Error('دریافت فهرست مدیران ناموفق بود.');
     setAdmins(await response.json());
   };
@@ -49,7 +49,7 @@ function AdminAccounts() {
   const create = async () => {
     setBusy(true); setError('');
     try {
-      const response = await fetch('/api/admin/admins', { method:'POST', credentials:'include', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username,password,permissions}) });
+      const response = await fetch('/api/auth/admin/admins', { method:'POST', credentials:'include', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username,password,permissions}) });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.message || 'ساخت حساب ناموفق بود.');
       setUsername(''); setPassword(''); setPermissions([]); await load();
@@ -59,7 +59,7 @@ function AdminAccounts() {
   const update = async (id:string, patch:Record<string,unknown>) => {
     setError('');
     try {
-      const response = await fetch('/api/admin/admins/'+encodeURIComponent(id), { method:'PATCH', credentials:'include', headers:{'Content-Type':'application/json'}, body:JSON.stringify(patch) });
+      const response = await fetch('/api/auth/admin/admins/'+encodeURIComponent(id), { method:'PATCH', credentials:'include', headers:{'Content-Type':'application/json'}, body:JSON.stringify(patch) });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.message || 'ذخیره تغییرات ناموفق بود.');
       await load();
