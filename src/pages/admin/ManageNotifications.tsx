@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Bell, Send, Users, BookOpen, Globe } from 'lucide-react';
+import { Bell, Send, Users, BookOpen, Globe, CalendarDays } from 'lucide-react';
 
-type TargetType = 'GLOBAL' | 'COURSE' | 'STUDENT';
+type TargetType = 'GLOBAL' | 'COURSE' | 'STUDENT' | 'MOCK_EXAM';
 type NotificationType = 'GENERAL' | 'IMPORTANT' | 'CLASS_CANCELLED' | 'CLASS_POSTPONED' | 'NEW_FILE' | 'MOCK_EXAM' | 'MOCK_EXAM_DATE_CHANGED' | 'MOCK_EXAM_LINK_AVAILABLE';
 
 interface CourseOption { id: string; title: string; professor: string; status: string; }
 interface StudentOption { id: string; fullName: string; nationalId: string; }
+interface MockExamOption { id: string; title: string; level: string; field: string; examDate: string; participants: { student: { id: string; fullName: string; nationalId: string } }[]; }
 
 const types: { value: NotificationType; label: string }[] = [
   { value: 'GENERAL', label: 'عمومی' }, { value: 'IMPORTANT', label: 'مهم' },
@@ -18,6 +19,8 @@ export const ManageNotifications: React.FC = () => {
   const [targetType, setTargetType] = useState<TargetType>('GLOBAL');
   const [courseId, setCourseId] = useState('');
   const [studentId, setStudentId] = useState('');
+  const [mockExamId, setMockExamId] = useState('');
+  const [mockExams, setMockExams] = useState<MockExamOption[]>([]);
   const [type, setType] = useState<NotificationType>('GENERAL');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -31,14 +34,17 @@ export const ManageNotifications: React.FC = () => {
     const load = async () => {
       setLoading(true);
       try {
-        const [coursesRes, studentsRes] = await Promise.all([
+        const [coursesRes, studentsRes, examsRes] = await Promise.all([
           fetch('/api/courses', { credentials: 'include' }),
           fetch('/api/admin/students', { credentials: 'include' }),
+          fetch('/api/admin/mock-exams', { credentials: 'include' }),
         ]);
-        if (!coursesRes.ok || !studentsRes.ok) throw new Error('دریافت گیرندگان انجام نشد.');
+        if (!coursesRes.ok || !studentsRes.ok || !examsRes.ok) throw new Error('دریافت گیرندگان انجام نشد.');
         const courseData = await coursesRes.json();
         const studentData = await studentsRes.json();
+        const examData = await examsRes.json();
         setCourses(courseData);
+        setMockExams(Array.isArray(examData) ? examData : []);
         setStudents(studentData.map((x: any) => ({
           id: x.student?.id ?? x.id,
           fullName: x.student?.fullName ?? x.fullName,
@@ -56,6 +62,10 @@ export const ManageNotifications: React.FC = () => {
     if (!title.trim() || !content.trim() || sending) return;
     if (targetType === 'COURSE' && !courseId) { setMessage({ text: 'دوره را انتخاب کنید.', ok: false }); return; }
     if (targetType === 'STUDENT' && !studentId) { setMessage({ text: 'هنرجو را انتخاب کنید.', ok: false }); return; }
+    const selectedMockExam = targetType === 'MOCK_EXAM' ? mockExams.find(exam => exam.id === mockExamId) : undefined;
+    if (targetType === 'MOCK_EXAM' && !selectedMockExam) { setMessage({ text: 'آزمون آزمایشی را انتخاب کنید.', ok: false }); return; }
+    const mockExamStudentIds = selectedMockExam?.participants.map(participant => participant.student.id) ?? [];
+    if (targetType === 'MOCK_EXAM' && mockExamStudentIds.length === 0) { setMessage({ text: 'برای این آزمون هنوز هنرجویی ثبت‌نام نشده است.', ok: false }); return; }
 
     setSending(true); setMessage(null);
     try {
@@ -98,7 +108,7 @@ export const ManageNotifications: React.FC = () => {
               {[
                 ['GLOBAL', 'همه هنرجویان', Globe],
                 ['COURSE', 'یک دوره', BookOpen],
-                ['STUDENT', 'یک هنرجو', Users],
+                ['STUDENT', 'یک هنرجو', Users], ['MOCK_EXAM', 'شرکت‌کنندگان آزمون', CalendarDays],
               ].map(([value, label, Icon]) => (
                 <button
                   key={value as string}
@@ -120,6 +130,16 @@ export const ManageNotifications: React.FC = () => {
                 <option value="">انتخاب دوره...</option>
                 {courses.map(c => <option key={c.id} value={c.id}>{c.title} — {c.professor}</option>)}
               </select>
+            </div>
+          )}
+          {targetType === 'MOCK_EXAM' && (
+            <div className="notifications-field">
+              <label htmlFor="notification-mock-exam">آزمون آزمایشی</label>
+              <select id="notification-mock-exam" value={mockExamId} onChange={e => setMockExamId(e.target.value)} required>
+                <option value="">انتخاب آزمون...</option>
+                {mockExams.map(exam => <option key={exam.id} value={exam.id}>{exam.title} — {exam.level} · {exam.participants.length} شرکت‌کننده</option>)}
+              </select>
+              {mockExamId && <small className="notifications-recipient-hint">این اطلاعیه برای {mockExams.find(exam => exam.id === mockExamId)?.participants.length ?? 0} هنرجوی ثبت‌نام‌شده در همین آزمون ارسال می‌شود.</small>}
             </div>
           )}
           {targetType === 'STUDENT' && (
