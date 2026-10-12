@@ -18,7 +18,6 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
-  const [currentUserId, setCurrentUserId] = useState('');
   const loadRequestId = useRef(0);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -45,7 +44,6 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
   useEffect(() => {
     let cancelled = false;
     const initialRequestId = ++loadRequestId.current;
-    void fetch('/api/auth/me', { credentials: 'include' }).then(r => r.json()).then(d => setCurrentUserId(d.user?.id || '')).catch(() => undefined);
     void (async () => {
       setLoading(true); setError('');
       try {
