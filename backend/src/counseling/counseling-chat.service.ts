@@ -349,6 +349,29 @@ export class CounselingChatService {
     }
   }
 
+  private hasExpectedFileSignature(extension: string, buffer: Buffer): boolean {
+    if (!buffer?.length) return false;
+    const startsWith = (...bytes: number[]) => buffer.length >= bytes.length && bytes.every((byte, index) => buffer[index] === byte);
+    switch (extension) {
+      case '.pdf': return buffer.subarray(0, 5).toString('ascii') === '%PDF-';
+      case '.png': return startsWith(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a);
+      case '.jpg': case '.jpeg': return startsWith(0xff, 0xd8, 0xff);
+      case '.webp': return buffer.length >= 12 && buffer.subarray(0, 4).toString('ascii') === 'RIFF' && buffer.subarray(8, 12).toString('ascii') === 'WEBP';
+      case '.doc': case '.xls': case '.ppt': return startsWith(0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1);
+      case '.docx': case '.xlsx': case '.pptx': return startsWith(0x50, 0x4b, 0x03, 0x04) || startsWith(0x50, 0x4b, 0x05, 0x06) || startsWith(0x50, 0x4b, 0x07, 0x08);
+      case '.txt': {
+        if (buffer.includes(0)) return false;
+        const text = buffer.toString('utf8');
+        return Buffer.from(text, 'utf8').equals(buffer);
+      }
+      case '.mp3': return buffer.subarray(0, 3).toString('ascii') === 'ID3' || (buffer.length >= 2 && buffer[0] === 0xff && (buffer[1] & 0xe0) === 0xe0);
+      case '.wav': return buffer.length >= 12 && buffer.subarray(0, 4).toString('ascii') === 'RIFF' && buffer.subarray(8, 12).toString('ascii') === 'WAVE';
+      case '.mp4': return buffer.length >= 12 && buffer.subarray(4, 8).toString('ascii') === 'ftyp';
+      case '.webm': return startsWith(0x1a, 0x45, 0xdf, 0xa3);
+      default: return false;
+    }
+  }
+
   async storeAndSendAttachment(user: AuthenticatedUser, conversationId: string, contentInput: string, file: any) {
     if (!file?.buffer) throw new BadRequestException('فایل پیوست انتخاب نشده است.');
     const extension = extname(String(file.originalname || '')).toLowerCase();
@@ -363,6 +386,9 @@ export class CounselingChatService {
     };
     if (!mimeByExtension[extension]) throw new BadRequestException('این نوع فایل پشتیبانی نمی‌شود.');
     if (file.size > 10 * 1024 * 1024) throw new BadRequestException('حداکثر حجم فایل ۱۰ مگابایت است.');
+    if (!this.hasExpectedFileSignature(extension, file.buffer)) {
+      throw new BadRequestException('محتوای فایل با نوع یا پسوند اعلام‌شده مطابقت ندارد.');
+    }
     const originalName = basename(String(file.originalname || 'attachment').replace(/\\/g, '/')).replace(/[\r\n\0]/g, '').slice(0, 180) || 'attachment';
     const storageKey = randomUUID() + extension;
     const directory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
