@@ -11,6 +11,7 @@ import { GeneralContentModule } from './general-content/general-content.module';
 import { CounselingModule } from './counseling/counseling.module';
 import { PublicContentModule } from './public-content/public-content.module';
 import { FinanceModule } from './finance/finance.module';
+import { ManagementContactModule } from './management-contact/management-contact.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { FinanceModule } from './finance/finance.module';
     CounselingModule,
     PublicContentModule,
     FinanceModule,
+    ManagementContactModule,
   ],
 })
 export class AppModule {}
