@@ -47,12 +47,8 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
     void (async () => {
       setLoading(true); setError('');
       try {
-        const [meResponse, conversationsResponse] = await Promise.all([
-          fetch('/api/auth/me', { credentials: 'include' }),
-          fetch('/api/counseling/conversations', { credentials: 'include' }),
-        ]);
-        if (!meResponse.ok || !conversationsResponse.ok) throw new Error('دریافت اطلاعات مشاوره انجام نشد.');
-        const me = await meResponse.json();
+        const conversationsResponse = await fetch('/api/counseling/conversations', { credentials: 'include' });
+        if (!conversationsResponse.ok) throw new Error('دریافت اطلاعات مشاوره انجام نشد.');
         const conversations: Conversation[] = await conversationsResponse.json();
         const active = conversations[0] ?? null;
         if (cancelled || initialRequestId !== loadRequestId.current) return;
