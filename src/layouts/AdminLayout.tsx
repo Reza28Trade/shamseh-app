@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import type { Admin } from '../types';
 import { useStore } from '../store/useStore';
 import '../styles/AdminLegacy.css';
-import { LayoutDashboard, BookOpen, Users, MessageSquare, ShieldAlert, FileText, LogOut, Sun, Moon, Menu, X, CheckSquare, ClipboardList, Bell, Wallet, ChevronLeft } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Users, MessageSquare, ShieldAlert, FileText, LogOut, Sun, Moon, Menu, X, CheckSquare, ClipboardList, Bell, Wallet, ChevronLeft, ShieldCheck } from 'lucide-react';
 
 interface AdminLayoutProps { admin?: Admin; onLogout: () => void; activeTab: any; setActiveTab: any; children: React.ReactNode; }
 
@@ -11,7 +11,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isDark = theme === 'dark';
 
-  const menuItems = [
+  const allMenuItems = [
     { id: 'dashboard', label: 'داشبورد مدیریت', icon: LayoutDashboard },
     { id: 'courses', label: 'مدیریت دوره‌ها', icon: BookOpen },
     { id: 'students', label: 'مدیریت هنرجویان', icon: Users },
@@ -23,7 +23,14 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
     { id: 'rules', label: 'قوانین و تحلیل کنکور', icon: FileText },
     { id: 'finance', label: 'وضعیت مالی هنرجویان', icon: Wallet },
     { id: 'logs', label: 'گزارش‌های سیستمی', icon: ShieldAlert },
+    { id: 'admins', label: 'مدیریت مدیران و دسترسی‌ها', icon: ShieldCheck },
   ];
+  const menuItems = allMenuItems.filter((item) => {
+    if (item.id === 'dashboard') return true;
+    if (item.id === 'admins') return admin?.role === 'super_admin';
+    if (admin?.role === 'super_admin') return true;
+    return Boolean(admin?.permissions?.includes(item.id));
+  });
   const activeItem = menuItems.find((item) => item.id === activeTab) ?? menuItems[0];
 
   const vars: any = {
