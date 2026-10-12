@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
@@ -31,6 +31,31 @@ export class AuthController {
   me(@CurrentUser() user: AuthenticatedUser) {
     const { sessionToken: _sessionToken, ...publicUser } = user;
     return { user: publicUser };
+  }
+
+
+  @UseGuards(AuthGuard)
+  @Get('admin/admins')
+  listAdmins(@CurrentUser() user: AuthenticatedUser) {
+    return this.authService.listAdmins(user);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('admin/admins')
+  createAdmin(@CurrentUser() user: AuthenticatedUser, @Body() body: { username: string; password: string; permissions?: string[] }) {
+    return this.authService.createAdmin(user, body);
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch('admin/admins/:id')
+  updateAdmin(@CurrentUser() user: AuthenticatedUser, @Param('id') id: string, @Body() body: { username?: string; password?: string; permissions?: string[]; status?: 'ACTIVE' | 'INACTIVE' }) {
+    return this.authService.updateAdmin(user, id, body);
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch('admin/account/password')
+  changeOwnPassword(@CurrentUser() user: AuthenticatedUser, @Body() body: { currentPassword: string; newPassword: string }) {
+    return this.authService.changeOwnPassword(user, body);
   }
 
   // Logout must also work when the session is expired or the guard cannot validate it.
