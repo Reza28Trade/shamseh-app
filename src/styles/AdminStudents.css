@@ -236,3 +236,19 @@
   box-shadow:none!important;
   border-radius:0!important;
 }
+
+
+/* Force the student-management header to use the shared module gradient and accent strip. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page > .students-page-head{
+  background:linear-gradient(120deg,var(--admin-accent-soft),var(--admin-card) 78%)!important;
+  border:1px solid var(--admin-border)!important;
+  border-top:3px solid var(--admin-accent)!important;
+  border-radius:16px!important;
+  box-shadow:var(--admin-shadow)!important;
+  min-height:82px!important;
+  padding:18px 20px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page > .students-page-head h2{font-size:20px!important;font-weight:900!important}
+@media(max-width:700px){
+ .admin-shell .admin-page-content .admin-legacy-page.admin-students-page > .students-page-head{min-height:0!important;padding:16px!important}
+}
