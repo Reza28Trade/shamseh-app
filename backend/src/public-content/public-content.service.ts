@@ -26,6 +26,7 @@ export class PublicContentService {
       select: {
         id: true, title: true, professor: true, level: true, description: true,
         term: true, category: true, startDate: true, schedule: true, price: true, coverImage: true, status: true,
+        academicYear: true, classDays: true, classStartTime: true, classEndTime: true,
       },
     });
   }
