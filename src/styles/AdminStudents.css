@@ -1,6 +1,6 @@
 .admin-students-page{max-width:1240px!important;gap:16px!important}
 .students-page-head,.students-stats,.student-chart-card,.student-form-card,.student-import-card,.student-list-card{background:var(--admin-card);border:1px solid var(--admin-border);box-shadow:var(--admin-shadow);border-radius:16px}
-.students-page-head{padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.students-page-head{padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;background:linear-gradient(120deg,var(--admin-accent-soft),var(--admin-card) 78%);border-top:3px solid var(--admin-accent)}
 .students-eyebrow{font-size:10px;letter-spacing:1.3px;color:var(--admin-accent);font-weight:800}
 .students-page-head h2{display:flex;align-items:center;gap:8px;margin:5px 0 4px;font-size:20px}
 .students-page-head p{margin:0;font-size:12px}
