@@ -1,20 +1,21 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { MessageCircle, Send, UserRound, Circle, Paperclip, FileText } from 'lucide-react';
+import { MessageCircle, Send, UserRound, Circle, Paperclip, FileText, Download } from 'lucide-react';
 
 type Conversation = {
   id: string;
   studentId: string;
   counselor: { id: string; displayName: string };
-  messages: { id: string; content: string; senderUserId: string; createdAt: string; readAt: string | null }[];
+  messages: { id: string; content: string; senderUserId: string; createdAt: string; readAt: string | null; attachmentName?: string | null }[];
   _count: { messages: number };
 };
-type Message = { id: string; content: string; senderUserId: string; createdAt: string; readAt: string | null };
+type Message = { id: string; content: string; senderUserId: string; createdAt: string; readAt: string | null; attachmentName?: string | null; attachmentMimeType?: string | null; attachmentSize?: number | null };
 
 export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
   const [conversation, setConversation] = useState<Conversation | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentUserId, setCurrentUserId] = useState('');
   const [draft, setDraft] = useState('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
@@ -107,12 +108,22 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
     if (!content || !conversation || sending) return;
     setSending(true); setError('');
     try {
-      const response = await fetch(`/api/counseling/conversations/${conversation.id}/messages`, {
-        method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content }),
-      });
+      let response: Response;
+      if (selectedFile) {
+        const form = new FormData();
+        form.append('file', selectedFile);
+        form.append('content', content);
+        response = await fetch(`/api/counseling/conversations/${conversation.id}/messages/attachments`, {
+          method: 'POST', credentials: 'include', body: form,
+        });
+      } else {
+        response = await fetch(`/api/counseling/conversations/${conversation.id}/messages`, {
+          method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content }),
+        });
+      }
       const data = await response.json().catch(() => null);
       if (!response.ok) throw new Error(data?.message || 'ارسال پیام انجام نشد.');
-      setDraft(''); await loadConversation();
+      setDraft(''); setSelectedFile(null); await loadConversation();
     } catch (e) { setError(e instanceof Error ? e.message : 'ارسال پیام انجام نشد.'); }
     finally { setSending(false); }
   }
@@ -137,14 +148,18 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
               const own = message.senderUserId === currentUserId;
               return <div key={message.id} style={{ display: 'flex', justifyContent: own ? 'flex-start' : 'flex-end', marginBottom: 12 }}>
                 <div style={{ maxWidth: 'min(84%, 700px)', padding: '11px 14px', borderRadius: own ? '14px 14px 4px 14px' : '14px 14px 14px 4px', background: own ? colors.accentSolid : colors.card, color: own ? '#fff' : colors.text, border: own ? '1px solid transparent' : `1px solid ${colors.border}`, overflowWrap: 'anywhere' }}>
-                  <div style={{ whiteSpace: 'pre-wrap', fontSize: 12, lineHeight: 1.9 }}>{message.content}</div><time style={{ display: 'block', textAlign: 'left', marginTop: 6, fontSize: 9, opacity: .75 }}>{new Date(message.createdAt).toLocaleString('fa-IR')}</time>
+                  {message.content && <div style={{ whiteSpace: 'pre-wrap', fontSize: 12, lineHeight: 1.9 }}>{message.content}</div>}
+                  {message.attachmentName && <a href={`/api/counseling/conversations/${conversation.id}/messages/${message.id}/attachment`} style={{ display: 'flex', alignItems: 'center', gap: 9, marginTop: 9, padding: '10px 11px', borderRadius: 10, background: colors.soft, border: `1px solid ${colors.border}`, color: own ? '#fff' : colors.accent, textDecoration: 'none', fontSize: 11 }}><Paperclip size={15} /><span style={{ flex: 1, overflowWrap: 'anywhere' }}>{message.attachmentName}<small style={{ display: 'block', marginTop: 4, opacity: .75 }}>{message.attachmentSize ? (message.attachmentSize / 1024 / 1024).toFixed(2) + ' MB' : 'پیوست'}</small></span><Download size={14} /></a>}
+                  <time style={{ display: 'block', textAlign: 'left', marginTop: 6, fontSize: 9, opacity: .75 }}>{new Date(message.createdAt).toLocaleString('fa-IR')}</time>
                 </div>
               </div>;
             })}<div ref={bottomRef} />
           </div>
+          {selectedFile && <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', border: `1px solid ${colors.border}`, borderBottom: 0, borderRadius: '10px 10px 0 0', background: colors.inner, color: colors.sub, fontSize: 10 }}><Paperclip size={14} /><span style={{ flex: 1, overflowWrap: 'anywhere' }}>{selectedFile.name}</span><button type="button" onClick={() => setSelectedFile(null)} style={{ border: 0, background: 'transparent', color: '#d4777d', cursor: 'pointer' }}>حذف پیوست</button></div>}
           <form onSubmit={sendMessage} style={{ display: 'flex', alignItems: 'flex-end', gap: 10, padding: 12, background: colors.card, border: `1px solid ${colors.border}`, borderTop: 0, borderRadius: '0 0 13px 13px' }}>
-            <textarea value={draft} onChange={e => setDraft(e.target.value)} maxLength={5000} rows={2} required disabled={sending} placeholder="پیام خود را بنویسید…" aria-label="متن پیام" style={{ flex: 1, minWidth: 0, resize: 'vertical', border: `1px solid ${colors.border}`, borderRadius: 10, padding: 11, background: colors.inner, color: colors.text, font: 'inherit', fontSize: 12, lineHeight: 1.8, outline: 'none' }} />
-            <button type="submit" disabled={sending || !draft.trim()} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 44, border: 0, borderRadius: 10, padding: '0 16px', background: colors.accentSolid, color: '#fff', fontSize: 11, fontWeight: 850, cursor: sending || !draft.trim() ? 'wait' : 'pointer', opacity: sending || !draft.trim() ? .6 : 1 }}><Send size={15} />{sending ? 'در حال ارسال…' : 'ارسال پیام'}</button>
+            <label title="افزودن فایل (حداکثر ۱۰ مگابایت)" style={{ display: 'grid', placeItems: 'center', flex: '0 0 40px', height: 44, border: `1px solid ${colors.border}`, borderRadius: 10, background: colors.inner, color: colors.accent, cursor: sending ? 'wait' : 'pointer' }}><Paperclip size={17} /><input type="file" disabled={sending} accept=".pdf,.png,.jpg,.jpeg,.webp,.txt,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.mp3,.wav,.mp4,.webm" onChange={e => setSelectedFile(e.target.files?.[0] || null)} style={{ display: 'none' }} /></label>
+            <textarea value={draft} onChange={e => setDraft(e.target.value)} maxLength={5000} rows={2} disabled={sending} placeholder="پیام خود را بنویسید…" aria-label="متن پیام" style={{ flex: 1, minWidth: 0, resize: 'vertical', border: `1px solid ${colors.border}`, borderRadius: 10, padding: 11, background: colors.inner, color: colors.text, font: 'inherit', fontSize: 12, lineHeight: 1.8, outline: 'none' }} />
+            <button type="submit" disabled={sending || (!draft.trim() && !selectedFile)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 44, border: 0, borderRadius: 10, padding: '0 16px', background: colors.accentSolid, color: '#fff', fontSize: 11, fontWeight: 850, cursor: sending || (!draft.trim() && !selectedFile) ? 'wait' : 'pointer', opacity: sending || (!draft.trim() && !selectedFile) ? .6 : 1 }}><Send size={15} />{sending ? 'در حال ارسال…' : 'ارسال'}</button>
           </form>
           <p style={{ display: 'flex', alignItems: 'center', gap: 6, color: colors.sub, fontSize: 9, margin: '10px 3px 0' }}><FileText size={12} /> پیام‌ها در همین گفت‌وگو ذخیره می‌شوند و پس از تازه‌سازی باقی می‌مانند.</p>
         </div>
