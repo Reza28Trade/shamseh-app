@@ -360,7 +360,7 @@ export class CounselingChatService {
     const fullPath = join(directory, storageKey);
     writeFileSync(fullPath, file.buffer, { flag: 'wx', mode: 0o640 });
     try {
-      return await this.sendMessage(user, conversationId, contentInput?.trim() || `فایل پیوست: ${originalName}`, {
+      return await this.sendMessage(user, conversationId, contentInput?.trim() || '', {
         storageKey, name: originalName, mimeType: mimeByExtension[extension], size: file.size,
       });
     } catch (error) {
