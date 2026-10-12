@@ -6,6 +6,7 @@ import { ManageCourses } from './pages/admin/ManageCourses';
 import { ManageStudents } from './pages/admin/ManageStudents';
 import { AuditLogs } from './pages/admin/AuditLogs';
 import { ManageMessages } from './pages/admin/ManageMessages';
+import { ManageManagementContact } from './pages/admin/ManageManagementContact';
 import { ManageOfflineRequests } from './pages/admin/ManageOfflineRequests';
 import { ManageMockExams } from './pages/admin/ManageMockExams';
 import { ManageCounseling } from './pages/admin/ManageCounseling';
@@ -111,7 +112,7 @@ export function App() {
   } = useStore();
 
   const [view, setView] = useState<'checking' | 'login' | 'admin' | 'user' | 'counselor'>('checking');
-  type AdminTab = 'dashboard' | 'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams' | 'counseling' | 'finance';
+  type AdminTab = 'dashboard' | 'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'managementContact' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams' | 'counseling' | 'finance';
   const [adminTab, setAdminTab] = useState<AdminTab>('dashboard');
   const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
 
@@ -227,6 +228,8 @@ export function App() {
           <AuditLogs />
          ) : adminTab === 'messages' ? (
           <ManageMessages />
+        ) : adminTab === 'managementContact' && currentAdmin?.role === 'super_admin' ? (
+          <ManageManagementContact />
         ) : adminTab === 'notifications' ? (
           <ManageNotifications />
         ) : adminTab === 'rules' ? (
