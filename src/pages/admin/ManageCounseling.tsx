@@ -186,7 +186,7 @@ export const ManageCounseling: React.FC = () => {
 
   return (
     <div className="admin-legacy-page admin-counseling-page" style={{ display: 'flex', flexDirection: 'column', gap: 18, color: 'var(--admin-text)', direction: 'rtl' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+      <div className="counseling-page-head" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
         <div>
           <h2 style={{ margin: 0, fontSize: 17, fontWeight: 900 }}>مدیریت مشاوران و گفت‌وگوها</h2>
           <p style={{ margin: '6px 0 0', color: 'var(--admin-sub)', fontSize: 11 }}>تخصیص هنرجو، انتقال مشاور و نظارت بر تاریخچه گفت‌وگوهای آنلاین</p>
