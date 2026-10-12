@@ -1,4 +1,8 @@
-import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { createReadStream } from 'fs';
+import { Response } from 'express';
+const { memoryStorage } = require('multer');
 import { Request } from 'express';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthenticatedUser } from '../auth/auth.types';
@@ -54,6 +58,34 @@ export class CounselingChatController {
   @Get('counseling/conversations/:id/messages')
   messages(@Req() req: AuthRequest, @Param('id') id: string) {
     return this.chat.getMessages(req.user, id);
+  }
+
+  @Post('counseling/conversations/:id/messages/attachments')
+  @UseInterceptors(FileInterceptor('file', {
+    storage: memoryStorage(),
+    limits: { fileSize: 10 * 1024 * 1024 },
+  }))
+  uploadAttachment(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Body('content') content: string | undefined,
+    @UploadedFile() file: any,
+  ) {
+    return this.chat.storeAndSendAttachment(req.user, id, content || '', file);
+  }
+
+  @Get('counseling/conversations/:id/messages/:messageId/attachment')
+  async downloadAttachment(
+    @Req() req: AuthRequest,
+    @Param('id') id: string,
+    @Param('messageId') messageId: string,
+    @Res() res: Response,
+  ) {
+    const file = await this.chat.getAttachmentForDownload(req.user, id, messageId);
+    res.setHeader('Content-Type', file.mimeType);
+    res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(file.name)}`);
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    return createReadStream(file.path).pipe(res);
   }
 
   @Post('counseling/conversations/:id/messages')
