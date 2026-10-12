@@ -155,7 +155,7 @@ export const ManageManagementContact: React.FC = () => {
           <div className="messages-thread-head"><span>تاریخچه گفت‌وگو</span><span>{ticket.messages.length} پیام</span></div>
           <div className="messages-thread">
             {ticket.messages.map(message => {
-              const fromStudent = message.senderUserId === ticket.studentId;
+              const fromStudent = message.id === ticket.messages[0]?.id;
               return <div key={message.id} className={`messages-bubble ${fromStudent ? 'messages-bubble-student' : 'messages-bubble-support'}`}>
                 <div className="messages-bubble-meta"><strong>{fromStudent ? 'هنرجو' : 'مدیریت مؤسسه'}</strong><time>{new Date(message.createdAt).toLocaleString('fa-IR')}</time></div>
                 <p>{message.content}</p>
