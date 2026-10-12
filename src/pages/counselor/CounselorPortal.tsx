@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
-import { LogOut, MessageCircle, Search, Send, UserRound, ArrowRight, Circle, Paperclip, Download, Sun, Moon, Clock3, MessagesSquare, Users } from 'lucide-react';
+import { LogOut, MessageCircle, Search, Send, UserRound, ArrowRight, Circle, Paperclip, Download, Sun, Moon, Clock3, MessagesSquare, Users, Check, CheckCheck } from 'lucide-react';
 
 type Conversation = {
   id: string;
@@ -210,7 +210,7 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
                     {m.content && <div style={{ whiteSpace: 'pre-wrap', fontSize: 12, lineHeight: 1.9 }}>{m.content}</div>}
                     {m.attachmentName && !m.content.trim() && <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, marginTop: 2, color: palette.sub, fontSize: 10 }}><Paperclip size={12} /> پیام فقط شامل فایل پیوست است</div>}
                     {m.attachmentName && <a href={`/api/counseling/conversations/${selected}/messages/${m.id}/attachment`} style={{ display: 'flex', alignItems: 'center', gap: 9, marginTop: 9, padding: '10px 11px', borderRadius: 10, background: palette.accentSoft, border: `1px solid ${palette.accentBorder}`, color: isDark ? '#b5e7df' : '#286d70', textDecoration: 'none', fontSize: 11 }}><Paperclip size={15} /><span style={{ flex: 1, overflowWrap: 'anywhere' }}>{m.attachmentName}<small style={{ display: 'block', marginTop: 4, opacity: .7 }}>{m.attachmentSize ? (m.attachmentSize / 1024 / 1024).toFixed(2) + ' MB' : 'پیوست'}</small></span><Download size={14} /></a>}
-                    <time style={{ display: 'block', textAlign: 'left', marginTop: 6, color: own ? 'rgba(255,255,255,.75)' : palette.sub, fontSize: 9 }}>{new Date(m.createdAt).toLocaleString('fa-IR')}</time>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 6, marginTop: 6, color: own ? 'rgba(255,255,255,.75)' : palette.sub, fontSize: 9 }}><time>{new Date(m.createdAt).toLocaleString('fa-IR')}</time>{own && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, color: m.readAt ? '#a8e6cf' : 'inherit' }}>{m.readAt ? <CheckCheck size={12} /> : <Check size={12} />}{m.readAt ? 'دیده شد' : 'ارسال شد'}</span>}</div>
                   </div>
                 </div>;
               })}
