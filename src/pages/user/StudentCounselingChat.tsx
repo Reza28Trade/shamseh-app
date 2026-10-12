@@ -13,7 +13,6 @@ type Message = { id: string; content: string; senderUserId: string; sender: { ro
 export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
   const [conversation, setConversation] = useState<Conversation | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [currentUserId, setCurrentUserId] = useState('');
   const [draft, setDraft] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(true);
