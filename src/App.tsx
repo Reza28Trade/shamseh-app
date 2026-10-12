@@ -27,7 +27,7 @@ const ADMIN_PERMISSION_OPTIONS = [
   ['offlineRequests', 'درخواست‌های آفلاین'],
   ['mockExams', 'آزمون‌های آزمایشی'],
   ['counseling', 'مدیریت مشاوران و گفتگوها'],
-  ['messages', 'پیام‌ها و انتقادات و پیشنهادات'],
+  ['messages', 'پیام‌ها و پرسش‌ها'],
   ['notifications', 'ارسال اطلاعیه'],
   ['rules', 'قوانین و تحلیل کنکور'],
   ['finance', 'وضعیت مالی هنرجویان'],
