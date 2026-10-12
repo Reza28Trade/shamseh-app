@@ -4,10 +4,11 @@ on:
   pull_request:
     branches:
       - feature/final-product-schema
+      - integration/product-schema-public-finance
   push:
     branches:
       - integration/product-schema-public-finance
-
+      - feature/counseling-ui-attachments
 jobs:
   frontend:
     name: Frontend build
