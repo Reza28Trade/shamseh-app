@@ -185,7 +185,7 @@ export const ManageCounseling: React.FC = () => {
   const levelLabel = (level?: string | null) => level === 'MASTER' ? 'ارشد' : level === 'DOCTORATE' ? 'دکتری' : 'بدون مقطع';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 18, color: 'var(--admin-text)', direction: 'rtl' }}>
+    <div className="admin-legacy-page admin-counseling-page" style={{ display: 'flex', flexDirection: 'column', gap: 18, color: 'var(--admin-text)', direction: 'rtl' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
         <div>
           <h2 style={{ margin: 0, fontSize: 17, fontWeight: 900 }}>مدیریت مشاوران و گفت‌وگوها</h2>
@@ -247,7 +247,7 @@ export const ManageCounseling: React.FC = () => {
           <div style={{ position: 'relative', minWidth: 220, maxWidth: 340, flex: '1 1 240px' }}><Search size={14} style={{ position: 'absolute', right: 10, top: 12, color: 'var(--admin-sub)' }}/><input value={search} onChange={e => setSearch(e.target.value)} placeholder="جست‌وجوی هنرجو، مشاور یا پیام" style={{ ...inputStyle, paddingRight: 32 }}/></div>
         </div>
         {loading ? <p style={{ color: 'var(--admin-sub)', fontSize: 12 }}>در حال دریافت گفت‌وگوها…</p> : filteredConversations.length === 0 ? <p style={{ color: 'var(--admin-sub)', fontSize: 12 }}>گفت‌وگویی مطابق جست‌وجو پیدا نشد.</p> : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(240px, .85fr) minmax(0, 1.5fr)', gap: 12 }}>
+          <div className="admin-counseling-conversations-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(240px, .85fr) minmax(0, 1.5fr)', gap: 12 }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 500, overflowY: 'auto' }}>
               {filteredConversations.map(item => <button key={item.id} type="button" onClick={() => void openConversation(item.id)} style={{ width: '100%', textAlign: 'right', padding: 12, borderRadius: 11, border: `1px solid ${selectedConversation === item.id ? 'var(--admin-accent)' : 'var(--admin-border)'}`, background: selectedConversation === item.id ? 'var(--admin-accent-soft)' : 'var(--admin-inner)', color: 'var(--admin-text)', cursor: 'pointer' }}>
                 <strong style={{ display: 'block', fontSize: 12 }}>{item.student.fullName}</strong><span style={{ display: 'block', color: 'var(--admin-sub)', fontSize: 10, marginTop: 4 }}>مشاور: {item.counselor.displayName}</span><span style={{ display: 'block', color: 'var(--admin-sub)', fontSize: 10, marginTop: 5 }}>{item._count.messages} پیام · {item.messages[0] ? dateLabel(item.messages[0].createdAt) : 'بدون پیام'}</span>
