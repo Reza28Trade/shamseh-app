@@ -80,32 +80,80 @@ export const ManageNotifications: React.FC = () => {
   };
 
   return (
-    <div className="admin-legacy-page admin-notifications-page" style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%' }}>
-      <div style={{ background: 'linear-gradient(135deg, rgba(109,0,26,.2), rgba(10,10,10,.8))', border: '1px solid rgba(109,0,26,.4)', padding: '24px 32px', borderRadius: '20px' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: 900, color: '#fff', margin: '0 0 6px', display: 'flex', alignItems: 'center', gap: '10px' }}><Bell size={20} color="#ff3366" /> ارسال اطلاعیه</h2>
-        <p style={{ fontSize: '12px', color: '#94a3b8', margin: 0 }}>ارسال پیام عمومی، مخصوص یک دوره یا مخصوص یک هنرجو</p>
-      </div>
-      <div style={{ backgroundColor: 'rgba(14,14,17,.75)', border: '1px solid rgba(255,255,255,.08)', padding: '28px 32px', borderRadius: '24px' }}>
-        {message && <div style={{ marginBottom: '16px', background: message.ok ? 'rgba(52,211,153,.1)' : 'rgba(239,68,68,.1)', color: message.ok ? '#34d399' : '#f87171', padding: '12px', borderRadius: '10px', fontSize: '12px' }}>{message.text}</div>}
-        <form onSubmit={sendNotification} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <label style={{ color: '#94a3b8', fontSize: '11px', fontWeight: 700 }}>گیرنده</label>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '10px' }}>
-            {[
-              ['GLOBAL', 'همه هنرجویان', Globe], ['COURSE', 'یک دوره', BookOpen], ['STUDENT', 'یک هنرجو', Users],
-            ].map(([value, label, Icon]) => (
-              <button key={value as string} type="button" onClick={() => setTargetType(value as TargetType)} style={{ padding: '12px', borderRadius: '12px', border: targetType === value ? '1px solid #ff3366' : '1px solid rgba(255,255,255,.08)', background: targetType === value ? 'rgba(109,0,26,.2)' : '#111116', color: targetType === value ? '#ff6688' : '#cbd5e1', cursor: 'pointer', fontSize: '11px', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px' }}>
-                {React.createElement(Icon as React.ElementType, { size: 15 })}{label as string}
-              </button>
-            ))}
+    <div className="admin-legacy-page admin-notifications-page">
+      <header className="notifications-page-head">
+        <div>
+          <span className="notifications-eyebrow"><Bell size={14} /> مرکز مدیریت شمسه</span>
+          <h2><Bell size={20} /> ارسال اطلاعیه</h2>
+          <p>ارسال پیام عمومی، مخصوص یک دوره یا مخصوص یک هنرجو</p>
+        </div>
+      </header>
+
+      <section className="notifications-form-card">
+        {message && <div className={`notifications-feedback ${message.ok ? 'is-success' : 'is-error'}`} role="status">{message.text}</div>}
+        <form onSubmit={sendNotification} className="notifications-form">
+          <div className="notifications-field">
+            <label>گیرندگان اطلاعیه</label>
+            <div className="notifications-target-grid">
+              {[
+                ['GLOBAL', 'همه هنرجویان', Globe],
+                ['COURSE', 'یک دوره', BookOpen],
+                ['STUDENT', 'یک هنرجو', Users],
+              ].map(([value, label, Icon]) => (
+                <button
+                  key={value as string}
+                  type="button"
+                  className={`notifications-target ${targetType === value ? 'is-active' : ''}`}
+                  onClick={() => setTargetType(value as TargetType)}
+                >
+                  {React.createElement(Icon as React.ElementType, { size: 16 })}
+                  {label as string}
+                </button>
+              ))}
+            </div>
           </div>
-          {targetType === 'COURSE' && <select value={courseId} onChange={e => setCourseId(e.target.value)} required style={{ background: '#0e0e11', color: '#fff', padding: '12px', borderRadius: '10px', fontSize: '12px' }}><option value="">انتخاب دوره...</option>{courses.map(c => <option key={c.id} value={c.id}>{c.title} — {c.professor}</option>)}</select>}
-          {targetType === 'STUDENT' && <select value={studentId} onChange={e => setStudentId(e.target.value)} required style={{ background: '#0e0e11', color: '#fff', padding: '12px', borderRadius: '10px', fontSize: '12px' }}><option value="">انتخاب هنرجو...</option>{students.map(s => <option key={s.id} value={s.id}>{s.fullName} — {s.nationalId}</option>)}</select>}
-          <select value={type} onChange={e => setType(e.target.value as NotificationType)} style={{ background: '#0e0e11', color: '#fff', padding: '12px', borderRadius: '10px', fontSize: '12px' }}>{types.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}</select>
-          <input value={title} onChange={e => setTitle(e.target.value)} placeholder="عنوان اطلاعیه" required style={{ background: '#0e0e11', color: '#fff', border: '1px solid rgba(255,255,255,.1)', padding: '12px 14px', borderRadius: '10px', fontSize: '12px' }} />
-          <textarea value={content} onChange={e => setContent(e.target.value)} placeholder="متن اطلاعیه را بنویسید..." rows={5} required style={{ background: '#0e0e11', color: '#fff', border: '1px solid rgba(255,255,255,.1)', padding: '12px 14px', borderRadius: '10px', fontSize: '12px', resize: 'vertical' }} />
-          <button type="submit" disabled={sending || loading} style={{ background: '#6D001A', color: '#fff', border: 0, padding: '13px', borderRadius: '11px', fontSize: '12px', fontWeight: 800, cursor: 'pointer', opacity: sending || loading ? .6 : 1, display: 'flex', justifyContent: 'center', gap: '7px' }}><Send size={15} />{sending ? 'در حال ارسال...' : 'ارسال اطلاعیه'}</button>
+
+          {targetType === 'COURSE' && (
+            <div className="notifications-field">
+              <label htmlFor="notification-course">دورهٔ موردنظر</label>
+              <select id="notification-course" value={courseId} onChange={e => setCourseId(e.target.value)} required>
+                <option value="">انتخاب دوره...</option>
+                {courses.map(c => <option key={c.id} value={c.id}>{c.title} — {c.professor}</option>)}
+              </select>
+            </div>
+          )}
+          {targetType === 'STUDENT' && (
+            <div className="notifications-field">
+              <label htmlFor="notification-student">هنرجوی موردنظر</label>
+              <select id="notification-student" value={studentId} onChange={e => setStudentId(e.target.value)} required>
+                <option value="">انتخاب هنرجو...</option>
+                {students.map(s => <option key={s.id} value={s.id}>{s.fullName} — {s.nationalId}</option>)}
+              </select>
+            </div>
+          )}
+
+          <div className="notifications-field">
+            <label htmlFor="notification-type">نوع اطلاعیه</label>
+            <select id="notification-type" value={type} onChange={e => setType(e.target.value as NotificationType)}>
+              {types.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+            </select>
+          </div>
+          <div className="notifications-field">
+            <label htmlFor="notification-title">عنوان اطلاعیه</label>
+            <input id="notification-title" value={title} onChange={e => setTitle(e.target.value)} placeholder="عنوان اطلاعیه را بنویسید..." required />
+          </div>
+          <div className="notifications-field">
+            <label htmlFor="notification-content">متن اطلاعیه</label>
+            <textarea id="notification-content" value={content} onChange={e => setContent(e.target.value)} placeholder="متن اطلاعیه را بنویسید..." rows={5} required />
+          </div>
+          <div className="notifications-form-footer">
+            <span>پیش از ارسال، گیرنده و متن اطلاعیه را بررسی کنید.</span>
+            <button type="submit" className="notifications-submit" disabled={sending || loading}>
+              <Send size={15} /> {sending ? 'در حال ارسال...' : 'ارسال اطلاعیه'}
+            </button>
+          </div>
         </form>
-      </div>
+      </section>
     </div>
   );
 };
