@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowRight, CalendarDays, CheckCircle2, FileText, Moon, Search, Sun, UserRound, ExternalLink, RefreshCw } from 'lucide-react';
+import { ArrowRight, ArrowLeft, CalendarDays, CheckCircle2, FileText, Moon, Search, Sun, UserRound, ExternalLink, RefreshCw, GraduationCap, Clock3, BookOpen } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 
 type PublicCourse = {
@@ -14,6 +14,10 @@ type PublicCourse = {
   schedule: string | null;
   price: string | number | null;
   coverImage: string | null;
+  academicYear?: number | null;
+  classDays?: string[];
+  classStartTime?: string | null;
+  classEndTime?: string | null;
 };
 
 type PublicRule = { title: string; subtitle?: string | null; content: string; updatedAt?: string | null };
@@ -120,6 +124,7 @@ export function CourseCatalogPage({ onBack }: { onBack: () => void }) {
   const [level, setLevel] = useState('ALL');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedCourse, setSelectedCourse] = useState<PublicCourse | null>(null);
 
   const loadCourses = async () => {
     setLoading(true);
@@ -139,6 +144,7 @@ export function CourseCatalogPage({ onBack }: { onBack: () => void }) {
   useEffect(() => { void loadCourses(); }, []);
 
   const levels = useMemo(() => Array.from(new Set(courses.map((course) => course.level).filter((value): value is string => Boolean(value)))), [courses]);
+  const dayNames: Record<string, string> = { SATURDAY: 'شنبه', SUNDAY: 'یکشنبه', MONDAY: 'دوشنبه', TUESDAY: 'سه‌شنبه', WEDNESDAY: 'چهارشنبه', THURSDAY: 'پنجشنبه', FRIDAY: 'جمعه' };
   const filtered = courses.filter((course) => {
     const normalizedQuery = query.trim().toLocaleLowerCase();
     const matchesQuery = !normalizedQuery || [course.title, course.professor, course.description ?? '', course.category ?? ''].some((value) => value.toLocaleLowerCase().includes(normalizedQuery));
@@ -146,7 +152,34 @@ export function CourseCatalogPage({ onBack }: { onBack: () => void }) {
   });
 
   return (
-    <PageFrame eyebrow="دوره‌های آموزشی شمسه" title="مسیر یادگیری خودت را آگاهانه انتخاب کن." description="دوره‌ها را بر اساس محتوا، استاد و مقطع بررسی کن. اطلاعات هر دوره پیش از ثبت‌نام در دسترس توست." onBack={onBack}>
+    <PageFrame eyebrow={selectedCourse ? "جزئیات دوره آموزشی" : "دوره‌های آموزشی شمسه"} title={selectedCourse ? selectedCourse.title : "مسیر یادگیری خودت را آگاهانه انتخاب کن."} description={selectedCourse ? "اطلاعات معرفی، محتوای دوره و جزئیات برگزاری را بررسی کن." : "دوره‌های آموزشی شمسه را بر اساس محتوا، استاد و مقطع بررسی کن و با اطلاعات روشن‌تری مسیر یادگیری خودت را انتخاب کن."} onBack={onBack}>
+      {selectedCourse ? (
+        <section style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: 22, overflow: 'hidden' }}>
+          <div style={{ aspectRatio: '16 / 6', maxHeight: 360, background: colors.surfaceAlt, overflow: 'hidden' }}>
+            <img src={selectedCourse.coverImage || `/api/public/courses/${selectedCourse.id}/cover`} alt={selectedCourse.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(event) => { event.currentTarget.style.display = 'none'; }} />
+          </div>
+          <div style={{ padding: 'clamp(20px, 4vw, 34px)' }}>
+            <button type="button" onClick={() => setSelectedCourse(null)} style={{ ...secondaryButton(colors), marginBottom: 22 }}><ArrowRight size={16} /> بازگشت به فهرست دوره‌ها</button>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
+              {selectedCourse.level && <span style={{ background: colors.accentSoft, color: colors.dark ? '#fda4af' : colors.accent, borderRadius: 999, padding: '6px 11px', fontSize: 11, fontWeight: 800 }}><GraduationCap size={13} style={{ display: 'inline', verticalAlign: 'middle', marginLeft: 5 }} />{selectedCourse.level === 'MASTER' ? 'کارشناسی ارشد' : selectedCourse.level === 'DOCTORATE' ? 'دکتری' : selectedCourse.level}</span>}
+              {selectedCourse.term && <span style={{ background: colors.surfaceAlt, color: colors.muted, borderRadius: 999, padding: '6px 11px', fontSize: 11 }}>{selectedCourse.term}</span>}
+              {selectedCourse.academicYear && <span style={{ background: colors.surfaceAlt, color: colors.muted, borderRadius: 999, padding: '6px 11px', fontSize: 11 }}>سال تحصیلی {new Intl.NumberFormat('fa-IR').format(selectedCourse.academicYear)}</span>}
+            </div>
+            <h2 style={{ margin: '0 0 10px', fontSize: 'clamp(20px, 3vw, 28px)', lineHeight: 1.7, fontWeight: 900 }}>{selectedCourse.title}</h2>
+            <p style={{ margin: '0 0 24px', color: colors.muted, lineHeight: 2.2, fontSize: 14, whiteSpace: 'pre-wrap' }}>{selectedCourse.description || 'توضیحات تکمیلی این دوره هنوز ثبت نشده است.'}</p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: 12 }}>
+              <div style={{ padding: 16, border: `1px solid ${colors.border}`, borderRadius: 14, display: 'flex', alignItems: 'center', gap: 11 }}><UserRound size={19} color={colors.accent} /><div><div style={{ color: colors.muted, fontSize: 11, marginBottom: 5 }}>استاد دوره</div><strong style={{ fontSize: 13 }}>{selectedCourse.professor}</strong></div></div>
+              {selectedCourse.category && <div style={{ padding: 16, border: `1px solid ${colors.border}`, borderRadius: 14, display: 'flex', alignItems: 'center', gap: 11 }}><BookOpen size={19} color={colors.accent} /><div><div style={{ color: colors.muted, fontSize: 11, marginBottom: 5 }}>حوزه آموزشی</div><strong style={{ fontSize: 13 }}>{selectedCourse.category}</strong></div></div>}
+              {selectedCourse.startDate && <div style={{ padding: 16, border: `1px solid ${colors.border}`, borderRadius: 14, display: 'flex', alignItems: 'center', gap: 11 }}><CalendarDays size={19} color={colors.accent} /><div><div style={{ color: colors.muted, fontSize: 11, marginBottom: 5 }}>تاریخ شروع</div><strong style={{ fontSize: 13 }}>{selectedCourse.startDate}</strong></div></div>}
+              {selectedCourse.schedule && <div style={{ padding: 16, border: `1px solid ${colors.border}`, borderRadius: 14, display: 'flex', alignItems: 'center', gap: 11 }}><Clock3 size={19} color={colors.accent} /><div><div style={{ color: colors.muted, fontSize: 11, marginBottom: 5 }}>برنامه برگزاری</div><strong style={{ fontSize: 13 }}>{selectedCourse.schedule}</strong></div></div>}
+              {selectedCourse.classDays && selectedCourse.classDays.length > 0 && <div style={{ padding: 16, border: `1px solid ${colors.border}`, borderRadius: 14 }}><div style={{ color: colors.muted, fontSize: 11, marginBottom: 7 }}>روزهای کلاس</div><strong style={{ fontSize: 13 }}>{selectedCourse.classDays.map((day) => dayNames[day] || day).join('، ')}</strong></div>}
+              {(selectedCourse.classStartTime || selectedCourse.classEndTime) && <div style={{ padding: 16, border: `1px solid ${colors.border}`, borderRadius: 14 }}><div style={{ color: colors.muted, fontSize: 11, marginBottom: 7 }}>ساعت کلاس</div><strong style={{ fontSize: 13 }}>{[selectedCourse.classStartTime, selectedCourse.classEndTime].filter(Boolean).join(' تا ')}</strong></div>}
+              {money(selectedCourse.price) && <div style={{ padding: 16, border: `1px solid ${colors.border}`, borderRadius: 14 }}><div style={{ color: colors.muted, fontSize: 11, marginBottom: 7 }}>شهریه دوره</div><strong style={{ fontSize: 16 }}>{money(selectedCourse.price)}</strong></div>}
+            </div>
+            <p style={{ margin: '22px 0 0', padding: 14, borderRadius: 12, background: colors.surfaceAlt, color: colors.muted, fontSize: 12, lineHeight: 2 }}>این صفحه برای معرفی و بررسی اطلاعات دوره است؛ در حال حاضر فرایند ثبت‌نام آنلاین در این بخش فعال نیست.</p>
+          </div>
+        </section>
+      ) : <>
       <section style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: 20, padding: 18, display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center', marginBottom: 20 }}>
         <div style={{ position: 'relative', flex: '1 1 260px' }}>
           <Search size={17} color={colors.muted} style={{ position: 'absolute', right: 13, top: 14 }} />
@@ -180,11 +213,12 @@ export function CourseCatalogPage({ onBack }: { onBack: () => void }) {
                 {course.schedule && <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: colors.muted }}><CalendarDays size={15} />{course.schedule}</div>}
                 {course.category && <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: colors.muted }}><CheckCircle2 size={15} />{course.category}</div>}
                 {money(course.price) && <div style={{ borderTop: `1px solid ${colors.border}`, paddingTop: 12, fontWeight: 900, fontSize: 13 }}>{money(course.price)}</div>}
-                <div style={{ fontSize: 11, color: colors.muted }}>برای اطلاعات ثبت‌نام و شرایط دوره با مؤسسه هماهنگ کنید.</div>
+                <button type="button" onClick={() => setSelectedCourse(course)} style={{ ...primaryButton(colors), width: '100%', marginTop: 4 }}>مشاهده جزئیات دوره <ArrowLeft size={15} /></button>
               </div>
             </article>
           ))}
         </div>}
+      </>}
     </PageFrame>
   );
 }
