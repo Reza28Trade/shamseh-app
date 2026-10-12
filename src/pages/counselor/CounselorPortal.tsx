@@ -158,7 +158,7 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
         </div>
       </header>
 
-      <section className="counselor-stats" aria-label="آمار مشاوره" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,minmax(0,1fr))', gap: 12, maxWidth: 1452, margin: '0 auto', padding: '18px 24px 0', boxSizing: 'border-box' }}>
+      <section className="counselor-stats" aria-label="آمار مشاوره" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,minmax(0,1fr))', gap: 12, maxWidth: 1452, margin: '0 auto', padding: '18px 24px 0', boxSizing: 'border-box' }}>
         {[
           { label: 'گفت‌وگوهای اختصاص‌یافته', value: conversations.length, icon: <Users size={18} />, color: '#4c9e9a' },
           { label: 'منتظر پاسخ مشاور', value: pendingReplies, icon: <Clock3 size={18} />, color: '#d6a34b' },
