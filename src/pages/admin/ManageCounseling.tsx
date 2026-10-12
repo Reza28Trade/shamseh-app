@@ -197,7 +197,7 @@ export const ManageCounseling: React.FC = () => {
       {error && <div role="alert" style={{ padding: 12, borderRadius: 10, color: '#d92d20', background: 'rgba(217,45,32,.08)', fontSize: 12 }}>{error}</div>}
       {notice && <div role="status" style={{ padding: 12, borderRadius: 10, color: '#16805d', background: 'rgba(22,128,93,.09)', fontSize: 12 }}>{notice}</div>}
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: 12 }}>
+      <div className="counseling-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: 12 }}>
         {[
           { label: 'مشاوران فعال', value: counselors.filter(item => item.isActive).length, icon: UserRound },
           { label: 'هنرجوهای دارای مشاور', value: new Set(activeAssignments.map(item => item.studentId)).size, icon: Users },
@@ -205,7 +205,7 @@ export const ManageCounseling: React.FC = () => {
         ].map(item => { const Icon = item.icon; return <div key={item.label} style={{ ...cardStyle, display: 'flex', alignItems: 'center', gap: 12, padding: 15 }}><div style={{ width: 38, height: 38, display: 'grid', placeItems: 'center', borderRadius: 11, color: 'var(--admin-accent)', background: 'var(--admin-accent-soft)' }}><Icon size={18}/></div><div><div style={{ color: 'var(--admin-sub)', fontSize: 10 }}>{item.label}</div><strong style={{ display: 'block', marginTop: 4, fontSize: 20 }}>{item.value}</strong></div></div>; })}
       </div>
 
-      <section style={cardStyle}>
+      <section className="counseling-account-section" style={cardStyle}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 14 }}>
           <h3 style={{ margin: 0, fontSize: 14, fontWeight: 900 }}>حساب مشاوران</h3>
           <button type="button" onClick={() => setShowCreate(value => !value)} style={buttonStyle}><Plus size={14}/>{showCreate ? 'بستن فرم' : 'تعریف مشاور جدید'}</button>
@@ -218,8 +218,8 @@ export const ManageCounseling: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'end' }}><button disabled={saving} style={buttonStyle}>{saving ? 'در حال ثبت…' : 'ساخت حساب مشاور'}</button></div>
         </form>}
         {loading ? <p style={{ color: 'var(--admin-sub)', fontSize: 12 }}>در حال دریافت اطلاعات…</p> : counselors.length === 0 ? <p style={{ color: 'var(--admin-sub)', fontSize: 12 }}>هنوز حساب مشاوری تعریف نشده است.</p> : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 10 }}>
-            {counselors.map(counselor => <div key={counselor.id} style={{ border: '1px solid var(--admin-border)', borderRadius: 12, padding: 13, background: 'var(--admin-inner)' }}>
+          <div className="counseling-account-list" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 10 }}>
+            {counselors.map(counselor => <div className="counseling-account-item" key={counselor.id} style={{ border: '1px solid var(--admin-border)', borderRadius: 12, padding: 13, background: 'var(--admin-inner)' }}>
               <div style={{ display: 'flex', alignItems: 'start', justifyContent: 'space-between', gap: 8 }}>
                 <div><strong style={{ fontSize: 13 }}>{counselor.displayName}</strong><div style={{ color: 'var(--admin-sub)', fontSize: 10, marginTop: 5 }}>نام کاربری: {counselor.user.username}</div></div>
                 <span style={{ color: counselor.isActive ? '#16805d' : '#b54708', background: counselor.isActive ? 'rgba(22,128,93,.1)' : 'rgba(181,71,8,.1)', borderRadius: 7, padding: '4px 7px', fontSize: 9, fontWeight: 800 }}>{counselor.isActive ? 'فعال' : 'غیرفعال'}</span>
@@ -241,14 +241,14 @@ export const ManageCounseling: React.FC = () => {
         </form>
       </section>
 
-      <section style={cardStyle}>
+      <section className="counseling-conversation-section" style={cardStyle}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 14 }}>
           <div><h3 style={{ margin: 0, fontSize: 14, fontWeight: 900 }}>نظارت بر گفت‌وگوها</h3><p style={{ margin: '5px 0 0', color: 'var(--admin-sub)', fontSize: 10 }}>ادمین می‌تواند تاریخچه را مشاهده کند؛ ارسال پیام از طرف ادمین غیرفعال است.</p></div>
           <div style={{ position: 'relative', minWidth: 220, maxWidth: 340, flex: '1 1 240px' }}><Search size={14} style={{ position: 'absolute', right: 10, top: 12, color: 'var(--admin-sub)' }}/><input value={search} onChange={e => setSearch(e.target.value)} placeholder="جست‌وجوی هنرجو، مشاور یا پیام" style={{ ...inputStyle, paddingRight: 32 }}/></div>
         </div>
         {loading ? <p style={{ color: 'var(--admin-sub)', fontSize: 12 }}>در حال دریافت گفت‌وگوها…</p> : filteredConversations.length === 0 ? <p style={{ color: 'var(--admin-sub)', fontSize: 12 }}>گفت‌وگویی مطابق جست‌وجو پیدا نشد.</p> : (
           <div className="admin-counseling-conversations-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(240px, .85fr) minmax(0, 1.5fr)', gap: 12 }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 500, overflowY: 'auto' }}>
+            <div className="counseling-conversation-list" style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 500, overflowY: 'auto' }}>
               {filteredConversations.map(item => <button key={item.id} type="button" onClick={() => void openConversation(item.id)} style={{ width: '100%', textAlign: 'right', padding: 12, borderRadius: 11, border: `1px solid ${selectedConversation === item.id ? 'var(--admin-accent)' : 'var(--admin-border)'}`, background: selectedConversation === item.id ? 'var(--admin-accent-soft)' : 'var(--admin-inner)', color: 'var(--admin-text)', cursor: 'pointer' }}>
                 <strong style={{ display: 'block', fontSize: 12 }}>{item.student.fullName}</strong><span style={{ display: 'block', color: 'var(--admin-sub)', fontSize: 10, marginTop: 4 }}>مشاور: {item.counselor.displayName}</span><span style={{ display: 'block', color: 'var(--admin-sub)', fontSize: 10, marginTop: 5 }}>{item._count.messages} پیام · {item.messages[0] ? dateLabel(item.messages[0].createdAt) : 'بدون پیام'}</span>
                 {item.messages[0] && <span style={{ display: 'block', fontSize: 10, marginTop: 7, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{item.messages[0].attachmentName ? '📎 ' + item.messages[0].attachmentName : item.messages[0].content}</span>}
@@ -256,7 +256,7 @@ export const ManageCounseling: React.FC = () => {
             </div>
             <div style={{ minWidth: 0, border: '1px solid var(--admin-border)', borderRadius: 12, padding: 12, background: 'var(--admin-inner)' }}>
               {!selected ? <div style={{ padding: 30, textAlign: 'center', color: 'var(--admin-sub)', fontSize: 12 }}><History size={22} style={{ marginBottom: 8 }}/><div>برای مشاهده تاریخچه، یک گفت‌وگو را انتخاب کنید.</div></div> : <>
-                <div style={{ paddingBottom: 10, borderBottom: '1px solid var(--admin-border)', marginBottom: 10 }}><strong style={{ fontSize: 12 }}>{selected.student.fullName}</strong><div style={{ color: 'var(--admin-sub)', fontSize: 10, marginTop: 4 }}>مشاور: {selected.counselor.displayName} · کد هنرجو: {selected.student.nationalId}</div></div>
+                <div className="counseling-selected-student" style={{ paddingBottom: 10, borderBottom: '1px solid var(--admin-border)', marginBottom: 10 }}><strong style={{ fontSize: 12 }}>{selected.student.fullName}</strong><div style={{ color: 'var(--admin-sub)', fontSize: 10, marginTop: 4 }}>مشاور: {selected.counselor.displayName} · کد هنرجو: {selected.student.nationalId}</div></div>
                 <div style={{ maxHeight: 400, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 9 }}>
                   {messagesLoading ? <p style={{ color: 'var(--admin-sub)', fontSize: 11 }}>در حال دریافت تاریخچه…</p> : messages.length === 0 ? <p style={{ color: 'var(--admin-sub)', fontSize: 11, textAlign: 'center', padding: 25 }}>هنوز پیامی ثبت نشده است.</p> : messages.map(message => <div key={message.id} style={{ border: '1px solid var(--admin-border)', borderRadius: 10, padding: 10, background: 'var(--admin-card)' }}>{message.content && <div style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', fontSize: 12, lineHeight: 1.8 }}>{message.content}</div>}
                     {message.attachmentName && <a href={`/api/counseling/conversations/${selectedConversation}/messages/${message.id}/attachment`} style={{ display: 'flex', alignItems: 'center', gap: 9, marginTop: 9, padding: '10px 11px', borderRadius: 9, background: 'var(--admin-accent-soft)', border: '1px solid var(--admin-brand-border)', color: 'var(--admin-text)', textDecoration: 'none', fontSize: 11 }}><Paperclip size={14}/><span style={{ flex: 1, overflowWrap: 'anywhere' }}>{message.attachmentName}<small style={{ display: 'block', color: 'var(--admin-sub)', marginTop: 4 }}>{message.attachmentSize ? (message.attachmentSize / 1024 / 1024).toFixed(2) + ' MB' : 'پیوست'}</small></span><Download size={14}/></a>}
