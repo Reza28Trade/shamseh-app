@@ -20,8 +20,8 @@ export class SupportService {
   }
 
   private requireStaff(user: AuthenticatedUser) {
-    if (user.role !== 'SUPER_ADMIN' && user.role !== 'STAFF') {
-      throw new ForbiddenException('Staff access required');
+    if (user.role !== 'SUPER_ADMIN') {
+      throw new ForbiddenException('Super admin access required');
     }
   }
 
