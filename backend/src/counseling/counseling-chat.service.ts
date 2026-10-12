@@ -3,6 +3,9 @@ import { Prisma, UserRole } from '@prisma/client';
 import * as argon2 from 'argon2';
 import { PrismaService } from '../database/prisma.service';
 import { AuthenticatedUser } from '../auth/auth.types';
+import { randomUUID } from 'crypto';
+import { existsSync, mkdirSync, unlinkSync, writeFileSync } from 'fs';
+import { basename, extname, join } from 'path';
 
 @Injectable()
 export class CounselingChatService {
@@ -171,7 +174,7 @@ export class CounselingChatService {
           include: {
             student: { select: { id: true, fullName: true, nationalId: true } },
             counselor: { select: { id: true, displayName: true } },
-            messages: { orderBy: { createdAt: 'desc' }, take: 1, select: { id: true, content: true, senderUserId: true, readAt: true, createdAt: true } },
+            messages: { orderBy: { createdAt: 'desc' }, take: 1, select: { id: true, content: true, senderUserId: true, readAt: true, createdAt: true, attachmentName: true, attachmentMimeType: true, attachmentSize: true } },
             _count: { select: { messages: true } },
           },
         });
@@ -244,7 +247,7 @@ export class CounselingChatService {
         const messages = await tx.counselingMessage.findMany({
           where: { conversationId: conversation.id },
           orderBy: { createdAt: 'asc' },
-          select: { id: true, content: true, senderUserId: true, readAt: true, createdAt: true },
+          select: { id: true, content: true, senderUserId: true, readAt: true, createdAt: true, attachmentName: true, attachmentMimeType: true, attachmentSize: true },
         });
         if (user.role === 'SUPER_ADMIN' || user.role === 'STAFF') {
           await tx.auditLog.create({
@@ -266,12 +269,17 @@ export class CounselingChatService {
     }
   }
 
-  async sendMessage(user: AuthenticatedUser, conversationId: string, contentInput: string) {
+  async sendMessage(
+    user: AuthenticatedUser,
+    conversationId: string,
+    contentInput: string,
+    attachment?: { storageKey: string; name: string; mimeType: string; size: number },
+  ) {
     if (user.role !== 'STUDENT' && user.role !== 'COUNSELOR') {
       throw new ForbiddenException('Administrators can view counseling history but cannot send messages');
     }
     const content = typeof contentInput === 'string' ? contentInput.trim() : '';
-    if (!content || content.length > 5000) throw new BadRequestException('Message must contain 1–5000 characters');
+    if ((!content && !attachment) || content.length > 5000) throw new BadRequestException('Message must contain up to 5000 characters or include a file attachment');
 
     // Re-check the active assignment in the same serializable transaction as the write.
     // This prevents a message from being sent through a stale conversation after a transfer.
@@ -307,7 +315,15 @@ export class CounselingChatService {
         }
 
         const message = await tx.counselingMessage.create({
-          data: { conversationId, senderUserId: user.id, content },
+          data: {
+            conversationId, senderUserId: user.id, content,
+            ...(attachment ? {
+              attachmentStorageKey: attachment.storageKey,
+              attachmentName: attachment.name,
+              attachmentMimeType: attachment.mimeType,
+              attachmentSize: attachment.size,
+            } : {}),
+          },
         });
         await tx.counselingConversation.update({
           where: { id: conversationId },
@@ -319,6 +335,87 @@ export class CounselingChatService {
       if (error?.code === 'P2034') {
         throw new ConflictException('The conversation assignment changed concurrently. Reload and try again.');
       }
+      throw error;
+    }
+  }
+
+  async storeAndSendAttachment(user: AuthenticatedUser, conversationId: string, contentInput: string, file: any) {
+    if (!file?.buffer) throw new BadRequestException('فایل پیوست انتخاب نشده است.');
+    const extension = extname(String(file.originalname || '')).toLowerCase();
+    const mimeByExtension: Record<string, string> = {
+      '.pdf': 'application/pdf',
+      '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp',
+      '.txt': 'text/plain',
+      '.doc': 'application/msword', '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      '.xls': 'application/vnd.ms-excel', '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      '.ppt': 'application/vnd.ms-powerpoint', '.pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      '.mp3': 'audio/mpeg', '.wav': 'audio/wav', '.mp4': 'video/mp4', '.webm': 'video/webm',
+    };
+    if (!mimeByExtension[extension]) throw new BadRequestException('این نوع فایل پشتیبانی نمی‌شود.');
+    if (file.size > 10 * 1024 * 1024) throw new BadRequestException('حداکثر حجم فایل ۱۰ مگابایت است.');
+    const originalName = basename(String(file.originalname || 'attachment').replace(/\\/g, '/')).replace(/[\r\n\0]/g, '').slice(0, 180) || 'attachment';
+    const storageKey = randomUUID() + extension;
+    const directory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
+    mkdirSync(directory, { recursive: true });
+    const fullPath = join(directory, storageKey);
+    writeFileSync(fullPath, file.buffer, { flag: 'wx', mode: 0o640 });
+    try {
+      return await this.sendMessage(user, conversationId, contentInput?.trim() || '', {
+        storageKey, name: originalName, mimeType: mimeByExtension[extension], size: file.size,
+      });
+    } catch (error) {
+      if (existsSync(fullPath)) unlinkSync(fullPath);
+      throw error;
+    }
+  }
+
+  async getAttachmentForDownload(user: AuthenticatedUser, conversationId: string, messageId: string) {
+    try {
+      return await this.prisma.$transaction(async tx => {
+        const conversation = await tx.counselingConversation.findUnique({
+          where: { id: conversationId },
+          select: { id: true, studentId: true, counselorId: true },
+        });
+        if (!conversation) throw new NotFoundException('Conversation not found');
+        if (user.role === 'STUDENT') {
+          const active = user.studentId === conversation.studentId
+            ? await tx.counselingAssignment.findFirst({
+                where: { studentId: user.studentId, counselorId: conversation.counselorId, endedAt: null },
+                select: { id: true },
+              })
+            : null;
+          if (!active) throw new ForbiddenException('This is not your current counselor conversation');
+        } else if (user.role === 'COUNSELOR') {
+          const profile = await tx.counselorProfile.findUnique({
+            where: { userId: user.id }, select: { id: true, isActive: true },
+          });
+          const active = profile?.isActive && profile.id === conversation.counselorId
+            ? await tx.counselingAssignment.findFirst({
+                where: { studentId: conversation.studentId, counselorId: profile.id, endedAt: null },
+                select: { id: true },
+              })
+            : null;
+          if (!active) throw new ForbiddenException('Conversation is not currently assigned to you');
+        } else {
+          this.requireAdmin(user);
+          await tx.auditLog.create({
+            data: { actorUserId: user.id, action: 'COUNSELING_ATTACHMENT_DOWNLOADED', entityType: 'CounselingMessage', entityId: messageId },
+          });
+        }
+        const message = await tx.counselingMessage.findFirst({
+          where: { id: messageId, conversationId },
+          select: { attachmentStorageKey: true, attachmentName: true, attachmentMimeType: true },
+        });
+        if (!message?.attachmentStorageKey || !message.attachmentName || !message.attachmentMimeType) {
+          throw new NotFoundException('Attachment not found');
+        }
+        const directory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
+        const path = join(directory, basename(message.attachmentStorageKey));
+        if (!existsSync(path)) throw new NotFoundException('Attachment file not found');
+        return { path, name: message.attachmentName, mimeType: message.attachmentMimeType };
+      }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    } catch (error: any) {
+      if (error?.code === 'P2034') throw new ConflictException('Conversation assignment changed concurrently. Reload and try again.');
       throw error;
     }
   }
