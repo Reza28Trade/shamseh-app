@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { MessageCircle, Send, UserRound, Circle, Paperclip, FileText, Download } from 'lucide-react';
+import { MessageCircle, Send, UserRound, Circle, Paperclip, FileText, Download, Check, CheckCheck } from 'lucide-react';
 
 type Conversation = {
   id: string;
@@ -151,7 +151,7 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
                   {message.content && <div style={{ whiteSpace: 'pre-wrap', fontSize: 12, lineHeight: 1.9 }}>{message.content}</div>}
                   {message.attachmentName && !message.content.trim() && <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, marginTop: 2, color: own ? 'rgba(255,255,255,.78)' : colors.sub, fontSize: 10 }}><Paperclip size={12} /> پیام فقط شامل فایل پیوست است</div>}
                   {message.attachmentName && <a href={`/api/counseling/conversations/${conversation.id}/messages/${message.id}/attachment`} style={{ display: 'flex', alignItems: 'center', gap: 9, marginTop: 9, padding: '10px 11px', borderRadius: 10, background: own ? 'rgba(255,255,255,.10)' : colors.soft, border: `1px solid ${colors.border}`, color: own ? '#fff' : colors.accent, textDecoration: 'none', fontSize: 11 }}><Paperclip size={15} /><span style={{ flex: 1, overflowWrap: 'anywhere' }}>{message.attachmentName}<small style={{ display: 'block', marginTop: 4, opacity: .75 }}>{message.attachmentSize ? (message.attachmentSize / 1024 / 1024).toFixed(2) + ' MB' : 'پیوست'}</small></span><Download size={14} /></a>}
-                  <time style={{ display: 'block', textAlign: 'left', marginTop: 6, fontSize: 9, opacity: .75 }}>{new Date(message.createdAt).toLocaleString('fa-IR')}</time>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 6, marginTop: 6, fontSize: 9, opacity: .8 }}><time>{new Date(message.createdAt).toLocaleString('fa-IR')}</time>{own && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, color: message.readAt ? (isDark ? '#a8e6cf' : '#237e68') : 'inherit' }}>{message.readAt ? <CheckCheck size={12} /> : <Check size={12} />}{message.readAt ? 'دیده شد' : 'ارسال شد'}</span>}</div>
                 </div>
               </div>;
             })}<div ref={bottomRef} />
