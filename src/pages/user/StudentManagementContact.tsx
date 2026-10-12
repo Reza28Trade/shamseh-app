@@ -3,7 +3,7 @@ import { CheckCircle2, Clock3, MessageSquareText, Send } from 'lucide-react';
 
 type TicketStatus = 'OPEN' | 'ANSWERED' | 'CLOSED';
 type TicketMessage = { id: string; content: string; createdAt: string; senderUserId: string };
-type Ticket = { id: string; subject: string; status: TicketStatus; createdAt: string; updatedAt: string; messages: TicketMessage[] };
+type Ticket = { id: string; studentId: string; subject: string; status: TicketStatus; createdAt: string; updatedAt: string; messages: TicketMessage[] };
 
 interface Props { isDark: boolean }
 
@@ -103,7 +103,7 @@ export const StudentManagementContact: React.FC<Props> = ({ isDark }) => {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {ticket.messages.map(message => <div key={message.id} style={{ background: card, border: `1px solid ${border}`, padding: 12, borderRadius: 10 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap', marginBottom: 6, fontSize: 10, color: accent, fontWeight: 900 }}>{message.senderUserId === ticket.messages[0]?.senderUserId ? 'پیام شما / مدیریت' : 'پاسخ مدیریت'}<time style={{ color: sub, fontWeight: 500 }}>{new Date(message.createdAt).toLocaleString('fa-IR')}</time></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap', marginBottom: 6, fontSize: 10, color: accent, fontWeight: 900 }}>{message.senderUserId === ticket.studentId ? 'پیام شما' : 'پاسخ مدیریت'}<time style={{ color: sub, fontWeight: 500 }}>{new Date(message.createdAt).toLocaleString('fa-IR')}</time></div>
                 <p style={{ margin: 0, color: text, fontSize: 12, lineHeight: 1.9, whiteSpace: 'pre-wrap' }}>{message.content}</p>
               </div>)}
             </div>
