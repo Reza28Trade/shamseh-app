@@ -1,9 +1,8 @@
 import { Body, Controller, Get, Param, Patch, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { createReadStream } from 'fs';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 const { memoryStorage } = require('multer');
-import { Request } from 'express';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { CounselingChatService } from './counseling-chat.service';
