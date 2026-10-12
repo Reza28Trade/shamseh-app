@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState, type FormEvent } from 'react';
-import { MessageSquare, Plus, RefreshCw, Search, ShieldCheck, UserRound, Users, ArrowLeftRight, History, Eye, EyeOff } from 'lucide-react';
+import { MessageSquare, Plus, RefreshCw, Search, ShieldCheck, UserRound, Users, ArrowLeftRight, History, Eye, EyeOff, Paperclip, Download } from 'lucide-react';
 
 type Counselor = {
   id: string;
@@ -27,10 +27,10 @@ type Conversation = {
   updatedAt: string;
   student: { id: string; fullName: string; nationalId: string };
   counselor: { id: string; displayName: string };
-  messages: { id: string; content: string; senderUserId: string; readAt: string | null; createdAt: string }[];
+  messages: { id: string; content: string; senderUserId: string; readAt: string | null; createdAt: string; attachmentName?: string | null }[];
   _count: { messages: number };
 };
-type Message = { id: string; content: string; senderUserId: string; readAt: string | null; createdAt: string };
+type Message = { id: string; content: string; senderUserId: string; readAt: string | null; createdAt: string; attachmentName?: string | null; attachmentMimeType?: string | null; attachmentSize?: number | null };
 
 const inputStyle: React.CSSProperties = {
   width: '100%', minWidth: 0, padding: '10px 12px', border: '1px solid var(--admin-border)',
@@ -104,7 +104,7 @@ export const ManageCounseling: React.FC = () => {
       item.student.fullName.toLocaleLowerCase().includes(q) ||
       item.student.nationalId.includes(q) ||
       item.counselor.displayName.toLocaleLowerCase().includes(q) ||
-      (item.messages[0]?.content || '').toLocaleLowerCase().includes(q)
+      ((item.messages[0]?.attachmentName || item.messages[0]?.content) || '').toLocaleLowerCase().includes(q)
     );
   }, [conversations, search]);
   const selected = conversations.find(item => item.id === selectedConversation) ?? null;
@@ -251,14 +251,16 @@ export const ManageCounseling: React.FC = () => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 500, overflowY: 'auto' }}>
               {filteredConversations.map(item => <button key={item.id} type="button" onClick={() => void openConversation(item.id)} style={{ width: '100%', textAlign: 'right', padding: 12, borderRadius: 11, border: `1px solid ${selectedConversation === item.id ? 'var(--admin-accent)' : 'var(--admin-border)'}`, background: selectedConversation === item.id ? 'var(--admin-accent-soft)' : 'var(--admin-inner)', color: 'var(--admin-text)', cursor: 'pointer' }}>
                 <strong style={{ display: 'block', fontSize: 12 }}>{item.student.fullName}</strong><span style={{ display: 'block', color: 'var(--admin-sub)', fontSize: 10, marginTop: 4 }}>مشاور: {item.counselor.displayName}</span><span style={{ display: 'block', color: 'var(--admin-sub)', fontSize: 10, marginTop: 5 }}>{item._count.messages} پیام · {item.messages[0] ? dateLabel(item.messages[0].createdAt) : 'بدون پیام'}</span>
-                {item.messages[0] && <span style={{ display: 'block', fontSize: 10, marginTop: 7, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{item.messages[0].content}</span>}
+                {item.messages[0] && <span style={{ display: 'block', fontSize: 10, marginTop: 7, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{item.messages[0].attachmentName ? '📎 ' + item.messages[0].attachmentName : item.messages[0].content}</span>}
               </button>)}
             </div>
             <div style={{ minWidth: 0, border: '1px solid var(--admin-border)', borderRadius: 12, padding: 12, background: 'var(--admin-inner)' }}>
               {!selected ? <div style={{ padding: 30, textAlign: 'center', color: 'var(--admin-sub)', fontSize: 12 }}><History size={22} style={{ marginBottom: 8 }}/><div>برای مشاهده تاریخچه، یک گفت‌وگو را انتخاب کنید.</div></div> : <>
                 <div style={{ paddingBottom: 10, borderBottom: '1px solid var(--admin-border)', marginBottom: 10 }}><strong style={{ fontSize: 12 }}>{selected.student.fullName}</strong><div style={{ color: 'var(--admin-sub)', fontSize: 10, marginTop: 4 }}>مشاور: {selected.counselor.displayName} · کد هنرجو: {selected.student.nationalId}</div></div>
                 <div style={{ maxHeight: 400, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 9 }}>
-                  {messagesLoading ? <p style={{ color: 'var(--admin-sub)', fontSize: 11 }}>در حال دریافت تاریخچه…</p> : messages.length === 0 ? <p style={{ color: 'var(--admin-sub)', fontSize: 11, textAlign: 'center', padding: 25 }}>هنوز پیامی ثبت نشده است.</p> : messages.map(message => <div key={message.id} style={{ border: '1px solid var(--admin-border)', borderRadius: 10, padding: 10, background: 'var(--admin-card)' }}><div style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', fontSize: 12, lineHeight: 1.8 }}>{message.content}</div><div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, marginTop: 7, color: 'var(--admin-sub)', fontSize: 9 }}><span>شناسه فرستنده: {message.senderUserId.slice(0, 8)}</span><time>{dateLabel(message.createdAt)}</time></div></div>)}
+                  {messagesLoading ? <p style={{ color: 'var(--admin-sub)', fontSize: 11 }}>در حال دریافت تاریخچه…</p> : messages.length === 0 ? <p style={{ color: 'var(--admin-sub)', fontSize: 11, textAlign: 'center', padding: 25 }}>هنوز پیامی ثبت نشده است.</p> : messages.map(message => <div key={message.id} style={{ border: '1px solid var(--admin-border)', borderRadius: 10, padding: 10, background: 'var(--admin-card)' }}>{message.content && <div style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', fontSize: 12, lineHeight: 1.8 }}>{message.content}</div>}
+                    {message.attachmentName && <a href={`/api/counseling/conversations/${selectedConversation}/messages/${message.id}/attachment`} style={{ display: 'flex', alignItems: 'center', gap: 9, marginTop: 9, padding: '10px 11px', borderRadius: 9, background: 'var(--admin-accent-soft)', border: '1px solid var(--admin-brand-border)', color: 'var(--admin-text)', textDecoration: 'none', fontSize: 11 }}><Paperclip size={14}/><span style={{ flex: 1, overflowWrap: 'anywhere' }}>{message.attachmentName}<small style={{ display: 'block', color: 'var(--admin-sub)', marginTop: 4 }}>{message.attachmentSize ? (message.attachmentSize / 1024 / 1024).toFixed(2) + ' MB' : 'پیوست'}</small></span><Download size={14}/></a>}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, marginTop: 7, color: 'var(--admin-sub)', fontSize: 9 }}><span>شناسه فرستنده: {message.senderUserId.slice(0, 8)}</span><time>{dateLabel(message.createdAt)}</time></div></div>)}
                 </div>
               </>}
             </div>
