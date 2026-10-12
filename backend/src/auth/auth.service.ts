@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { createHash, randomBytes } from 'node:crypto';
 import { PrismaService } from '../database/prisma.service';
@@ -85,6 +85,78 @@ export class AuthService {
     await this.prisma.session.deleteMany({
       where: { tokenHash: this.hashToken(sessionToken) },
     });
+  }
+
+
+  async listAdmins(actor: AuthenticatedUser) {
+    this.requireSuperAdmin(actor);
+    return this.prisma.user.findMany({
+      where: { role: 'STAFF' },
+      select: { id: true, username: true, status: true, permissions: true, createdAt: true, lastLoginAt: true },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async createAdmin(actor: AuthenticatedUser, body: { username: string; password: string; permissions?: string[] }) {
+    this.requireSuperAdmin(actor);
+    const username = String(body.username || '').trim();
+    if (username.length < 3 || username.length > 80) throw new BadRequestException('Username must be 3–80 characters');
+    if (typeof body.password !== 'string' || body.password.length < 12) throw new BadRequestException('Password must be at least 12 characters');
+    const permissions = this.cleanPermissions(body.permissions ?? []);
+    if (await this.prisma.user.findUnique({ where: { username }, select: { id: true } })) throw new BadRequestException('Username is already in use');
+    return this.prisma.user.create({
+      data: { username, passwordHash: await argon2.hash(body.password), role: 'STAFF', permissions },
+      select: { id: true, username: true, status: true, permissions: true, createdAt: true, lastLoginAt: true },
+    });
+  }
+
+  async updateAdmin(actor: AuthenticatedUser, id: string, body: { username?: string; password?: string; permissions?: string[]; status?: 'ACTIVE' | 'INACTIVE' }) {
+    this.requireSuperAdmin(actor);
+    const existing = await this.prisma.user.findUnique({ where: { id }, select: { id: true, role: true } });
+    if (!existing || existing.role !== 'STAFF') throw new NotFoundException('Admin account not found');
+    const data: { username?: string; passwordHash?: string; permissions?: string[]; status?: 'ACTIVE' | 'INACTIVE' } = {};
+    if (body.username !== undefined) {
+      const username = String(body.username).trim();
+      if (username.length < 3 || username.length > 80) throw new BadRequestException('Username must be 3–80 characters');
+      const duplicate = await this.prisma.user.findUnique({ where: { username }, select: { id: true } });
+      if (duplicate && duplicate.id !== id) throw new BadRequestException('Username is already in use');
+      data.username = username;
+    }
+    if (body.password !== undefined) {
+      if (typeof body.password !== 'string' || body.password.length < 12) throw new BadRequestException('Password must be at least 12 characters');
+      data.passwordHash = await argon2.hash(body.password);
+    }
+    if (body.permissions !== undefined) data.permissions = this.cleanPermissions(body.permissions);
+    if (body.status !== undefined) {
+      if (body.status !== 'ACTIVE' && body.status !== 'INACTIVE') throw new BadRequestException('Invalid status');
+      data.status = body.status;
+    }
+    const updated = await this.prisma.user.update({
+      where: { id }, data,
+      select: { id: true, username: true, status: true, permissions: true, createdAt: true, lastLoginAt: true },
+    });
+    if (data.status === 'INACTIVE' || data.passwordHash || data.permissions || data.username) await this.prisma.session.deleteMany({ where: { userId: id } });
+    return updated;
+  }
+
+  async changeOwnPassword(actor: AuthenticatedUser, body: { currentPassword: string; newPassword: string }) {
+    if (actor.role !== 'SUPER_ADMIN' && actor.role !== 'STAFF') throw new ForbiddenException('Admin account required');
+    if (typeof body.currentPassword !== 'string' || typeof body.newPassword !== 'string' || body.newPassword.length < 12) throw new BadRequestException('New password must be at least 12 characters');
+    const account = await this.prisma.user.findUnique({ where: { id: actor.id }, select: { passwordHash: true } });
+    if (!account || !(await argon2.verify(account.passwordHash, body.currentPassword))) throw new BadRequestException('Current password is incorrect');
+    await this.prisma.user.update({ where: { id: actor.id }, data: { passwordHash: await argon2.hash(body.newPassword) } });
+    await this.prisma.session.deleteMany({ where: { userId: actor.id } });
+    return { success: true };
+  }
+
+  private requireSuperAdmin(actor: AuthenticatedUser) {
+    if (actor.role !== 'SUPER_ADMIN') throw new ForbiddenException('Super admin access required');
+  }
+
+  private cleanPermissions(value: unknown): string[] {
+    const allowed = ['courses', 'students', 'offlineRequests', 'mockExams', 'counseling', 'messages', 'notifications', 'rules', 'finance', 'logs'];
+    if (!Array.isArray(value) || value.some((item) => typeof item !== 'string' || !allowed.includes(item))) throw new BadRequestException('Invalid admin permissions');
+    return [...new Set(value)];
   }
 
   private hashToken(token: string) {
