@@ -8,7 +8,7 @@ type Conversation = {
   messages: { id: string; content: string; senderUserId: string; createdAt: string; readAt?: string | null; attachmentName?: string | null }[];
   _count: { messages: number };
 };
-type Message = { id: string; content: string; senderUserId: string; createdAt: string; readAt: string | null; attachmentName?: string | null; attachmentMimeType?: string | null; attachmentSize?: number | null };
+type Message = { id: string; content: string; senderUserId: string; sender: { role: 'STUDENT' | 'COUNSELOR' | 'STAFF' | 'SUPER_ADMIN' }; createdAt: string; readAt: string | null; attachmentName?: string | null; attachmentMimeType?: string | null; attachmentSize?: number | null };
 
 export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
   const [isDark, setIsDark] = useState(() => {
@@ -204,7 +204,7 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
             </div>
             <div aria-live="polite" style={{ flex: 1, minHeight: 360, maxHeight: 'calc(100vh - 270px)', overflowY: 'auto', padding: 20, background: isDark ? 'radial-gradient(ellipse at top, rgba(57,138,144,.10), transparent 58%), #141a1c' : 'radial-gradient(ellipse at top, rgba(57,138,144,.10), transparent 58%), #f7faf9' }}>
               {messages.length === 0 ? <div style={{ textAlign: 'center', padding: '70px 20px', color: palette.sub }}><MessageCircle size={32} style={{ marginBottom: 12, opacity: .6 }} /><p style={{ margin: 0, fontSize: 13, fontWeight: 800 }}>هنوز پیامی ردوبدل نشده است</p><p style={{ fontSize: 11, lineHeight: 1.8 }}>می‌توانید گفت‌وگو را با ارسال اولین پیام آغاز کنید.</p></div> : messages.map(m => {
-                const own = m.senderUserId === currentUserId;
+                const own = m.sender.role === 'COUNSELOR';
                 return <div key={m.id} style={{ display: 'flex', direction: 'ltr', justifyContent: own ? 'flex-end' : 'flex-start', marginBottom: 13 }}>
                   <div style={{ direction: 'rtl', maxWidth: 'min(78%, 650px)', padding: '11px 14px', borderRadius: own ? '14px 14px 4px 14px' : '14px 14px 14px 4px', background: own ? palette.ownBubble : palette.inner, border: `1px solid ${own ? 'rgba(112,185,181,.25)' : palette.border}`, color: palette.text, overflowWrap: 'anywhere' }}>
                     {m.content && <div style={{ whiteSpace: 'pre-wrap', fontSize: 12, lineHeight: 1.9 }}>{m.content}</div>}

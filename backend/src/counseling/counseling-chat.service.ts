@@ -247,7 +247,7 @@ export class CounselingChatService {
         const messages = await tx.counselingMessage.findMany({
           where: { conversationId: conversation.id },
           orderBy: { createdAt: 'asc' },
-          select: { id: true, content: true, senderUserId: true, readAt: true, createdAt: true, attachmentName: true, attachmentMimeType: true, attachmentSize: true },
+          select: { id: true, content: true, senderUserId: true, sender: { select: { role: true } }, readAt: true, createdAt: true, attachmentName: true, attachmentMimeType: true, attachmentSize: true },
         });
         if (user.role === 'SUPER_ADMIN' || user.role === 'STAFF') {
           await tx.auditLog.create({
