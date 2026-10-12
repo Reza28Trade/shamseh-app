@@ -13,6 +13,7 @@ export interface Admin {
   username: string;
   password?: string;
   role: 'super_admin' | 'staff';
+  permissions?: string[];
 }
 
 export interface Course {
