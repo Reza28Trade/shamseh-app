@@ -1587,3 +1587,86 @@
   .admin-legacy-page.admin-messages-page .messages-stat-copy small{font-size:9px}
   .admin-legacy-page.admin-messages-page .messages-stat-copy strong{font-size:18px}
 }
+
+
+/* Final polish: readable brand header in light theme, connected stats strip,
+   and a vertically scrollable ticket table (about ten visible rows). */
+.admin-legacy-page.admin-messages-page > .messages-page-head{
+  background:linear-gradient(118deg,#6d001a 0%,#85334b 46%,#24484b 100%)!important;
+  border-color:rgba(109,0,26,.3)!important;
+  box-shadow:0 10px 24px rgba(109,0,26,.13)!important;
+  border-radius:18px!important;
+}
+.admin-legacy-page.admin-messages-page .messages-page-head h2,
+.admin-legacy-page.admin-messages-page .messages-page-head h2 svg{color:#fff!important}
+.admin-legacy-page.admin-messages-page .messages-page-eyebrow,
+.admin-legacy-page.admin-messages-page .messages-page-head p{color:rgba(255,255,255,.84)!important}
+
+/* Match the compact continuous statistics bar used elsewhere in the admin panel. */
+.admin-legacy-page.admin-messages-page .messages-stats{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:0!important;
+  overflow:hidden;
+  border:1px solid var(--admin-border)!important;
+  border-radius:15px!important;
+  background:var(--admin-card)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-legacy-page.admin-messages-page .messages-stat{
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:linear-gradient(180deg,var(--admin-card),var(--admin-inner))!important;
+}
+.admin-legacy-page.admin-messages-page .messages-stat + .messages-stat{
+  border-right:1px solid var(--admin-border)!important;
+}
+.admin-legacy-page.admin-messages-page .messages-stat-icon{
+  background:linear-gradient(145deg,#6d001a,#a14b62)!important;
+}
+.admin-legacy-page.admin-messages-page .messages-stat-open .messages-stat-icon{
+  background:linear-gradient(145deg,#b7791f,#e9b949)!important;
+}
+.admin-legacy-page.admin-messages-page .messages-stat-answered .messages-stat-icon{
+  background:linear-gradient(145deg,#16805d,#39ae86)!important;
+}
+.admin-legacy-page.admin-messages-page .messages-stat-closed .messages-stat-icon{
+  background:linear-gradient(145deg,#64748b,#94a3b8)!important;
+}
+
+/* Keep the header visible while the ticket rows scroll inside the table. */
+.admin-legacy-page.admin-messages-page .messages-table-wrap{
+  max-height:560px;
+  overflow:auto!important;
+  overscroll-behavior:contain;
+  scrollbar-gutter:stable;
+}
+.admin-legacy-page.admin-messages-page .messages-table{
+  min-width:720px;
+}
+.admin-legacy-page.admin-messages-page .messages-table thead{
+  position:sticky;
+  top:0;
+  z-index:3;
+}
+.admin-legacy-page.admin-messages-page .messages-table thead th{
+  position:sticky;
+  top:0;
+  z-index:3;
+  background:linear-gradient(90deg,var(--admin-inner),var(--admin-brand-soft))!important;
+}
+@media(max-width:760px){
+  .admin-legacy-page.admin-messages-page .messages-stats{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .admin-legacy-page.admin-messages-page .messages-stat + .messages-stat{
+    border-right:0!important;
+  }
+  .admin-legacy-page.admin-messages-page .messages-stat:nth-child(even){
+    border-right:1px solid var(--admin-border)!important;
+  }
+  .admin-legacy-page.admin-messages-page .messages-stat:nth-child(n+3){
+    border-top:1px solid var(--admin-border)!important;
+  }
+}
