@@ -21,6 +21,16 @@ export class CounselingChatService {
     return profile;
   }
 
+  async getMyCounselorProfile(user: AuthenticatedUser) {
+    if (user.role !== 'COUNSELOR') throw new ForbiddenException('Counselor account required');
+    const profile = await this.prisma.counselorProfile.findUnique({
+      where: { userId: user.id },
+      select: { id: true, displayName: true, isActive: true },
+    });
+    if (!profile || !profile.isActive) throw new ForbiddenException('Active counselor profile required');
+    return profile;
+  }
+
   async listCounselors(user: AuthenticatedUser) {
     this.requireAdmin(user);
     return this.prisma.counselorProfile.findMany({

@@ -27,6 +27,7 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
   const [conversationFilter, setConversationFilter] = useState<'all' | 'pending' | 'unread'>('all');
   const [error, setError] = useState('');
   const [currentUserId, setCurrentUserId] = useState('');
+  const [counselorName, setCounselorName] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [mobileListOpen, setMobileListOpen] = useState(true);
@@ -68,6 +69,7 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
 
   useEffect(() => {
     void fetch('/api/auth/me', { credentials: 'include' }).then(r => r.json()).then(d => setCurrentUserId(d.user?.id || '')).catch(() => undefined);
+    void fetch('/api/counseling/profile', { credentials: 'include' }).then(async r => { if (!r.ok) throw new Error('پروفایل مشاور دریافت نشد'); return r.json(); }).then(d => setCounselorName(d.displayName || '')).catch(() => undefined);
     void loadConversations().catch(e => setError(e instanceof Error ? e.message : 'دریافت گفت‌وگوها ناموفق بود.')).finally(() => setLoading(false));
   }, []);
 
@@ -153,7 +155,8 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <button type="button" onClick={() => setIsDark(value => !value)} aria-label={isDark ? 'فعال‌کردن پوسته روشن' : 'فعال‌کردن پوسته تیره'} title={isDark ? 'پوسته روشن' : 'پوسته تیره'} style={{ display: 'grid', placeItems: 'center', width: 38, height: 38, border: `1px solid ${palette.border}`, background: palette.inner, color: '#d6a74d', borderRadius: 11, cursor: 'pointer' }}>{isDark ? <Sun size={17} /> : <Moon size={17} />}</button>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 7, color: palette.sub, fontSize: 11 }}><Circle size={8} fill="#50b68b" color="#50b68b" /> سامانه فعال</span>
+          {counselorName && <span title="حساب کاربری واردشده" style={{ display: 'flex', alignItems: 'center', gap: 7, minWidth: 0, maxWidth: 250, padding: '8px 11px', border: `1px solid ${palette.accentBorder}`, borderRadius: 11, background: palette.accentSoft, color: palette.text, fontSize: 11 }}><UserRound size={15} color={palette.accent} /><span style={{ color: palette.sub, whiteSpace: 'nowrap' }}>مشاور:</span><strong style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 850 }}>{counselorName}</strong></span>}
+          <span style={{ display: 'flex', alignItems: 'center', gap: 7, color: palette.sub, fontSize: 11, whiteSpace: 'nowrap' }}><Circle size={8} fill="#50b68b" color="#50b68b" /> سامانه فعال</span>
           <button onClick={onLogout} style={{ display: 'flex', alignItems: 'center', gap: 8, border: `1px solid ${palette.border}`, background: palette.inner, color: palette.text, borderRadius: 11, padding: '10px 13px', fontSize: 11, fontWeight: 800, cursor: 'pointer' }}><LogOut size={15} /> خروج</button>
         </div>
       </header>
@@ -180,7 +183,7 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
               {([{ id: 'all', label: 'همه', count: conversations.length }, { id: 'pending', label: 'منتظر پاسخ', count: pendingReplies }, { id: 'unread', label: 'خوانده‌نشده', count: unreadConversations }] as const).map(item => <button key={item.id} type="button" onClick={() => setConversationFilter(item.id)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, padding: '7px 3px', borderRadius: 7, border: `1px solid ${conversationFilter === item.id ? palette.accentBorder : 'transparent'}`, background: conversationFilter === item.id ? palette.accentSoft : 'transparent', color: conversationFilter === item.id ? (isDark ? '#a5ded8' : palette.accent) : palette.sub, cursor: 'pointer', font: 'inherit', fontSize: 9, fontWeight: 800 }}><span>{item.label}</span><strong style={{ fontSize: 11, fontVariantNumeric: 'tabular-nums' }}>{item.count}</strong></button>)}
             </div>
           </div>
-          <div style={{ flex: 1, overflowY: 'auto', padding: 10 }}>
+          <div className="counselor-scroll-area counselor-conversation-list" style={{ flex: 1, overflowY: 'auto', padding: 10 }}>
             {loading ? <p style={{ color: palette.sub, padding: 12, fontSize: 12 }}>در حال دریافت گفت‌وگوها…</p> : filteredConversations.length === 0 ? <div style={{ padding: 20, textAlign: 'center', color: palette.sub, fontSize: 12, lineHeight: 2 }}>{search ? 'هنرجویی با این نام پیدا نشد.' : conversationFilter === 'unread' ? 'گفت‌وگوی خوانده‌نشده‌ای ندارید.' : conversationFilter === 'pending' ? 'گفت‌وگویی منتظر پاسخ نیست.' : 'هنرجویی به شما اختصاص داده نشده است.'}</div> : filteredConversations.map(c => {
               const chosen = c.id === selected;
               const last = c.messages[c.messages.length - 1];
@@ -202,7 +205,7 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
               <div style={{ flex: 1, minWidth: 0 }}><strong style={{ display: 'block', fontSize: 13, fontWeight: 900 }}>{active.student.fullName}</strong><span style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 5, color: palette.sub, fontSize: 10 }}><Circle size={6} fill={palette.accent} color={palette.accent} /> گفت‌وگوی اختصاصی هنرجو</span></div>
               <span style={{ color: palette.sub, fontSize: 10, whiteSpace: 'nowrap' }}>{messages.length} پیام</span>
             </div>
-            <div aria-live="polite" style={{ flex: 1, minHeight: 360, maxHeight: 'calc(100vh - 270px)', overflowY: 'auto', padding: 20, background: isDark ? 'radial-gradient(ellipse at top, rgba(57,138,144,.10), transparent 58%), #141a1c' : 'radial-gradient(ellipse at top, rgba(57,138,144,.10), transparent 58%), #f7faf9' }}>
+            <div className="counselor-scroll-area counselor-message-history" aria-live="polite" style={{ flex: 1, minHeight: 360, maxHeight: 'calc(100vh - 270px)', overflowY: 'auto', padding: 20, background: isDark ? 'radial-gradient(ellipse at top, rgba(57,138,144,.10), transparent 58%), #141a1c' : 'radial-gradient(ellipse at top, rgba(57,138,144,.10), transparent 58%), #f7faf9' }}>
               {messages.length === 0 ? <div style={{ textAlign: 'center', padding: '70px 20px', color: palette.sub }}><MessageCircle size={32} style={{ marginBottom: 12, opacity: .6 }} /><p style={{ margin: 0, fontSize: 13, fontWeight: 800 }}>هنوز پیامی ردوبدل نشده است</p><p style={{ fontSize: 11, lineHeight: 1.8 }}>می‌توانید گفت‌وگو را با ارسال اولین پیام آغاز کنید.</p></div> : messages.map(m => {
                 const own = m.sender.role === 'COUNSELOR';
                 return <div key={m.id} style={{ display: 'flex', direction: 'ltr', justifyContent: own ? 'flex-end' : 'flex-start', marginBottom: 13 }}>
@@ -226,6 +229,11 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
         </section>
       </div>
       <style>{`
+        .counselor-scroll-area{scrollbar-width:thin;scrollbar-color:${palette.accent} ${palette.inner};scrollbar-gutter:stable}
+        .counselor-scroll-area::-webkit-scrollbar{width:7px;height:7px}
+        .counselor-scroll-area::-webkit-scrollbar-track{background:${palette.inner};border-radius:999px}
+        .counselor-scroll-area::-webkit-scrollbar-thumb{background:${palette.accent};border:2px solid ${palette.inner};border-radius:999px}
+        .counselor-scroll-area::-webkit-scrollbar-thumb:hover{background:${isDark ? '#70b9b5' : '#286d70'}}
         @media(max-width:760px){
           .counselor-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;padding:12px 12px 0!important;gap:8px!important}
           .counselor-stats article{padding:10px!important;gap:8px!important}

@@ -138,7 +138,7 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
         <div style={{ margin: 18, padding: '42px 20px', textAlign: 'center', borderRadius: 14, background: colors.inner, border: `1px dashed ${colors.border}` }}><MessageCircle size={34} color={colors.accent} style={{ marginBottom: 10 }} /><p style={{ margin: '0 0 7px', fontSize: 13, fontWeight: 850 }}>هنوز مشاوری برای شما تعیین نشده است.</p><p style={{ margin: 0, color: colors.sub, fontSize: 11, lineHeight: 1.9 }}>پس از تخصیص مشاور توسط مدیریت، امکان گفت‌وگوی آنلاین در همین بخش فعال می‌شود.</p></div>
       ) : (
         <div style={{ padding: 14 }}>
-          <div aria-live="polite" style={{ minHeight: 300, maxHeight: 520, overflowY: 'auto', padding: 18, background: isDark ? '#141a1c' : '#f7faf9', border: `1px solid ${colors.border}`, borderRadius: '13px 13px 0 0' }}>
+          <div className="student-chat-scroll-area" aria-live="polite" style={{ minHeight: 300, maxHeight: 520, overflowY: 'auto', padding: 18, background: isDark ? '#141a1c' : '#f7faf9', border: `1px solid ${colors.border}`, borderRadius: '13px 13px 0 0' }}>
             {messages.length === 0 ? <div style={{ textAlign: 'center', padding: '65px 18px', color: colors.sub }}><MessageCircle size={30} style={{ opacity: .6, marginBottom: 10 }} /><p style={{ margin: 0, fontSize: 12, fontWeight: 800 }}>گفت‌وگو را شروع کنید</p><p style={{ fontSize: 11, lineHeight: 1.8 }}>پیام شما مستقیماً برای مشاور اختصاص‌یافته ارسال می‌شود.</p></div> : messages.map(message => {
               const own = message.sender.role === 'STUDENT';
               return <div key={message.id} style={{ display: 'flex', direction: 'ltr', justifyContent: own ? 'flex-end' : 'flex-start', marginBottom: 12 }}>
@@ -160,6 +160,13 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
           <p style={{ display: 'flex', alignItems: 'center', gap: 6, color: colors.sub, fontSize: 9, margin: '10px 3px 0' }}><FileText size={12} /> پیام‌ها در همین گفت‌وگو ذخیره می‌شوند و پس از تازه‌سازی باقی می‌مانند.</p>
         </div>
       )}
+      <style>{`
+        .student-chat-scroll-area{scrollbar-width:thin;scrollbar-color:${colors.accentSolid} ${colors.inner};scrollbar-gutter:stable}
+        .student-chat-scroll-area::-webkit-scrollbar{width:7px;height:7px}
+        .student-chat-scroll-area::-webkit-scrollbar-track{background:${colors.inner};border-radius:999px}
+        .student-chat-scroll-area::-webkit-scrollbar-thumb{background:${colors.accentSolid};border:2px solid ${colors.inner};border-radius:999px}
+        .student-chat-scroll-area::-webkit-scrollbar-thumb:hover{background:${isDark ? '#70b9b5' : '#286d70'}}
+      `}</style>
     </section>
   );
 }
