@@ -1713,3 +1713,35 @@
     padding:14px!important;
   }
 }
+
+
+/* High-specificity fix: the shared light-theme header rules were overriding
+   the messages hero background, leaving white text on a pale surface. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-messages-page > header.messages-page-head{
+  background-color:#6d001a!important;
+  background-image:linear-gradient(118deg,#6d001a 0%,#85334b 48%,#24484b 100%)!important;
+  color:#fff!important;
+  border:1px solid rgba(109,0,26,.32)!important;
+  border-radius:16px!important;
+  box-shadow:0 10px 24px rgba(109,0,26,.14)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-messages-page > header.messages-page-head .messages-page-title,
+.admin-shell .admin-page-content .admin-legacy-page.admin-messages-page > header.messages-page-head .messages-page-eyebrow,
+.admin-shell .admin-page-content .admin-legacy-page.admin-messages-page > header.messages-page-head h2,
+.admin-shell .admin-page-content .admin-legacy-page.admin-messages-page > header.messages-page-head h2 svg,
+.admin-shell .admin-page-content .admin-legacy-page.admin-messages-page > header.messages-page-head p{
+  color:#fff!important;
+  opacity:1!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-messages-page > header.messages-page-head .messages-page-eyebrow,
+.admin-shell .admin-page-content .admin-legacy-page.admin-messages-page > header.messages-page-head p{
+  color:rgba(255,255,255,.86)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-messages-page > header.messages-page-head:before{
+  content:"";
+  position:absolute;
+  inset:0 0 auto 0;
+  height:4px;
+  background:linear-gradient(90deg,#f0d6a2,#fff0cf 35%,#b76c82 78%,transparent);
+  pointer-events:none;
+}
