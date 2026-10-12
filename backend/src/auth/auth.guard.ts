@@ -29,7 +29,7 @@ export class AuthGuard implements CanActivate {
     }
 
     const path = (request.originalUrl || request.url).split('?')[0].replace(/^\/api\//, '/');
-    if (user.role === 'STAFF' && path.startsWith('/admin/')) {
+    if (user.role === 'STAFF' && path.startsWith('/admin/') && path !== '/admin/account/password') {
       const permission = this.permissionForPath(path);
       if (!permission || !user.permissions.includes(permission)) {
         throw new ForbiddenException('This admin section is not assigned to your account');
