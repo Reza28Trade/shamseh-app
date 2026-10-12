@@ -56,7 +56,7 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
         const conversations: Conversation[] = await conversationsResponse.json();
         const active = conversations[0] ?? null;
         if (cancelled || initialRequestId !== loadRequestId.current) return;
-        setCurrentUserId(me.user?.id ?? ''); setConversation(active);
+        setConversation(active);
         if (active) {
           const response = await fetch(`/api/counseling/conversations/${active.id}/messages`, { credentials: 'include' });
           if (!response.ok) throw new Error('دریافت پیام‌ها انجام نشد.');
