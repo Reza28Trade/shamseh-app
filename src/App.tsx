@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { useStore } from './store/useStore';
 import { AdminLayout } from './layouts/AdminLayout';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
@@ -95,7 +95,7 @@ function AdminAccounts() {
     </div>
   </section>;
 }
-const adminInputStyle: React.CSSProperties = {padding:'11px 12px',border:'1px solid var(--admin-border)',borderRadius:9,background:'var(--admin-control)',color:'var(--admin-text)',font:'inherit'};
+const adminInputStyle: CSSProperties = {padding:'11px 12px',border:'1px solid var(--admin-border)',borderRadius:9,background:'var(--admin-control)',color:'var(--admin-text)',font:'inherit'};
 const adminButtonStyle: React.CSSProperties = {padding:'9px 13px',border:'1px solid var(--admin-brand-border)',borderRadius:9,background:'var(--admin-accent-soft)',color:'var(--admin-text)',font:'inherit',fontSize:12,fontWeight:700,cursor:'pointer'};
 
 export function App() {
