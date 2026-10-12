@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import type { Admin } from '../types';
 import { useStore } from '../store/useStore';
 import '../styles/AdminLegacy.css';
-import { LayoutDashboard, BookOpen, Users, MessageSquare, ShieldAlert, FileText, LogOut, Sun, Moon, Menu, X, CheckSquare, ClipboardList, Bell, Wallet, ChevronLeft } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Users, MessageSquare, ShieldAlert, FileText, LogOut, Sun, Moon, Menu, X, CheckSquare, ClipboardList, Bell, Wallet, ChevronLeft, ShieldCheck } from 'lucide-react';
 
 interface AdminLayoutProps { admin?: Admin; onLogout: () => void; activeTab: any; setActiveTab: any; children: React.ReactNode; }
 
@@ -10,8 +10,21 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
   const { theme, toggleTheme } = useStore();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isDark = theme === 'dark';
+  const changePassword = async () => {
+    const currentPassword = window.prompt('رمز عبور فعلی');
+    if (!currentPassword) return;
+    const newPassword = window.prompt('رمز عبور جدید (حداقل ۱۲ کاراکتر)');
+    if (!newPassword) return;
+    if (newPassword.length < 12) { window.alert('رمز عبور باید حداقل ۱۲ کاراکتر باشد.'); return; }
+    try {
+      const response = await fetch('/api/auth/admin/account/password', { method: 'PATCH', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ currentPassword, newPassword }) });
+      if (!response.ok) throw new Error('تغییر رمز عبور ناموفق بود.');
+      window.alert('رمز عبور تغییر کرد. لطفاً دوباره وارد شوید.');
+      onLogout();
+    } catch (error) { window.alert(error instanceof Error ? error.message : 'خطا در تغییر رمز عبور'); }
+  };
 
-  const menuItems = [
+  const allMenuItems = [
     { id: 'dashboard', label: 'داشبورد مدیریت', icon: LayoutDashboard },
     { id: 'courses', label: 'مدیریت دوره‌ها', icon: BookOpen },
     { id: 'students', label: 'مدیریت هنرجویان', icon: Users },
@@ -23,7 +36,14 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
     { id: 'rules', label: 'قوانین و تحلیل کنکور', icon: FileText },
     { id: 'finance', label: 'وضعیت مالی هنرجویان', icon: Wallet },
     { id: 'logs', label: 'گزارش‌های سیستمی', icon: ShieldAlert },
+    { id: 'admins', label: 'مدیریت مدیران و دسترسی‌ها', icon: ShieldCheck },
   ];
+  const menuItems = allMenuItems.filter((item) => {
+    if (item.id === 'dashboard') return true;
+    if (item.id === 'admins') return admin?.role === 'super_admin';
+    if (admin?.role === 'super_admin') return true;
+    return Boolean(admin?.permissions?.includes(item.id));
+  });
   const activeItem = menuItems.find((item) => item.id === activeTab) ?? menuItems[0];
 
   const vars: any = {
@@ -61,6 +81,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
         </div>
 
         <div className="admin-top-actions">
+          <button className="admin-logout admin-top-logout" onClick={() => void changePassword()}><ShieldCheck size={17} /><span>تغییر رمز</span></button>
           <button className="admin-logout admin-top-logout" onClick={onLogout}><LogOut size={17} /><span>خروج از حساب</span></button>
           <button className="admin-theme-toggle" onClick={toggleTheme} title={isDark ? 'فعال‌سازی تم روشن' : 'فعال‌سازی تم تیره'} aria-label="تغییر تم">
             {isDark ? <Sun size={18} /> : <Moon size={18} />}
