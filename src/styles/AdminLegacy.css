@@ -1915,3 +1915,173 @@
     grid-template-columns:repeat(2,minmax(0,1fr));
   }
 }
+
+
+/* Admin accounts — align surfaces and controls with Courses and Students pages. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-accounts-page{
+  max-width:1320px;
+  gap:16px;
+  padding:0;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-accounts-page > .accounts-card{
+  padding:20px 22px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:16px!important;
+  background:var(--admin-card)!important;
+  box-shadow:var(--admin-shadow)!important;
+  min-width:0;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-accounts-page > .accounts-create-card{
+  background:linear-gradient(120deg,var(--admin-accent-soft),var(--admin-card) 78%)!important;
+  border-top:3px solid var(--admin-accent)!important;
+}
+.admin-accounts-page .accounts-card-head{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  margin:0 0 14px;
+}
+.admin-accounts-page .accounts-eyebrow{
+  color:var(--admin-accent)!important;
+  font-size:10px;
+  font-weight:850;
+  letter-spacing:1px;
+}
+.admin-accounts-page .accounts-card-head h2{
+  margin:0!important;
+  font-size:20px!important;
+  font-weight:850;
+  line-height:1.5;
+}
+.admin-accounts-page .accounts-description{
+  margin:0 0 18px!important;
+  color:var(--admin-sub)!important;
+  font-size:12px;
+  line-height:1.9;
+}
+.admin-accounts-page .accounts-fields{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+.admin-accounts-page .accounts-fields label{
+  display:grid;
+  align-content:start;
+  gap:7px;
+  color:var(--admin-sub)!important;
+  font-size:12px;
+  font-weight:700;
+}
+.admin-accounts-page .accounts-fields input{
+  width:100%;
+  min-height:40px;
+  padding:10px 12px!important;
+  border-radius:10px!important;
+  font-size:12px;
+}
+.admin-accounts-page .accounts-permissions{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+}
+.admin-accounts-page .accounts-create-permissions{
+  margin:16px 0!important;
+  padding:13px;
+  border:1px solid var(--admin-border);
+  border-radius:12px;
+  background:var(--admin-inner);
+}
+.admin-accounts-page .accounts-permissions label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+  padding:9px 10px;
+  border:1px solid var(--admin-border);
+  border-radius:9px;
+  background:var(--admin-control);
+  color:var(--admin-text)!important;
+  font-size:11px!important;
+  line-height:1.7;
+  cursor:pointer;
+}
+.admin-accounts-page .accounts-permissions input[type="checkbox"]{
+  width:15px!important;
+  height:15px;
+  min-width:15px;
+  margin:0;
+  accent-color:var(--admin-accent);
+}
+.admin-accounts-page .accounts-primary-action{
+  min-height:36px;
+  padding:8px 15px!important;
+  border:1px solid var(--admin-accent)!important;
+  border-radius:10px!important;
+  background:var(--admin-accent)!important;
+  color:#fff!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  box-shadow:0 5px 14px color-mix(in srgb,var(--admin-accent) 18%,transparent);
+}
+.admin-accounts-page .accounts-admin-row{
+  display:grid;
+  gap:12px;
+  padding:16px 0;
+  border-top:1px solid var(--admin-border);
+}
+.admin-accounts-page .accounts-admin-toolbar{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.admin-accounts-page .accounts-admin-toolbar strong{
+  margin-left:auto;
+  font-size:14px;
+  font-weight:850;
+}
+.admin-accounts-page .accounts-admin-toolbar span{
+  padding:5px 9px;
+  border:1px solid var(--admin-border);
+  border-radius:8px;
+  background:var(--admin-inner);
+  font-size:10px!important;
+  font-weight:800;
+}
+.admin-accounts-page .accounts-admin-toolbar button{
+  min-height:32px;
+  padding:7px 10px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:9px!important;
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+  font-size:11px!important;
+  font-weight:750;
+}
+.admin-accounts-page .accounts-admin-toolbar button:hover{
+  border-color:var(--admin-accent)!important;
+  background:var(--admin-accent-soft)!important;
+}
+.admin-accounts-page .accounts-saved-permissions label{
+  padding:7px 9px;
+}
+.admin-accounts-page input:disabled,
+.admin-accounts-page button:disabled{opacity:.55}
+@media(max-width:760px){
+  .admin-shell .admin-page-content .admin-legacy-page.admin-accounts-page > .accounts-card{
+    padding:15px!important;
+  }
+  .admin-accounts-page .accounts-fields,
+  .admin-accounts-page .accounts-permissions{
+    grid-template-columns:1fr;
+  }
+  .admin-accounts-page .accounts-admin-toolbar{
+    align-items:stretch;
+  }
+  .admin-accounts-page .accounts-admin-toolbar strong{
+    width:100%;
+  }
+  .admin-accounts-page .accounts-admin-toolbar button{
+    flex:1 1 calc(50% - 8px);
+  }
+}
