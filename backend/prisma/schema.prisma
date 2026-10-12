@@ -488,6 +488,10 @@ model CounselingMessage {
   conversationId String
   senderUserId String
   content String @db.Text
+  attachmentStorageKey String?
+  attachmentName String?
+  attachmentMimeType String?
+  attachmentSize Int?
   readAt DateTime?
   createdAt DateTime @default(now())
 
