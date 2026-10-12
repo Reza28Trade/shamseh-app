@@ -32,6 +32,8 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
   const [sending, setSending] = useState(false);
   const [mobileListOpen, setMobileListOpen] = useState(true);
   const selectedRef = useRef(selected);
+  const messageHistoryRef = useRef<HTMLDivElement>(null);
+  const shouldAutoScrollRef = useRef(true);
   selectedRef.current = selected;
   const active = conversations.find(c => c.id === selected);
   const pendingReplies = currentUserId
@@ -75,6 +77,7 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
 
   useEffect(() => {
     let cancelled = false;
+    shouldAutoScrollRef.current = true;
     setMessages([]);
     setError('');
     if (selected) {
@@ -112,6 +115,12 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
     }, 5000);
     return () => { cancelled = true; window.clearInterval(timer); };
   }, [selected]);
+
+  useEffect(() => {
+    if (!shouldAutoScrollRef.current) return;
+    const history = messageHistoryRef.current;
+    if (history) history.scrollTo({ top: history.scrollHeight, behavior: 'smooth' });
+  }, [messages.length, selected]);
 
   async function sendMessage(e: FormEvent) {
     e.preventDefault();
@@ -205,7 +214,7 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
               <div style={{ flex: 1, minWidth: 0 }}><strong style={{ display: 'block', fontSize: 13, fontWeight: 900 }}>{active.student.fullName}</strong><span style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 5, color: palette.sub, fontSize: 10 }}><Circle size={6} fill={palette.accent} color={palette.accent} /> گفت‌وگوی اختصاصی هنرجو</span></div>
               <span style={{ color: palette.sub, fontSize: 10, whiteSpace: 'nowrap' }}>{messages.length} پیام</span>
             </div>
-            <div className="counselor-scroll-area counselor-message-history" aria-live="polite" style={{ flex: 1, minHeight: 360, maxHeight: 'calc(100vh - 270px)', overflowY: 'auto', padding: 20, background: isDark ? 'radial-gradient(ellipse at top, rgba(57,138,144,.10), transparent 58%), #141a1c' : 'radial-gradient(ellipse at top, rgba(57,138,144,.10), transparent 58%), #f7faf9' }}>
+            <div ref={messageHistoryRef} onScroll={e => { const element = e.currentTarget; shouldAutoScrollRef.current = element.scrollHeight - element.scrollTop - element.clientHeight < 100; }} className="counselor-scroll-area counselor-message-history" aria-live="polite" style={{ flex: 1, minHeight: 360, maxHeight: 'calc(100vh - 270px)', overflowY: 'auto', padding: 20, background: isDark ? 'radial-gradient(ellipse at top, rgba(57,138,144,.10), transparent 58%), #141a1c' : 'radial-gradient(ellipse at top, rgba(57,138,144,.10), transparent 58%), #f7faf9' }}>
               {messages.length === 0 ? <div style={{ textAlign: 'center', padding: '70px 20px', color: palette.sub }}><MessageCircle size={32} style={{ marginBottom: 12, opacity: .6 }} /><p style={{ margin: 0, fontSize: 13, fontWeight: 800 }}>هنوز پیامی ردوبدل نشده است</p><p style={{ fontSize: 11, lineHeight: 1.8 }}>می‌توانید گفت‌وگو را با ارسال اولین پیام آغاز کنید.</p></div> : messages.map(m => {
                 const own = m.sender.role === 'COUNSELOR';
                 return <div key={m.id} style={{ display: 'flex', direction: 'ltr', justifyContent: own ? 'flex-end' : 'flex-start', marginBottom: 13 }}>
