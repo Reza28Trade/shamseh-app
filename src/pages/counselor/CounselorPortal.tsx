@@ -172,7 +172,7 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
               const last = c.messages[c.messages.length - 1];
               return <button key={c.id} onClick={() => { setSelected(c.id); setSelectedFile(null); setMobileListOpen(false); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 11, textAlign: 'right', padding: 12, marginBottom: 6, borderRadius: 12, border: `1px solid ${chosen ? palette.accentBorder : 'transparent'}`, background: chosen ? palette.accentSoft : 'transparent', color: palette.text, cursor: 'pointer' }}>
                 <span style={{ width: 40, height: 40, flex: '0 0 40px', display: 'grid', placeItems: 'center', borderRadius: 13, background: chosen ? palette.accent : palette.inner, color: chosen ? '#fff' : '#70b9b5', fontSize: 15, fontWeight: 900 }}>{c.student.fullName.trim().slice(0,1) || 'ه'}</span>
-                <span style={{ flex: 1, minWidth: 0 }}><strong style={{ display: 'block', fontSize: 12, fontWeight: 850, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.student.fullName}</strong><small style={{ display: 'block', color: palette.sub, fontSize: 10, marginTop: 5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{last?.attachmentName || last?.content || 'گفت‌وگوی جدید'}</small></span>
+                <span style={{ flex: 1, minWidth: 0 }}><strong style={{ display: 'block', fontSize: 12, fontWeight: 850, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.student.fullName}</strong><small style={{ display: 'block', color: palette.sub, fontSize: 10, marginTop: 5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{last?.attachmentName || last?.content || 'گفت‌وگوی جدید'}</small>{currentUserId && last && last.senderUserId !== currentUserId && <small style={{ display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 6, padding: '3px 7px', borderRadius: 6, color: '#b98221', background: 'rgba(214,163,75,.13)', fontSize: 9, fontWeight: 850 }}><Clock3 size={11} /> منتظر پاسخ شما</small>}</span>
                 <span style={{ alignSelf: 'flex-start', whiteSpace: 'nowrap', fontSize: 9, color: palette.sub }}>{c._count.messages} پیام</span>
               </button>;
             })}
@@ -213,8 +213,9 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
       </div>
       <style>{`
         @media(max-width:760px){
-          .counselor-stats{grid-template-columns:repeat(3,minmax(0,1fr))!important;padding:12px 12px 0!important;gap:8px!important}
+          .counselor-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;padding:12px 12px 0!important;gap:8px!important}
           .counselor-stats article{padding:10px!important;gap:8px!important}
+          .counselor-stats article:last-child{grid-column:1/-1}
           .counselor-stats article>span:first-child{width:34px!important;height:34px!important;flex-basis:34px!important}
           .counselor-stats article strong{font-size:18px!important}
           .counselor-stats article small{font-size:9px!important}
