@@ -1055,3 +1055,11 @@
   }
   .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card{min-height:70px;padding:11px 12px!important}
 }
+
+
+/* Counseling conversation history collapses to a single column on narrow screens. */
+.admin-counseling-conversations-grid{min-width:0}
+@media(max-width:760px){
+  .admin-counseling-conversations-grid{grid-template-columns:minmax(0,1fr)!important}
+  .admin-counseling-conversations-grid > div{min-width:0}
+}
