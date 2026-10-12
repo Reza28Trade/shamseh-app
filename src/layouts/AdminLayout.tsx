@@ -33,6 +33,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
     { id: 'mockExams', label: 'آزمون‌های آزمایشی', icon: ClipboardList },
     { id: 'counseling', label: 'مدیریت مشاوران و گفتگوها', icon: MessageSquare },
     { id: 'messages', label: 'پیام‌ها و پرسش‌ها', icon: MessageSquare },
+    { id: 'managementContact', label: 'انتقادات و پیشنهادات - ارتباط مستقیم با مدیریت', icon: ShieldCheck },
     { id: 'notifications', label: 'ارسال اطلاعیه', icon: Bell },
     { id: 'rules', label: 'قوانین و تحلیل کنکور', icon: FileText },
     { id: 'finance', label: 'وضعیت مالی هنرجویان', icon: Wallet },
@@ -40,7 +41,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
   ];
   const menuItems = allMenuItems.filter((item) => {
     if (item.id === 'dashboard') return true;
-    if (item.id === 'admins') return admin?.role === 'super_admin';
+    if (item.id === 'admins' || item.id === 'managementContact') return admin?.role === 'super_admin';
     if (admin?.role === 'super_admin') return true;
     return Boolean(admin?.permissions?.includes(item.id));
   });
