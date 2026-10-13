@@ -170,7 +170,7 @@ export function CourseCatalogPage({ onBack }: { onBack: () => void }) {
     <PageFrame eyebrow={selectedCourse ? "جزئیات دوره آموزشی" : "دوره‌های آموزشی شمسه"} title={selectedCourse ? selectedCourse.title : "مسیر یادگیری خودت را آگاهانه انتخاب کن."} description={selectedCourse ? "اطلاعات معرفی، محتوای دوره و جزئیات برگزاری را بررسی کن." : "دوره‌های آموزشی شمسه را بر اساس محتوا، استاد و مقطع بررسی کن و با اطلاعات روشن‌تری مسیر یادگیری خودت را انتخاب کن."} onBack={onBack}>
       {selectedCourse ? (
         <section style={{ background: colors.dark ? 'linear-gradient(145deg, #10272c, #11191c 70%)' : 'linear-gradient(145deg, #fbfdff, #f2f9f9 70%)', border: `1px solid ${colors.border}`, borderRadius: 22, overflow: 'hidden' }}>
-          <div style={{ aspectRatio: '16 / 6', maxHeight: 360, background: colors.surfaceAlt, overflow: 'hidden' }}>
+          <div style={{ aspectRatio: '16 / 9', maxHeight: 360, background: colors.surfaceAlt, overflow: 'hidden' }}>
             <img src={courseImage(selectedCourse)} alt={selectedCourse.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(event) => { event.currentTarget.style.display = 'none'; }} />
           </div>
           <div style={{ padding: 'clamp(20px, 4vw, 34px)' }}>
@@ -213,7 +213,7 @@ export function CourseCatalogPage({ onBack }: { onBack: () => void }) {
         : <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 285px), 1fr))', gap: 18 }}>
           {filtered.map((course) => (
             <article key={course.id} style={{ background: colors.dark ? 'linear-gradient(145deg, #10272c, #11191c 75%)' : 'linear-gradient(145deg, #fbfdff, #eef5fd 85%)', border: `1px solid ${colors.border}`, borderRadius: 20, overflow: 'hidden', display: 'flex', flexDirection: 'column', minWidth: 0, boxShadow: colors.dark ? '0 12px 34px rgba(0,0,0,.15)' : '0 12px 34px rgba(76,37,37,.045)' }}>
-              <div style={{ aspectRatio: '16 / 8', background: colors.surfaceAlt, overflow: 'hidden', position: 'relative' }}>
+              <div style={{ aspectRatio: '16 / 9', background: colors.surfaceAlt, overflow: 'hidden', position: 'relative' }}>
                 <img src={courseImage(course)} alt={course.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(event) => { event.currentTarget.style.display = 'none'; }} />
               </div>
               <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 12, flex: 1 }}>
