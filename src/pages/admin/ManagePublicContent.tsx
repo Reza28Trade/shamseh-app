@@ -30,12 +30,6 @@ const parseAnalysisContent = (content: string) => {
   } catch { /* legacy plain-text analysis */ }
   return null;
 };
-const serializeQuestions = (text: string): QuestionRow[] => text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean).map((line) => {
-  const [questionNumber = '', topic = '', className = '', professor = '', source = '', page = '', rawStatus = 'UNKNOWN'] = line.split('|').map((part) => part.trim());
-  const status = ['COVERED', 'PARTIAL', 'NOT_COVERED', 'UNKNOWN'].includes(rawStatus.toUpperCase()) ? rawStatus.toUpperCase() as QuestionRow['status'] : 'UNKNOWN';
-  return { questionNumber, topic, className, professor, source, page, status };
-});
-
 const emptyAnalysis: AnalysisForm = {
   title: '', subtitle: '', content: '', examYear: '', examLevel: '',
   resourceUrl: '', published: false, sortOrder: '0', fieldCode: '', fieldName: '', totalQuestions: '0', questions: [],
