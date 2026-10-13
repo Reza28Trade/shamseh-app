@@ -151,15 +151,15 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
         .admin-profile-copy strong{display:block;font-size:11px;font-weight:800;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         .admin-profile-copy small{display:block;font-size:10px;color:var(--admin-sub);margin-top:4px}
         .admin-mobile-menu{display:none;border:1px solid var(--admin-border);background:var(--admin-inner);color:var(--admin-text);border-radius:12px;width:40px;height:40px;place-items:center;cursor:pointer}
-        .admin-body{display:grid;grid-template-columns:252px minmax(0,1fr);min-height:calc(100vh - 76px);align-items:stretch}
-        .admin-sidebar{border-left:1px solid var(--admin-border);background:var(--admin-card);padding:22px 15px 15px;display:flex;flex-direction:column;position:relative;top:auto;height:auto;min-height:calc(100vh - 76px);align-self:stretch;overflow:visible}
+        .admin-body{display:grid;grid-template-columns:320px minmax(0,1fr);min-height:calc(100vh - 76px);align-items:stretch}
+        .admin-sidebar{border-left:1px solid var(--admin-border);background:var(--admin-card);padding:22px 22px 15px;display:flex;flex-direction:column;position:relative;top:auto;height:auto;min-height:calc(100vh - 76px);align-self:stretch;overflow:visible}
         .admin-sidebar-heading{display:flex;align-items:center;justify-content:space-between;padding:0 13px 14px;color:var(--admin-sub);font-size:10px;font-weight:800;letter-spacing:.2px}
         .admin-sidebar-dot{width:7px;height:7px;border-radius:50%;background:#70B9B5;box-shadow:0 0 0 4px var(--admin-accent-soft)}
         .admin-nav{display:flex;flex-direction:column;gap:5px}
-        .admin-nav button{position:relative;width:100%;min-height:48px;border:1px solid transparent;background:transparent;color:var(--admin-sub);border-radius:13px;padding:11px 11px;display:flex;align-items:center;gap:11px;text-align:right;cursor:pointer;font-size:13px;font-weight:750;line-height:1.6;transition:background .18s,border-color .18s,color .18s}
+        .admin-nav button{position:relative;width:100%;min-height:48px;border:1px solid transparent;background:transparent;color:var(--admin-sub);border-radius:13px;padding:11px 18px;display:flex;align-items:center;justify-content:center;gap:12px;text-align:right;cursor:pointer;font-size:13px;font-weight:750;line-height:1.6;transition:background .18s,border-color .18s,color .18s}
         .admin-nav button:hover{background:var(--admin-inner);color:var(--admin-text)}
         .admin-nav-icon{width:32px;height:32px;flex:0 0 32px;border-radius:10px;display:grid;place-items:center;color:var(--admin-sub);background:transparent;transition:background .18s,color .18s}
-        .admin-nav-label{flex:1}
+        .admin-nav-label{flex:0 1 auto;text-align:center}
         .admin-nav button.active{background:var(--admin-accent-soft);color:var(--admin-text);border-color:var(--admin-brand-border)}
         .admin-nav button.active .admin-nav-icon{background:var(--admin-accent);color:#fff}
         .admin-nav-indicator{width:5px;height:5px;border-radius:50%;background:#70B9B5}
@@ -176,7 +176,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
         .admin-page-heading h1{margin:0;font-size:22px;line-height:1.5;font-weight:900;letter-spacing:-.5px;color:var(--admin-text)}
         .admin-page-content{max-width:1480px;margin:0 auto;min-width:0}
         .admin-sidebar-backdrop{display:none}
-        @media(max-width:1100px){.admin-topbar{padding:0 20px;gap:14px}.admin-brand-area{min-width:250px}.admin-body{grid-template-columns:228px minmax(0,1fr)}.admin-main{padding:24px 22px 34px}}
+        @media(max-width:1100px){.admin-topbar{padding:0 20px;gap:14px}.admin-brand-area{min-width:250px}.admin-body{grid-template-columns:280px minmax(0,1fr)}.admin-main{padding:24px 22px 34px}}
         @media(max-width:820px){.admin-topbar{height:66px;padding:0 14px;gap:10px}.admin-brand-area{min-width:0;gap:9px}.admin-brand-logo{width:46px;height:46px;flex-basis:46px;border-radius:11px}.admin-brand-copy strong{font-size:13px}.admin-mobile-menu{display:grid;order:0}.admin-topbar-center{display:none}.admin-top-actions{gap:9px;margin-right:auto}.admin-profile{padding-right:10px;gap:0}.admin-profile-copy{display:none}.admin-top-logout{padding:9px!important;min-width:38px;justify-content:center}.admin-top-logout span{display:none}.admin-profile-avatar{width:36px;height:36px}.admin-theme-toggle{width:38px;height:38px}.admin-body{display:block;min-height:calc(100vh - 66px)}.admin-sidebar{display:none;position:fixed;top:66px;right:0;bottom:0;width:min(290px,86vw);height:auto;min-height:0;max-height:calc(100vh - 66px);overflow-y:auto;overflow-x:hidden;z-index:80;box-shadow:-18px 0 48px rgba(0,0,0,.22)}.admin-sidebar.open{display:flex}.admin-sidebar-backdrop{display:block;position:fixed;inset:66px 0 0;border:0;background:rgba(0,0,0,.42);z-index:70}.admin-main{padding:20px 14px 28px}.admin-page-heading{align-items:flex-start;margin-bottom:18px}.admin-page-heading h1{font-size:19px}.admin-page-context{font-size:9px;padding:8px 10px}}
         @media(max-width:480px){.admin-topbar{padding:0 10px}.admin-brand-copy strong{font-size:11px}.admin-main{padding-inline:12px}.admin-page-heading h1{font-size:18px}}
         @media(prefers-reduced-motion:reduce){.admin-shell *{transition:none!important;scroll-behavior:auto!important}}
