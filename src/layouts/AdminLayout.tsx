@@ -49,8 +49,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
 
   const vars: any = {
     '--admin-bg': isDark ? '#101416' : '#F0F5F4',
-    '--admin-card': isDark ? '#353539' : '#FFFFFF',
-    '--admin-inner': isDark ? '#252528' : '#E7EFED',
+    '--admin-card': isDark ? '#191F21' : '#FFFFFF',
+    '--admin-inner': isDark ? '#202729' : '#E7EFED',
     '--admin-text': isDark ? '#F1F4F3' : '#202A2A',
     '--admin-sub': isDark ? '#A2AEAE' : '#667675',
     '--admin-border': isDark ? '#303A3C' : '#D8E3E0',
