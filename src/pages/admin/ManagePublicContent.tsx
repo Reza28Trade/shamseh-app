@@ -17,14 +17,28 @@ type ContentRecord = {
   updatedAt: string;
 };
 
+type QuestionRow = { questionNumber: string; topic: string; className: string; professor: string; source: string; page: string; status: 'COVERED' | 'PARTIAL' | 'NOT_COVERED' | 'UNKNOWN' };
 type AnalysisForm = {
   title: string; subtitle: string; content: string; examYear: string;
   examLevel: string; resourceUrl: string; published: boolean; sortOrder: string;
+  fieldCode: string; fieldName: string; coveragePercent: string; questionsText: string;
 };
+const parseAnalysisContent = (content: string) => {
+  try {
+    const parsed = JSON.parse(content);
+    if (parsed && parsed.__shamsehExamAnalysis === 1) return parsed as { narrative?: string; fieldCode?: string; fieldName?: string; coveragePercent?: number | null; questions?: QuestionRow[] };
+  } catch { /* legacy plain-text analysis */ }
+  return null;
+};
+const serializeQuestions = (text: string): QuestionRow[] => text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean).map((line) => {
+  const [questionNumber = '', topic = '', className = '', professor = '', source = '', page = '', rawStatus = 'UNKNOWN'] = line.split('|').map((part) => part.trim());
+  const status = ['COVERED', 'PARTIAL', 'NOT_COVERED', 'UNKNOWN'].includes(rawStatus.toUpperCase()) ? rawStatus.toUpperCase() as QuestionRow['status'] : 'UNKNOWN';
+  return { questionNumber, topic, className, professor, source, page, status };
+});
 
 const emptyAnalysis: AnalysisForm = {
   title: '', subtitle: '', content: '', examYear: '', examLevel: '',
-  resourceUrl: '', published: false, sortOrder: '0',
+  resourceUrl: '', published: false, sortOrder: '0', fieldCode: '', fieldName: '', coveragePercent: '', questionsText: '',
 };
 
 export const ManagePublicContent: React.FC = () => {
@@ -138,10 +152,14 @@ ${value}`.trim();
   const startEdit = (item: ContentRecord) => {
     setEditingId(item.id);
     setForm({
-      title: item.title, subtitle: item.subtitle || '', content: item.content,
+      title: item.title, subtitle: item.subtitle || '', content: parseAnalysisContent(item.content)?.narrative ?? item.content,
       examYear: item.examYear || '', examLevel: item.examLevel || '',
       resourceUrl: item.resourceUrl || '', published: item.published,
       sortOrder: String(item.sortOrder ?? 0),
+      fieldCode: parseAnalysisContent(item.content)?.fieldCode || '',
+      fieldName: parseAnalysisContent(item.content)?.fieldName || '',
+      coveragePercent: parseAnalysisContent(item.content)?.coveragePercent == null ? '' : String(parseAnalysisContent(item.content)?.coveragePercent),
+      questionsText: (parseAnalysisContent(item.content)?.questions || []).map((q) => [q.questionNumber, q.topic, q.className, q.professor, q.source, q.page, q.status].join(' | ')).join('\n'),
     });
     setShowForm(true); setError(''); setSuccess('');
   };
@@ -150,9 +168,21 @@ ${value}`.trim();
     event.preventDefault();
     if (!form.title.trim() || !form.content.trim()) { setError('عنوان و متن تحلیل الزامی است.'); return; }
     setSaving(true); setError(''); setSuccess('');
+    const structured = Boolean(form.fieldCode.trim() || form.fieldName.trim() || form.coveragePercent.trim() || form.questionsText.trim());
+    const questions = serializeQuestions(form.questionsText);
+    const coverage = form.coveragePercent.trim() === '' ? null : Number(form.coveragePercent);
+    if (coverage !== null && (!Number.isFinite(coverage) || coverage < 0 || coverage > 100)) { setError('درصد پوشش باید عددی بین صفر تا صد باشد.'); setSaving(false); return; }
+    const content = structured ? JSON.stringify({
+      __shamsehExamAnalysis: 1,
+      narrative: form.content,
+      fieldCode: form.fieldCode.trim(),
+      fieldName: form.fieldName.trim(),
+      coveragePercent: coverage,
+      questions,
+    }) : form.content;
     const payload = {
       title: form.title.trim(), subtitle: form.subtitle.trim() || undefined,
-      content: form.content, examYear: form.examYear.trim() || undefined,
+      content, examYear: form.examYear.trim() || undefined,
       examLevel: form.examLevel.trim() || undefined, resourceUrl: form.resourceUrl.trim() || undefined,
       published: form.published, sortOrder: Math.max(0, Number(form.sortOrder) || 0),
     };
@@ -242,6 +272,18 @@ ${value}`.trim();
               <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>ترتیب نمایش<input type="number" min="0" value={form.sortOrder} onChange={(event) => setForm({ ...form, sortOrder: event.target.value })} style={inputStyle} /></label>
             </div>
             <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>متن تحلیل *<textarea required rows={8} value={form.content} onChange={(event) => setForm({ ...form, content: event.target.value })} style={{ ...inputStyle, lineHeight: 2, resize: 'vertical' }} /></label>
+            <section style={{ border: '1px solid ' + colors.border, borderRadius: 14, padding: 15, display: 'flex', flexDirection: 'column', gap: 12, background: colors.alt }}>
+              <div><strong style={{ fontSize: 13 }}>اطلاعات ساختاریافته پوشش و سؤال‌ها</strong><p style={{ margin: '5px 0 0', color: colors.muted, fontSize: 11, lineHeight: 1.9 }}>درصد و اطلاعات سؤال‌ها را وارد کنید تا در نمودار و جدول صفحه عمومی نمایش داده شوند. این اطلاعات در کنار متن تحلیل ذخیره می‌شوند.</p></div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: 12 }}>
+                <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>کدرشته<input value={form.fieldCode} onChange={(event) => setForm({ ...form, fieldCode: event.target.value })} style={inputStyle} placeholder="مثلاً ۱۳۵۹" /></label>
+                <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>نام رشته<input value={form.fieldName} onChange={(event) => setForm({ ...form, fieldName: event.target.value })} style={inputStyle} placeholder="مثلاً پژوهش هنر" /></label>
+                <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>درصد پوشش (۰ تا ۱۰۰)<input type="number" min="0" max="100" value={form.coveragePercent} onChange={(event) => setForm({ ...form, coveragePercent: event.target.value })} style={inputStyle} placeholder="مثلاً ۸۳" /></label>
+              </div>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>ردیف‌های سؤال (هر سؤال در یک خط؛ فیلدها را با | جدا کنید)
+                <span style={{ color: colors.muted, fontWeight: 500, lineHeight: 1.8 }}>شماره سؤال | مبحث | کلاس | استاد | کتاب/جزوه | صفحه/نکته | وضعیت<br/>وضعیت: COVERED یا PARTIAL یا NOT_COVERED یا UNKNOWN</span>
+                <textarea rows={7} value={form.questionsText} onChange={(event) => setForm({ ...form, questionsText: event.target.value })} style={{ ...inputStyle, lineHeight: 2, resize: 'vertical', background: colors.bg }} placeholder={'۱ | مبانی هنر | کلاس تاریخ هنر | نام استاد | کتاب مبانی هنر | ص ۴۲ | COVERED'} />
+              </label>
+            </section>
             <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, cursor: 'pointer' }}><input type="checkbox" checked={form.published} onChange={(event) => setForm({ ...form, published: event.target.checked })} /> انتشار در صفحه عمومی</label>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button disabled={saving} type="submit" style={{ ...buttonStyle, background: colors.accent, color: '#fff', borderColor: colors.accent }}><Save size={15} />{saving ? 'در حال ذخیره...' : 'ذخیره تحلیل'}</button><button type="button" onClick={() => { setShowForm(false); setEditingId(null); }} style={buttonStyle}>انصراف</button></div>
           </form>}
