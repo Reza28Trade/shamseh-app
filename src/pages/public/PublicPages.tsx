@@ -41,14 +41,14 @@ function usePageColors(): ThemeColors {
   const dark = useStore((state) => state.theme === 'dark');
   return {
     dark,
-    bg: dark ? 'radial-gradient(ellipse at 12% 0%, rgba(109,0,26,.22), transparent 34%), radial-gradient(ellipse at 88% 16%, rgba(61,44,92,.17), transparent 30%), #08080c' : 'radial-gradient(ellipse at 12% 0%, rgba(201,163,93,.14), transparent 34%), radial-gradient(ellipse at 88% 16%, rgba(109,0,26,.07), transparent 30%), #f7f5f1',
-    surface: dark ? '#111116' : '#ffffff',
-    surfaceAlt: dark ? '#201a22' : '#f2ece5',
+    bg: dark ? 'radial-gradient(ellipse at 12% 0%, rgba(30,99,181,.24), transparent 34%), radial-gradient(ellipse at 88% 16%, rgba(61,44,92,.17), transparent 30%), #08080c' : 'radial-gradient(ellipse at 12% 0%, rgba(101,177,235,.14), transparent 34%), radial-gradient(ellipse at 88% 16%, rgba(30,99,181,.08), transparent 30%), #f4f8ff',
+    surface: dark ? '#111116' : 'whitefff',
+    surfaceAlt: dark ? '#201a22' : '#edf5ff',
     text: dark ? '#f8fafc' : '#0f172a',
     muted: dark ? '#a1a1aa' : '#64748b',
-    border: dark ? 'rgba(219,190,137,.16)' : 'rgba(109,0,26,.12)',
-    accent: '#6D001A',
-    accentSoft: dark ? 'rgba(109,0,26,.28)' : 'rgba(109,0,26,.08)',
+    border: dark ? 'rgba(219,190,137,.16)' : 'rgba(30,99,181,.14)',
+    accent: '#1E63B5',
+    accentSoft: dark ? 'rgba(30,99,181,.22)' : 'rgba(30,99,181,.08)',
   };
 }
 
@@ -60,8 +60,8 @@ function money(value: string | number | null) {
 }
 
 const primaryButton = (colors: ThemeColors): React.CSSProperties => ({
-  border: 0, borderRadius: 12, padding: '12px 16px', background: 'linear-gradient(125deg, #8b1737 0%, #6D001A 48%, #420014 100%)',
-  color: '#fff', fontSize: 13, fontWeight: 800, cursor: 'pointer',
+  border: 0, borderRadius: 12, padding: '12px 16px', background: colors.dark ? 'linear-gradient(125deg, #2D78C7 0%, #1E63B5 48%, #0A2348 100%)' : 'linear-gradient(125deg, #4A9AE8 0%, #1E63B5 52%, #16447D 100%)',
+  color: 'white', fontSize: 13, fontWeight: 800, cursor: 'pointer',
   display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
 });
 
@@ -101,7 +101,7 @@ function PageFrame({
           </button>
         </header>
 
-        <section style={{ margin: '26px 0 24px', padding: 'clamp(22px, 4vw, 38px)', borderRadius: 24, background: colors.dark ? 'radial-gradient(circle at 88% 0%, rgba(201,163,93,.17), transparent 30%), radial-gradient(circle at 12% 100%, rgba(109,0,26,.38), transparent 42%), linear-gradient(125deg, #20131a, #111116 68%, #171523)' : 'radial-gradient(circle at 88% 0%, rgba(201,163,93,.2), transparent 30%), radial-gradient(circle at 12% 100%, rgba(109,0,26,.1), transparent 42%), linear-gradient(125deg, #fffdf8, #f3e9e4 56%, #eceaf2)', border: `1px solid ${colors.dark ? 'rgba(201,163,93,.22)' : 'rgba(109,0,26,.13)'}`, position: 'relative', overflow: 'hidden', boxShadow: colors.dark ? '0 20px 60px rgba(0,0,0,.2)' : '0 20px 60px rgba(76,37,37,.07)' }}>
+        <section style={{ margin: '26px 0 24px', padding: 'clamp(22px, 4vw, 38px)', borderRadius: 24, background: colors.dark ? 'radial-gradient(circle at 88% 0%, rgba(101,177,235,.17), transparent 30%), radial-gradient(circle at 12% 100%, rgba(18,60,120,.38), transparent 42%), linear-gradient(125deg, #10264a, #111116 68%, #171523)' : 'radial-gradient(circle at 88% 0%, rgba(101,177,235,.2), transparent 30%), radial-gradient(circle at 12% 100%, rgba(30,99,181,.09), transparent 42%), linear-gradient(125deg, #f8fbff, #eaf2fb 56%, #edf5ff)', border: `1px solid ${colors.dark ? 'rgba(101,177,235,.22)' : 'rgba(109,0,26,.13)'}`, position: 'relative', overflow: 'hidden', boxShadow: colors.dark ? '0 20px 60px rgba(0,0,0,.2)' : '0 20px 60px rgba(76,37,37,.07)' }}>
           <div style={{ fontSize: 11, color: colors.dark ? '#fda4af' : colors.accent, fontWeight: 900, letterSpacing: '.04em', marginBottom: 10 }}>{eyebrow}</div>
           <h1 style={{ margin: 0, fontSize: 'clamp(25px, 4vw, 38px)', lineHeight: 1.5, fontWeight: 950, maxWidth: 800 }}>{title}</h1>
           <p style={{ color: colors.muted, margin: '10px 0 0', lineHeight: 2, fontSize: 14, maxWidth: 780 }}>{description}</p>
@@ -154,7 +154,7 @@ export function CourseCatalogPage({ onBack }: { onBack: () => void }) {
   return (
     <PageFrame eyebrow={selectedCourse ? "جزئیات دوره آموزشی" : "دوره‌های آموزشی شمسه"} title={selectedCourse ? selectedCourse.title : "مسیر یادگیری خودت را آگاهانه انتخاب کن."} description={selectedCourse ? "اطلاعات معرفی، محتوای دوره و جزئیات برگزاری را بررسی کن." : "دوره‌های آموزشی شمسه را بر اساس محتوا، استاد و مقطع بررسی کن و با اطلاعات روشن‌تری مسیر یادگیری خودت را انتخاب کن."} onBack={onBack}>
       {selectedCourse ? (
-        <section style={{ background: colors.dark ? 'linear-gradient(145deg, #17141a, #111116 70%)' : 'linear-gradient(145deg, #fffefa, #f9f5ef 70%)', border: `1px solid ${colors.border}`, borderRadius: 22, overflow: 'hidden' }}>
+        <section style={{ background: colors.dark ? 'linear-gradient(145deg, #111a2a, #111116 70%)' : 'linear-gradient(145deg, #fbfdff, #f4f8ff 70%)', border: `1px solid ${colors.border}`, borderRadius: 22, overflow: 'hidden' }}>
           <div style={{ aspectRatio: '16 / 6', maxHeight: 360, background: colors.surfaceAlt, overflow: 'hidden' }}>
             <img src={selectedCourse.coverImage || `/api/public/courses/${selectedCourse.id}/cover`} alt={selectedCourse.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(event) => { event.currentTarget.style.display = 'none'; }} />
           </div>
@@ -180,7 +180,7 @@ export function CourseCatalogPage({ onBack }: { onBack: () => void }) {
           </div>
         </section>
       ) : <>
-      <section style={{ background: colors.dark ? 'linear-gradient(120deg, #19151c, #111116)' : 'linear-gradient(120deg, #fffefa, #f2ece6)', border: `1px solid ${colors.border}`, borderRadius: 20, padding: 18, display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center', marginBottom: 20 }}>
+      <section style={{ background: colors.dark ? 'linear-gradient(120deg, #111a2a, #111116)' : 'linear-gradient(120deg, #fbfdff, #edf5ff)', border: `1px solid ${colors.border}`, borderRadius: 20, padding: 18, display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center', marginBottom: 20 }}>
         <div style={{ position: 'relative', flex: '1 1 260px' }}>
           <Search size={17} color={colors.muted} style={{ position: 'absolute', right: 13, top: 14 }} />
           <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="جست‌وجوی نام دوره، استاد یا موضوع..." style={{ width: '100%', boxSizing: 'border-box', padding: '12px 40px 12px 14px', borderRadius: 11, border: `1px solid ${colors.border}`, background: colors.surfaceAlt, color: colors.text, fontSize: 12, outline: 'none' }} />
@@ -197,7 +197,7 @@ export function CourseCatalogPage({ onBack }: { onBack: () => void }) {
         : filtered.length === 0 ? <div style={{ padding: 42, textAlign: 'center', background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: 18, color: colors.muted }}>دوره‌ای با این مشخصات پیدا نشد.</div>
         : <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 285px), 1fr))', gap: 18 }}>
           {filtered.map((course) => (
-            <article key={course.id} style={{ background: colors.dark ? 'linear-gradient(145deg, #19151c, #111116 75%)' : 'linear-gradient(145deg, #fffefa, #f6f0eb 85%)', border: `1px solid ${colors.border}`, borderRadius: 20, overflow: 'hidden', display: 'flex', flexDirection: 'column', minWidth: 0, boxShadow: colors.dark ? '0 12px 34px rgba(0,0,0,.15)' : '0 12px 34px rgba(76,37,37,.045)' }}>
+            <article key={course.id} style={{ background: colors.dark ? 'linear-gradient(145deg, #111a2a, #111116 75%)' : 'linear-gradient(145deg, #fbfdff, #eef5fd 85%)', border: `1px solid ${colors.border}`, borderRadius: 20, overflow: 'hidden', display: 'flex', flexDirection: 'column', minWidth: 0, boxShadow: colors.dark ? '0 12px 34px rgba(0,0,0,.15)' : '0 12px 34px rgba(76,37,37,.045)' }}>
               <div style={{ aspectRatio: '16 / 8', background: colors.surfaceAlt, overflow: 'hidden', position: 'relative' }}>
                 <img src={course.coverImage || `/api/public/courses/${course.id}/cover`} alt={course.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(event) => { event.currentTarget.style.display = 'none'; }} />
               </div>
@@ -259,42 +259,42 @@ export function RulesPage({ onBack }: { onBack: () => void }) {
 
   return (
     <PageFrame eyebrow="راهنمای هنرجویان" title={rules?.title || 'قوانین و مقررات آموزشی آکادمی شمسه'} description={rules?.subtitle || 'راهنمای شفاف خدمات آموزشی شمسه؛ برای شروعی مطمئن، شرایط را با آرامش مرور کنید.'} onBack={onBack}>
-      <section style={{ position: 'relative', overflow: 'hidden', isolation: 'isolate', display: 'grid', gridTemplateColumns: 'minmax(0, 1.5fr) minmax(180px, .7fr)', gap: 24, alignItems: 'center', marginBottom: 24, padding: 'clamp(22px, 4vw, 38px)', borderRadius: 26, border: `1px solid ${colors.dark ? 'rgba(202,163,93,.28)' : 'rgba(133,93,36,.2)'}`, background: colors.dark ? 'radial-gradient(circle at 12% 10%, rgba(202,163,93,.13), transparent 35%), linear-gradient(125deg, #1c1718, #100f12 72%)' : 'radial-gradient(circle at 12% 10%, rgba(202,163,93,.16), transparent 36%), linear-gradient(125deg, #fffdf8, #f5f1e9 72%)', boxShadow: colors.dark ? '0 22px 60px rgba(0,0,0,.2)' : '0 22px 60px rgba(69,49,20,.07)' }}>
+      <section style={{ position: 'relative', overflow: 'hidden', isolation: 'isolate', display: 'grid', gridTemplateColumns: 'minmax(0, 1.5fr) minmax(180px, .7fr)', gap: 24, alignItems: 'center', marginBottom: 24, padding: 'clamp(22px, 4vw, 38px)', borderRadius: 26, border: `1px solid ${colors.dark ? 'rgba(101,177,235,.28)' : 'rgba(30,99,181,.2)'}`, background: colors.dark ? 'radial-gradient(circle at 12% 10%, rgba(101,177,235,.13), transparent 35%), linear-gradient(125deg, #111a2a, #100f12 72%)' : 'radial-gradient(circle at 12% 10%, rgba(101,177,235,.16), transparent 36%), linear-gradient(125deg, #f8fbff, #eaf2fb 72%)', boxShadow: colors.dark ? '0 22px 60px rgba(0,0,0,.2)' : '0 22px 60px rgba(69,49,20,.07)' }}>
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '7px 11px', borderRadius: 999, border: `1px solid ${colors.dark ? 'rgba(202,163,93,.3)' : 'rgba(133,93,36,.23)'}`, color: colors.dark ? '#dfc18a' : '#805b24', fontSize: 11, fontWeight: 900, marginBottom: 15 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '7px 11px', borderRadius: 999, border: `1px solid ${colors.dark ? 'rgba(101,177,235,.3)' : 'rgba(30,99,181,.23)'}`, color: colors.dark ? '#9BCBFA' : '#2D78C7', fontSize: 11, fontWeight: 900, marginBottom: 15 }}>
             <ShieldCheck size={15} /> منشور رسمی آکادمی شمسه
           </div>
           <h2 style={{ margin: '0 0 10px', fontSize: 'clamp(19px, 3vw, 27px)', lineHeight: 1.8, fontWeight: 950, color: colors.text }}>شفافیت، آغاز یک تجربه آموزشی مطمئن</h2>
           <p style={{ margin: 0, maxWidth: 650, color: colors.muted, fontSize: 13, lineHeight: 2.2 }}>شرایط ثبت‌نام، پرداخت شهریه و استفاده از خدمات آموزشی را در بخش‌های زیر مرور کنید. این راهنما برای دسترسی آسان‌تر و تصمیم‌گیری آگاهانه شما طراحی شده است.</p>
         </div>
-        <div style={{ position: 'relative', zIndex: 1, display: 'grid', justifyItems: 'center', gap: 12, padding: 18, borderRadius: 22, background: colors.dark ? 'rgba(255,255,255,.025)' : 'rgba(255,255,255,.56)', border: `1px solid ${colors.dark ? 'rgba(255,255,255,.08)' : 'rgba(133,93,36,.12)'}` }}>
-          <div style={{ width: 74, height: 74, borderRadius: 24, display: 'grid', placeItems: 'center', color: '#c9a35d', background: 'linear-gradient(145deg, rgba(201,163,93,.18), rgba(201,163,93,.04))', border: '1px solid rgba(201,163,93,.35)', boxShadow: '0 10px 30px rgba(0,0,0,.08)' }}><ShieldCheck size={35} strokeWidth={1.5} /></div>
+        <div style={{ position: 'relative', zIndex: 1, display: 'grid', justifyItems: 'center', gap: 12, padding: 18, borderRadius: 22, background: colors.dark ? 'rgba(255,255,255,.025)' : 'rgba(255,255,255,.56)', border: `1px solid ${colors.dark ? 'rgba(255,255,255,.08)' : 'rgba(30,99,181,.12)'}` }}>
+          <div style={{ width: 74, height: 74, borderRadius: 24, display: 'grid', placeItems: 'center', color: '#65B1EB', background: 'linear-gradient(145deg, rgba(101,177,235,.18), rgba(101,177,235,.04))', border: '1px solid rgba(101,177,235,.35)', boxShadow: '0 10px 30px rgba(0,0,0,.08)' }}><ShieldCheck size={35} strokeWidth={1.5} /></div>
           <div style={{ textAlign: 'center' }}>
             <div style={{ color: colors.text, fontWeight: 900, fontSize: 13 }}>راهنمای آموزشی</div>
             <div style={{ color: colors.muted, fontSize: 10, marginTop: 5 }}>مطالعه پیش از ثبت‌نام</div>
           </div>
         </div>
-        <div aria-hidden="true" style={{ position: 'absolute', left: -45, bottom: -90, width: 220, height: 220, borderRadius: '50%', border: '1px solid rgba(201,163,93,.12)', boxShadow: '0 0 0 22px rgba(201,163,93,.025), 0 0 0 44px rgba(201,163,93,.02)', zIndex: 0 }} />
+        <div aria-hidden="true" style={{ position: 'absolute', left: -45, bottom: -90, width: 220, height: 220, borderRadius: '50%', border: '1px solid rgba(101,177,235,.12)', boxShadow: '0 0 0 22px rgba(101,177,235,.025), 0 0 0 44px rgba(101,177,235,.02)', zIndex: 0 }} />
       </section>
       <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 225px), 1fr))', gap: 14, marginBottom: 26 }}>
         {topics.map(({ icon: Icon, title: topicTitle, description }) => (
           <article key={topicTitle} style={{ position: 'relative', overflow: 'hidden', background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: 19, padding: 19, display: 'flex', alignItems: 'flex-start', gap: 13, minHeight: 112, boxShadow: colors.dark ? '0 8px 24px rgba(0,0,0,.08)' : '0 8px 24px rgba(15,23,42,.035)', transition: 'transform .2s ease, border-color .2s ease' }}>
-            <div style={{ width: 46, height: 46, flex: '0 0 46px', display: 'grid', placeItems: 'center', borderRadius: 15, background: 'linear-gradient(145deg, rgba(201,163,93,.2), rgba(201,163,93,.06))', border: '1px solid rgba(201,163,93,.22)', color: colors.dark ? '#dfc18a' : '#805b24' }}>
+            <div style={{ width: 46, height: 46, flex: '0 0 46px', display: 'grid', placeItems: 'center', borderRadius: 15, background: 'linear-gradient(145deg, rgba(101,177,235,.2), rgba(101,177,235,.06))', border: '1px solid rgba(101,177,235,.22)', color: colors.dark ? '#9BCBFA' : '#2D78C7' }}>
               <Icon size={21} strokeWidth={1.7} />
             </div>
             <div style={{ minWidth: 0, paddingTop: 2 }}>
               <h2 style={{ margin: '1px 0 7px', fontSize: 13, fontWeight: 900, lineHeight: 1.8 }}>{topicTitle}</h2>
               <p style={{ margin: 0, color: colors.muted, fontSize: 11, lineHeight: 2 }}>{description}</p>
             </div>
-            <div aria-hidden="true" style={{ position: 'absolute', left: -26, bottom: -38, width: 90, height: 90, borderRadius: '50%', border: '1px solid rgba(201,163,93,.1)' }} />
+            <div aria-hidden="true" style={{ position: 'absolute', left: -26, bottom: -38, width: 90, height: 90, borderRadius: '50%', border: '1px solid rgba(101,177,235,.1)' }} />
           </article>
         ))}
       </section>
 
-      <section style={{ border: `1px solid ${colors.dark ? 'rgba(201,163,93,.2)' : 'rgba(133,93,36,.17)'}`, background: colors.surface, borderRadius: 24, overflow: 'hidden', boxShadow: colors.dark ? '0 22px 55px rgba(0,0,0,.22)' : '0 22px 55px rgba(69,49,20,.055)' }}>
-        <div style={{ position: 'sticky', top: 0, zIndex: 1, background: colors.dark ? 'linear-gradient(110deg, #1a1719, #111116)' : 'linear-gradient(110deg, #fffdf8, #ffffff)', padding: '19px clamp(16px, 3vw, 28px)', borderBottom: `1px solid ${colors.dark ? 'rgba(201,163,93,.2)' : 'rgba(133,93,36,.15)'}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+      <section style={{ border: `1px solid ${colors.dark ? 'rgba(101,177,235,.2)' : 'rgba(30,99,181,.17)'}`, background: colors.surface, borderRadius: 24, overflow: 'hidden', boxShadow: colors.dark ? '0 22px 55px rgba(0,0,0,.22)' : '0 22px 55px rgba(69,49,20,.055)' }}>
+        <div style={{ position: 'sticky', top: 0, zIndex: 1, background: colors.dark ? 'linear-gradient(110deg, #111a2a, #111116)' : 'linear-gradient(110deg, #f8fbff, whitefff)', padding: '19px clamp(16px, 3vw, 28px)', borderBottom: `1px solid ${colors.dark ? 'rgba(101,177,235,.2)' : 'rgba(30,99,181,.15)'}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ width: 46, height: 46, borderRadius: 15, display: 'grid', placeItems: 'center', background: 'linear-gradient(145deg, rgba(201,163,93,.2), rgba(201,163,93,.05))', border: '1px solid rgba(201,163,93,.25)', color: colors.dark ? '#dfc18a' : '#805b24' }}>
+            <div style={{ width: 46, height: 46, borderRadius: 15, display: 'grid', placeItems: 'center', background: 'linear-gradient(145deg, rgba(101,177,235,.2), rgba(101,177,235,.05))', border: '1px solid rgba(101,177,235,.25)', color: colors.dark ? '#9BCBFA' : '#2D78C7' }}>
               <ShieldCheck size={23} strokeWidth={1.7} />
             </div>
             <div>
@@ -305,12 +305,12 @@ export function RulesPage({ onBack }: { onBack: () => void }) {
           {rules?.updatedAt && <span style={{ color: colors.muted, fontSize: 10 }}>آخرین به‌روزرسانی: {new Date(rules.updatedAt).toLocaleDateString('fa-IR')}</span>}
         </div>
 
-        <div className="shamseh-rules-scroll" style={{ maxHeight: 'min(68vh, 820px)', minHeight: 280, overflowY: 'auto', overscrollBehaviorY: 'contain', scrollBehavior: 'smooth', scrollbarWidth: 'thin', scrollbarColor: colors.dark ? '#a88a50 rgba(255,255,255,.06)' : '#b89a61 #f1eee7', padding: 'clamp(16px, 3vw, 30px)' }}>
+        <div className="shamseh-rules-scroll" style={{ maxHeight: 'min(68vh, 820px)', minHeight: 280, overflowY: 'auto', overscrollBehaviorY: 'contain', scrollBehavior: 'smooth', scrollbarWidth: 'thin', scrollbarColor: colors.dark ? '#a88a50 rgba(255,255,255,.06)' : '#b89a61 #eaf2fb', padding: 'clamp(16px, 3vw, 30px)' }}>
           <style>{`
             .shamseh-rules-scroll::-webkit-scrollbar { width: 10px; }
-            .shamseh-rules-scroll::-webkit-scrollbar-track { background: ${colors.dark ? '#17171b' : '#f3f0e9'}; border-radius: 999px; margin-block: 12px; }
-            .shamseh-rules-scroll::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #d6bd86, #9b7840); border: 3px solid ${colors.dark ? '#17171b' : '#f3f0e9'}; border-radius: 999px; }
-            .shamseh-rules-scroll::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #e4cc98, #b28b4b); }
+            .shamseh-rules-scroll::-webkit-scrollbar-track { background: ${colors.dark ? '#17171b' : '#eaf2fb'}; border-radius: 999px; margin-block: 12px; }
+            .shamseh-rules-scroll::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #9BCBFA, #1E63B5); border: 3px solid ${colors.dark ? '#17171b' : '#eaf2fb'}; border-radius: 999px; }
+            .shamseh-rules-scroll::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #B8DFFF, #2D78C7); }
             @media (max-width: 640px) { .shamseh-rules-scroll { maxHeight: none !important; min-height: 0 !important; overflow: visible !important; } }
           `}</style>
           {loading ? <div style={{ padding: 40, textAlign: 'center', color: colors.muted }}>در حال دریافت قوانین...</div>
@@ -322,7 +322,7 @@ export function RulesPage({ onBack }: { onBack: () => void }) {
                 const firstLine = lines[0] || '';
                 const isHeading = lines.length === 1 && (firstLine.length < 90) && (/^(\d+[.\-ـ]|بخش\s|فصل\s|شرایط\s|قوانین\s|تبصره|توجه:|نکته:|.*:)$/.test(firstLine) || firstLine.startsWith('#'));
                 return (
-                  <article key={index} style={{ border: `1px solid ${isHeading ? (colors.dark ? 'rgba(201,163,93,.22)' : 'rgba(133,93,36,.16)') : colors.border}`, borderRadius: 16, padding: '17px clamp(14px, 2.5vw, 24px)', background: isHeading ? (colors.dark ? 'linear-gradient(110deg, rgba(201,163,93,.09), rgba(255,255,255,.015))' : 'linear-gradient(110deg, #faf5ea, #fffdf8)') : (colors.dark ? 'rgba(255,255,255,.018)' : '#fff'), borderRight: isHeading ? '3px solid #c9a35d' : `1px solid ${colors.border}`, boxShadow: isHeading ? 'none' : (colors.dark ? '0 4px 14px rgba(0,0,0,.06)' : '0 4px 14px rgba(15,23,42,.025)') }}>
+                  <article key={index} style={{ border: `1px solid ${isHeading ? (colors.dark ? 'rgba(101,177,235,.22)' : 'rgba(30,99,181,.16)') : colors.border}`, borderRadius: 16, padding: '17px clamp(14px, 2.5vw, 24px)', background: isHeading ? (colors.dark ? 'linear-gradient(110deg, rgba(101,177,235,.09), rgba(255,255,255,.015))' : 'linear-gradient(110deg, #edf5ff, #f8fbff)') : (colors.dark ? 'rgba(255,255,255,.018)' : 'white'), borderRight: isHeading ? '3px solid #65B1EB' : `1px solid ${colors.border}`, boxShadow: isHeading ? 'none' : (colors.dark ? '0 4px 14px rgba(0,0,0,.06)' : '0 4px 14px rgba(15,23,42,.025)') }}>
                     {isHeading ? <h3 style={{ margin: 0, fontSize: 13, lineHeight: 1.9, fontWeight: 950, color: colors.text }}>{firstLine.replace(/^#+\s*/, '')}</h3>
                       : <p style={{ margin: 0, whiteSpace: 'pre-wrap', lineHeight: 2.15, fontSize: 13, color: colors.text }}>{paragraph}</p>}
                   </article>
@@ -375,7 +375,7 @@ export function ExamAnalysisPage({ onBack }: { onBack: () => void }) {
 
   return (
     <PageFrame eyebrow="آرشیو و تحلیل آزمون‌ها" title="کنکورهای گذشته را دقیق‌تر بشناس." description="تحلیل‌ها و مطالب منتشرشده توسط شمسه را بر اساس سال و مقطع پیدا کن و با دید روشن‌تری برای مطالعه برنامه‌ریزی کن." onBack={onBack}>
-      <section style={{ background: colors.dark ? 'linear-gradient(120deg, #19151c, #111116)' : 'linear-gradient(120deg, #fffefa, #f2ece6)', border: `1px solid ${colors.border}`, borderRadius: 20, padding: 18, display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 20 }}>
+      <section style={{ background: colors.dark ? 'linear-gradient(120deg, #111a2a, #111116)' : 'linear-gradient(120deg, #fbfdff, #edf5ff)', border: `1px solid ${colors.border}`, borderRadius: 20, padding: 18, display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 20 }}>
         <div style={{ position: 'relative', flex: '1 1 240px' }}>
           <Search size={17} color={colors.muted} style={{ position: 'absolute', right: 13, top: 14 }} />
           <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="جست‌وجوی عنوان یا موضوع تحلیل..." style={{ width: '100%', boxSizing: 'border-box', padding: '12px 40px 12px 14px', borderRadius: 11, border: `1px solid ${colors.border}`, background: colors.surfaceAlt, color: colors.text, fontSize: 12 }} />
@@ -393,7 +393,7 @@ export function ExamAnalysisPage({ onBack }: { onBack: () => void }) {
         : filtered.length === 0 ? <div style={{ padding: 42, textAlign: 'center', background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: 18, color: colors.muted }}>هنوز تحلیلی برای نمایش منتشر نشده است.</div>
         : <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: 18 }}>
           {filtered.map((item) => (
-            <article key={item.id} style={{ background: colors.dark ? 'linear-gradient(145deg, #1a151d, #111116 78%)' : 'linear-gradient(145deg, #fffefa, #f5eee9 88%)', border: `1px solid ${colors.border}`, borderRadius: 20, padding: 22, display: 'flex', flexDirection: 'column', gap: 12, boxShadow: colors.dark ? '0 12px 34px rgba(0,0,0,.16)' : '0 12px 34px rgba(76,37,37,.045)' }}>
+            <article key={item.id} style={{ background: colors.dark ? 'linear-gradient(145deg, #111a2a, #111116 78%)' : 'linear-gradient(145deg, #fbfdff, #eef5fd 88%)', border: `1px solid ${colors.border}`, borderRadius: 20, padding: 22, display: 'flex', flexDirection: 'column', gap: 12, boxShadow: colors.dark ? '0 12px 34px rgba(0,0,0,.16)' : '0 12px 34px rgba(76,37,37,.045)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: colors.muted, fontSize: 11 }}><CalendarDays size={15} />{[item.examYear, item.examLevel].filter(Boolean).join(' · ') || 'تحلیل کنکور'}</div>
               <h2 style={{ margin: 0, fontSize: 17, lineHeight: 1.8 }}>{item.title}</h2>
               {item.subtitle && <div style={{ color: colors.muted, fontSize: 12, lineHeight: 1.8 }}>{item.subtitle}</div>}
