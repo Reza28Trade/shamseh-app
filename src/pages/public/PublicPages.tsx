@@ -41,12 +41,12 @@ function usePageColors(): ThemeColors {
   const dark = useStore((state) => state.theme === 'dark');
   return {
     dark,
-    bg: dark ? '#050505' : '#f8fafc',
+    bg: dark ? 'radial-gradient(ellipse at 12% 0%, rgba(109,0,26,.22), transparent 34%), radial-gradient(ellipse at 88% 16%, rgba(61,44,92,.17), transparent 30%), #08080c' : 'radial-gradient(ellipse at 12% 0%, rgba(201,163,93,.14), transparent 34%), radial-gradient(ellipse at 88% 16%, rgba(109,0,26,.07), transparent 30%), #f7f5f1',
     surface: dark ? '#111116' : '#ffffff',
-    surfaceAlt: dark ? '#191920' : '#f1f5f9',
+    surfaceAlt: dark ? '#201a22' : '#f2ece5',
     text: dark ? '#f8fafc' : '#0f172a',
     muted: dark ? '#a1a1aa' : '#64748b',
-    border: dark ? 'rgba(255,255,255,.1)' : '#e2e8f0',
+    border: dark ? 'rgba(219,190,137,.16)' : 'rgba(109,0,26,.12)',
     accent: '#6D001A',
     accentSoft: dark ? 'rgba(109,0,26,.28)' : 'rgba(109,0,26,.08)',
   };
@@ -60,7 +60,7 @@ function money(value: string | number | null) {
 }
 
 const primaryButton = (colors: ThemeColors): React.CSSProperties => ({
-  border: 0, borderRadius: 12, padding: '12px 16px', background: colors.accent,
+  border: 0, borderRadius: 12, padding: '12px 16px', background: 'linear-gradient(125deg, #8b1737 0%, #6D001A 48%, #420014 100%)',
   color: '#fff', fontSize: 13, fontWeight: 800, cursor: 'pointer',
   display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
 });
@@ -101,7 +101,7 @@ function PageFrame({
           </button>
         </header>
 
-        <section style={{ margin: '26px 0 24px', padding: 'clamp(22px, 4vw, 38px)', borderRadius: 24, background: colors.dark ? 'linear-gradient(125deg, rgba(109,0,26,.38), #111116 68%)' : 'linear-gradient(125deg, #fff, #f1f5f9)', border: `1px solid ${colors.border}`, position: 'relative', overflow: 'hidden' }}>
+        <section style={{ margin: '26px 0 24px', padding: 'clamp(22px, 4vw, 38px)', borderRadius: 24, background: colors.dark ? 'radial-gradient(circle at 88% 0%, rgba(201,163,93,.17), transparent 30%), radial-gradient(circle at 12% 100%, rgba(109,0,26,.38), transparent 42%), linear-gradient(125deg, #20131a, #111116 68%, #171523)' : 'radial-gradient(circle at 88% 0%, rgba(201,163,93,.2), transparent 30%), radial-gradient(circle at 12% 100%, rgba(109,0,26,.1), transparent 42%), linear-gradient(125deg, #fffdf8, #f3e9e4 56%, #eceaf2)', border: `1px solid ${colors.dark ? 'rgba(201,163,93,.22)' : 'rgba(109,0,26,.13)'}`, position: 'relative', overflow: 'hidden', boxShadow: colors.dark ? '0 20px 60px rgba(0,0,0,.2)' : '0 20px 60px rgba(76,37,37,.07)' }}>
           <div style={{ fontSize: 11, color: colors.dark ? '#fda4af' : colors.accent, fontWeight: 900, letterSpacing: '.04em', marginBottom: 10 }}>{eyebrow}</div>
           <h1 style={{ margin: 0, fontSize: 'clamp(25px, 4vw, 38px)', lineHeight: 1.5, fontWeight: 950, maxWidth: 800 }}>{title}</h1>
           <p style={{ color: colors.muted, margin: '10px 0 0', lineHeight: 2, fontSize: 14, maxWidth: 780 }}>{description}</p>
@@ -154,7 +154,7 @@ export function CourseCatalogPage({ onBack }: { onBack: () => void }) {
   return (
     <PageFrame eyebrow={selectedCourse ? "جزئیات دوره آموزشی" : "دوره‌های آموزشی شمسه"} title={selectedCourse ? selectedCourse.title : "مسیر یادگیری خودت را آگاهانه انتخاب کن."} description={selectedCourse ? "اطلاعات معرفی، محتوای دوره و جزئیات برگزاری را بررسی کن." : "دوره‌های آموزشی شمسه را بر اساس محتوا، استاد و مقطع بررسی کن و با اطلاعات روشن‌تری مسیر یادگیری خودت را انتخاب کن."} onBack={onBack}>
       {selectedCourse ? (
-        <section style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: 22, overflow: 'hidden' }}>
+        <section style={{ background: colors.dark ? 'linear-gradient(145deg, #17141a, #111116 70%)' : 'linear-gradient(145deg, #fffefa, #f9f5ef 70%)', border: `1px solid ${colors.border}`, borderRadius: 22, overflow: 'hidden' }}>
           <div style={{ aspectRatio: '16 / 6', maxHeight: 360, background: colors.surfaceAlt, overflow: 'hidden' }}>
             <img src={selectedCourse.coverImage || `/api/public/courses/${selectedCourse.id}/cover`} alt={selectedCourse.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(event) => { event.currentTarget.style.display = 'none'; }} />
           </div>
@@ -180,7 +180,7 @@ export function CourseCatalogPage({ onBack }: { onBack: () => void }) {
           </div>
         </section>
       ) : <>
-      <section style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: 20, padding: 18, display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center', marginBottom: 20 }}>
+      <section style={{ background: colors.dark ? 'linear-gradient(120deg, #19151c, #111116)' : 'linear-gradient(120deg, #fffefa, #f2ece6)', border: `1px solid ${colors.border}`, borderRadius: 20, padding: 18, display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center', marginBottom: 20 }}>
         <div style={{ position: 'relative', flex: '1 1 260px' }}>
           <Search size={17} color={colors.muted} style={{ position: 'absolute', right: 13, top: 14 }} />
           <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="جست‌وجوی نام دوره، استاد یا موضوع..." style={{ width: '100%', boxSizing: 'border-box', padding: '12px 40px 12px 14px', borderRadius: 11, border: `1px solid ${colors.border}`, background: colors.surfaceAlt, color: colors.text, fontSize: 12, outline: 'none' }} />
@@ -197,7 +197,7 @@ export function CourseCatalogPage({ onBack }: { onBack: () => void }) {
         : filtered.length === 0 ? <div style={{ padding: 42, textAlign: 'center', background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: 18, color: colors.muted }}>دوره‌ای با این مشخصات پیدا نشد.</div>
         : <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 285px), 1fr))', gap: 18 }}>
           {filtered.map((course) => (
-            <article key={course.id} style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: 20, overflow: 'hidden', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+            <article key={course.id} style={{ background: colors.dark ? 'linear-gradient(145deg, #19151c, #111116 75%)' : 'linear-gradient(145deg, #fffefa, #f6f0eb 85%)', border: `1px solid ${colors.border}`, borderRadius: 20, overflow: 'hidden', display: 'flex', flexDirection: 'column', minWidth: 0, boxShadow: colors.dark ? '0 12px 34px rgba(0,0,0,.15)' : '0 12px 34px rgba(76,37,37,.045)' }}>
               <div style={{ aspectRatio: '16 / 8', background: colors.surfaceAlt, overflow: 'hidden', position: 'relative' }}>
                 <img src={course.coverImage || `/api/public/courses/${course.id}/cover`} alt={course.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(event) => { event.currentTarget.style.display = 'none'; }} />
               </div>
@@ -375,7 +375,7 @@ export function ExamAnalysisPage({ onBack }: { onBack: () => void }) {
 
   return (
     <PageFrame eyebrow="آرشیو و تحلیل آزمون‌ها" title="کنکورهای گذشته را دقیق‌تر بشناس." description="تحلیل‌ها و مطالب منتشرشده توسط شمسه را بر اساس سال و مقطع پیدا کن و با دید روشن‌تری برای مطالعه برنامه‌ریزی کن." onBack={onBack}>
-      <section style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: 20, padding: 18, display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 20 }}>
+      <section style={{ background: colors.dark ? 'linear-gradient(120deg, #19151c, #111116)' : 'linear-gradient(120deg, #fffefa, #f2ece6)', border: `1px solid ${colors.border}`, borderRadius: 20, padding: 18, display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 20 }}>
         <div style={{ position: 'relative', flex: '1 1 240px' }}>
           <Search size={17} color={colors.muted} style={{ position: 'absolute', right: 13, top: 14 }} />
           <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="جست‌وجوی عنوان یا موضوع تحلیل..." style={{ width: '100%', boxSizing: 'border-box', padding: '12px 40px 12px 14px', borderRadius: 11, border: `1px solid ${colors.border}`, background: colors.surfaceAlt, color: colors.text, fontSize: 12 }} />
@@ -393,7 +393,7 @@ export function ExamAnalysisPage({ onBack }: { onBack: () => void }) {
         : filtered.length === 0 ? <div style={{ padding: 42, textAlign: 'center', background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: 18, color: colors.muted }}>هنوز تحلیلی برای نمایش منتشر نشده است.</div>
         : <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: 18 }}>
           {filtered.map((item) => (
-            <article key={item.id} style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: 20, padding: 22, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <article key={item.id} style={{ background: colors.dark ? 'linear-gradient(145deg, #1a151d, #111116 78%)' : 'linear-gradient(145deg, #fffefa, #f5eee9 88%)', border: `1px solid ${colors.border}`, borderRadius: 20, padding: 22, display: 'flex', flexDirection: 'column', gap: 12, boxShadow: colors.dark ? '0 12px 34px rgba(0,0,0,.16)' : '0 12px 34px rgba(76,37,37,.045)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: colors.muted, fontSize: 11 }}><CalendarDays size={15} />{[item.examYear, item.examLevel].filter(Boolean).join(' · ') || 'تحلیل کنکور'}</div>
               <h2 style={{ margin: 0, fontSize: 17, lineHeight: 1.8 }}>{item.title}</h2>
               {item.subtitle && <div style={{ color: colors.muted, fontSize: 12, lineHeight: 1.8 }}>{item.subtitle}</div>}
