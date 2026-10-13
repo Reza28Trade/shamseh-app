@@ -846,3 +846,53 @@
  .admin-public-content-page table{min-width:500px}
  .admin-public-content-page table td{padding:6px!important}
 }
+
+
+/* Visual polish: gradient edge accents and a taller rules/analysis tab switcher */
+.admin-shell .admin-page-content .admin-public-content-page{gap:18px!important;max-width:1240px!important}
+.admin-shell .admin-page-content .admin-public-content-page>header{
+  position:relative;overflow:hidden;
+  min-height:94px;
+  padding:22px 24px!important;
+  background:linear-gradient(112deg,var(--admin-card) 0%,var(--admin-inner) 100%)!important;
+  border:1px solid var(--admin-border)!important;
+  border-top:0!important;
+}
+.admin-shell .admin-page-content .admin-public-content-page>header:before,
+.admin-shell .admin-page-content .admin-public-content-page form:before,
+.admin-shell .admin-page-content .admin-public-content-page article:before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;z-index:2;
+  background:linear-gradient(90deg,var(--course-teal) 0%,var(--course-blue) 34%,var(--course-gold) 67%,var(--course-coral) 100%);
+  pointer-events:none;
+}
+.admin-shell .admin-page-content .admin-public-content-page>header h2{font-size:20px!important}
+.admin-shell .admin-page-content .admin-public-content-page>div:has(>button[ type="button"]){min-height:64px;padding:10px!important;gap:10px!important;align-items:stretch!important;background:var(--admin-inner);border:1px solid var(--admin-border);border-radius:15px;box-shadow:var(--admin-shadow)}
+.admin-shell .admin-page-content .admin-public-content-page>div:has(>button[ type="button"]) button{
+  min-height:44px!important;padding:12px 18px!important;border-radius:11px!important;font-size:12px!important;font-weight:800!important;
+}
+.admin-shell .admin-page-content .admin-public-content-page form,
+.admin-shell .admin-page-content .admin-public-content-page article{
+  position:relative;overflow:hidden;
+  border-radius:16px!important;
+  border-top:0!important;
+  padding:20px!important;
+}
+.admin-shell .admin-page-content .admin-public-content-page form:before,
+.admin-shell .admin-page-content .admin-public-content-page article:before{opacity:.9}
+.admin-shell .admin-page-content .admin-public-content-page form h3{padding-top:2px;font-size:16px!important}
+.admin-shell .admin-page-content .admin-public-content-page form section{
+  border-radius:13px!important;
+  border-top:1px solid var(--admin-border)!important;
+  background:linear-gradient(145deg,color-mix(in srgb,var(--course-teal) 7%,var(--admin-card)),var(--admin-card) 78%)!important;
+}
+.admin-shell .admin-page-content .admin-public-content-page form table{border:1px solid var(--admin-border);border-radius:11px;overflow:hidden}
+.admin-shell .admin-page-content .admin-public-content-page form table thead{background:linear-gradient(90deg,color-mix(in srgb,var(--course-teal) 13%,var(--admin-inner)),var(--admin-inner))!important}
+.admin-shell .admin-page-content .admin-public-content-page form table tbody tr{background:var(--admin-card)!important}
+.admin-shell .admin-page-content .admin-public-content-page form table tbody tr:nth-child(even){background:var(--admin-inner)!important}
+.admin-shell .admin-page-content .admin-public-content-page form table tbody tr:hover{background:var(--admin-accent-soft)!important}
+@media(max-width:700px){
+ .admin-shell .admin-page-content .admin-public-content-page>header{min-height:0;padding:18px!important}
+ .admin-shell .admin-page-content .admin-public-content-page>div:has(>button[ type="button"]){min-height:0;flex-direction:column}
+ .admin-shell .admin-page-content .admin-public-content-page>div:has(>button[ type="button"]) button{width:100%;justify-content:center}
+ .admin-shell .admin-page-content .admin-public-content-page form{padding:16px!important}
+}
