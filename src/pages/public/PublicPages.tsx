@@ -381,9 +381,10 @@ export function ExamAnalysisPage({ onBack }: { onBack: () => void }) {
     { code: '۱۳۵۹', field: 'پژوهش هنر', percent: 83, color: '#D97706', soft: 'rgba(217,119,6,.09)', icon: '▤' },
     { code: '۱۱۱۶', field: 'فلسفه', percent: 83, color: '#8057C7', soft: 'rgba(128,87,199,.09)', icon: '⌂' },
   ];
-  const years = useMemo(() => Array.from(new Set(['1404', ...analyses.map((item) => item.examYear).filter((value): value is string => Boolean(value))])).sort((a, b) => Number(b.replace(/[^\d]/g, '')) - Number(a.replace(/[^\d]/g, ''))), [analyses]);
+  const normalizeYear = (value: string) => value.replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit))).replace(/[٠-٩]/g, (digit) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit))).replace(/[^0-9]/g, '');
+  const years = useMemo(() => Array.from(new Set(['1404', ...analyses.map((item) => normalizeYear(item.examYear || '')).filter(Boolean)])).sort((a, b) => Number(b) - Number(a)), [analyses]);
   const yearLabel = (value: string) => value.replace(/[0-9]/g, (digit) => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
-  const currentAnalyses = analyses.filter((item) => item.examYear === year);
+  const currentAnalyses = analyses.filter((item) => normalizeYear(item.examYear || '') === year);
   const tableRows = currentAnalyses.flatMap((item) => item.content.split(/\r?\n/).map((line) => line.trim()).filter(Boolean).map((line, index) => ({ id: item.id + '-' + index, title: item.title, line, resourceUrl: item.resourceUrl, examLevel: item.examLevel }))).filter((row) => {
     const term = query.trim().toLocaleLowerCase();
     return !term || [row.title, row.line, row.examLevel || ''].some((value) => value.toLocaleLowerCase().includes(term));
