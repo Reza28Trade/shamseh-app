@@ -252,3 +252,41 @@
 @media(max-width:700px){
  .admin-shell .admin-page-content .admin-legacy-page.admin-students-page > .students-page-head{min-height:0!important;padding:16px!important}
 }
+
+/* Compact, theme-aware bulk-selection checkboxes */
+.admin-students-page .student-select-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  display: inline-grid;
+  place-content: center;
+  flex: 0 0 16px;
+  width: 16px;
+  min-width: 16px;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  border: 1.5px solid var(--admin-border, #8b9698);
+  border-radius: 4px;
+  background: var(--admin-inner, transparent);
+  vertical-align: middle;
+  cursor: pointer;
+  transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+.admin-students-page .student-select-checkbox:checked {
+  border-color: var(--admin-accent, #168f8a);
+  background: var(--admin-accent, #168f8a);
+}
+.admin-students-page .student-select-checkbox:checked::after {
+  content: "";
+  width: 7px;
+  height: 4px;
+  border: solid #fff;
+  border-width: 0 0 2px 2px;
+  transform: rotate(-45deg) translate(1px, -1px);
+}
+.admin-students-page .student-select-checkbox:focus-visible {
+  outline: 2px solid var(--admin-accent, #168f8a);
+  outline-offset: 2px;
+}
+
