@@ -1,4 +1,4 @@
-import React,{useEffect,useState} from 'react';
+import React,{useState} from 'react';
 import type { Student,Admin } from '../../types';
 import { User,Shield,Lock,ArrowRight,Send,Globe,Camera,Play,BookOpen,FileText,BarChart3 } from 'lucide-react';
 import { CourseCatalogPage, RulesPage, ExamAnalysisPage } from '../public/PublicPages';
@@ -6,10 +6,9 @@ import { CourseCatalogPage, RulesPage, ExamAnalysisPage } from '../public/Public
 interface AuthUser{ id:string; username:string; role:'SUPER_ADMIN'|'STAFF'|'STUDENT'|'COUNSELOR'; studentId:string|null; student?:{fullName:string;nationalId:string}|null; }
 interface LoginProps{students:Student[];admins:Admin[];onLoginSuccess:(user:AuthUser)=>void;onAdminLoginSuccess:(user:AuthUser)=>void;rulesText?:string;}
 
-export const Login:React.FC<LoginProps>=({students,admins,onLoginSuccess,onAdminLoginSuccess,rulesText=''})=>{
+export const Login:React.FC<LoginProps>=({students,admins,onLoginSuccess,onAdminLoginSuccess})=>{
  const [viewState,setViewState]=useState<'welcome'|'studentLogin'|'adminLogin'|'counselorLogin'|'courses'|'rules'|'analysis'>('welcome');
- const [studentNationalId,setStudentNationalId]=useState(''),[studentPhone,setStudentPhone]=useState(''),[adminUsername,setAdminUsername]=useState(''),[adminPassword,setAdminPassword]=useState(''),[counselorUsername,setCounselorUsername]=useState(''),[counselorPassword,setCounselorPassword]=useState(''),[error,setError]=useState(''),[liveRulesText,setLiveRulesText]=useState(rulesText);
- useEffect(()=>{void (async()=>{try{const r=await fetch('/api/content/rules');if(r.ok){const d=await r.json();setLiveRulesText(d.content??'')}}catch{}})()},[]);
+ const [studentNationalId,setStudentNationalId]=useState(''),[studentPhone,setStudentPhone]=useState(''),[adminUsername,setAdminUsername]=useState(''),[adminPassword,setAdminPassword]=useState(''),[counselorUsername,setCounselorUsername]=useState(''),[counselorPassword,setCounselorPassword]=useState(''),[error,setError]=useState('');
  const studentSubmit=(e:React.FormEvent)=>{e.preventDefault();setError('');void students;(async()=>{try{const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({username:studentNationalId.trim(),password:studentPhone.trim()})});if(!r.ok)throw 0;const d=await r.json();if(d.user?.role!=='STUDENT')throw 0;onLoginSuccess(d.user)}catch{setError('کد ملی یا شماره موبایل هنرجو اشتباه است.')}})()};
  const adminSubmit=(e:React.FormEvent)=>{e.preventDefault();setError('');void admins;(async()=>{try{const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({username:adminUsername.trim(),password:adminPassword})});if(!r.ok)throw 0;const d=await r.json();if(d.user?.role!=='SUPER_ADMIN'&&d.user?.role!=='STAFF'&&d.user?.role!=='COUNSELOR')throw 0;onAdminLoginSuccess(d.user)}catch{setError('نام کاربری یا رمز عبور ادمین اشتباه است.')}})()};
  const counselorSubmit=(e:React.FormEvent)=>{
