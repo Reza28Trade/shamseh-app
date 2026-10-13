@@ -144,6 +144,7 @@ export function CourseCatalogPage({ onBack }: { onBack: () => void }) {
   useEffect(() => { void loadCourses(); }, []);
 
   const levels = useMemo(() => Array.from(new Set(courses.map((course) => course.level).filter((value): value is string => Boolean(value)))), [courses]);
+  const levelLabel = (value: string) => value === 'MASTER' ? 'کارشناسی ارشد' : value === 'DOCTORATE' ? 'دکتری' : value === 'UNDERGRADUATE' ? 'کارشناسی' : value;
   const dayNames: Record<string, string> = { SATURDAY: 'شنبه', SUNDAY: 'یکشنبه', MONDAY: 'دوشنبه', TUESDAY: 'سه‌شنبه', WEDNESDAY: 'چهارشنبه', THURSDAY: 'پنجشنبه', FRIDAY: 'جمعه' };
   const filtered = courses.filter((course) => {
     const normalizedQuery = query.trim().toLocaleLowerCase();
@@ -203,7 +204,7 @@ export function CourseCatalogPage({ onBack }: { onBack: () => void }) {
               </div>
               <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 12, flex: 1 }}>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
-                  {course.level && <span style={{ background: colors.accentSoft, color: colors.dark ? '#fda4af' : colors.accent, borderRadius: 999, padding: '5px 9px', fontSize: 10, fontWeight: 800 }}>{course.level}</span>}
+                  {course.level && <span style={{ background: colors.accentSoft, color: colors.dark ? '#fda4af' : colors.accent, borderRadius: 999, padding: '5px 9px', fontSize: 10, fontWeight: 800 }}>{levelLabel(course.level)}</span>}
                   {course.term && <span style={{ background: colors.surfaceAlt, color: colors.muted, borderRadius: 999, padding: '5px 9px', fontSize: 10 }}>{course.term}</span>}
                 </div>
                 <h2 style={{ margin: 0, fontSize: 17, lineHeight: 1.8, fontWeight: 900 }}>{course.title}</h2>
