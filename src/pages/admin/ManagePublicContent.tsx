@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { BookOpenText, FileText, Pencil, Plus, Save, Search, Trash2 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
+import '../../styles/AdminCourses.css';
 
 type ContentRecord = {
   id: string;
