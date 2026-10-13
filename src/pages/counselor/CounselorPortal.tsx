@@ -23,6 +23,9 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [draft, setDraft] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const recordingStreamRef = useRef<MediaStream | null>(null);
   const [search, setSearch] = useState('');
   const [conversationFilter, setConversationFilter] = useState<'all' | 'pending' | 'unread'>('all');
   const [error, setError] = useState('');
@@ -121,6 +124,41 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
     const history = messageHistoryRef.current;
     if (history) history.scrollTo({ top: history.scrollHeight, behavior: 'smooth' });
   }, [messages.length, selected]);
+
+  async function toggleVoiceRecording() {
+    if (isRecording) {
+      recorderRef.current?.stop();
+      setIsRecording(false);
+      return;
+    }
+    if (selectedFile) { setError('ابتدا پیوست فعلی را حذف کنید.'); return; }
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') {
+      setError('ضبط صدا در این مرورگر پشتیبانی نمی‌شود.'); return;
+    }
+    try {
+      setError('');
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      recordingStreamRef.current = stream;
+      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus' : 'audio/webm';
+      const recorder = new MediaRecorder(stream, { mimeType });
+      const chunks: BlobPart[] = [];
+      recorder.ondataavailable = event => { if (event.data.size) chunks.push(event.data); };
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
+        if (blob.size) setSelectedFile(new File([blob], `voice-message-${Date.now()}.webm`, { type: blob.type || 'audio/webm' }));
+        stream.getTracks().forEach(track => track.stop());
+        recordingStreamRef.current = null;
+        recorderRef.current = null;
+      };
+      recorderRef.current = recorder;
+      recorder.start();
+      setIsRecording(true);
+    } catch {
+      recordingStreamRef.current?.getTracks().forEach(track => track.stop());
+      recordingStreamRef.current = null;
+      setError('دسترسی به میکروفون ممکن نشد. مجوز میکروفون را بررسی کنید.');
+    }
+  }
 
   async function sendMessage(e: FormEvent) {
     e.preventDefault();
@@ -221,6 +259,7 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
                   <div style={{ direction: 'rtl', maxWidth: 'min(78%, 650px)', padding: '11px 14px', borderRadius: own ? '14px 14px 4px 14px' : '14px 14px 14px 4px', background: own ? palette.ownBubble : palette.inner, border: `1px solid ${own ? 'rgba(112,185,181,.25)' : palette.border}`, color: own ? '#ffffff' : palette.text, overflowWrap: 'anywhere' }}>
                     {m.content && <div style={{ whiteSpace: 'pre-wrap', fontSize: 12, lineHeight: 1.9 }}>{m.content}</div>}
                     {m.attachmentName && !m.content.trim() && <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, marginTop: 2, color: palette.sub, fontSize: 10 }}><Paperclip size={12} /> پیام فقط شامل فایل پیوست است</div>}
+                    {m.attachmentName && m.attachmentMimeType?.startsWith('audio/') ? <audio controls preload="metadata" style={{ display: 'block', width: 'min(280px, 100%)', marginTop: 9 }} src={`/api/counseling/conversations/${selected}/messages/${m.id}/attachment?inline=true`} /> : null}
                     {m.attachmentName && <a href={`/api/counseling/conversations/${selected}/messages/${m.id}/attachment`} style={{ display: 'flex', alignItems: 'center', gap: 9, marginTop: 9, padding: '10px 11px', borderRadius: 10, background: palette.accentSoft, border: `1px solid ${palette.accentBorder}`, color: isDark ? '#b5e7df' : '#286d70', textDecoration: 'none', fontSize: 11 }}><Paperclip size={15} /><span style={{ flex: 1, overflowWrap: 'anywhere' }}>{m.attachmentName}<small style={{ display: 'block', marginTop: 4, opacity: .7 }}>{m.attachmentSize ? (m.attachmentSize / 1024 / 1024).toFixed(2) + ' MB' : 'پیوست'}</small></span><Download size={14} /></a>}
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 6, marginTop: 6, color: own ? 'rgba(255,255,255,.75)' : palette.sub, fontSize: 9 }}><time>{new Date(m.createdAt).toLocaleString('fa-IR')}</time>{own && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, color: m.readAt ? '#a8e6cf' : 'inherit' }}>{m.readAt ? <CheckCheck size={12} /> : <Check size={12} />}{m.readAt ? 'دیده شد' : 'ارسال شد'}</span>}</div>
                   </div>
@@ -228,8 +267,10 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
               })}
             </div>
             {error && <div role="alert" style={{ padding: '9px 16px', color: '#ff9b9b', background: 'rgba(190,75,85,.08)', fontSize: 11 }}>{error}</div>}
+            {isRecording && <div style={{ padding: '7px 14px', color: '#d85b65', fontSize: 11 }}>در حال ضبط پیام صوتی… برای پایان ضبط، دکمه مربع را بزنید.</div>}
             {selectedFile && <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderTop: `1px solid ${palette.border}`, background: palette.inner, color: palette.sub, fontSize: 10 }}><Paperclip size={14} /><span style={{ flex: 1, overflowWrap: 'anywhere' }}>{selectedFile.name}</span><button type="button" onClick={() => setSelectedFile(null)} style={{ border: 0, background: 'transparent', color: palette.danger, cursor: 'pointer' }}>حذف پیوست</button></div>}
             <form onSubmit={sendMessage} style={{ display: 'flex', alignItems: 'flex-end', gap: 10, padding: 14, borderTop: `1px solid ${palette.border}`, background: palette.card }}>
+              <button type="button" title={isRecording ? 'پایان ضبط' : 'ضبط پیام صوتی'} disabled={sending || Boolean(selectedFile)} onClick={() => void toggleVoiceRecording()} style={{ display: 'grid', placeItems: 'center', flex: '0 0 42px', height: 44, border: `1px solid ${palette.border}`, borderRadius: 11, background: isRecording ? '#b43d48' : palette.inner, color: isRecording ? '#fff' : '#70b9b5', cursor: sending ? 'wait' : 'pointer' }}>{isRecording ? <Square size={15}/> : <Mic size={17}/>}</button>
               <label title="افزودن فایل (حداکثر ۱۰ مگابایت)" style={{ display: 'grid', placeItems: 'center', flex: '0 0 42px', height: 44, border: `1px solid ${palette.border}`, borderRadius: 11, background: palette.inner, color: '#70b9b5', cursor: sending ? 'wait' : 'pointer' }}><Paperclip size={17} /><input type="file" disabled={sending} accept=".pdf,.png,.jpg,.jpeg,.webp,.txt,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.mp3,.wav,.mp4,.webm" onChange={e => { setSelectedFile(e.target.files?.[0] || null); e.currentTarget.value = ''; }} style={{ display: 'none' }} /></label>
               <textarea value={draft} onChange={e => setDraft(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); if (draft.trim() || selectedFile) void sendMessage(e as unknown as FormEvent); } }} maxLength={5000} rows={2} disabled={sending} placeholder="برای ارسال Enter و برای خط جدید Shift+Enter" aria-label="متن پیام" style={{ flex: 1, minWidth: 0, resize: 'vertical', border: `1px solid ${palette.border}`, borderRadius: 11, padding: 12, background: palette.inner, color: palette.text, font: 'inherit', fontSize: 12, lineHeight: 1.8, outline: 'none' }} />
               <button type="submit" disabled={sending || (!draft.trim() && !selectedFile)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 44, border: 0, borderRadius: 11, padding: '0 17px', background: palette.accent, color: '#fff', fontWeight: 850, fontSize: 11, cursor: sending || (!draft.trim() && !selectedFile) ? 'wait' : 'pointer', opacity: sending || (!draft.trim() && !selectedFile) ? .6 : 1 }}><Send size={15} />{sending ? 'در حال ارسال…' : 'ارسال'}</button>
