@@ -80,7 +80,6 @@ export class CounselingChatController {
 
   @Get('counseling/conversations/:id/messages/:messageId/attachment')
   async downloadAttachment(
-    @Req() req: AuthRequest,
     @Param('id') id: string,
     @Param('messageId') messageId: string,
     @Req() req: AuthRequest,
