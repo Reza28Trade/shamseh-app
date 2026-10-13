@@ -74,7 +74,7 @@ export const ManagePublicContent: React.FC = () => {
       const rules = Array.isArray(data) ? data.find((item) => item.type === 'RULES') : undefined;
       setRulesTitle(rules?.title || 'قوانین و مقررات آموزشی');
       const rawRules = rules?.content || '';
-      const parts = rawRules.split(/(?=^\s*[۰-۹0-9]+[.．]\s*)/m).map((part) => part.trim()).filter(Boolean);
+      const parts = rawRules.split(/(?=^\s*[۰-۹0-9]+[.．]\s*)/m).map((part) => part.trim()).filter((part) => Boolean(part) && part !== 'قوانین و مقررات آموزشی آکادمی شمسه');
       const sections = { registration: '', tuition: '', exams: '', counseling: '', resources: '', other: '' };
       for (const part of parts) {
         if (/ثبت‌نام و انتخاب دوره|ثبت نام و انتخاب دوره/.test(part)) sections.registration += (sections.registration ? '\n\n' : '') + part;
