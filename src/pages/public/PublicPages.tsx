@@ -42,7 +42,7 @@ function usePageColors(): ThemeColors {
   return {
     dark,
     bg: dark ? 'radial-gradient(ellipse at 12% 0%, rgba(30,99,181,.24), transparent 34%), radial-gradient(ellipse at 88% 16%, rgba(61,44,92,.17), transparent 30%), #08080c' : 'radial-gradient(ellipse at 12% 0%, rgba(101,177,235,.14), transparent 34%), radial-gradient(ellipse at 88% 16%, rgba(30,99,181,.08), transparent 30%), #f4f8ff',
-    surface: dark ? '#111116' : 'whitefff',
+    surface: dark ? '#111116' : '#ffffff',
     surfaceAlt: dark ? '#201a22' : '#edf5ff',
     text: dark ? '#f8fafc' : '#0f172a',
     muted: dark ? '#a1a1aa' : '#64748b',
@@ -292,7 +292,7 @@ export function RulesPage({ onBack }: { onBack: () => void }) {
       </section>
 
       <section style={{ border: `1px solid ${colors.dark ? 'rgba(101,177,235,.2)' : 'rgba(30,99,181,.17)'}`, background: colors.surface, borderRadius: 24, overflow: 'hidden', boxShadow: colors.dark ? '0 22px 55px rgba(0,0,0,.22)' : '0 22px 55px rgba(69,49,20,.055)' }}>
-        <div style={{ position: 'sticky', top: 0, zIndex: 1, background: colors.dark ? 'linear-gradient(110deg, #111a2a, #111116)' : 'linear-gradient(110deg, #f8fbff, whitefff)', padding: '19px clamp(16px, 3vw, 28px)', borderBottom: `1px solid ${colors.dark ? 'rgba(101,177,235,.2)' : 'rgba(30,99,181,.15)'}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+        <div style={{ position: 'sticky', top: 0, zIndex: 1, background: colors.dark ? 'linear-gradient(110deg, #111a2a, #111116)' : 'linear-gradient(110deg, #f8fbff, #ffffff)', padding: '19px clamp(16px, 3vw, 28px)', borderBottom: `1px solid ${colors.dark ? 'rgba(101,177,235,.2)' : 'rgba(30,99,181,.15)'}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <div style={{ width: 46, height: 46, borderRadius: 15, display: 'grid', placeItems: 'center', background: 'linear-gradient(145deg, rgba(101,177,235,.2), rgba(101,177,235,.05))', border: '1px solid rgba(101,177,235,.25)', color: colors.dark ? '#9BCBFA' : '#2D78C7' }}>
               <ShieldCheck size={23} strokeWidth={1.7} />
