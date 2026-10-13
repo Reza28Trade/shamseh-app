@@ -77,13 +77,13 @@ async function main() {
       classDays: course.classDays,
       classStartTime: course.classStartTime,
       classEndTime: course.classEndTime,
-      status: CourseStatus.DRAFT,
     };
     if (existing) {
+      // Preserve the status of an existing course; only new records start as DRAFT.
       await prisma.course.update({ where: { id: existing.id }, data });
       updated += 1;
     } else {
-      await prisma.course.create({ data });
+      await prisma.course.create({ data: { ...data, status: CourseStatus.DRAFT } });
       created += 1;
     }
   }
