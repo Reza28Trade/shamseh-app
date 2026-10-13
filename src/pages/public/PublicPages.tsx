@@ -145,6 +145,20 @@ export function CourseCatalogPage({ onBack }: { onBack: () => void }) {
 
   const levels = useMemo(() => Array.from(new Set(courses.map((course) => course.level).filter((value): value is string => Boolean(value)))), [courses]);
   const levelLabel = (value: string) => value === 'MASTER' ? 'کارشناسی ارشد' : value === 'DOCTORATE' ? 'دکتری' : value === 'UNDERGRADUATE' ? 'کارشناسی' : value;
+  const courseImageMap = useMemo(() => {
+    const ordered = [...courses].sort((a, b) =>
+      `${a.level ?? ''}|${a.title}|${a.professor}|${a.startDate ?? ''}`.localeCompare(
+        `${b.level ?? ''}|${b.title}|${b.professor}|${b.startDate ?? ''}`,
+        'fa',
+      ),
+    );
+    return new Map(ordered.map((course, index) => [
+      course.id,
+      index < 22 ? `/course-images/course-${String(index + 1).padStart(2, '0')}.jpg` : null,
+    ]));
+  }, [courses]);
+  const courseImage = (course: PublicCourse) =>
+    course.coverImage || courseImageMap.get(course.id) || `/api/public/courses/${course.id}/cover`;
   const dayNames: Record<string, string> = { SATURDAY: 'شنبه', SUNDAY: 'یکشنبه', MONDAY: 'دوشنبه', TUESDAY: 'سه‌شنبه', WEDNESDAY: 'چهارشنبه', THURSDAY: 'پنجشنبه', FRIDAY: 'جمعه' };
   const filtered = courses.filter((course) => {
     const normalizedQuery = query.trim().toLocaleLowerCase();
@@ -157,7 +171,7 @@ export function CourseCatalogPage({ onBack }: { onBack: () => void }) {
       {selectedCourse ? (
         <section style={{ background: colors.dark ? 'linear-gradient(145deg, #10272c, #11191c 70%)' : 'linear-gradient(145deg, #fbfdff, #f2f9f9 70%)', border: `1px solid ${colors.border}`, borderRadius: 22, overflow: 'hidden' }}>
           <div style={{ aspectRatio: '16 / 6', maxHeight: 360, background: colors.surfaceAlt, overflow: 'hidden' }}>
-            <img src={selectedCourse.coverImage || `/api/public/courses/${selectedCourse.id}/cover`} alt={selectedCourse.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(event) => { event.currentTarget.style.display = 'none'; }} />
+            <img src={courseImage(selectedCourse)} alt={selectedCourse.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(event) => { event.currentTarget.style.display = 'none'; }} />
           </div>
           <div style={{ padding: 'clamp(20px, 4vw, 34px)' }}>
             <button type="button" onClick={() => setSelectedCourse(null)} style={{ ...secondaryButton(colors), marginBottom: 22 }}><ArrowRight size={16} /> بازگشت به فهرست دوره‌ها</button>
@@ -200,7 +214,7 @@ export function CourseCatalogPage({ onBack }: { onBack: () => void }) {
           {filtered.map((course) => (
             <article key={course.id} style={{ background: colors.dark ? 'linear-gradient(145deg, #10272c, #11191c 75%)' : 'linear-gradient(145deg, #fbfdff, #eef5fd 85%)', border: `1px solid ${colors.border}`, borderRadius: 20, overflow: 'hidden', display: 'flex', flexDirection: 'column', minWidth: 0, boxShadow: colors.dark ? '0 12px 34px rgba(0,0,0,.15)' : '0 12px 34px rgba(76,37,37,.045)' }}>
               <div style={{ aspectRatio: '16 / 8', background: colors.surfaceAlt, overflow: 'hidden', position: 'relative' }}>
-                <img src={course.coverImage || `/api/public/courses/${course.id}/cover`} alt={course.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(event) => { event.currentTarget.style.display = 'none'; }} />
+                <img src={courseImage(course)} alt={course.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(event) => { event.currentTarget.style.display = 'none'; }} />
               </div>
               <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 12, flex: 1 }}>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
