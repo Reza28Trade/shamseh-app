@@ -12,7 +12,8 @@
     "prisma:deploy": "prisma migrate deploy",
     "prisma:seed": "ts-node prisma/seed.ts",
     "prisma:studio": "prisma studio",
-    "seed:test-enrollments": "ts-node prisma/seed-test-enrollments.ts"
+    "seed:test-enrollments": "ts-node prisma/seed-test-enrollments.ts",
+    "seed:rules": "ts-node prisma/seed-rules.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.0",
