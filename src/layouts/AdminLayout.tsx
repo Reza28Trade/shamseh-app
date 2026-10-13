@@ -160,9 +160,9 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
         .admin-nav button:hover{background:var(--admin-inner);color:var(--admin-text)}
         .admin-nav-icon{width:32px;height:32px;flex:0 0 32px;border-radius:10px;display:grid;place-items:center;color:var(--admin-sub);background:transparent;transition:background .18s,color .18s}
         .admin-nav-label{flex:0 1 auto;text-align:center}
-        .admin-nav button.active{background:var(--admin-accent-soft);color:var(--admin-text);border-color:var(--admin-brand-border)}
-        .admin-nav button.active .admin-nav-icon{background:var(--admin-accent);color:#fff}
-        .admin-nav-indicator{width:5px;height:5px;border-radius:50%;background:#70B9B5}
+        .admin-nav button.active,.admin-nav button.active:hover{background:transparent;color:#70B9B5;border-color:transparent}
+        .admin-nav button.active .admin-nav-icon{background:transparent;color:#70B9B5}
+        .admin-nav-indicator{display:none}
         .admin-sidebar-footer{margin-top:auto;padding-top:18px}
         .admin-sidebar-brand-note{display:flex;align-items:center;gap:10px;padding:13px 10px 16px;border-top:1px solid var(--admin-border)}
         .admin-sidebar-brand-mark{width:34px;height:34px;border-radius:11px;background:var(--admin-accent-soft);color:#70B9B5;display:grid;place-items:center;font-weight:900;font-size:16px}
