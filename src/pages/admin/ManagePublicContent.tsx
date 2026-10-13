@@ -41,7 +41,17 @@ export const ManagePublicContent: React.FC = () => {
   const [tab, setTab] = useState<'rules' | 'analysis'>('rules');
   const [records, setRecords] = useState<ContentRecord[]>([]);
   const [rulesTitle, setRulesTitle] = useState('قوانین و مقررات آموزشی');
-  const [rulesText, setRulesText] = useState('');
+  const [rulesSections, setRulesSections] = useState({
+    registration: '', tuition: '', exams: '', counseling: '', resources: '', other: '',
+  });
+  const ruleSectionFields = [
+    { key: 'registration', title: 'ثبت‌نام و شرایط عمومی', hint: 'شرایط ثبت‌نام، انتخاب دوره و نکات عمومی' },
+    { key: 'tuition', title: 'شهریه و پرداخت', hint: 'مبلغ شهریه، پیش‌پرداخت و اقساط' },
+    { key: 'exams', title: 'آزمون‌های آزمایشی', hint: 'مراحل آزمون ارشد و دکتری، هزینه‌ها و شرایط معافیت' },
+    { key: 'counseling', title: 'مشاوره تحصیلی', hint: 'هزینه و شرایط استفاده از خدمات مشاوره' },
+    { key: 'resources', title: 'منابع و کتاب‌های آموزشی', hint: 'تخفیف کتاب‌ها و اطلاعات منابع' },
+    { key: 'other', title: 'اطلاع‌رسانی و سایر مقررات', hint: 'اطلاعیه‌ها، پیگیری‌ها و نکات تکمیلی' },
+  ] as const;
   const [form, setForm] = useState<AnalysisForm>(emptyAnalysis);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -63,7 +73,19 @@ export const ManagePublicContent: React.FC = () => {
       setRecords(Array.isArray(data) ? data : []);
       const rules = Array.isArray(data) ? data.find((item) => item.type === 'RULES') : undefined;
       setRulesTitle(rules?.title || 'قوانین و مقررات آموزشی');
-      setRulesText(rules?.content || '');
+      const rawRules = rules?.content || '';
+      const parts = rawRules.split(/(?=^\s*[۰-۹0-9]+[.．]\s*)/m).map((part) => part.trim()).filter(Boolean);
+      const sections = { registration: '', tuition: '', exams: '', counseling: '', resources: '', other: '' };
+      for (const part of parts) {
+        if (/ثبت‌نام و انتخاب دوره|ثبت نام و انتخاب دوره/.test(part)) sections.registration += (sections.registration ? '\n\n' : '') + part;
+        else if (/شهریه و پرداخت/.test(part)) sections.tuition += (sections.tuition ? '\n\n' : '') + part;
+        else if (/آزمون‌های آزمایشی مقطع کارشناسی ارشد|آزمون‌های آزمایشی مقطع دکتری/.test(part)) sections.exams += (sections.exams ? '\n\n' : '') + part;
+        else if (/خدمات مشاوره تحصیلی/.test(part)) sections.counseling += (sections.counseling ? '\n\n' : '') + part;
+        else if (/منابع و کتاب‌های آموزشی/.test(part)) sections.resources += (sections.resources ? '\n\n' : '') + part;
+        else sections.other += (sections.other ? '\n\n' : '') + part;
+      }
+      if (rawRules && !parts.length) sections.other = rawRules;
+      setRulesSections(sections);
     } catch {
       setError('دریافت محتوای عمومی انجام نشد. اتصال به سرور را بررسی کنید.');
     } finally {
@@ -89,7 +111,15 @@ export const ManagePublicContent: React.FC = () => {
       const response = await fetch('/api/admin/public-content/rules', {
         method: 'PUT', credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: rulesTitle.trim(), content: rulesText }),
+        body: JSON.stringify({
+          title: rulesTitle.trim(),
+          content: ruleSectionFields.map(({ key, title }) => {
+            const value = rulesSections[key].trim();
+            if (!value) return '';
+            const heading = new RegExp('^\\s*[۰-۹0-9]+[.．]\\s*' + title.replace(/[.*+?^$\\{\\}()|[\\]\\\\]/g, '\\\\        body: JSON.stringify({ title: rulesTitle.trim(), content: rulesText }),'));
+            return heading.test(value) ? value : title + '\\n' + value;
+          }).filter(Boolean).join('\\n\\n'),
+        }),
       });
       if (!response.ok) throw new Error('save');
       setSuccess('قوانین در پایگاه داده ذخیره شد و در صفحه عمومی نمایش داده می‌شود.');
@@ -170,9 +200,21 @@ export const ManagePublicContent: React.FC = () => {
           <label style={{ display: 'flex', flexDirection: 'column', gap: 7, fontSize: 12, fontWeight: 800 }}>عنوان صفحه قوانین
             <input required value={rulesTitle} onChange={(event) => setRulesTitle(event.target.value)} style={inputStyle} />
           </label>
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 7, fontSize: 12, fontWeight: 800 }}>متن قوانین
-            <textarea required value={rulesText} onChange={(event) => setRulesText(event.target.value)} rows={16} style={{ ...inputStyle, minHeight: 300, lineHeight: 2, resize: 'vertical' }} placeholder="هر قانون را در یک خط یا پاراگراف جدا وارد کنید." />
-          </label>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: 14 }}>
+            {ruleSectionFields.map(({ key, title, hint }) => (
+              <label key={key} style={{ display: 'flex', flexDirection: 'column', gap: 7, fontSize: 12, fontWeight: 800, border: `1px solid ${colors.border}`, borderRadius: 14, padding: 14, background: colors.alt }}>
+                {title}
+                <span style={{ fontSize: 10, color: colors.muted, fontWeight: 500 }}>{hint}</span>
+                <textarea
+                  value={rulesSections[key]}
+                  onChange={(event) => setRulesSections((current) => ({ ...current, [key]: event.target.value }))}
+                  rows={7}
+                  style={{ ...inputStyle, minHeight: 150, lineHeight: 2, resize: 'vertical', background: colors.bg }}
+                  placeholder={`متن مربوط به بخش «${title}» را وارد کنید...`}
+                />
+              </label>
+            ))}
+          </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
             <button type="submit" disabled={saving} style={{ ...buttonStyle, background: colors.accent, color: '#fff', borderColor: colors.accent, opacity: saving ? .7 : 1 }}><Save size={15} />{saving ? 'در حال ذخیره...' : 'ذخیره و انتشار قوانین'}</button>
             <span style={{ color: colors.muted, fontSize: 11 }}>ذخیره در پایگاه داده؛ قابل مشاهده برای همه بازدیدکنندگان.</span>
