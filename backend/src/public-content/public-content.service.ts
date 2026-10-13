@@ -19,16 +19,25 @@ export class PublicContentService {
     }
   }
 
-  listPublicCourses() {
-    return this.prisma.course.findMany({
+  async listPublicCourses() {
+    const courses = await this.prisma.course.findMany({
       where: { status: 'ACTIVE' },
       orderBy: { createdAt: 'desc' },
       select: {
         id: true, title: true, professor: true, level: true, description: true,
-        term: true, category: true, startDate: true, schedule: true, price: true, coverImage: true, status: true,
+        term: true, category: true, startDate: true, schedule: true, price: true,
+        coverImage: true, coverImageStorageKey: true, status: true,
         academicYear: true, classDays: true, classStartTime: true, classEndTime: true,
       },
     });
+
+    // Uploaded covers must use the public streaming endpoint; the admin cover endpoint is protected.
+    return courses.map(({ coverImageStorageKey, ...course }) => ({
+      ...course,
+      coverImage: coverImageStorageKey
+        ? `/api/public/courses/${course.id}/cover`
+        : course.coverImage,
+    }));
   }
 
   async streamPublicCourseCover(courseId: string, res: Response) {
