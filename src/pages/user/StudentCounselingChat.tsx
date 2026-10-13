@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { MessageCircle, Send, UserRound, Circle, Paperclip, FileText, Download, Check, CheckCheck } from 'lucide-react';
+import { MessageCircle, Send, UserRound, Circle, Mic, Square, Paperclip, FileText, Download, Check, CheckCheck } from 'lucide-react';
 
 type Conversation = {
   id: string;
