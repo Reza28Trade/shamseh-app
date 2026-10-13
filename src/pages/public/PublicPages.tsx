@@ -258,26 +258,44 @@ export function RulesPage({ onBack }: { onBack: () => void }) {
   ];
 
   return (
-    <PageFrame eyebrow="راهنمای هنرجویان" title={rules?.title || 'قوانین و مقررات آموزشی'} description={rules?.subtitle || 'اطلاعات ضروری برای شروع یک مسیر آموزشی شفاف؛ پیش از ثبت‌نام، شرایط دوره و خدمات را با دقت مطالعه کنید.'} onBack={onBack}>
-      <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 225px), 1fr))', gap: 12, marginBottom: 22 }}>
+    <PageFrame eyebrow="راهنمای هنرجویان" title={rules?.title || 'قوانین و مقررات آموزشی آکادمی شمسه'} description={rules?.subtitle || 'راهنمای شفاف خدمات آموزشی شمسه؛ برای شروعی مطمئن، شرایط را با آرامش مرور کنید.'} onBack={onBack}>
+      <section style={{ position: 'relative', overflow: 'hidden', isolation: 'isolate', display: 'grid', gridTemplateColumns: 'minmax(0, 1.5fr) minmax(180px, .7fr)', gap: 24, alignItems: 'center', marginBottom: 24, padding: 'clamp(22px, 4vw, 38px)', borderRadius: 26, border: `1px solid ${colors.dark ? 'rgba(202,163,93,.28)' : 'rgba(133,93,36,.2)'}`, background: colors.dark ? 'radial-gradient(circle at 12% 10%, rgba(202,163,93,.13), transparent 35%), linear-gradient(125deg, #1c1718, #100f12 72%)' : 'radial-gradient(circle at 12% 10%, rgba(202,163,93,.16), transparent 36%), linear-gradient(125deg, #fffdf8, #f5f1e9 72%)', boxShadow: colors.dark ? '0 22px 60px rgba(0,0,0,.2)' : '0 22px 60px rgba(69,49,20,.07)' }}>
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '7px 11px', borderRadius: 999, border: `1px solid ${colors.dark ? 'rgba(202,163,93,.3)' : 'rgba(133,93,36,.23)'}`, color: colors.dark ? '#dfc18a' : '#805b24', fontSize: 11, fontWeight: 900, marginBottom: 15 }}>
+            <ShieldCheck size={15} /> منشور رسمی آکادمی شمسه
+          </div>
+          <h2 style={{ margin: '0 0 10px', fontSize: 'clamp(19px, 3vw, 27px)', lineHeight: 1.8, fontWeight: 950, color: colors.text }}>شفافیت، آغاز یک تجربه آموزشی مطمئن</h2>
+          <p style={{ margin: 0, maxWidth: 650, color: colors.muted, fontSize: 13, lineHeight: 2.2 }}>شرایط ثبت‌نام، پرداخت شهریه و استفاده از خدمات آموزشی را در بخش‌های زیر مرور کنید. این راهنما برای دسترسی آسان‌تر و تصمیم‌گیری آگاهانه شما طراحی شده است.</p>
+        </div>
+        <div style={{ position: 'relative', zIndex: 1, display: 'grid', justifyItems: 'center', gap: 12, padding: 18, borderRadius: 22, background: colors.dark ? 'rgba(255,255,255,.025)' : 'rgba(255,255,255,.56)', border: `1px solid ${colors.dark ? 'rgba(255,255,255,.08)' : 'rgba(133,93,36,.12)'}` }}>
+          <div style={{ width: 74, height: 74, borderRadius: 24, display: 'grid', placeItems: 'center', color: '#c9a35d', background: 'linear-gradient(145deg, rgba(201,163,93,.18), rgba(201,163,93,.04))', border: '1px solid rgba(201,163,93,.35)', boxShadow: '0 10px 30px rgba(0,0,0,.08)' }}><ShieldCheck size={35} strokeWidth={1.5} /></div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ color: colors.text, fontWeight: 900, fontSize: 13 }}>راهنمای آموزشی</div>
+            <div style={{ color: colors.muted, fontSize: 10, marginTop: 5 }}>مطالعه پیش از ثبت‌نام</div>
+          </div>
+        </div>
+        <div aria-hidden="true" style={{ position: 'absolute', left: -45, bottom: -90, width: 220, height: 220, borderRadius: '50%', border: '1px solid rgba(201,163,93,.12)', boxShadow: '0 0 0 22px rgba(201,163,93,.025), 0 0 0 44px rgba(201,163,93,.02)', zIndex: 0 }} />
+      </section>
+      <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 225px), 1fr))', gap: 14, marginBottom: 26 }}>
         {topics.map(({ icon: Icon, title: topicTitle, description }) => (
-          <article key={topicTitle} style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: 18, padding: 18, display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-            <div style={{ width: 42, height: 42, flex: '0 0 42px', display: 'grid', placeItems: 'center', borderRadius: 13, background: colors.accentSoft, color: colors.dark ? '#fda4af' : colors.accent }}>
-              <Icon size={20} />
+          <article key={topicTitle} style={{ position: 'relative', overflow: 'hidden', background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: 19, padding: 19, display: 'flex', alignItems: 'flex-start', gap: 13, minHeight: 112, boxShadow: colors.dark ? '0 8px 24px rgba(0,0,0,.08)' : '0 8px 24px rgba(15,23,42,.035)', transition: 'transform .2s ease, border-color .2s ease' }}>
+            <div style={{ width: 46, height: 46, flex: '0 0 46px', display: 'grid', placeItems: 'center', borderRadius: 15, background: 'linear-gradient(145deg, rgba(201,163,93,.2), rgba(201,163,93,.06))', border: '1px solid rgba(201,163,93,.22)', color: colors.dark ? '#dfc18a' : '#805b24' }}>
+              <Icon size={21} strokeWidth={1.7} />
             </div>
-            <div>
-              <h2 style={{ margin: '1px 0 6px', fontSize: 13, fontWeight: 900 }}>{topicTitle}</h2>
-              <p style={{ margin: 0, color: colors.muted, fontSize: 11, lineHeight: 1.9 }}>{description}</p>
+            <div style={{ minWidth: 0, paddingTop: 2 }}>
+              <h2 style={{ margin: '1px 0 7px', fontSize: 13, fontWeight: 900, lineHeight: 1.8 }}>{topicTitle}</h2>
+              <p style={{ margin: 0, color: colors.muted, fontSize: 11, lineHeight: 2 }}>{description}</p>
             </div>
+            <div aria-hidden="true" style={{ position: 'absolute', left: -26, bottom: -38, width: 90, height: 90, borderRadius: '50%', border: '1px solid rgba(201,163,93,.1)' }} />
           </article>
         ))}
       </section>
 
-      <section style={{ border: `1px solid ${colors.border}`, background: colors.surface, borderRadius: 22, overflow: 'hidden', boxShadow: colors.dark ? '0 16px 45px rgba(0,0,0,.18)' : '0 16px 45px rgba(15,23,42,.045)' }}>
-        <div style={{ position: 'sticky', top: 0, zIndex: 1, background: colors.surface, padding: '17px clamp(16px, 3vw, 26px)', borderBottom: `1px solid ${colors.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+      <section style={{ border: `1px solid ${colors.dark ? 'rgba(201,163,93,.2)' : 'rgba(133,93,36,.17)'}`, background: colors.surface, borderRadius: 24, overflow: 'hidden', boxShadow: colors.dark ? '0 22px 55px rgba(0,0,0,.22)' : '0 22px 55px rgba(69,49,20,.055)' }}>
+        <div style={{ position: 'sticky', top: 0, zIndex: 1, background: colors.dark ? 'linear-gradient(110deg, #1a1719, #111116)' : 'linear-gradient(110deg, #fffdf8, #ffffff)', padding: '19px clamp(16px, 3vw, 28px)', borderBottom: `1px solid ${colors.dark ? 'rgba(201,163,93,.2)' : 'rgba(133,93,36,.15)'}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ width: 42, height: 42, borderRadius: 13, display: 'grid', placeItems: 'center', background: colors.accentSoft, color: colors.dark ? '#fda4af' : colors.accent }}>
-              <ShieldCheck size={22} />
+            <div style={{ width: 46, height: 46, borderRadius: 15, display: 'grid', placeItems: 'center', background: 'linear-gradient(145deg, rgba(201,163,93,.2), rgba(201,163,93,.05))', border: '1px solid rgba(201,163,93,.25)', color: colors.dark ? '#dfc18a' : '#805b24' }}>
+              <ShieldCheck size={23} strokeWidth={1.7} />
             </div>
             <div>
               <div style={{ fontWeight: 900, fontSize: 14 }}>متن قوانین و مقررات</div>
@@ -297,8 +315,8 @@ export function RulesPage({ onBack }: { onBack: () => void }) {
                 const firstLine = lines[0] || '';
                 const isHeading = lines.length === 1 && (firstLine.length < 90) && (/^(\d+[.\-ـ]|بخش\s|فصل\s|شرایط\s|قوانین\s|تبصره|توجه:|نکته:|.*:)$/.test(firstLine) || firstLine.startsWith('#'));
                 return (
-                  <article key={index} style={{ border: `1px solid ${colors.border}`, borderRadius: 15, padding: '15px clamp(14px, 2.5vw, 22px)', background: isHeading ? colors.surfaceAlt : 'transparent', borderRight: isHeading ? `3px solid ${colors.accent}` : `1px solid ${colors.border}` }}>
-                    {isHeading ? <h3 style={{ margin: 0, fontSize: 13, lineHeight: 1.9, fontWeight: 900, color: colors.text }}>{firstLine.replace(/^#+\s*/, '')}</h3>
+                  <article key={index} style={{ border: `1px solid ${isHeading ? (colors.dark ? 'rgba(201,163,93,.22)' : 'rgba(133,93,36,.16)') : colors.border}`, borderRadius: 16, padding: '17px clamp(14px, 2.5vw, 24px)', background: isHeading ? (colors.dark ? 'linear-gradient(110deg, rgba(201,163,93,.09), rgba(255,255,255,.015))' : 'linear-gradient(110deg, #faf5ea, #fffdf8)') : (colors.dark ? 'rgba(255,255,255,.018)' : '#fff'), borderRight: isHeading ? '3px solid #c9a35d' : `1px solid ${colors.border}`, boxShadow: isHeading ? 'none' : (colors.dark ? '0 4px 14px rgba(0,0,0,.06)' : '0 4px 14px rgba(15,23,42,.025)') }}>
+                    {isHeading ? <h3 style={{ margin: 0, fontSize: 13, lineHeight: 1.9, fontWeight: 950, color: colors.text }}>{firstLine.replace(/^#+\s*/, '')}</h3>
                       : <p style={{ margin: 0, whiteSpace: 'pre-wrap', lineHeight: 2.15, fontSize: 13, color: colors.text }}>{paragraph}</p>}
                   </article>
                 );
