@@ -290,3 +290,45 @@
   outline-offset: 2px;
 }
 
+/* High-specificity override for global admin form-control rules. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap input.student-select-checkbox,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap th input.student-select-checkbox {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  box-sizing: border-box !important;
+  display: inline-grid !important;
+  place-content: center !important;
+  position: static !important;
+  inset: auto !important;
+  width: 16px !important;
+  min-width: 16px !important;
+  max-width: 16px !important;
+  height: 16px !important;
+  min-height: 16px !important;
+  max-height: 16px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1.5px solid var(--admin-border, #8b9698) !important;
+  border-radius: 4px !important;
+  background: var(--admin-inner, transparent) !important;
+  box-shadow: none !important;
+  transform: none !important;
+  zoom: 1 !important;
+  opacity: 1 !important;
+  cursor: pointer !important;
+  vertical-align: middle !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap input.student-select-checkbox:checked,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap th input.student-select-checkbox:checked {
+  border-color: var(--admin-accent, #168f8a) !important;
+  background: var(--admin-accent, #168f8a) !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap input.student-select-checkbox:checked::after,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap th input.student-select-checkbox:checked::after {
+  content: "" !important;
+  width: 7px !important;
+  height: 4px !important;
+  border: solid #fff !important;
+  border-width: 0 0 2px 2px !important;
+  transform: rotate(-45deg) translate(1px, -1px) !important;
+}
