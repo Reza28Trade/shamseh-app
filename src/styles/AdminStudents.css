@@ -332,3 +332,13 @@
   border-width: 0 0 2px 2px !important;
   transform: rotate(-45deg) translate(1px, -1px) !important;
 }
+
+/* Align compact selection boxes with the visual center of table rows. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap input.student-select-checkbox {
+  position: relative !important;
+  top: 2px !important;
+  vertical-align: middle !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap th input.student-select-checkbox {
+  top: 1px !important;
+}
