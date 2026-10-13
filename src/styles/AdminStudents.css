@@ -342,3 +342,24 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap th input.student-select-checkbox {
   top: 1px !important;
 }
+
+/* The new first column is the checkbox; center it instead of applying the old student-name cell layout. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap td:first-child {
+  display: table-cell !important;
+  vertical-align: middle !important;
+  text-align: center !important;
+  padding: 11px 9px !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap td:first-child input.student-select-checkbox {
+  display: inline-grid !important;
+  margin: 0 auto !important;
+  top: 0 !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap td:nth-child(2) {
+  display: table-cell !important;
+  vertical-align: middle !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap td:nth-child(2) strong,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap td:nth-child(2) small {
+  display: block;
+}
