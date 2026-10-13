@@ -15,6 +15,9 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [draft, setDraft] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const recordingStreamRef = useRef<MediaStream | null>(null);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
@@ -97,6 +100,41 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' }); }, [messages.length]);
 
+  async function toggleVoiceRecording() {
+    if (isRecording) {
+      recorderRef.current?.stop();
+      setIsRecording(false);
+      return;
+    }
+    if (selectedFile) { setError('ابتدا پیوست فعلی را حذف کنید.'); return; }
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') {
+      setError('ضبط صدا در این مرورگر پشتیبانی نمی‌شود.'); return;
+    }
+    try {
+      setError('');
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      recordingStreamRef.current = stream;
+      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus' : 'audio/webm';
+      const recorder = new MediaRecorder(stream, { mimeType });
+      const chunks: BlobPart[] = [];
+      recorder.ondataavailable = event => { if (event.data.size) chunks.push(event.data); };
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
+        if (blob.size) setSelectedFile(new File([blob], `voice-message-${Date.now()}.webm`, { type: blob.type || 'audio/webm' }));
+        stream.getTracks().forEach(track => track.stop());
+        recordingStreamRef.current = null;
+        recorderRef.current = null;
+      };
+      recorderRef.current = recorder;
+      recorder.start();
+      setIsRecording(true);
+    } catch {
+      recordingStreamRef.current?.getTracks().forEach(track => track.stop());
+      recordingStreamRef.current = null;
+      setError('دسترسی به میکروفون ممکن نشد. مجوز میکروفون را بررسی کنید.');
+    }
+  }
+
   async function sendMessage(event: FormEvent) {
     event.preventDefault();
     const content = draft.trim();
@@ -145,14 +183,17 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
                 <div style={{ direction: 'rtl', maxWidth: 'min(84%, 700px)', padding: '11px 14px', borderRadius: own ? '14px 14px 4px 14px' : '14px 14px 14px 4px', background: own ? colors.accentSolid : colors.card, color: own ? '#fff' : colors.text, border: own ? '1px solid transparent' : `1px solid ${colors.border}`, overflowWrap: 'anywhere', boxShadow: isDark ? 'none' : '0 3px 12px rgba(32,62,58,.045)' }}>
                   {message.content && <div style={{ whiteSpace: 'pre-wrap', fontSize: 12, lineHeight: 1.9 }}>{message.content}</div>}
                   {message.attachmentName && !message.content.trim() && <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, marginTop: 2, color: own ? 'rgba(255,255,255,.78)' : colors.sub, fontSize: 10 }}><Paperclip size={12} /> پیام فقط شامل فایل پیوست است</div>}
+                  {message.attachmentName && message.attachmentMimeType?.startsWith('audio/') ? <audio controls preload="metadata" style={{ display: 'block', width: 'min(280px, 100%)', marginTop: 9 }} src={`/api/counseling/conversations/${conversation.id}/messages/${message.id}/attachment?inline=true`} /> : null}
                   {message.attachmentName && <a href={`/api/counseling/conversations/${conversation.id}/messages/${message.id}/attachment`} style={{ display: 'flex', alignItems: 'center', gap: 9, marginTop: 9, padding: '10px 11px', borderRadius: 10, background: own ? 'rgba(255,255,255,.10)' : colors.soft, border: `1px solid ${colors.border}`, color: own ? '#fff' : colors.accent, textDecoration: 'none', fontSize: 11 }}><Paperclip size={15} /><span style={{ flex: 1, overflowWrap: 'anywhere' }}>{message.attachmentName}<small style={{ display: 'block', marginTop: 4, opacity: .75 }}>{message.attachmentSize ? (message.attachmentSize / 1024 / 1024).toFixed(2) + ' MB' : 'پیوست'}</small></span><Download size={14} /></a>}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 6, marginTop: 6, fontSize: 9, opacity: .8 }}><time>{new Date(message.createdAt).toLocaleString('fa-IR')}</time>{own && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, color: message.readAt ? (isDark ? '#a8e6cf' : '#237e68') : 'inherit' }}>{message.readAt ? <CheckCheck size={12} /> : <Check size={12} />}{message.readAt ? 'دیده شد' : 'ارسال شد'}</span>}</div>
                 </div>
               </div>;
             })}<div ref={bottomRef} />
           </div>
+          {isRecording && <div style={{ padding: '7px 12px', color: '#d85b65', fontSize: 11 }}>در حال ضبط پیام صوتی… برای پایان ضبط، دکمه مربع را بزنید.</div>}
           {selectedFile && <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', border: `1px solid ${colors.border}`, borderBottom: 0, borderRadius: '10px 10px 0 0', background: colors.inner, color: colors.sub, fontSize: 10 }}><Paperclip size={14} /><span style={{ flex: 1, overflowWrap: 'anywhere' }}>{selectedFile.name}</span><button type="button" onClick={() => setSelectedFile(null)} style={{ border: 0, background: 'transparent', color: '#d4777d', cursor: 'pointer' }}>حذف پیوست</button></div>}
           <form onSubmit={sendMessage} style={{ display: 'flex', alignItems: 'flex-end', gap: 10, padding: 12, background: colors.card, border: `1px solid ${colors.border}`, borderTop: 0, borderRadius: '0 0 13px 13px' }}>
+            <button type="button" title={isRecording ? 'پایان ضبط' : 'ضبط پیام صوتی'} disabled={sending || Boolean(selectedFile)} onClick={() => void toggleVoiceRecording()} style={{ display: 'grid', placeItems: 'center', flex: '0 0 40px', height: 44, border: `1px solid ${colors.border}`, borderRadius: 10, background: isRecording ? '#b43d48' : colors.inner, color: isRecording ? '#fff' : colors.accent, cursor: sending ? 'wait' : 'pointer' }}>{isRecording ? <Square size={15}/> : <Mic size={17}/>}</button>
             <label title="افزودن فایل (حداکثر ۱۰ مگابایت)" style={{ display: 'grid', placeItems: 'center', flex: '0 0 40px', height: 44, border: `1px solid ${colors.border}`, borderRadius: 10, background: colors.inner, color: colors.accent, cursor: sending ? 'wait' : 'pointer' }}><Paperclip size={17} /><input type="file" disabled={sending} accept=".pdf,.png,.jpg,.jpeg,.webp,.txt,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.mp3,.wav,.mp4,.webm" onChange={e => { setSelectedFile(e.target.files?.[0] || null); e.currentTarget.value = ''; }} style={{ display: 'none' }} /></label>
             <textarea value={draft} onChange={e => setDraft(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); if (draft.trim() || selectedFile) void sendMessage(e as unknown as FormEvent); } }} maxLength={5000} rows={2} disabled={sending} placeholder="برای ارسال Enter و برای خط جدید Shift+Enter" aria-label="متن پیام" style={{ flex: 1, minWidth: 0, resize: 'vertical', border: `1px solid ${colors.border}`, borderRadius: 10, padding: 11, background: colors.inner, color: colors.text, font: 'inherit', fontSize: 12, lineHeight: 1.8, outline: 'none' }} />
             <button type="submit" disabled={sending || (!draft.trim() && !selectedFile)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 44, border: 0, borderRadius: 10, padding: '0 16px', background: colors.accentSolid, color: '#fff', fontSize: 11, fontWeight: 850, cursor: sending || (!draft.trim() && !selectedFile) ? 'wait' : 'pointer', opacity: sending || (!draft.trim() && !selectedFile) ? .6 : 1 }}><Send size={15} />{sending ? 'در حال ارسال…' : 'ارسال'}</button>
