@@ -305,7 +305,14 @@ export function RulesPage({ onBack }: { onBack: () => void }) {
           {rules?.updatedAt && <span style={{ color: colors.muted, fontSize: 10 }}>آخرین به‌روزرسانی: {new Date(rules.updatedAt).toLocaleDateString('fa-IR')}</span>}
         </div>
 
-        <div style={{ maxHeight: 'min(68vh, 820px)', minHeight: 280, overflowY: 'auto', padding: 'clamp(16px, 3vw, 30px)' }}>
+        <div className="shamseh-rules-scroll" style={{ maxHeight: 'min(68vh, 820px)', minHeight: 280, overflowY: 'auto', overscrollBehaviorY: 'contain', scrollBehavior: 'smooth', scrollbarWidth: 'thin', scrollbarColor: colors.dark ? '#a88a50 rgba(255,255,255,.06)' : '#b89a61 #f1eee7', padding: 'clamp(16px, 3vw, 30px)' }}>
+          <style>{`
+            .shamseh-rules-scroll::-webkit-scrollbar { width: 10px; }
+            .shamseh-rules-scroll::-webkit-scrollbar-track { background: ${colors.dark ? '#17171b' : '#f3f0e9'}; border-radius: 999px; margin-block: 12px; }
+            .shamseh-rules-scroll::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #d6bd86, #9b7840); border: 3px solid ${colors.dark ? '#17171b' : '#f3f0e9'}; border-radius: 999px; }
+            .shamseh-rules-scroll::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #e4cc98, #b28b4b); }
+            @media (max-width: 640px) { .shamseh-rules-scroll { maxHeight: none !important; min-height: 0 !important; overflow: visible !important; } }
+          `}</style>
           {loading ? <div style={{ padding: 40, textAlign: 'center', color: colors.muted }}>در حال دریافت قوانین...</div>
             : error ? <div style={{ padding: 24, textAlign: 'center' }}><p style={{ color: colors.text }}>{error}</p><button type="button" onClick={() => void loadRules()} style={primaryButton(colors)}><RefreshCw size={15} /> تلاش مجدد</button></div>
             : !paragraphs.length ? <div style={{ padding: 36, textAlign: 'center', color: colors.muted }}>هنوز قانونی ثبت نشده است.</div>
