@@ -166,9 +166,9 @@ ${value}`.trim();
 
   const saveAnalysis = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!form.title.trim() || !form.content.trim()) { setError('عنوان و متن تحلیل الزامی است.'); return; }
-    setSaving(true); setError(''); setSuccess('');
     const structured = Boolean(form.fieldCode.trim() || form.fieldName.trim() || form.coveragePercent.trim() || form.questionsText.trim());
+    if (!form.title.trim() || (!form.content.trim() && !structured)) { setError('عنوان و حداقل یکی از متن تحلیل یا اطلاعات ساختاریافته الزامی است.'); return; }
+    setSaving(true); setError(''); setSuccess('');
     const questions = serializeQuestions(form.questionsText);
     const coverage = form.coveragePercent.trim() === '' ? null : Number(form.coveragePercent);
     if (coverage !== null && (!Number.isFinite(coverage) || coverage < 0 || coverage > 100)) { setError('درصد پوشش باید عددی بین صفر تا صد باشد.'); setSaving(false); return; }
