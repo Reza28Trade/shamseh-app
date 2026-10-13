@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowRight, ArrowLeft, CalendarDays, CheckCircle2, FileText, Moon, Search, Sun, UserRound, ExternalLink, RefreshCw, GraduationCap, Clock3, BookOpen } from 'lucide-react';
+import { ArrowRight, ArrowLeft, CalendarDays, CheckCircle2, FileText, Moon, Search, Sun, UserRound, ExternalLink, RefreshCw, GraduationCap, Clock3, BookOpen, ShieldCheck, CreditCard, ClipboardCheck, BookOpenCheck, Headphones, ChevronDown } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 
 type PublicCourse = {
@@ -245,17 +245,69 @@ export function RulesPage({ onBack }: { onBack: () => void }) {
 
   useEffect(() => { void loadRules(); }, []);
 
+  const paragraphs = useMemo(
+    () => (rules?.content || '').split(/\n\s*\n/).map((part) => part.trim()).filter(Boolean),
+    [rules?.content],
+  );
+
+  const topics = [
+    { icon: CreditCard, title: 'شهریه و پرداخت', description: 'شرایط پرداخت و زمان‌بندی اقساط را پیش از ثبت‌نام مرور کنید.' },
+    { icon: ClipboardCheck, title: 'آزمون‌های آزمایشی', description: 'جزئیات مراحل آزمون و شرایط استفاده از خدمات آموزشی را بررسی کنید.' },
+    { icon: Headphones, title: 'مشاوره تحصیلی', description: 'با شرایط استفاده از خدمات مشاوره آشنا شوید.' },
+    { icon: BookOpenCheck, title: 'منابع آموزشی', description: 'اطلاعات کتاب‌ها، جزوه‌ها و منابع تکمیلی را بخوانید.' },
+  ];
+
   return (
-    <PageFrame eyebrow="راهنمای هنرجویان" title={rules?.title || 'قوانین و مقررات آموزشی'} description={rules?.subtitle || 'برای تجربه آموزشی منظم و مؤثر، پیش از ثبت‌نام و شرکت در دوره‌ها این موارد را مطالعه کن.'} onBack={onBack}>
-      <section style={{ border: `1px solid ${colors.border}`, background: colors.surface, borderRadius: 20, overflow: 'hidden' }}>
-        <div style={{ position: 'sticky', top: 0, zIndex: 1, background: colors.surface, padding: '18px 22px', borderBottom: `1px solid ${colors.border}`, display: 'flex', alignItems: 'center', gap: 10 }}>
-          <FileText color={colors.dark ? '#fda4af' : colors.accent} size={19} />
-          <div style={{ fontWeight: 900, fontSize: 14 }}>متن رسمی قوانین شمسه</div>
+    <PageFrame eyebrow="راهنمای هنرجویان" title={rules?.title || 'قوانین و مقررات آموزشی'} description={rules?.subtitle || 'اطلاعات ضروری برای شروع یک مسیر آموزشی شفاف؛ پیش از ثبت‌نام، شرایط دوره و خدمات را با دقت مطالعه کنید.'} onBack={onBack}>
+      <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 225px), 1fr))', gap: 12, marginBottom: 22 }}>
+        {topics.map(({ icon: Icon, title: topicTitle, description }) => (
+          <article key={topicTitle} style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: 18, padding: 18, display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+            <div style={{ width: 42, height: 42, flex: '0 0 42px', display: 'grid', placeItems: 'center', borderRadius: 13, background: colors.accentSoft, color: colors.dark ? '#fda4af' : colors.accent }}>
+              <Icon size={20} />
+            </div>
+            <div>
+              <h2 style={{ margin: '1px 0 6px', fontSize: 13, fontWeight: 900 }}>{topicTitle}</h2>
+              <p style={{ margin: 0, color: colors.muted, fontSize: 11, lineHeight: 1.9 }}>{description}</p>
+            </div>
+          </article>
+        ))}
+      </section>
+
+      <section style={{ border: `1px solid ${colors.border}`, background: colors.surface, borderRadius: 22, overflow: 'hidden', boxShadow: colors.dark ? '0 16px 45px rgba(0,0,0,.18)' : '0 16px 45px rgba(15,23,42,.045)' }}>
+        <div style={{ position: 'sticky', top: 0, zIndex: 1, background: colors.surface, padding: '17px clamp(16px, 3vw, 26px)', borderBottom: `1px solid ${colors.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ width: 42, height: 42, borderRadius: 13, display: 'grid', placeItems: 'center', background: colors.accentSoft, color: colors.dark ? '#fda4af' : colors.accent }}>
+              <ShieldCheck size={22} />
+            </div>
+            <div>
+              <div style={{ fontWeight: 900, fontSize: 14 }}>متن قوانین و مقررات</div>
+              <div style={{ color: colors.muted, fontSize: 11, marginTop: 4 }}>لطفاً تمام بخش‌ها را مطالعه کنید</div>
+            </div>
+          </div>
+          {rules?.updatedAt && <span style={{ color: colors.muted, fontSize: 10 }}>آخرین به‌روزرسانی: {new Date(rules.updatedAt).toLocaleDateString('fa-IR')}</span>}
         </div>
-        <div style={{ maxHeight: 'min(62vh, 720px)', minHeight: 260, overflowY: 'auto', padding: 'clamp(18px, 3vw, 30px)', lineHeight: 2.2, whiteSpace: 'pre-wrap', fontSize: 13 }}>
-          {loading ? <span style={{ color: colors.muted }}>در حال دریافت قوانین...</span>
-            : error ? <div><p style={{ color: colors.text }}>{error}</p><button type="button" onClick={() => void loadRules()} style={primaryButton(colors)}><RefreshCw size={15} /> تلاش مجدد</button></div>
-            : rules?.content || 'هنوز قانونی ثبت نشده است.'}
+
+        <div style={{ maxHeight: 'min(68vh, 820px)', minHeight: 280, overflowY: 'auto', padding: 'clamp(16px, 3vw, 30px)' }}>
+          {loading ? <div style={{ padding: 40, textAlign: 'center', color: colors.muted }}>در حال دریافت قوانین...</div>
+            : error ? <div style={{ padding: 24, textAlign: 'center' }}><p style={{ color: colors.text }}>{error}</p><button type="button" onClick={() => void loadRules()} style={primaryButton(colors)}><RefreshCw size={15} /> تلاش مجدد</button></div>
+            : !paragraphs.length ? <div style={{ padding: 36, textAlign: 'center', color: colors.muted }}>هنوز قانونی ثبت نشده است.</div>
+            : <div style={{ display: 'grid', gap: 12 }}>
+              {paragraphs.map((paragraph, index) => {
+                const lines = paragraph.split('\n').map((line) => line.trim()).filter(Boolean);
+                const firstLine = lines[0] || '';
+                const isHeading = lines.length === 1 && (firstLine.length < 90) && (/^(\d+[.\-ـ]|بخش\s|فصل\s|شرایط\s|قوانین\s|تبصره|توجه:|نکته:|.*:)$/.test(firstLine) || firstLine.startsWith('#'));
+                return (
+                  <article key={index} style={{ border: `1px solid ${colors.border}`, borderRadius: 15, padding: '15px clamp(14px, 2.5vw, 22px)', background: isHeading ? colors.surfaceAlt : 'transparent', borderRight: isHeading ? `3px solid ${colors.accent}` : `1px solid ${colors.border}` }}>
+                    {isHeading ? <h3 style={{ margin: 0, fontSize: 13, lineHeight: 1.9, fontWeight: 900, color: colors.text }}>{firstLine.replace(/^#+\s*/, '')}</h3>
+                      : <p style={{ margin: 0, whiteSpace: 'pre-wrap', lineHeight: 2.15, fontSize: 13, color: colors.text }}>{paragraph}</p>}
+                  </article>
+                );
+              })}
+            </div>}
+        </div>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '14px clamp(16px, 3vw, 26px)', borderTop: `1px solid ${colors.border}`, background: colors.surfaceAlt, color: colors.muted, fontSize: 11, lineHeight: 1.9 }}>
+          <FileText size={16} style={{ flex: '0 0 auto', marginTop: 2 }} />
+          <span>برای اطلاع از جزئیات اختصاصی هر دوره، برنامه آموزشی و اطلاعیه‌های همان دوره را نیز بررسی کنید.</span>
         </div>
       </section>
     </PageFrame>
