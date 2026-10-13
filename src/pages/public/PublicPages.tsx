@@ -375,6 +375,10 @@ export function ExamAnalysisPage({ onBack }: { onBack: () => void }) {
   };
   useEffect(() => { void loadAnalyses(); }, []);
 
+  const normalizeYear = (value: string) => value.replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit))).replace(/[٠-٩]/g, (digit) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit))).replace(/[^0-9]/g, '');
+  const years = useMemo(() => Array.from(new Set(['1404', ...analyses.map((item) => normalizeYear(item.examYear || '')).filter(Boolean)])).sort((a, b) => Number(b) - Number(a)), [analyses]);
+  const yearLabel = (value: string) => value.replace(/[0-9]/g, (digit) => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
+  const currentAnalyses = analyses.filter((item) => normalizeYear(item.examYear || '') === year);
   const coverageColors = ['#168C91', '#3478D4', '#D97706', '#8057C7', '#0F9D78', '#C05276'];
   const readStructured = (item: PublicAnalysis) => {
     try {
@@ -402,15 +406,6 @@ export function ExamAnalysisPage({ onBack }: { onBack: () => void }) {
     const term = query.trim().toLocaleLowerCase();
     return !term || [row.title, row.questionNumber, row.topic, row.className, row.professor, row.source, row.page].some((value) => value.toLocaleLowerCase().includes(term));
   });
-  const normalizeYear = (value: string) => value.replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit))).replace(/[٠-٩]/g, (digit) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit))).replace(/[^0-9]/g, '');
-  const years = useMemo(() => Array.from(new Set(['1404', ...analyses.map((item) => normalizeYear(item.examYear || '')).filter(Boolean)])).sort((a, b) => Number(b) - Number(a)), [analyses]);
-  const yearLabel = (value: string) => value.replace(/[0-9]/g, (digit) => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
-  const currentAnalyses = analyses.filter((item) => normalizeYear(item.examYear || '') === year);
-  const tableRows = currentAnalyses.flatMap((item) => item.content.split(/\r?\n/).map((line) => line.trim()).filter(Boolean).map((line, index) => ({ id: item.id + '-' + index, title: item.title, line, resourceUrl: item.resourceUrl, examLevel: item.examLevel }))).filter((row) => {
-    const term = query.trim().toLocaleLowerCase();
-    return !term || [row.title, row.line, row.examLevel || ''].some((value) => value.toLocaleLowerCase().includes(term));
-  });
-
   return (
     <PageFrame eyebrow="تحلیل کنکورهای گذشته · مستند به منابع آموزشی" title="پوشش گسترده سؤالات کنکور در دوره‌های آکادمی شمسه" description="تحلیل سؤال‌های کنکور و تطبیق آن‌ها با مباحث، کلاس‌ها و منابع آموزشی؛ برای آن‌که با اطمینان بیشتری مسیر آمادگی خود را انتخاب کنید." onBack={onBack}>
       <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: 20, alignItems: 'center', marginBottom: 22 }}>
@@ -461,7 +456,7 @@ export function ExamAnalysisPage({ onBack }: { onBack: () => void }) {
         {loading ? <div style={{ padding: 25, textAlign: 'center', color: colors.muted }}>در حال دریافت جزئیات تحلیل‌ها...</div>
           : error ? <div style={{ padding: 20, color: colors.muted, fontSize: 12 }}>{error} <button type="button" onClick={() => void loadAnalyses()} style={secondaryButton(colors)}>تلاش مجدد</button></div>
           : structuredQuestionRows.length ? <div style={{ display: 'grid', gap: 9 }}>
-            {tableRows.map((row) => <article key={row.id} style={{ border: '1px solid ' + colors.border, borderRadius: 13, overflow: 'hidden', background: colors.surface }}>
+            {structuredQuestionRows.map((row) => <article key={row.id} style={{ border: '1px solid ' + colors.border, borderRadius: 13, overflow: 'hidden', background: colors.surface }}>
               <button type="button" onClick={() => setExpanded(expanded === row.id ? null : row.id)} aria-expanded={expanded === row.id} style={{ width: '100%', border: 0, cursor: 'pointer', textAlign: 'right', display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', gap: 12, alignItems: 'center', padding: 14, background: colors.surfaceAlt, color: colors.text }}>
                 <span style={{ minWidth: 0 }}><strong style={{ display: 'block', fontSize: 12, lineHeight: 1.9 }}>{row.title}</strong><span style={{ display: 'block', color: colors.muted, fontSize: 11, lineHeight: 1.9 }}>سؤال {yearLabel(row.questionNumber || '—')} · {row.topic || 'مبحث ثبت نشده'} · {row.status === 'COVERED' ? 'پوشش داده‌شده' : row.status === 'PARTIAL' ? 'پوشش نسبی' : row.status === 'NOT_COVERED' ? 'پوشش داده‌نشده' : 'وضعیت نامشخص'}</span></span><span style={{ color: colors.accent, fontSize: 12, fontWeight: 900 }}>{expanded === row.id ? 'بستن −' : 'جزئیات +'}</span>
               </button>
