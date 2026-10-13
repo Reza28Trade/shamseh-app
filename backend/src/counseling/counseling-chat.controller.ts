@@ -83,11 +83,12 @@ export class CounselingChatController {
     @Req() req: AuthRequest,
     @Param('id') id: string,
     @Param('messageId') messageId: string,
+    @Req() req: AuthRequest,
     @Res() res: Response,
   ) {
     const file = await this.chat.getAttachmentForDownload(req.user, id, messageId);
     res.setHeader('Content-Type', file.mimeType);
-    res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(file.name)}`);
+    res.setHeader('Content-Disposition', `${req.query.inline === 'true' ? 'inline' : 'attachment'}; filename*=UTF-8''${encodeURIComponent(file.name)}`);
     res.setHeader('X-Content-Type-Options', 'nosniff');
     return createReadStream(file.path).pipe(res);
   }
