@@ -363,3 +363,98 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap td:nth-child(2) small {
   display: block;
 }
+
+
+/* Reference-matched charcoal + teal styling for Student Management. */
+.admin-students-page{
+  --students-teal:#36C4C8;
+  --students-gold:#36C4C8;
+  --students-blue:#36C4C8;
+  --students-green:#36C4C8;
+  --students-red:#D4777D;
+  --students-coral:#36C4C8;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page > .students-page-head{
+  background:linear-gradient(135deg,#383A3C 0%,#303234 100%)!important;
+  border:1px solid #484B4D!important;
+  border-top:1px solid #484B4D!important;
+  box-shadow:0 10px 28px rgba(0,0,0,.14)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .students-stats,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-chart-card,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-form-card,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-import-card,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-list-card{
+  background:#383A3C!important;
+  border:1px solid #484B4D!important;
+  border-radius:12px!important;
+  box-shadow:0 10px 28px rgba(0,0,0,.13)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-stat{
+  background:transparent!important;
+  border-color:#484B4D!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-stat:before{
+  background:#36C4C8!important;
+  height:2px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-stat strong,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .students-page-head h2 svg,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .section-title svg,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .students-eyebrow{
+  color:#36C4C8!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-chart-card,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-form-card{
+  border-top:1px solid #484B4D!important;
+  box-shadow:0 10px 28px rgba(0,0,0,.13)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-chart-card .section-title,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-form-card .section-title{
+  border-bottom-color:#484B4D!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .term-bar-row i{
+  background:linear-gradient(90deg,#269DA2,#36C4C8)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .primary-action{
+  background:#269DA2!important;
+  border-color:#36C4C8!important;
+  box-shadow:none!important;
+  border-radius:8px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .students-head-actions button,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .secondary-action,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .row-actions button,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-term-switch,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-filters,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .course-picker{
+  background:#2D2F31!important;
+  border-color:#484B4D!important;
+  border-radius:8px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .course-choice.selected{
+  background:rgba(54,196,200,.12)!important;
+  border-color:#36C4C8!important;
+  box-shadow:inset -3px 0 0 #36C4C8!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-term-switch button.active{
+  background:#269DA2!important;
+  color:#fff!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap thead{
+  background:#303234!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap tbody tr:hover td{
+  background:rgba(54,196,200,.06)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .level-badge{
+  background:rgba(54,196,200,.12)!important;
+  border-color:rgba(54,196,200,.28)!important;
+  color:#36C4C8!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-detail-facts>div,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-detail-course-list article,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-detail-close{
+  background:#2D2F31!important;
+  border-color:#484B4D!important;
+}
