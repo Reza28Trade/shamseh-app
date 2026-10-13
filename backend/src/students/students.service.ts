@@ -23,7 +23,7 @@ export class StudentsService {
     return this.prisma.student.findMany({
       orderBy: { createdAt: 'desc' },
       select: {
-        id: true, fullName: true, nationalId: true, phone: true, academicLevel: true,
+        id: true, fullName: true, nationalId: true, phone: true, academicLevel: true, isArchived: true,
         user: { select: { id: true, username: true, status: true, createdAt: true } },
         enrollments: {
           select: { id: true, status: true, courseId: true, enrolledAt: true, course: { select: { id: true, title: true, level: true, academicYear: true, term: true } } },
@@ -32,6 +32,13 @@ export class StudentsService {
     });
   }
 
+
+  async setStudentArchived(user: AuthenticatedUser, studentId: string, isArchived: boolean) {
+    this.requireAdmin(user);
+    const student = await this.prisma.student.findUnique({ where: { id: studentId }, select: { id: true } });
+    if (!student) throw new NotFoundException('Student not found');
+    return this.prisma.student.update({ where: { id: studentId }, data: { isArchived }, select: { id: true, isArchived: true } });
+  }
 
   async exportStudents(user: AuthenticatedUser, res: Response) {
     this.requireAdmin(user);
