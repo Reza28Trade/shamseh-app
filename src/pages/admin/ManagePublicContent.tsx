@@ -116,8 +116,11 @@ export const ManagePublicContent: React.FC = () => {
           content: ruleSectionFields.map(({ key, title }) => {
             const value = rulesSections[key].trim();
             if (!value) return '';
-            return /^[۰-۹0-9]+[.．]/.test(value) ? value : title + '\\n' + value;
-          }).filter(Boolean).join('\\n\\n'),
+            return /^[۰-۹0-9]+[.．]/.test(value) ? value : `${title} 
+${value}`.trim();
+          }).filter(Boolean).join(`
+
+`),
         }),
       });
       if (!response.ok) throw new Error('save');
