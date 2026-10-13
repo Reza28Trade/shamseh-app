@@ -116,8 +116,7 @@ export const ManagePublicContent: React.FC = () => {
           content: ruleSectionFields.map(({ key, title }) => {
             const value = rulesSections[key].trim();
             if (!value) return '';
-            const heading = new RegExp('^\\s*[۰-۹0-9]+[.．]\\s*' + title.replace(/[.*+?^$\\{\\}()|[\\]\\\\]/g, '\\\\        body: JSON.stringify({ title: rulesTitle.trim(), content: rulesText }),'));
-            return heading.test(value) ? value : title + '\\n' + value;
+            return /^[۰-۹0-9]+[.．]/.test(value) ? value : title + '\\n' + value;
           }).filter(Boolean).join('\\n\\n'),
         }),
       });
