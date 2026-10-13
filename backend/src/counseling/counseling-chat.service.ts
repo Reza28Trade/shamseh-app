@@ -390,6 +390,7 @@ export class CounselingChatService {
       throw new BadRequestException('محتوای فایل با نوع یا پسوند اعلام‌شده مطابقت ندارد.');
     }
     const originalName = basename(String(file.originalname || 'attachment').replace(/\\/g, '/')).replace(/[\r\n\0]/g, '').slice(0, 180) || 'attachment';
+    const attachmentMimeType = extension === '.webm' && /^voice-message-/i.test(originalName) ? 'audio/webm' : mimeByExtension[extension];
     const storageKey = randomUUID() + extension;
     const directory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
     mkdirSync(directory, { recursive: true });
@@ -397,7 +398,7 @@ export class CounselingChatService {
     writeFileSync(fullPath, file.buffer, { flag: 'wx', mode: 0o640 });
     try {
       return await this.sendMessage(user, conversationId, contentInput?.trim() || '', {
-        storageKey, name: originalName, mimeType: mimeByExtension[extension], size: file.size,
+        storageKey, name: originalName, mimeType: attachmentMimeType, size: file.size,
       });
     } catch (error) {
       if (existsSync(fullPath)) unlinkSync(fullPath);
