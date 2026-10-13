@@ -822,3 +822,27 @@
     height:min(510px,65vh)!important;max-height:min(510px,65vh)!important;flex-basis:min(510px,65vh)!important;
   }
 }
+
+
+/* Public rules and exam analysis: align with the shared admin panel system */
+.admin-public-content-page{max-width:1320px;gap:16px!important;padding:0!important;color:var(--admin-text)!important}
+.admin-public-content-page>header{padding:20px 22px!important;border:1px solid var(--admin-border)!important;border-radius:18px!important;background:var(--admin-card)!important;box-shadow:var(--admin-shadow)}
+.admin-public-content-page>header h2{font-size:20px!important;color:var(--admin-text)!important}
+.admin-public-content-page>header p{color:var(--admin-sub)!important;font-size:11px!important}
+.admin-public-content-page button{font-family:inherit;transition:background .15s,border-color .15s,transform .15s}
+.admin-public-content-page button:hover{border-color:var(--admin-accent)!important}
+.admin-public-content-page input,.admin-public-content-page select,.admin-public-content-page textarea{font-family:inherit;font-size:12px!important;line-height:1.7}
+.admin-public-content-page input:focus,.admin-public-content-page select:focus,.admin-public-content-page textarea:focus{border-color:var(--admin-accent)!important;box-shadow:0 0 0 3px var(--admin-accent-soft)!important}
+.admin-public-content-page form,.admin-public-content-page article,.admin-public-content-page>div>div{box-shadow:var(--admin-shadow)}
+.admin-public-content-page table{border-collapse:separate!important;border-spacing:0;width:100%}
+.admin-public-content-page table th{font-weight:800;color:var(--admin-sub);font-size:11px}
+.admin-public-content-page table td,.admin-public-content-page table th{border-bottom:1px solid var(--admin-border)}
+.admin-public-content-page table tbody tr:nth-child(even){background:var(--admin-inner)}
+.admin-public-content-page table tbody tr:hover{background:var(--admin-accent-soft)}
+.admin-public-content-page textarea{min-height:100px}
+@media(max-width:760px){
+ .admin-public-content-page>header{padding:16px!important}
+ .admin-public-content-page form{padding:14px!important}
+ .admin-public-content-page table{min-width:500px}
+ .admin-public-content-page table td{padding:6px!important}
+}
