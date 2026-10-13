@@ -55,7 +55,7 @@ export const ManagePublicContent: React.FC = () => {
     text: dark ? '#f8fafc' : '#0f172a',
     muted: dark ? '#94a3b8' : '#64748b',
     border: dark ? 'rgba(255,255,255,.1)' : '#e2e8f0',
-    accent: '#6D001A',
+    accent: '#168C91',
   };
   const [tab, setTab] = useState<'rules' | 'analysis'>('rules');
   const [records, setRecords] = useState<ContentRecord[]>([]);
@@ -225,7 +225,7 @@ ${value}`.trim();
 
   return (
     <div className="admin-legacy-page admin-public-content-page" style={{ color: colors.text, display: 'flex', flexDirection: 'column', gap: 18, width: '100%', minWidth: 0 }}>
-      <header style={{ padding: '24px', borderRadius: 18, background: dark ? 'linear-gradient(120deg, rgba(109,0,26,.28), #111116)' : 'linear-gradient(120deg, #fff, #f1f5f9)', border: `1px solid ${colors.border}` }}>
+      <header style={{ padding: '24px', borderRadius: 18, background: dark ? 'linear-gradient(120deg, rgba(22,140,145,.22), #111116)' : 'linear-gradient(120deg, #ffffff, #eaf7f7)', border: `1px solid ${colors.border}` }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}><BookOpenText size={21} color={dark ? '#fda4af' : colors.accent} /><h2 style={{ fontSize: 19, margin: 0, fontWeight: 900 }}>مدیریت محتوای عمومی</h2></div>
         <p style={{ color: colors.muted, fontSize: 12, lineHeight: 1.9, margin: 0 }}>قوانین و تحلیل کنکورهایی که در صفحه اصلی برای هنرجویان نمایش داده می‌شوند را از این بخش مدیریت کنید.</p>
       </header>
