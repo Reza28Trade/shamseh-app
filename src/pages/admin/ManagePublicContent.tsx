@@ -78,7 +78,7 @@ export const ManagePublicContent: React.FC = () => {
       const sections = { registration: '', tuition: '', exams: '', counseling: '', resources: '', other: '' };
       for (const part of parts) {
         if (/ثبت‌نام و انتخاب دوره|ثبت نام و انتخاب دوره/.test(part)) sections.registration += (sections.registration ? '\n\n' : '') + part;
-        else if (/شهریه و پرداخت/.test(part)) sections.tuition += (sections.tuition ? '\n\n' : '') + part;
+        else if (/شهریه و پرداخت|شرایط پرداخت شهریه/.test(part)) sections.tuition += (sections.tuition ? '\n\n' : '') + part;
         else if (/آزمون‌های آزمایشی مقطع کارشناسی ارشد|آزمون‌های آزمایشی مقطع دکتری/.test(part)) sections.exams += (sections.exams ? '\n\n' : '') + part;
         else if (/خدمات مشاوره تحصیلی/.test(part)) sections.counseling += (sections.counseling ? '\n\n' : '') + part;
         else if (/منابع و کتاب‌های آموزشی/.test(part)) sections.resources += (sections.resources ? '\n\n' : '') + part;
