@@ -17,6 +17,11 @@ const statusLabel: Record<string, string> = {
   APPROVED_PAYMENT: 'پرداخت تأیید شده',
   REJECTED_PAYMENT: 'رسید نیازمند اصلاح',
 };
+const paymentStatusLabel: Record<string, string> = {
+  PENDING: 'در انتظار بررسی رسید',
+  APPROVED: 'رسید تأیید شده',
+  REJECTED: 'رسید رد شده',
+};
 
 export function RegistrationPage() {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -151,7 +156,7 @@ export function RegistrationPage() {
             <div className="reg-status-line"><span>شهریه نهایی</span><strong>{money(status.finalTuition)}</strong></div>
             {status.reviewNote && <div className="reg-error" style={{marginTop:12,marginBottom:0}}><strong>پیام مدیریت:</strong><div>{status.reviewNote}</div></div>}
             <h3>سوابق رسید</h3>
-            {status.payments.map(p=><div className="reg-status-line" key={p.id}><span>{p.purpose==='INITIAL'?'پیش‌پرداخت':'قسط'} · {statusLabel[p.status]||p.status}{p.rejectionReason && <small style={{display:'block',color:'#a63730'}}>{p.rejectionReason}</small>}</span><strong>{money(p.approvedAmount ?? p.claimedAmount)}</strong></div>)}
+            {status.payments.map(p=><div className="reg-status-line" key={p.id}><span>{p.purpose==='INITIAL'?'پیش‌پرداخت':'قسط'} · {paymentStatusLabel[p.status]||p.status}{p.rejectionReason && <small style={{display:'block',color:'#a63730'}}>{p.rejectionReason}</small>}</span><strong>{money(p.approvedAmount ?? p.claimedAmount)}</strong></div>)}
             {status.status === 'NEEDS_CORRECTION' && <form onSubmit={submitCorrection} className="reg-status-form" style={{marginTop:16}}>
               <h3>ارسال رسید اصلاح‌شده</h3>
               <label className="reg-field">مبلغ پرداخت (تومان)<input required type="number" min="1" value={correctionAmount} onChange={e=>setCorrectionAmount(e.target.value)}/></label>
