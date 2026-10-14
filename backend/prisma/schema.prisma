@@ -213,6 +213,7 @@ model Student {
   phone String?
   academicLevel StudentLevel?
   fieldCode String?
+  freeMockExamEligible Boolean @default(false)
   isArchived Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
