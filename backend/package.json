@@ -14,7 +14,7 @@
     "prisma:studio": "prisma studio",
     "seed:test-enrollments": "ts-node prisma/seed-test-enrollments.ts",
     "seed:rules": "ts-node prisma/seed-rules.ts",
-    "test:registration-finance-rules": "npm run build && node scripts/test-registration-finance-rules.cjs"
+    "test:registration-finance-rules": "npm run build && node scripts/test-registration-finance-rules.cjs && node scripts/test-registration-dtos.cjs"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.0",
