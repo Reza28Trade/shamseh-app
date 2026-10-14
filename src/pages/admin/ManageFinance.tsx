@@ -157,18 +157,22 @@ export const ManageFinance: React.FC = () => {
 
       {selectedStudent && <form onSubmit={recordPayment} style={{ padding: 20, background: colors.bg, border: `1px solid ${colors.border}`, borderRadius: 18, display: 'flex', flexDirection: 'column', gap: 12 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-          <h3 style={{ margin: 0, fontSize: 15 }}>ثبت پرداخت برای {selectedStudent.fullName}</h3>
-          <strong style={{ color: '#ef4444', fontSize: 12 }}>مانده بدهی: {money(selectedStudent.balance)}</strong>
+          <h3 style={{ margin: 0, fontSize: 15 }}>{selectedStudent.requiresFinanceReconciliation ? 'بررسی وضعیت مالی' : 'ثبت پرداخت برای'} {selectedStudent.fullName}</h3>
+          {!selectedStudent.requiresFinanceReconciliation && <strong style={{ color: '#ef4444', fontSize: 12 }}>مانده بدهی: {money(selectedStudent.balance)}</strong>}
         </div>
-        {selectedStudent.unpricedCourses > 0 && <div style={{ color: '#f59e0b', fontSize: 12 }}>برای ثبت پرداخت، ابتدا شهریه همه دوره‌های این هنرجو را در پنل مدیریت دوره‌ها مشخص کنید.</div>}
-        {selectedStudent.requiresFinanceReconciliation && <div role="alert" style={{ color: '#d97706', fontSize: 12, lineHeight: 1.9 }}>این هنرجو ثبت‌نام تأییدشده در سیستم اقساط دارد. برای جلوگیری از ثبت تکراری یا تخصیص اشتباه وجه، پرداخت را از فرم مالی قدیمی ثبت نکنید؛ از بخش «ثبت‌نام‌ها و اقساط» استفاده کنید.</div>}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: 10 }}>
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>مبلغ پرداخت (تومان)<input type="number" min="1" max={Math.round(selectedStudent.balance)} required value={paymentAmount} onChange={(event) => setPaymentAmount(event.target.value)} style={inputStyle} /></label>
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>روش پرداخت<select value={paymentMethod} onChange={(event) => setPaymentMethod(event.target.value)} style={inputStyle}><option value="BANK_TRANSFER">کارت‌به‌کارت / واریز</option><option value="CASH">نقدی</option><option value="CARD">کارت‌خوان</option><option value="OTHER">سایر</option></select></label>
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>شماره پیگیری (اختیاری)<input value={paymentReference} onChange={(event) => setPaymentReference(event.target.value)} style={inputStyle} /></label>
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>توضیحات (اختیاری)<input value={paymentNote} onChange={(event) => setPaymentNote(event.target.value)} style={inputStyle} /></label>
-        </div>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button type="submit" disabled={savingPayment || selectedStudent.unpricedCourses > 0 || selectedStudent.balance <= 0 || Boolean(selectedStudent.requiresFinanceReconciliation)} style={{ ...buttonStyle, background: colors.accent, color: '#fff', borderColor: colors.accent, opacity: savingPayment ? .6 : 1 }}><CreditCard size={14} />{savingPayment ? 'در حال ثبت...' : 'ثبت پرداخت'}</button><button type="button" onClick={() => setSelectedStudent(null)} style={buttonStyle}>انصراف</button></div>
+        {selectedStudent.requiresFinanceReconciliation
+          ? <div role="alert" style={{ color: '#d97706', fontSize: 12, lineHeight: 1.9 }}>این هنرجو ثبت‌نام تأییدشده در سیستم ثبت‌نام و اقساط دارد. ارقام این فرم قدیمی قابل اتکا نیستند؛ برای مشاهده شهریه نهایی، پرداخت‌ها و مانده واقعی، از بخش «ثبت‌نام‌ها و اقساط» استفاده کنید. ثبت پرداخت از این فرم غیرفعال است.</div>
+          : <>
+            {selectedStudent.unpricedCourses > 0 && <div style={{ color: '#f59e0b', fontSize: 12 }}>برای ثبت پرداخت، ابتدا شهریه همه دوره‌های این هنرجو را در پنل مدیریت دوره‌ها مشخص کنید.</div>}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: 10 }}>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>مبلغ پرداخت (تومان)<input type="number" min="1" max={Math.round(selectedStudent.balance)} required value={paymentAmount} onChange={(event) => setPaymentAmount(event.target.value)} style={inputStyle} /></label>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>روش پرداخت<select value={paymentMethod} onChange={(event) => setPaymentMethod(event.target.value)} style={inputStyle}><option value="BANK_TRANSFER">کارت‌به‌کارت / واریز</option><option value="CASH">نقدی</option><option value="CARD">کارت‌خوان</option><option value="OTHER">سایر</option></select></label>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>شماره پیگیری (اختیاری)<input value={paymentReference} onChange={(event) => setPaymentReference(event.target.value)} style={inputStyle} /></label>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>توضیحات (اختیاری)<input value={paymentNote} onChange={(event) => setPaymentNote(event.target.value)} style={inputStyle} /></label>
+            </div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button type="submit" disabled={savingPayment || selectedStudent.unpricedCourses > 0 || selectedStudent.balance <= 0} style={{ ...buttonStyle, background: colors.accent, color: '#fff', borderColor: colors.accent, opacity: savingPayment ? .6 : 1 }}><CreditCard size={14} />{savingPayment ? 'در حال ثبت...' : 'ثبت پرداخت'}</button></div>
+          </>}
+        <button type="button" onClick={() => setSelectedStudent(null)} style={buttonStyle}>بستن</button>
       </form>}
 
       {loading ? <div style={{ padding: 36, textAlign: 'center', color: colors.muted }}>در حال دریافت اطلاعات مالی...</div>
