@@ -8,6 +8,11 @@ type Registration = {
   exceptionReason: string | null; reviewNote: string | null; mockExamEligible: boolean | null; createdAt: string;
   courses: Array<{ id: string; courseTitleSnapshot: string; coursePriceSnapshot: number }>;
   payments: Payment[];
+  student: { id: string; fullName: string; nationalId: string; isArchived: boolean } | null;
+  balance: number;
+  manualSettlementAmount: number;
+  manualSettledAt: string | null;
+  manualSettlementNote: string | null;
   reviewHistory: Array<{ id: string; action: string; note: string | null; createdAt: string }>;
 };
 type Refund = {
@@ -111,6 +116,7 @@ export function ManageRegistrations(){
   const visibleRegistrations=registrations.filter(x=>(statusFilter==='ALL'||x.status===statusFilter)&&[x.applicantFullName,x.nationalId,x.phone,x.fieldCode].some(v=>v.toLowerCase().includes(search.toLowerCase())));
   const visibleRefunds=refunds.filter(x=>(statusFilter==='ALL'||x.status===statusFilter)&&[x.student.fullName,x.student.nationalId,x.student.phone].some(v=>v.toLowerCase().includes(search.toLowerCase())));
   const approvedRegistrations=registrations.filter(item=>item.status==='APPROVED');
+  const archivedDebtors=approvedRegistrations.filter(item=>item.student?.isArchived && item.balance>0.0001);
   const approvedTuition=approvedRegistrations.reduce((sum,item)=>sum+item.finalTuition,0);
   const approvedPayments=approvedRegistrations.flatMap(item=>item.payments).filter(payment=>payment.status==='APPROVED').reduce((sum,payment)=>sum+(payment.approvedAmount??0),0);
   const pendingPayments=registrations.flatMap(item=>item.payments).filter(payment=>payment.status==='PENDING').length;
@@ -148,6 +154,19 @@ export function ManageRegistrations(){
         <strong style={{fontSize:15,color:card.tone,overflowWrap:'anywhere'}}>{card.value}</strong>
       </article>)}
     </div>
+    <section style={{background:'var(--admin-card)',border:'1px solid var(--admin-border)',borderRadius:14,padding:14,display:'grid',gap:12}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:10,flexWrap:'wrap'}}>
+        <div><h3 style={{margin:0,fontSize:15}}>پیگیری بدهکاران بایگانی‌شده</h3><p style={{margin:'5px 0 0',fontSize:11,color:'var(--admin-sub)'}}>این هنرجویان به پنل دسترسی ندارند؛ بدهی و سوابق مالی آن‌ها حفظ شده است. پس از دریافت وجه، تسویه را دستی ثبت کنید.</p></div>
+        <span style={{fontSize:11,color:archivedDebtors.length?'#c65b58':'var(--admin-sub)'}}>{new Intl.NumberFormat('fa-IR').format(archivedDebtors.length)} بدهکار</span>
+      </div>
+      <div style={{display:'grid',gap:8,maxHeight:280,overflowY:'auto'}}>
+        {archivedDebtors.map(item=><article key={item.id} style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:12,flexWrap:'wrap',padding:12,border:'1px solid var(--admin-border)',borderRadius:10,background:'var(--admin-inner)'}}>
+          <div style={{display:'grid',gap:5,minWidth:180}}><strong>{item.student?.fullName||item.applicantFullName}</strong><span style={{fontSize:11,color:'var(--admin-sub)'}}>کد ملی: {item.student?.nationalId||item.nationalId} · ثبت‌نام: {item.courses.map(course=>course.courseTitleSnapshot).join('، ')||'—'}</span><strong style={{color:'#c65b58',fontSize:13}}>مانده بدهی: {money(item.balance)}</strong>{item.manualSettlementAmount>0&&<span style={{fontSize:11,color:'var(--admin-sub)'}}>تسویه دستی قبلی: {money(item.manualSettlementAmount)}</span>}</div>
+          <button type="button" style={{...buttonStyle,background:'var(--admin-accent)',color:'#fff'}} onClick={()=>{const note=window.prompt('توضیح ثبت تسویه (مثلاً دریافت وجه نقد یا شناسه انتقال)');if(note?.trim())void action('/api/admin/registrations/'+encodeURIComponent(item.id)+'/settle-debt','PATCH',{note:note.trim()});}}>ثبت تسویه دستی</button>
+        </article>)}
+        {!archivedDebtors.length&&<div style={{padding:18,textAlign:'center',color:'var(--admin-sub)',fontSize:12}}>هنرجوی بایگانی‌شده با بدهی باز وجود ندارد.</div>}
+      </div>
+    </section>
     <section style={{background:'var(--admin-card)',border:'1px solid var(--admin-border)',borderRadius:14,padding:14,display:'grid',gap:12}}>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:10,flexWrap:'wrap'}}>
         <div><h3 style={{margin:0,fontSize:15}}>دفتر کل و سوابق مالی</h3><p style={{margin:'5px 0 0',fontSize:11,color:'var(--admin-sub)'}}>تاریخچه پیش‌پرداخت‌ها، اقساط و بازپرداخت‌ها؛ جدیدترین رویدادها در ابتدا</p></div>
