@@ -73,7 +73,7 @@ export function calculateRegistrationApprovalPlan(input: RegistrationApprovalPla
     throw new BadRequestException('حالت استثنا فقط برای پرداخت کمتر از ۶۰٪ است.');
   }
 
-  const firstDueDate = new Date(input.firstDueDate);
+  const firstDueDate = new Date(input.firstDueDate instanceof Date ? input.firstDueDate.getTime() : input.firstDueDate);
   if (Number.isNaN(firstDueDate.getTime())) throw new BadRequestException('تاریخ سررسید معتبر نیست.');
   const remaining = Math.max(0, finalTuition - totalPaid);
   const now = input.now ?? new Date();
