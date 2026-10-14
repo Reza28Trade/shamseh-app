@@ -313,32 +313,104 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     return this.prisma.registration.findMany({
       where: status && status !== 'ALL' ? { status: status as RegistrationStatus } : undefined,
       include: {
+        student: { select: { id: true, fullName: true, nationalId: true, isArchived: true } },
         courses: { select: { id: true, courseTitleSnapshot: true, coursePriceSnapshot: true } },
         payments: {
           orderBy: { createdAt: 'desc' },
           include: { receipts: { orderBy: { uploadedAt: 'desc' }, select: { id: true, mimeType: true, fileSize: true, uploadedAt: true } } },
         },
+        installments: {
+          include: { allocations: { select: { amount: true, payment: { select: { status: true } } } } },
+          orderBy: [{ dueDate: 'asc' }, { sequence: 'asc' }],
+        },
         reviewHistory: { orderBy: { createdAt: 'desc' }, take: 20 },
       },
       orderBy: { createdAt: 'asc' },
-    }).then((rows) => rows.map((row) => ({
-      ...row,
-      originalTuition: Number(row.originalTuition),
-      discountAmount: Number(row.discountAmount),
-      finalTuition: Number(row.finalTuition),
-      courses: row.courses.map((course) => ({ ...course, coursePriceSnapshot: Number(course.coursePriceSnapshot) })),
-      payments: row.payments.map((payment) => ({
-        ...payment,
-        claimedAmount: Number(payment.claimedAmount),
-        approvedAmount: payment.approvedAmount === null ? null : Number(payment.approvedAmount),
-        receipts: payment.receipts.map((receipt) => ({
-          ...receipt,
-          // Prisma BigInt values cannot be JSON-serialized by Nest/Express.
-          // Receipt uploads are capped at 8 MiB, so Number is exact and safe here.
-          fileSize: receipt.fileSize === null ? null : Number(receipt.fileSize),
+    }).then((rows) => rows.map((row) => {
+      const initialPaid = row.payments.reduce((sum, payment) =>
+        payment.status === 'APPROVED' && payment.purpose === 'INITIAL' ? sum + Number(payment.approvedAmount ?? 0) : sum, 0);
+      const installmentPaid = row.installments.reduce((sum, installment) => sum + installment.allocations
+        .filter((allocation) => allocation.payment.status === 'APPROVED')
+        .reduce((itemSum, allocation) => itemSum + Number(allocation.amount), 0), 0);
+      const manualSettlementAmount = Number(row.manualSettlementAmount);
+      const balance = Math.max(0, Number(row.finalTuition) - initialPaid - installmentPaid - manualSettlementAmount);
+      return {
+        ...row,
+        originalTuition: Number(row.originalTuition),
+        discountAmount: Number(row.discountAmount),
+        finalTuition: Number(row.finalTuition),
+        manualSettlementAmount,
+        balance,
+        installments: row.installments.map((item) => ({
+          ...item, amount: Number(item.amount),
+          paid: item.allocations.filter((allocation) => allocation.payment.status === 'APPROVED')
+            .reduce((sum, allocation) => sum + Number(allocation.amount), 0),
         })),
-      })),
-    })));
+        courses: row.courses.map((course) => ({ ...course, coursePriceSnapshot: Number(course.coursePriceSnapshot) })),
+        payments: row.payments.map((payment) => ({
+          ...payment,
+          claimedAmount: Number(payment.claimedAmount),
+          approvedAmount: payment.approvedAmount === null ? null : Number(payment.approvedAmount),
+          receipts: payment.receipts.map((receipt) => ({
+            ...receipt,
+            // Prisma BigInt values cannot be JSON-serialized by Nest/Express.
+            // Receipt uploads are capped at 8 MiB, so Number is exact and safe here.
+            fileSize: receipt.fileSize === null ? null : Number(receipt.fileSize),
+          })),
+        })),
+      };
+    }));
+  }
+
+  async settleRegistrationDebt(actor: AuthenticatedUser, registrationId: string, note: string) {
+    this.requireFinanceAccess(actor);
+    if (!note?.trim()) throw new BadRequestException('توضیح تسویه الزامی است.');
+    return this.prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT "id" FROM "Registration" WHERE "id" = ${registrationId} FOR UPDATE`;
+      const registration = await tx.registration.findUnique({
+        where: { id: registrationId },
+        include: {
+          payments: { select: { purpose: true, status: true, approvedAmount: true } },
+          installments: { include: { allocations: { select: { amount: true, payment: { select: { status: true } } } } } },
+        },
+      });
+      if (!registration || registration.status !== 'APPROVED' || !registration.studentId) {
+        throw new NotFoundException('ثبت‌نام تأییدشده هنرجو پیدا نشد.');
+      }
+      const initialPaid = registration.payments.reduce((sum, payment) =>
+        payment.status === 'APPROVED' && payment.purpose === 'INITIAL' ? sum + Number(payment.approvedAmount ?? 0) : sum, 0);
+      const installmentPaid = registration.installments.reduce((sum, installment) => sum + installment.allocations
+        .filter((allocation) => allocation.payment.status === 'APPROVED')
+        .reduce((itemSum, allocation) => itemSum + Number(allocation.amount), 0), 0);
+      const balance = Math.max(0, Number(registration.finalTuition) - initialPaid - installmentPaid - Number(registration.manualSettlementAmount));
+      if (balance <= 0.0001) throw new ConflictException('برای این ثبت‌نام بدهی بازی باقی نمانده است.');
+      const now = new Date();
+      const updated = await tx.registration.update({
+        where: { id: registrationId },
+        data: {
+          manualSettlementAmount: { increment: balance },
+          manualSettledAt: now,
+          manualSettlementNote: note.trim(),
+          manualSettledById: actor.id,
+        },
+        select: { id: true, manualSettlementAmount: true, manualSettledAt: true, manualSettlementNote: true },
+      });
+      await tx.registrationReviewHistory.create({
+        data: {
+          registrationId, actorUserId: actor.id, action: 'MANUAL_DEBT_SETTLEMENT',
+          note: note.trim(),
+          metadata: { amount: balance, previousBalance: balance, settledAt: now.toISOString() },
+        },
+      });
+      await tx.auditLog.create({
+        data: {
+          actorUserId: actor.id, action: 'REGISTRATION_DEBT_SETTLED',
+          entityType: 'Registration', entityId: registrationId,
+          metadata: { amount: balance, note: note.trim(), studentId: registration.studentId },
+        },
+      });
+      return { success: true, registrationId, settledAmount: balance, ...updated };
+    }, { isolationLevel: 'Serializable' });
   }
 
   async viewReceipt(actor: AuthenticatedUser, receiptId: string) {
