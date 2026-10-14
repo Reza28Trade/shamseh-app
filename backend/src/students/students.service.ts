@@ -35,9 +35,22 @@ export class StudentsService {
 
   async setStudentArchived(user: AuthenticatedUser, studentId: string, isArchived: boolean) {
     this.requireAdmin(user);
-    const student = await this.prisma.student.findUnique({ where: { id: studentId }, select: { id: true } });
+    const student = await this.prisma.student.findUnique({
+      where: { id: studentId }, select: { id: true, userId: true },
+    });
     if (!student) throw new NotFoundException('Student not found');
-    return this.prisma.student.update({ where: { id: studentId }, data: { isArchived }, select: { id: true, isArchived: true } });
+
+    const updated = await this.prisma.student.update({
+      where: { id: studentId }, data: { isArchived }, select: { id: true, isArchived: true },
+    });
+
+    // Archiving revokes all active sessions immediately. Restoring the profile
+    // permits a fresh login without deleting any historical or financial records.
+    if (isArchived) {
+      await this.prisma.session.deleteMany({ where: { userId: student.userId } });
+    }
+
+    return updated;
   }
 
   async exportStudents(user: AuthenticatedUser, res: Response) {
