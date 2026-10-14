@@ -922,10 +922,14 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
 
   async markRefundPaid(actor: AuthenticatedUser, refundId: string, dto: MarkRefundPaidDto) {
     this.requireFinanceAccess(actor);
+    const transferReference = dto.transferReference?.trim();
+    if (!transferReference || transferReference.length < 3) {
+      throw new BadRequestException('شماره پیگیری یا مرجع انتقال معتبر نیست.');
+    }
     return this.prisma.$transaction(async (tx) => {
       const changed = await tx.refundRequest.updateMany({
         where: { id: refundId, status: 'RESERVED' },
-        data: { status: 'PAID', paidById: actor.id, paidAt: new Date(), transferReference: dto.transferReference.trim() },
+        data: { status: 'PAID', paidById: actor.id, paidAt: new Date(), transferReference },
       });
       if (changed.count !== 1) throw new ConflictException('فقط درخواست رزروشده را می‌توان پرداخت‌شده ثبت کرد.');
       const refund = await tx.refundRequest.findUniqueOrThrow({
