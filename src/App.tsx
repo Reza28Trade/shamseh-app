@@ -16,6 +16,8 @@ import { ManageFinance } from './pages/admin/ManageFinance';
 import { Login } from './pages/user/Login';
 import { UserDashboard } from './pages/user/UserDashboard';
 import { CounselorPortal } from './pages/counselor/CounselorPortal';
+import { RegistrationPage } from './pages/public/RegistrationPage';
+import { ManageRegistrations } from './pages/admin/ManageRegistrations';
 import type { Student, Admin } from './types';
 
 type AuthUser = { id: string; username: string; role: 'SUPER_ADMIN' | 'STAFF' | 'STUDENT' | 'COUNSELOR'; studentId: string | null; permissions?: string[]; student?: { fullName: string; nationalId: string } | null };
@@ -112,7 +114,7 @@ export function App() {
   } = useStore();
 
   const [view, setView] = useState<'checking' | 'login' | 'admin' | 'user' | 'counselor'>('checking');
-  type AdminTab = 'dashboard' | 'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'managementContact' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams' | 'counseling' | 'finance';
+  type AdminTab = 'dashboard' | 'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'managementContact' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams' | 'counseling' | 'finance' | 'registrations';
   const [adminTab, setAdminTab] = useState<AdminTab>('dashboard');
   const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
 
@@ -194,6 +196,10 @@ export function App() {
 
   const adminName = currentAdmin?.fullName || 'مدیر کل سیستم';
 
+  if (window.location.pathname === '/register' || window.location.pathname === '/register/') {
+    return <RegistrationPage />;
+  }
+
   if (view === 'checking') {
     return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: '#11181b', color: '#eef5f6', fontFamily: 'system-ui, sans-serif' }}>در حال بررسی نشست کاربری...</div>;
   }
@@ -236,6 +242,8 @@ export function App() {
           <ManagePublicContent />
         ) : adminTab === 'finance' ? (
           <ManageFinance />
+        ) : adminTab === 'registrations' ? (
+          <ManageRegistrations />
         ) : adminTab === 'admins' && currentAdmin?.role === 'super_admin' ? (
           <AdminAccounts />
         ) : (
@@ -263,12 +271,17 @@ export function App() {
   }
 
   return (
-    <Login
-      students={students}
-      admins={admins}
-      onLoginSuccess={handleStudentLogin}
-      onAdminLoginSuccess={handleAdminLoginSuccess}
-    />
+    <>
+      <Login
+        students={students}
+        admins={admins}
+        onLoginSuccess={handleStudentLogin}
+        onAdminLoginSuccess={handleAdminLoginSuccess}
+      />
+      <a href="/register" style={{ position: 'fixed', right: 20, bottom: 18, zIndex: 1000, padding: '12px 18px', borderRadius: 12, background: '#398A90', color: '#fff', textDecoration: 'none', fontSize: 12, fontWeight: 850, boxShadow: '0 8px 24px rgba(0,0,0,.18)' }}>
+        ثبت‌نام دوره‌ها و ارسال رسید
+      </a>
+    </>
   );
 }
 
