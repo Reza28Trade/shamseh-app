@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState, type CSSProperties } from 'react';
 import { JalaliDatePicker } from '../../components/JalaliDatePicker';
 
-type Payment = { id: string; purpose: string; status: string; claimedAmount: number; approvedAmount: number | null; rejectionReason: string | null; receipts: Array<{ id: string; mimeType: string; uploadedAt: string }> };
+type Payment = { id: string; purpose: string; status: string; claimedAmount: number; approvedAmount: number | null; rejectionReason: string | null; paymentDate?: string; createdAt?: string; trackingCode?: string | null; receipts: Array<{ id: string; mimeType: string; uploadedAt: string }> };
 type Registration = {
   id: string; applicantFullName: string; nationalId: string; phone: string; academicLevel: string; fieldCode: string;
   status: string; originalTuition: number; discountAmount: number; finalTuition: number; discountReason: string | null;
@@ -12,7 +12,7 @@ type Registration = {
 };
 type Refund = {
   id: string; registrationId: string; amountRequested: number; amountReserved: number | null; status: string;
-  reason: string; reviewNote: string | null; transferReference: string | null; requestedAt: string;
+  reason: string; reviewNote: string | null; transferReference: string | null; requestedAt: string; paidAt?: string | null; createdAt?: string;
   student: { fullName: string; nationalId: string; phone: string }; registration: { finalTuition: number; status: string };
 };
 const money=(n:number)=>new Intl.NumberFormat('fa-IR').format(n)+' تومان';
@@ -52,17 +52,17 @@ export function ManageRegistrations(){
   const load=useCallback(async()=>{
     setLoading(true);setError('');
     try{
-      if(tab==='registrations'){
-        const [items,exams]=await Promise.all([
-          call('/api/admin/registrations?status='+encodeURIComponent(statusFilter)),
-          call('/api/admin/registrations/mock-exams'),
-        ]);
-        setRegistrations(items);
-        setMockExams(exams);
-      }else setRefunds(await call('/api/admin/refunds?status='+encodeURIComponent(statusFilter)));
+      const [items,refundItems,exams]=await Promise.all([
+        call('/api/admin/registrations?status=ALL'),
+        call('/api/admin/refunds?status=ALL'),
+        call('/api/admin/registrations/mock-exams'),
+      ]);
+      setRegistrations(items);
+      setRefunds(refundItems);
+      setMockExams(exams);
     }catch(e){setError(e instanceof Error?e.message:'خطا در دریافت اطلاعات');}
     finally{setLoading(false);}
-  },[tab,statusFilter]);
+  },[]);
   useEffect(()=>{void load();},[load]);
   const action=async(url:string,method:string,body:unknown)=>{
     setError('');setNotice('');
@@ -108,9 +108,67 @@ export function ManageRegistrations(){
     const reason=window.prompt('علت رد ثبت‌نام را وارد کنید.');
     if(reason?.trim())await action('/api/admin/registrations/'+encodeURIComponent(item.id)+'/reject','PATCH',{reason});
   };
-  const visibleRegistrations=registrations.filter(x=>[x.applicantFullName,x.nationalId,x.phone,x.fieldCode].some(v=>v.toLowerCase().includes(search.toLowerCase())));
-  const visibleRefunds=refunds.filter(x=>[x.student.fullName,x.student.nationalId,x.student.phone].some(v=>v.toLowerCase().includes(search.toLowerCase())));
+  const visibleRegistrations=registrations.filter(x=>(statusFilter==='ALL'||x.status===statusFilter)&&[x.applicantFullName,x.nationalId,x.phone,x.fieldCode].some(v=>v.toLowerCase().includes(search.toLowerCase())));
+  const visibleRefunds=refunds.filter(x=>(statusFilter==='ALL'||x.status===statusFilter)&&[x.student.fullName,x.student.nationalId,x.student.phone].some(v=>v.toLowerCase().includes(search.toLowerCase())));
+  const approvedRegistrations=registrations.filter(item=>item.status==='APPROVED');
+  const approvedTuition=approvedRegistrations.reduce((sum,item)=>sum+item.finalTuition,0);
+  const approvedPayments=approvedRegistrations.flatMap(item=>item.payments).filter(payment=>payment.status==='APPROVED').reduce((sum,payment)=>sum+(payment.approvedAmount??0),0);
+  const pendingPayments=registrations.flatMap(item=>item.payments).filter(payment=>payment.status==='PENDING').length;
+  const paidRefunds=refunds.filter(item=>item.status==='PAID').reduce((sum,item)=>sum+(item.amountReserved??item.amountRequested),0);
+  const openRefunds=refunds.filter(item=>item.status==='REQUESTED'||item.status==='RESERVED').length;
+  const financialTransactions=[
+    ...registrations.flatMap(item=>item.payments.map(payment=>({
+      id:'payment:'+payment.id,date:payment.paymentDate||payment.createdAt||item.createdAt,
+      student:item.applicantFullName,nationalId:item.nationalId,
+      kind:payment.purpose==='INITIAL'?'پیش‌پرداخت ثبت‌نام':'پرداخت قسط',
+      status:payStatus[payment.status]||payment.status,
+      amount:payment.approvedAmount??payment.claimedAmount,
+      detail:(payment.approvedAmount!==null?'مبلغ تأییدشده: '+money(payment.approvedAmount)+' · ':'')+'مبلغ اعلامی: '+money(payment.claimedAmount)+(payment.trackingCode?' · پیگیری: '+payment.trackingCode:'')+(payment.rejectionReason?' · علت رد: '+payment.rejectionReason:''),
+    }))),
+    ...refunds.map(item=>({
+      id:'refund:'+item.id,date:item.paidAt||item.requestedAt,
+      student:item.student.fullName,nationalId:item.student.nationalId,
+      kind:'بازپرداخت شهریه',status:refundStatus[item.status]||item.status,
+      amount:item.amountReserved??item.amountRequested,
+      detail:item.transferReference?'شناسه انتقال: '+item.transferReference+' · '+item.reason:item.reason,
+    })),
+  ].sort((a,b)=>new Date(b.date).getTime()-new Date(a.date).getTime());
   return <section style={{display:'grid',gap:16,color:'var(--admin-text)'}}>
+    <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(155px,1fr))',gap:10}}>
+      {[
+        {label:'ثبت‌نام تأییدشده',value:new Intl.NumberFormat('fa-IR').format(approvedRegistrations.length),tone:'var(--admin-text)'},
+        {label:'شهریه نهایی مصوب',value:money(approvedTuition),tone:'var(--admin-text)'},
+        {label:'پرداخت‌های تأییدشده',value:money(approvedPayments),tone:'#1d9a72'},
+        {label:'مانده شهریه کل',value:money(Math.max(0,approvedTuition-approvedPayments)),tone:Math.max(0,approvedTuition-approvedPayments)>0?'#c65b58':'#1d9a72'},
+        {label:'رسیدهای در انتظار',value:new Intl.NumberFormat('fa-IR').format(pendingPayments),tone:pendingPayments?'#b7791f':'var(--admin-text)'},
+        {label:'بازپرداخت‌های باز',value:new Intl.NumberFormat('fa-IR').format(openRefunds),tone:openRefunds?'#b7791f':'var(--admin-text)'},
+        {label:'مجموع بازپرداخت انجام‌شده',value:money(paidRefunds),tone:'var(--admin-text)'},
+      ].map(card=><article key={card.label} style={{background:'var(--admin-card)',border:'1px solid var(--admin-border)',borderRadius:12,padding:'14px 15px',display:'grid',gap:8,minWidth:0}}>
+        <span style={{fontSize:11,color:'var(--admin-sub)',lineHeight:1.7}}>{card.label}</span>
+        <strong style={{fontSize:15,color:card.tone,overflowWrap:'anywhere'}}>{card.value}</strong>
+      </article>)}
+    </div>
+    <section style={{background:'var(--admin-card)',border:'1px solid var(--admin-border)',borderRadius:14,padding:14,display:'grid',gap:12}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:10,flexWrap:'wrap'}}>
+        <div><h3 style={{margin:0,fontSize:15}}>دفتر کل و سوابق مالی</h3><p style={{margin:'5px 0 0',fontSize:11,color:'var(--admin-sub)'}}>تاریخچه پیش‌پرداخت‌ها، اقساط و بازپرداخت‌ها؛ جدیدترین رویدادها در ابتدا</p></div>
+        <span style={{fontSize:11,color:'var(--admin-sub)'}}>{new Intl.NumberFormat('fa-IR').format(financialTransactions.length)} رویداد</span>
+      </div>
+      <div style={{overflowX:'auto',maxHeight:390,overflowY:'auto'}}>
+        <table style={{width:'100%',minWidth:760,borderCollapse:'collapse',fontSize:12,textAlign:'right'}}>
+          <thead style={{position:'sticky',top:0,background:'var(--admin-inner)',zIndex:1}}><tr>{['تاریخ','هنرجو / کد ملی','نوع رویداد','مبلغ (تومان)','وضعیت','جزئیات'].map(label=><th key={label} style={{padding:'11px 9px',borderBottom:'1px solid var(--admin-border)',whiteSpace:'nowrap'}}>{label}</th>)}</tr></thead>
+          <tbody>{financialTransactions.map(row=><tr key={row.id}>
+            <td style={{padding:'10px 9px',borderBottom:'1px solid var(--admin-border)',whiteSpace:'nowrap'}}>{row.date?new Date(row.date).toLocaleDateString('fa-IR'):'—'}</td>
+            <td style={{padding:'10px 9px',borderBottom:'1px solid var(--admin-border)'}}><strong>{row.student}</strong><div style={{fontSize:10,color:'var(--admin-sub)',marginTop:3}}>{row.nationalId}</div></td>
+            <td style={{padding:'10px 9px',borderBottom:'1px solid var(--admin-border)',whiteSpace:'nowrap'}}>{row.kind}</td>
+            <td style={{padding:'10px 9px',borderBottom:'1px solid var(--admin-border)',whiteSpace:'nowrap'}}>{money(row.amount)}</td>
+            <td style={{padding:'10px 9px',borderBottom:'1px solid var(--admin-border)',whiteSpace:'nowrap'}}>{row.status}</td>
+            <td style={{padding:'10px 9px',borderBottom:'1px solid var(--admin-border)',minWidth:220,maxWidth:380,whiteSpace:'normal',lineHeight:1.8}}>{row.detail}</td>
+          </tr>)}
+          {!financialTransactions.length&&<tr><td colSpan={6} style={{padding:24,textAlign:'center',color:'var(--admin-sub)'}}>هنوز رویداد مالی ثبت نشده است.</td></tr>}
+          </tbody>
+        </table>
+      </div>
+    </section>
     <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
       <button style={{...buttonStyle,background:tab==='registrations'?'var(--admin-accent)':'var(--admin-accent-soft)',color:tab==='registrations'?'#fff':'var(--admin-text)'}} onClick={()=>{setTab('registrations');setStatusFilter('PENDING_REVIEW');}}>ثبت‌نام‌ها و رسیدها</button>
       <button style={{...buttonStyle,background:tab==='refunds'?'var(--admin-accent)':'var(--admin-accent-soft)',color:tab==='refunds'?'#fff':'var(--admin-text)'}} onClick={()=>{setTab('refunds');setStatusFilter('REQUESTED');}}>درخواست‌های بازپرداخت</button>
