@@ -179,30 +179,38 @@ export class FinanceService {
       throw new BadRequestException('Payment amount must be greater than zero');
     }
 
-    const summary = await this.getStudentSummary(studentId);
-    if (summary.requiresFinanceReconciliation) {
-      throw new BadRequestException('این هنرجو در سیستم ثبت‌نام و اقساط جدید است؛ پرداخت را از بخش ثبت‌نام‌ها و اقساط ثبت کنید.');
-    }
-    if (summary.unpricedCourses > 0) {
-      throw new BadRequestException('Set a tuition price for every enrolled course before recording a payment');
-    }
-    if (dto.amount > summary.balance) {
-      throw new BadRequestException('Payment amount cannot exceed the remaining balance');
-    }
+    await this.prisma.$transaction(async (tx) => {
+      // Serialize legacy payment writes per student. Without this lock, two admins
+      // could both read the same balance and collectively record more than the debt.
+      await tx.$queryRaw`SELECT "id" FROM "Student" WHERE "id" = ${studentId} FOR UPDATE`;
 
-    await this.prisma.payment.create({
-      data: {
-        studentId,
-        amount: dto.amount,
-        method: dto.method ?? PaymentMethod.OTHER,
-        reference: dto.reference?.trim() || null,
-        note: dto.note?.trim() || null,
-        purpose: 'COURSE_FEE',
-        status: 'APPROVED',
-        paymentDate: dto.paidAt ? new Date(dto.paidAt) : new Date(),
-        paidAt: dto.paidAt ? new Date(dto.paidAt) : new Date(),
-        createdById: user.id,
-      },
+      // Re-read after acquiring the lock so a concurrent payment that committed
+      // immediately before this transaction is included in the balance check.
+      const summary = await this.getStudentSummary(studentId);
+      if (summary.requiresFinanceReconciliation) {
+        throw new BadRequestException('این هنرجو در سیستم ثبت‌نام و اقساط جدید است؛ پرداخت را از بخش ثبت‌نام‌ها و اقساط ثبت کنید.');
+      }
+      if (summary.unpricedCourses > 0) {
+        throw new BadRequestException('Set a tuition price for every enrolled course before recording a payment');
+      }
+      if (dto.amount > summary.balance) {
+        throw new BadRequestException('Payment amount cannot exceed the remaining balance');
+      }
+
+      await tx.payment.create({
+        data: {
+          studentId,
+          amount: dto.amount,
+          method: dto.method ?? PaymentMethod.OTHER,
+          reference: dto.reference?.trim() || null,
+          note: dto.note?.trim() || null,
+          purpose: 'COURSE_FEE',
+          status: 'APPROVED',
+          paymentDate: dto.paidAt ? new Date(dto.paidAt) : new Date(),
+          paidAt: dto.paidAt ? new Date(dto.paidAt) : new Date(),
+          createdById: user.id,
+        },
+      });
     });
 
     return this.getStudentSummary(studentId);
