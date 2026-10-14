@@ -346,6 +346,7 @@ export class StudentsService {
       where: { id: studentId },
       data: { isArchived: true },
     });
+    await this.prisma.session.deleteMany({ where: { userId: (await this.prisma.student.findUniqueOrThrow({ where: { id: studentId }, select: { userId: true } })).userId } });
 
     return { success: true, isArchived: true };
   }
