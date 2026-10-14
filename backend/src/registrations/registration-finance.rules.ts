@@ -156,7 +156,8 @@ export function planOldestDebtAllocations(
   for (const item of installments) {
     if (!Number.isFinite(item.amount) || item.amount < 0
       || !Number.isFinite(item.allocated) || item.allocated < 0
-      || Number.isNaN(item.dueDate.getTime())) {
+      || item.allocated > item.amount + 0.0001
+      || !(item.dueDate instanceof Date) || Number.isNaN(item.dueDate.getTime())) {
       throw new BadRequestException('اطلاعات قسط برای تخصیص پرداخت معتبر نیست.');
     }
   }
