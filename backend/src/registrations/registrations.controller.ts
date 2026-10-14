@@ -188,6 +188,9 @@ export class RegistrationsController {
     const receipt = await this.registrationsService.viewReceipt(req.user, receiptId);
     res.setHeader('Content-Type', receipt.mimeType);
     res.setHeader('Content-Disposition', 'inline');
+    // Receipts contain sensitive payment information; do not retain them in browser or intermediary caches.
+    res.setHeader('Cache-Control', 'private, no-store, max-age=0');
+    res.setHeader('Pragma', 'no-cache');
     res.setHeader('X-Content-Type-Options', 'nosniff');
     return createReadStream(receipt.path).pipe(res);
   }
