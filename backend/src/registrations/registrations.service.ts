@@ -891,6 +891,15 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       throw new BadRequestException('رسید باید تصویر JPG، PNG یا WEBP باشد.');
     }
     if (file.size > 8 * 1024 * 1024) throw new BadRequestException('حداکثر حجم رسید ۸ مگابایت است.');
+    const bytes: Buffer = file.buffer;
+    const isJpeg = bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+    const isPng = bytes.length >= 8 && bytes.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+    const isWebp = bytes.length >= 12 && bytes.toString('ascii', 0, 4) === 'RIFF' && bytes.toString('ascii', 8, 12) === 'WEBP';
+    if ((file.mimetype === 'image/jpeg' && !isJpeg)
+      || (file.mimetype === 'image/png' && !isPng)
+      || (file.mimetype === 'image/webp' && !isWebp)) {
+      throw new BadRequestException('محتوای فایل با نوع تصویر اعلام‌شده مطابقت ندارد.');
+    }
   }
 
   private async storeReceipt(file: any): Promise<string> {
