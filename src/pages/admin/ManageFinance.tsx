@@ -198,10 +198,10 @@ export const ManageFinance: React.FC = () => {
               </div>}
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 12 }}>
               <button type="button" onClick={() => openPayment(student)} disabled={student.balance <= 0 || student.unpricedCourses > 0 || Boolean(student.requiresFinanceReconciliation)} style={{ ...buttonStyle, background: colors.accent, color: '#fff', borderColor: colors.accent, opacity: student.balance <= 0 || student.unpricedCourses > 0 || student.requiresFinanceReconciliation ? .5 : 1 }}><CreditCard size={14} /> ثبت پرداخت</button>
-              <button type="button" onClick={() => setExpandedStudentId(expandedStudentId === student.id ? null : student.id)} style={buttonStyle}>{expandedStudentId === student.id ? 'بستن سوابق پرداخت' : 'مشاهده سوابق پرداخت'} ({student.payments.length})</button>
+              <button type="button" onClick={() => setExpandedStudentId(expandedStudentId === student.id ? null : student.id)} style={buttonStyle}>{expandedStudentId === student.id ? 'بستن سوابق مالی قدیمی' : 'سوابق مالی قدیمی'} ({student.payments.length})</button>
             </div>
             {expandedStudentId === student.id && <div style={{ marginTop: 14, borderTop: `1px solid ${colors.border}`, paddingTop: 12 }}>
-              {student.payments.length === 0 ? <p style={{ fontSize: 12, color: colors.muted, margin: 0 }}>هنوز پرداختی ثبت نشده است.</p> : student.payments.map((payment) => <div key={payment.id} style={{ display: 'flex', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap', padding: '9px 0', borderBottom: `1px solid ${colors.border}`, fontSize: 11 }}>
+              {student.payments.length === 0 ? <p style={{ fontSize: 12, color: colors.muted, margin: 0 }}>در مسیر مالی قدیمی پرداختی ثبت نشده است. اگر این هنرجو ثبت‌نام تأییدشده دارد، رسیدها و اقساط را از بخش «ثبت‌نام‌ها و اقساط» بررسی کنید؛ عدد صفر در اینجا به معنی نبودن پرداخت در سیستم جدید نیست.</p> : student.payments.map((payment) => <div key={payment.id} style={{ display: 'flex', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap', padding: '9px 0', borderBottom: `1px solid ${colors.border}`, fontSize: 11 }}>
                 <span>{new Date(payment.paidAt).toLocaleDateString('fa-IR')} · {methodLabels[payment.method] || payment.method}{payment.reference ? ` · پیگیری ${payment.reference}` : ''}</span><strong style={{ color: '#10b981' }}>{money(payment.amount)}</strong>
               </div>)}
             </div>}
