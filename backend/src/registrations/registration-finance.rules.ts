@@ -1,0 +1,95 @@
+import { BadRequestException, ForbiddenException } from '@nestjs/common';
+import { RegistrationApprovalMode } from '@prisma/client';
+
+export interface RegistrationApprovalPlanInput {
+  mode: RegistrationApprovalMode;
+  actorRole: string;
+  originalTuition: number;
+  discountAmount: number;
+  discountReason?: string;
+  exceptionReason?: string;
+  approvedAmount: number;
+  previouslyApprovedAmount?: number;
+  firstDueDate: string | Date;
+  now?: Date;
+}
+
+export interface RegistrationApprovalPlan {
+  finalTuition: number;
+  totalPaid: number;
+  ratio: number;
+  remaining: number;
+  installmentAmounts: number[];
+  firstDueDate: Date;
+}
+
+/** Pure business-rule calculation shared by approval logic and regression tests. */
+export function calculateRegistrationApprovalPlan(input: RegistrationApprovalPlanInput): RegistrationApprovalPlan {
+  const discount = input.discountAmount;
+  const originalTuition = input.originalTuition;
+  const approvedAmount = input.approvedAmount;
+  const previouslyApprovedAmount = input.previouslyApprovedAmount ?? 0;
+
+  if (!Number.isFinite(originalTuition) || originalTuition <= 0) {
+    throw new BadRequestException('شهریه اولیه باید بیشتر از صفر باشد.');
+  }
+  if (!Number.isFinite(discount) || discount < 0 || discount > originalTuition) {
+    throw new BadRequestException('مبلغ تخفیف معتبر نیست.');
+  }
+  if (!Number.isFinite(approvedAmount) || approvedAmount <= 0
+    || !Number.isFinite(previouslyApprovedAmount) || previouslyApprovedAmount < 0) {
+    throw new BadRequestException('مبلغ تأییدشده معتبر نیست.');
+  }
+
+  if (input.mode === RegistrationApprovalMode.NORMAL && discount !== 0) {
+    throw new BadRequestException('در حالت عادی تخفیف مجاز نیست.');
+  }
+  if (input.mode === RegistrationApprovalMode.DISCOUNT && (discount <= 0 || !input.discountReason?.trim())) {
+    throw new BadRequestException('برای حالت تخفیف، مبلغ و علت تخفیف الزامی است.');
+  }
+  if (input.mode === RegistrationApprovalMode.PAYMENT_EXCEPTION) {
+    if (discount !== 0 || !input.exceptionReason?.trim()) {
+      throw new BadRequestException('استثنای پرداخت بدون تخفیف و با علت مستند مجاز است.');
+    }
+    if (input.actorRole !== 'SUPER_ADMIN') {
+      throw new ForbiddenException('تأیید استثنای پرداخت فقط با مجوز مدیر ارشد انجام می‌شود.');
+    }
+  }
+
+  const finalTuition = originalTuition - discount;
+  if (!Number.isFinite(finalTuition) || finalTuition <= 0) {
+    throw new BadRequestException('شهریه نهایی باید بیشتر از صفر باشد.');
+  }
+  const totalPaid = previouslyApprovedAmount + approvedAmount;
+  const ratio = totalPaid / finalTuition;
+
+  if (input.mode === RegistrationApprovalMode.NORMAL && ratio < 0.6) {
+    throw new BadRequestException('پیش‌پرداخت در حالت عادی باید حداقل ۶۰٪ باشد.');
+  }
+  if (input.mode === RegistrationApprovalMode.DISCOUNT && ratio < 0.6) {
+    throw new BadRequestException('پس از تخفیف نیز پیش‌پرداخت باید حداقل ۶۰٪ شهریه نهایی باشد.');
+  }
+  if (input.mode === RegistrationApprovalMode.PAYMENT_EXCEPTION && ratio >= 0.6) {
+    throw new BadRequestException('حالت استثنا فقط برای پرداخت کمتر از ۶۰٪ است.');
+  }
+
+  const firstDueDate = new Date(input.firstDueDate);
+  if (Number.isNaN(firstDueDate.getTime())) throw new BadRequestException('تاریخ سررسید معتبر نیست.');
+  const remaining = Math.max(0, finalTuition - totalPaid);
+  const now = input.now ?? new Date();
+  if (remaining > 0 && firstDueDate.getTime() < now.getTime()) {
+    throw new BadRequestException('تاریخ اولین قسط نباید در گذشته باشد.');
+  }
+
+  let installmentAmounts: number[] = [];
+  if (remaining > 0) {
+    if (input.mode === RegistrationApprovalMode.PAYMENT_EXCEPTION || ratio < 0.8) {
+      const first = Math.floor((remaining / 2) * 100) / 100;
+      installmentAmounts = [first, Math.round((remaining - first) * 100) / 100];
+    } else {
+      installmentAmounts = [Math.round(remaining * 100) / 100];
+    }
+  }
+
+  return { finalTuition, totalPaid, ratio, remaining, installmentAmounts, firstDueDate };
+}
