@@ -181,6 +181,7 @@ export const ManageFinance: React.FC = () => {
                 <div style={{ color: colors.muted, fontSize: 11, lineHeight: 1.9 }}>{student.phone || 'شماره تماس ثبت نشده'} · {student.courseCount} دوره</div>
                 <div style={{ color: colors.muted, fontSize: 11, lineHeight: 1.9, marginTop: 4 }}>{student.courseTitles.length ? student.courseTitles.join('، ') : 'دوره‌ای ثبت نشده'}</div>
                 {student.unpricedCourses > 0 && <div style={{ color: '#f59e0b', fontSize: 11, marginTop: 5 }}><AlertCircle size={13} style={{ verticalAlign: 'middle', marginLeft: 4 }} />شهریه {student.unpricedCourses} دوره هنوز مشخص نشده است.</div>}
+                {student.requiresFinanceReconciliation && <div role="alert" style={{ color: '#d97706', fontSize: 11, marginTop: 5, lineHeight: 1.8 }}><AlertCircle size={13} style={{ verticalAlign: 'middle', marginLeft: 4 }} />ثبت‌نام اقساطی دارد؛ ماندهٔ این بخش معتبر نیست.</div>}
               </div>
               <span style={{ padding: '6px 10px', borderRadius: 999, background: student.status === 'PAID' ? 'rgba(16,185,129,.12)' : student.status === 'INCOMPLETE' || student.status === 'NO_COURSES' ? 'rgba(245,158,11,.12)' : student.status === 'PARTIAL' ? 'rgba(245,158,11,.12)' : 'rgba(239,68,68,.1)', color: student.status === 'PAID' ? '#10b981' : student.status === 'INCOMPLETE' || student.status === 'PARTIAL' || student.status === 'NO_COURSES' ? '#f59e0b' : '#ef4444', fontSize: 10, fontWeight: 900, whiteSpace: 'nowrap' }}>{statusLabels[student.status]}</span>
             </div>
@@ -190,7 +191,7 @@ export const ManageFinance: React.FC = () => {
               <div style={{ padding: 12, background: colors.alt, borderRadius: 12 }}><div style={{ color: colors.muted, fontSize: 10, marginBottom: 6 }}>مانده بدهی</div><strong style={{ fontSize: 12, color: student.balance > 0 ? '#ef4444' : colors.text }}>{money(student.balance)}</strong></div>
             </div>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 12 }}>
-              <button type="button" onClick={() => openPayment(student)} disabled={student.balance <= 0 || student.unpricedCourses > 0} style={{ ...buttonStyle, background: colors.accent, color: '#fff', borderColor: colors.accent, opacity: student.balance <= 0 || student.unpricedCourses > 0 ? .5 : 1 }}><CreditCard size={14} /> ثبت پرداخت</button>
+              <button type="button" onClick={() => openPayment(student)} disabled={student.balance <= 0 || student.unpricedCourses > 0 || Boolean(student.requiresFinanceReconciliation)} style={{ ...buttonStyle, background: colors.accent, color: '#fff', borderColor: colors.accent, opacity: student.balance <= 0 || student.unpricedCourses > 0 || student.requiresFinanceReconciliation ? .5 : 1 }}><CreditCard size={14} /> ثبت پرداخت</button>
               <button type="button" onClick={() => setExpandedStudentId(expandedStudentId === student.id ? null : student.id)} style={buttonStyle}>{expandedStudentId === student.id ? 'بستن سوابق پرداخت' : 'مشاهده سوابق پرداخت'} ({student.payments.length})</button>
             </div>
             {expandedStudentId === student.id && <div style={{ marginTop: 14, borderTop: `1px solid ${colors.border}`, paddingTop: 12 }}>
