@@ -96,10 +96,10 @@ export const AuditLogs: React.FC = () => {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
           <div>
             <h2 style={{ fontSize: 20, fontWeight: 900, margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: 10 }}>
-              <FileText size={21} /> لاگ تغییرات و فعالیت مدیران
+              <FileText size={21} /> گزارش تغییرات و فعالیت‌های سیستم
             </h2>
             <p style={{ fontSize: 13, color: 'var(--admin-sub, #667675)', margin: 0, lineHeight: 1.9 }}>
-              گزارش‌های ذخیره‌شده در پایگاه داده؛ حداکثر ۲۰۰ رویداد اخیر
+              ثبت متمرکز تغییرات موفق در بخش‌های مختلف برنامه؛ حداکثر ۲۰۰ رویداد اخیر
             </p>
           </div>
           <button type="button" onClick={() => void loadLogs(true)} disabled={loading || refreshing} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, border: '1px solid var(--admin-border, #d8e3e0)', background: 'var(--admin-control, #fbfdfc)', color: 'var(--admin-text, #202a2a)', padding: '10px 14px', borderRadius: 10, cursor: loading || refreshing ? 'wait' : 'pointer' }}>
