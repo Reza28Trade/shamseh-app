@@ -366,6 +366,9 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       include: { receipts: true },
     });
     if (!payment || payment.receipts.length === 0) throw new BadRequestException('پرداخت در انتظار بررسی با رسید معتبر پیدا نشد.');
+    if (dto.approvedAmount > Number(payment.claimedAmount) + 0.0001) {
+      throw new BadRequestException('مبلغ تأییدشده نمی‌تواند از مبلغ اعلام‌شده در رسید بیشتر باشد.');
+    }
     const otherApproved = registration.payments.reduce((sum, p) => sum + Number(p.approvedAmount ?? 0), 0);
     const plan = calculateRegistrationApprovalPlan({
       mode: dto.mode,
@@ -625,6 +628,29 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       return await this.prisma.$transaction(async (tx) => {
         // Serialize payment submissions for one student so simultaneous requests cannot over-claim the same balance.
         await tx.$queryRaw`SELECT "id" FROM "Student" WHERE "id" = ${actor.studentId!} FOR UPDATE`;
+
+        // Revalidate the selected installment after taking the student's ledger lock.
+        // The pre-transaction check is only an early UX guard; another request may
+        // settle this installment before this transaction obtains the lock.
+        const currentInstallment = await tx.installment.findUnique({
+          where: { id: installmentId },
+          include: {
+            registration: { select: { studentId: true, status: true } },
+            allocations: { select: { amount: true } },
+          },
+        });
+        if (!currentInstallment
+          || currentInstallment.registration.studentId !== actor.studentId
+          || currentInstallment.registration.status !== 'APPROVED') {
+          throw new NotFoundException('قسط متعلق به حساب شما پیدا نشد.');
+        }
+        const currentInstallmentPaid = currentInstallment.allocations.reduce(
+          (sum, allocation) => sum + Number(allocation.amount), 0,
+        );
+        if (Number(currentInstallment.amount) - currentInstallmentPaid <= 0.0001) {
+          throw new ConflictException('این قسط هم‌زمان تسویه شده است؛ صفحه را تازه‌سازی کنید.');
+        }
+
         const registrations = await tx.registration.findMany({
           where: { studentId: actor.studentId!, status: 'APPROVED' },
           select: { id: true, installments: { include: { allocations: { select: { amount: true } } } } },
@@ -685,6 +711,9 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     const approvedAmount = dto.status === 'APPROVED' ? Number(dto.approvedAmount ?? payment.claimedAmount) : null;
     if (dto.status === 'APPROVED' && (!Number.isFinite(approvedAmount) || approvedAmount! <= 0)) {
       throw new BadRequestException('مبلغ تأییدشده باید بیشتر از صفر باشد.');
+    }
+    if (dto.status === 'APPROVED' && approvedAmount! > Number(payment.claimedAmount) + 0.0001) {
+      throw new BadRequestException('مبلغ تأییدشده نمی‌تواند از مبلغ اعلام‌شده در رسید بیشتر باشد.');
     }
 
     return this.prisma.$transaction(async (tx) => {
