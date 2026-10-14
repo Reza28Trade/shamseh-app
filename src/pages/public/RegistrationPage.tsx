@@ -100,7 +100,7 @@ export function RegistrationPage() {
       const form = new FormData();
       form.set('nationalId', toEnglishDigits(statusNationalId.trim()));
       form.set('phone', toEnglishDigits(statusPhone.trim()));
-      form.set('claimedAmount', correctionAmount);
+      form.set('claimedAmount', toEnglishDigits(correctionAmount));
       form.set('receipt', correctionReceipt);
       await request('/api/public/registrations/' + encodeURIComponent(registrationId) + '/receipts', { method: 'POST', body: form });
       setCorrectionReceipt(null);
