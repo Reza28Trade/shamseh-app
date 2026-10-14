@@ -188,8 +188,10 @@ ALTER TABLE "RefundRequest" ADD CONSTRAINT "RefundRequest_reviewedById_fkey"
 ALTER TABLE "RefundRequest" ADD CONSTRAINT "RefundRequest_paidById_fkey"
   FOREIGN KEY ("paidById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
--- Preserve the field/major code on the student and retain reviewer history.
-ALTER TABLE "Student" ADD COLUMN "fieldCode" TEXT;
+-- These profile fields were previously added manually in some deployments.
+-- Keep the migration compatible with both fresh databases and those deployments.
+ALTER TABLE "Student" ADD COLUMN IF NOT EXISTS "academicLevel" "StudentLevel";
+ALTER TABLE "Student" ADD COLUMN IF NOT EXISTS "fieldCode" TEXT;
 
 CREATE TABLE "RegistrationReviewHistory" (
   "id" TEXT NOT NULL,
