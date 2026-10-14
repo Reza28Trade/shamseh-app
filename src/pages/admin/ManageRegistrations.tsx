@@ -117,6 +117,7 @@ export function ManageRegistrations(){
   const visibleRefunds=refunds.filter(x=>(statusFilter==='ALL'||x.status===statusFilter)&&[x.student.fullName,x.student.nationalId,x.student.phone].some(v=>v.toLowerCase().includes(search.toLowerCase())));
   const approvedRegistrations=registrations.filter(item=>item.status==='APPROVED');
   const archivedDebtors=approvedRegistrations.filter(item=>item.student?.isArchived && item.balance>0.0001);
+  const archivedSettled=approvedRegistrations.filter(item=>item.student?.isArchived && item.manualSettlementAmount>0 && item.balance<=0.0001);
   const approvedTuition=approvedRegistrations.reduce((sum,item)=>sum+item.finalTuition,0);
   const approvedPayments=approvedRegistrations.flatMap(item=>item.payments).filter(payment=>payment.status==='APPROVED').reduce((sum,payment)=>sum+(payment.approvedAmount??0),0);
   const pendingPayments=registrations.flatMap(item=>item.payments).filter(payment=>payment.status==='PENDING').length;
@@ -167,6 +168,15 @@ export function ManageRegistrations(){
         {!archivedDebtors.length&&<div style={{padding:18,textAlign:'center',color:'var(--admin-sub)',fontSize:12}}>هنرجوی بایگانی‌شده با بدهی باز وجود ندارد.</div>}
       </div>
     </section>
+    {archivedSettled.length>0&&<section style={{background:'var(--admin-card)',border:'1px solid var(--admin-border)',borderRadius:14,padding:14,display:'grid',gap:10}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:10,flexWrap:'wrap'}}><h3 style={{margin:0,fontSize:15}}>تسویه‌های ثبت‌شده هنرجویان بایگانی‌شده</h3><span style={{fontSize:11,color:'#1d9a72'}}>{new Intl.NumberFormat('fa-IR').format(archivedSettled.length)} مورد تسویه</span></div>
+      <div style={{display:'grid',gap:8,maxHeight:220,overflowY:'auto'}}>
+        {archivedSettled.map(item=><div key={item.id} style={{display:'flex',justifyContent:'space-between',gap:10,flexWrap:'wrap',padding:10,border:'1px solid var(--admin-border)',borderRadius:9,background:'var(--admin-inner)'}}>
+          <div><strong>{item.student?.fullName||item.applicantFullName}</strong><div style={{fontSize:11,color:'var(--admin-sub)',marginTop:4}}>تسویه ثبت‌شده: {money(item.manualSettlementAmount)} · {item.manualSettledAt?new Date(item.manualSettledAt).toLocaleDateString('fa-IR'):'تاریخ نامشخص'}</div>{item.manualSettlementNote&&<div style={{fontSize:11,color:'var(--admin-sub)',marginTop:3}}>توضیح: {item.manualSettlementNote}</div>}</div>
+          <strong style={{color:'#1d9a72',fontSize:12,alignSelf:'center'}}>تسویه‌شده</strong>
+        </div>)}
+      </div>
+    </section>}
     <section style={{background:'var(--admin-card)',border:'1px solid var(--admin-border)',borderRadius:14,padding:14,display:'grid',gap:12}}>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:10,flexWrap:'wrap'}}>
         <div><h3 style={{margin:0,fontSize:15}}>دفتر کل و سوابق مالی</h3><p style={{margin:'5px 0 0',fontSize:11,color:'var(--admin-sub)'}}>تاریخچه پیش‌پرداخت‌ها، اقساط و بازپرداخت‌ها؛ جدیدترین رویدادها در ابتدا</p></div>
