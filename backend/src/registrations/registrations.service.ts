@@ -533,10 +533,17 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     if (!Number.isFinite(dto.claimedAmount) || dto.claimedAmount <= 0) throw new BadRequestException('مبلغ پرداخت باید بیشتر از صفر باشد.');
     const installment = await this.prisma.installment.findUnique({
       where: { id: installmentId },
-      include: { registration: { select: { id: true, studentId: true, status: true } } },
+      include: {
+        registration: { select: { id: true, studentId: true, status: true } },
+        allocations: { select: { amount: true } },
+      },
     });
     if (!installment || installment.registration.studentId !== actor.studentId || installment.registration.status !== 'APPROVED') {
       throw new NotFoundException('قسط متعلق به حساب شما پیدا نشد.');
+    }
+    const installmentPaid = installment.allocations.reduce((sum, allocation) => sum + Number(allocation.amount), 0);
+    if (Number(installment.amount) - installmentPaid <= 0.0001) {
+      throw new ConflictException('این قسط قبلاً تسویه شده است.');
     }
     const storageKey = await this.storeReceipt(file);
     try {
@@ -590,10 +597,10 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       where: { id: paymentId },
       include: { registration: { select: { id: true, studentId: true, status: true } }, receipts: true },
     });
-    if (payment?.registration.studentId == null) throw new ConflictException('این پرداخت به حساب هنرجویی متصل نیست.');
     if (!payment || payment.purpose !== RegistrationPaymentPurpose.INSTALLMENT || payment.status !== 'PENDING') {
       throw new NotFoundException('پرداخت قسط در انتظار بررسی پیدا نشد.');
     }
+    if (payment.registration.studentId == null) throw new ConflictException('این پرداخت به حساب هنرجویی متصل نیست.');
     if (payment.receipts.length === 0) throw new BadRequestException('برای این پرداخت رسید ثبت نشده است.');
     if (dto.status === 'REJECTED' && !dto.rejectionReason?.trim()) {
       throw new BadRequestException('علت رد رسید الزامی است.');
@@ -775,10 +782,29 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
 
       const registrations = await tx.registration.findMany({
         where: { studentId: refund.studentId, status: 'APPROVED' },
-        select: { id: true, finalTuition: true, payments: { where: { status: 'APPROVED' }, select: { approvedAmount: true } } },
+        select: {
+          id: true, finalTuition: true,
+          courses: { select: { courseId: true } },
+          payments: { where: { status: 'APPROVED' }, select: { approvedAmount: true } },
+        },
       });
-      const tuition = registrations.reduce((sum, row) => sum + Number(row.finalTuition), 0);
-      const paid = registrations.reduce((sum, row) => sum + row.payments.reduce((p, payment) => p + Number(payment.approvedAmount ?? 0), 0), 0);
+      const registeredCourseIds = [...new Set(registrations.flatMap((row) => row.courses.map((course) => course.courseId)))];
+      const legacyEnrollments = await tx.enrollment.findMany({
+        where: {
+          studentId: refund.studentId,
+          status: { in: [EnrollmentStatus.ACTIVE, EnrollmentStatus.COMPLETED] },
+          ...(registeredCourseIds.length ? { courseId: { notIn: registeredCourseIds } } : {}),
+        },
+        select: { tuitionAmount: true, course: { select: { price: true } } },
+      });
+      const legacyPayments = await tx.payment.findMany({
+        where: { studentId: refund.studentId, purpose: 'COURSE_FEE', status: 'APPROVED' },
+        select: { amount: true },
+      });
+      const tuition = registrations.reduce((sum, row) => sum + Number(row.finalTuition), 0)
+        + legacyEnrollments.reduce((sum, enrollment) => sum + Number(enrollment.tuitionAmount ?? enrollment.course.price ?? 0), 0);
+      const paid = registrations.reduce((sum, row) => sum + row.payments.reduce((p, payment) => p + Number(payment.approvedAmount ?? 0), 0), 0)
+        + legacyPayments.reduce((sum, payment) => sum + Number(payment.amount), 0);
       const previousRefunds = await tx.refundRequest.findMany({
         where: { studentId: refund.studentId, status: { in: ['RESERVED', 'PAID'] } },
         select: { amountReserved: true },
