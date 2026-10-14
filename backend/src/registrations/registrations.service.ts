@@ -16,7 +16,7 @@ import { SubmitInstallmentPaymentDto } from './dto/submit-installment-payment.dt
 import { ReviewInstallmentPaymentDto } from './dto/review-installment-payment.dto';
 import { CreateRefundRequestDto } from './dto/create-refund-request.dto';
 import { MarkRefundPaidDto } from './dto/mark-refund-paid.dto';
-import { addOneMonthClamped, calculateRegistrationApprovalPlan } from './registration-finance.rules';
+import { addOneMonthClamped, calculateRefundAvailableBalance, calculateRegistrationApprovalPlan } from './registration-finance.rules';
 
 const RECEIPT_DIR = process.env.REGISTRATION_RECEIPT_STORAGE_PATH
   || join(process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files', 'registration-receipts');
@@ -894,7 +894,11 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         select: { amountReserved: true },
       });
       const alreadyReserved = previousRefunds.reduce((sum, item) => sum + Number(item.amountReserved ?? 0), 0);
-      const available = Math.max(0, paid - tuition - alreadyReserved);
+      const available = calculateRefundAvailableBalance({
+        totalApprovedPayments: paid,
+        totalTuition: tuition,
+        alreadyReserved,
+      });
       if (Number(currentRefund.amountRequested) > available + 0.0001) {
         throw new BadRequestException('موجودی قابل بازپرداخت کافی نیست؛ بدهی‌های ثبت‌نام‌های دیگر ابتدا از اضافه‌پرداخت کسر می‌شوند.');
       }
