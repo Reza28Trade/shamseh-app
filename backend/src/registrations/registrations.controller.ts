@@ -1,0 +1,102 @@
+import {
+  Body, Controller, Get, Param, Patch, Post, Query, Req, Res, UploadedFile,
+  UseGuards, UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Request, Response } from 'express';
+import { createReadStream } from 'node:fs';
+const { memoryStorage } = require('multer');
+import { AuthGuard } from '../auth/auth.guard';
+import { AuthenticatedUser } from '../auth/auth.types';
+import { CreateRegistrationDto } from './dto/create-registration.dto';
+import { ReviewRegistrationDto } from './dto/review-registration.dto';
+import { RegistrationsService } from './registrations.service';
+
+type AuthenticatedRequest = Request & { user: AuthenticatedUser };
+
+@Controller()
+export class RegistrationsController {
+  constructor(private readonly registrationsService: RegistrationsService) {}
+
+  @Get('public/registration/courses')
+  listPublicCourses() {
+    return this.registrationsService.listPublicCourses();
+  }
+
+  @Post('public/registrations')
+  @UseInterceptors(FileInterceptor('receipt', {
+    storage: memoryStorage(),
+    limits: { fileSize: 8 * 1024 * 1024, files: 1 },
+  }))
+  createPublicRegistration(@Body() dto: CreateRegistrationDto, @UploadedFile() file: any) {
+    return this.registrationsService.createPublicRegistration(dto, file);
+  }
+
+  @Post('public/registrations/:registrationId/receipts')
+  @UseInterceptors(FileInterceptor('receipt', {
+    storage: memoryStorage(),
+    limits: { fileSize: 8 * 1024 * 1024, files: 1 },
+  }))
+  uploadCorrectionReceipt(
+    @Param('registrationId') registrationId: string,
+    @Body('claimedAmount') claimedAmount: string,
+    @Body('paymentDate') paymentDate: string,
+    @Body('trackingCode') trackingCode: string,
+    @UploadedFile() file: any,
+  ) {
+    return this.registrationsService.uploadCorrectionReceipt(
+      registrationId,
+      { claimedAmount: Number(claimedAmount), paymentDate, trackingCode },
+      file,
+    );
+  }
+
+  @Get('admin/registrations')
+  @UseGuards(AuthGuard)
+  listAdminRegistrations(@Req() req: AuthenticatedRequest, @Query('status') status?: string) {
+    return this.registrationsService.listAdminRegistrations(req.user, status);
+  }
+
+  @Patch('admin/registrations/:registrationId/approve')
+  @UseGuards(AuthGuard)
+  reviewAndApprove(
+    @Req() req: AuthenticatedRequest,
+    @Param('registrationId') registrationId: string,
+    @Body() dto: ReviewRegistrationDto,
+  ) {
+    return this.registrationsService.reviewAndApprove(req.user, registrationId, dto);
+  }
+
+  @Patch('admin/registrations/:registrationId/correction')
+  @UseGuards(AuthGuard)
+  requestCorrection(
+    @Req() req: AuthenticatedRequest,
+    @Param('registrationId') registrationId: string,
+    @Body('note') note: string,
+  ) {
+    return this.registrationsService.requestCorrection(req.user, registrationId, note);
+  }
+
+  @Patch('admin/registrations/:registrationId/reject')
+  @UseGuards(AuthGuard)
+  rejectRegistration(
+    @Req() req: AuthenticatedRequest,
+    @Param('registrationId') registrationId: string,
+    @Body('reason') reason: string,
+  ) {
+    return this.registrationsService.rejectRegistration(req.user, registrationId, reason);
+  }
+
+  @Get('admin/registration-receipts/:receiptId')
+  @UseGuards(AuthGuard)
+  async viewReceipt(
+    @Req() req: AuthenticatedRequest,
+    @Param('receiptId') receiptId: string,
+    @Res() res: Response,
+  ) {
+    const receipt = await this.registrationsService.viewReceipt(req.user, receiptId);
+    res.setHeader('Content-Type', receipt.mimeType);
+    res.setHeader('Content-Disposition', 'inline');
+    return createReadStream(receipt.path).pipe(res);
+  }
+}
