@@ -16,7 +16,7 @@ import { SubmitInstallmentPaymentDto } from './dto/submit-installment-payment.dt
 import { ReviewInstallmentPaymentDto } from './dto/review-installment-payment.dto';
 import { CreateRefundRequestDto } from './dto/create-refund-request.dto';
 import { MarkRefundPaidDto } from './dto/mark-refund-paid.dto';
-import { addOneMonthClamped, calculateRefundAvailableBalance, calculateRegistrationApprovalPlan } from './registration-finance.rules';
+import { addOneMonthClamped, calculateRefundAvailableBalance, calculateRegistrationApprovalPlan, planOldestDebtAllocations } from './registration-finance.rules';
 
 const RECEIPT_DIR = process.env.REGISTRATION_RECEIPT_STORAGE_PATH
   || join(process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files', 'registration-receipts');
@@ -475,7 +475,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       });
 
       // Any amount above this registration's final tuition is applied to the student's oldest unpaid installments first.
-      let excess = Math.max(0, totalPaid - finalTuition);
+      const excess = Math.max(0, totalPaid - finalTuition);
       if (excess > 0) {
         const olderInstallments = await tx.installment.findMany({
           where: {
@@ -485,19 +485,21 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
           include: { allocations: { select: { amount: true } } },
           orderBy: [{ dueDate: 'asc' }, { createdAt: 'asc' }],
         });
-        for (const item of olderInstallments) {
-          if (excess <= 0.0001) break;
-          const alreadyAllocated = item.allocations.reduce((sum, allocation) => sum + Number(allocation.amount), 0);
-          const due = Number(item.amount) - alreadyAllocated;
-          if (due <= 0.0001) continue;
-          const amount = Math.min(excess, due);
-          await tx.paymentAllocation.create({ data: { paymentId: payment.id, installmentId: item.id, amount } });
-          const paidAfter = alreadyAllocated + amount;
+        const allocationPlan = planOldestDebtAllocations(olderInstallments.map((item) => ({
+          id: item.id, dueDate: item.dueDate, sequence: item.sequence,
+          amount: Number(item.amount),
+          allocated: item.allocations.reduce((sum, allocation) => sum + Number(allocation.amount), 0),
+        })), excess);
+        const byId = new Map(olderInstallments.map((item) => [item.id, item]));
+        for (const allocation of allocationPlan) {
+          const item = byId.get(allocation.installmentId)!;
+          const alreadyAllocated = item.allocations.reduce((sum, current) => sum + Number(current.amount), 0);
+          await tx.paymentAllocation.create({ data: { paymentId: payment.id, installmentId: item.id, amount: allocation.amount } });
+          const paidAfter = alreadyAllocated + allocation.amount;
           await tx.installment.update({
             where: { id: item.id },
             data: { status: paidAfter + 0.0001 >= Number(item.amount) ? 'PAID' : 'PARTIALLY_PAID' },
           });
-          excess = Math.round((excess - amount) * 100) / 100;
         }
       }
 
@@ -713,19 +715,16 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         if (approvedAmount! > outstanding + 0.0001) {
           throw new BadRequestException('مبلغ تأییدشده از کل بدهی باقی‌مانده بیشتر است.');
         }
-        let left = approvedAmount!;
-        for (const item of debt) {
-          if (left <= 0.0001) break;
-          const allocationAmount = Math.min(left, item.amount - item.allocated);
-          await tx.paymentAllocation.create({
-            data: { paymentId, installmentId: item.id, amount: allocationAmount },
-          });
-          const paidAfter = item.allocated + allocationAmount;
+        const allocationPlan = planOldestDebtAllocations(debt, approvedAmount!);
+        const debtById = new Map(debt.map((item) => [item.id, item]));
+        for (const allocation of allocationPlan) {
+          const item = debtById.get(allocation.installmentId)!;
+          await tx.paymentAllocation.create({ data: { paymentId, installmentId: item.id, amount: allocation.amount } });
+          const paidAfter = item.allocated + allocation.amount;
           const status = paidAfter + 0.0001 >= item.amount
             ? 'PAID'
             : item.dueDate.getTime() < Date.now() ? 'OVERDUE' : 'PARTIALLY_PAID';
           await tx.installment.update({ where: { id: item.id }, data: { status } });
-          left = Math.round((left - allocationAmount) * 100) / 100;
         }
       }
 
