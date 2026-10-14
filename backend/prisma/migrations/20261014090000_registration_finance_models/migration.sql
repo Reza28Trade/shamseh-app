@@ -250,4 +250,4 @@ ALTER TABLE "Installment" ADD COLUMN "lastReminderAt" TIMESTAMP(3);
 ALTER TABLE "Installment" ADD COLUMN "lastReminderType" TEXT;
 CREATE INDEX "Installment_lastReminderAt_status_idx" ON "Installment"("lastReminderAt", "status");
 
-ALTER TABLE "Student" ADD COLUMN "freeMockExamEligible" BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE "Student" ADD COLUMN IF NOT EXISTS "freeMockExamEligible" BOOLEAN NOT NULL DEFAULT false;
