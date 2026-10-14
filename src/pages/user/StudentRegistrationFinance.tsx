@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type FormEvent } from 'react';
+import { useCallback, useEffect, useState, type FormEvent, type CSSProperties } from 'react';
 import { useStore } from '../../store/useStore';
 
 type Installment = { id: string; sequence: number; amount: number; paid: number; balance: number; dueDate: string; status: string };
@@ -19,7 +19,7 @@ export function StudentRegistrationFinance(){
   const [loading,setLoading]=useState(false);
   const [error,setError]=useState('');
   const [notice,setNotice]=useState('');
-  const card:React.CSSProperties={background:dark?'#191f21':'#fff',border:'1px solid '+(dark?'#303a3c':'#d8e3e0'),borderRadius:14,padding:15,color:dark?'#f1f4f3':'#202a2a'};
+  const card:CSSProperties={background:dark?'#191f21':'#fff',border:'1px solid '+(dark?'#303a3c':'#d8e3e0'),borderRadius:14,padding:15,color:dark?'#f1f4f3':'#202a2a'};
   const sub=dark?'#a2aeae':'#667675';
   const field:React.CSSProperties={width:'100%',minWidth:0,boxSizing:'border-box',padding:'10px 11px',border:'1px solid '+(dark?'#303a3c':'#d8e3e0'),borderRadius:9,background:dark?'#171d1f':'#fbfdfc',color:dark?'#f1f4f3':'#202a2a',font:'inherit',fontSize:12};
   const button:React.CSSProperties={border:0,borderRadius:9,padding:'10px 13px',background:'#398a90',color:'#fff',font:'inherit',fontSize:12,fontWeight:850,cursor:'pointer'};
@@ -38,7 +38,7 @@ export function StudentRegistrationFinance(){
     finally{setLoading(false);}
   },[]);
   useEffect(()=>{void load();},[load]);
-  const submitPayment=async(event:FormEvent,inst:Installment,regId:string)=>{
+  const submitPayment=async(event:FormEvent,inst:Installment)=>{
     event.preventDefault();setError('');setNotice('');
     const file=files[inst.id], amount=Number(amounts[inst.id]);
     if(!file||!Number.isFinite(amount)||amount<=0){setError('مبلغ و تصویر رسید را برای قسط انتخاب کنید.');return;}
@@ -78,7 +78,7 @@ export function StudentRegistrationFinance(){
       {reg.installments.length===0?<p style={{fontSize:12,color:'#1d9a72',margin:0}}>برای این ثبت‌نام قسط باقی نمانده است.</p>:reg.installments.map(inst=><div key={inst.id} style={{border:'1px solid '+(dark?'#303a3c':'#e1eae6'),borderRadius:12,padding:12,display:'grid',gap:9}}>
         <div style={{display:'flex',justifyContent:'space-between',gap:10,flexWrap:'wrap'}}><strong style={{fontSize:12}}>قسط {new Intl.NumberFormat('fa-IR').format(inst.sequence)} · {money(inst.amount)}</strong><span style={{fontSize:11,color:inst.status==='PAID'?'#1d9a72':inst.status==='OVERDUE'?'#dc6863':sub}}>{statusText[inst.status]||inst.status}</span></div>
         <div style={{display:'flex',justifyContent:'space-between',gap:10,fontSize:11,color:sub}}><span>سررسید: {new Date(inst.dueDate).toLocaleDateString('fa-IR')}</span><span>مانده: {money(inst.balance)}</span></div>
-        {inst.balance>0&&<form onSubmit={e=>void submitPayment(e,inst,reg.id)} style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,180px),1fr))',gap:9}}>
+        {inst.balance>0&&<form onSubmit={e=>void submitPayment(e,inst)} style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,180px),1fr))',gap:9}}>
           <input style={field} type="number" min="1" max={inst.balance} step="1" placeholder="مبلغ پرداخت (تومان)" value={amounts[inst.id]||''} onChange={e=>setAmounts(p=>({...p,[inst.id]:e.target.value}))} required/>
           <input style={field} placeholder="شماره پیگیری (اختیاری)" value={tracking[inst.id]||''} onChange={e=>setTracking(p=>({...p,[inst.id]:e.target.value}))}/>
           <input style={field} type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>setFiles(p=>({...p,[inst.id]:e.target.files?.[0]??null}))} required/>
