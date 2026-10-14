@@ -31,6 +31,17 @@ export function ManageRegistrations(){
   const [error,setError]=useState('');
   const [notice,setNotice]=useState('');
   const [search,setSearch]=useState('');
+  const [approval,setApproval]=useState<{item:Registration;payment:Payment}|null>(null);
+  const [approvalMode,setApprovalMode]=useState<'NORMAL'|'DISCOUNT'|'PAYMENT_EXCEPTION'>('NORMAL');
+  const [discountAmount,setDiscountAmount]=useState('0');
+  const [discountReason,setDiscountReason]=useState('');
+  const [exceptionReason,setExceptionReason]=useState('');
+  const [approvedAmount,setApprovedAmount]=useState('');
+  const [firstDueDate,setFirstDueDate]=useState('');
+  const [reviewNote,setReviewNote]=useState('');
+  const [mockExamEligible,setMockExamEligible]=useState(false);
+  const [mockExamId,setMockExamId]=useState('');
+  const [savingApproval,setSavingApproval]=useState(false);
   const call=async(url:string,init?:RequestInit)=>{
     const r=await fetch(url,{credentials:'include',...init});
     const d=await r.json().catch(()=>({}));
@@ -57,48 +68,36 @@ export function ManageRegistrations(){
     try{await call(url,{method,headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});setNotice('عملیات با موفقیت انجام شد.');await load();}
     catch(e){setError(e instanceof Error?e.message:'عملیات ناموفق بود.');}
   };
-  const approve=async(item:Registration)=>{
+  const approve=(item:Registration)=>{
     const payment=item.payments.find(p=>p.purpose==='INITIAL'&&p.status==='PENDING'&&p.receipts.length>0);
     if(!payment){setError('برای این ثبت‌نام رسید پیش‌پرداخت در انتظار بررسی پیدا نشد.');return;}
-    const mode=window.prompt('حالت تأیید را وارد کنید: NORMAL یا DISCOUNT یا PAYMENT_EXCEPTION','NORMAL');
-    if(!mode)return;
-    if(!['NORMAL','DISCOUNT','PAYMENT_EXCEPTION'].includes(mode)){setError('حالت تأیید معتبر نیست.');return;}
-    const discountAmount=mode==='DISCOUNT'?Number(window.prompt('مبلغ تخفیف (تومان)','0')):0;
-    if(!Number.isFinite(discountAmount)||discountAmount<0){setError('مبلغ تخفیف معتبر نیست.');return;}
-    const discountReason=mode==='DISCOUNT'?window.prompt('علت تخفیف'):undefined;
-    const exceptionReason=mode==='PAYMENT_EXCEPTION'?window.prompt('علت استثنای پرداخت (ویژه مدیر ارشد)'):undefined;
-    const approvedAmount=Number(window.prompt('مبلغ نهایی تأییدشده رسید (تومان)',String(payment.claimedAmount)));
-    if(!Number.isFinite(approvedAmount)||approvedAmount<=0){setError('مبلغ تأییدشده معتبر نیست.');return;}
-    const today=new Date();
-    const todayDate=[today.getFullYear(),String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0')].join('-');
-    const finalTuition=item.originalTuition-discountAmount;
-    let firstDueDate=todayDate;
-    if(approvedAmount<finalTuition){
-      const defaultDueDate=new Date();defaultDueDate.setDate(defaultDueDate.getDate()+30);
-      const defaultDue=[defaultDueDate.getFullYear(),String(defaultDueDate.getMonth()+1).padStart(2,'0'),String(defaultDueDate.getDate()).padStart(2,'0')].join('-');
-      const selectedDueDate=window.prompt('تاریخ سررسید اولین قسط به شکل YYYY-MM-DD',defaultDue);
-      if(!selectedDueDate)return;
-      if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(selectedDueDate)){setError('تاریخ را به شکل YYYY-MM-DD وارد کنید.');return;}
-      firstDueDate=selectedDueDate;
-    }
-    const reviewNote=window.prompt('یادداشت بررسی (اختیاری)')||undefined;
-    const mockExamEligible=window.confirm('آیا هنرجو مشمول آزمون آزمایشی رایگان شود؟');
-    let mockExamId:string|undefined;
-    if(mockExamEligible){
-      if(mockExams.length===0){setError('آزمون زمان‌بندی‌شده‌ای برای افزودن هنرجو وجود ندارد. ابتدا آزمون را در بخش آزمون‌های آزمایشی زمان‌بندی کنید.');return;}
-      const choices=mockExams.map((exam,index)=>`${index+1}) ${exam.title} · ${new Date(exam.examDate).toLocaleDateString('fa-IR')} · ${exam.level} / ${exam.field}`).join('\n');
-      const selected=window.prompt('شماره آزمونی را انتخاب کنید تا هنرجو به فهرست شرکت‌کنندگان افزوده شود:\n'+choices,'1');
-      if(selected===null)return;
-      const selectedIndex=Number(selected)-1;
-      if(!Number.isInteger(selectedIndex)||selectedIndex<0||selectedIndex>=mockExams.length){setError('شماره آزمون معتبر نیست.');return;}
-      mockExamId=mockExams[selectedIndex].id;
-    }
-    await action('/api/admin/registrations/'+encodeURIComponent(item.id)+'/approve','PATCH',{
-      mode,discountAmount,discountReason,exceptionReason,paymentId:payment.id,approvedAmount,
-      firstDueDate,
-      mockExamEligible,mockExamId,
-      reviewNote,
-    });
+    const due=new Date();due.setDate(due.getDate()+30);
+    setApproval({item,payment});setApprovalMode('NORMAL');setDiscountAmount('0');setDiscountReason('');setExceptionReason('');
+    setApprovedAmount(String(payment.claimedAmount));setFirstDueDate([due.getFullYear(),String(due.getMonth()+1).padStart(2,'0'),String(due.getDate()).padStart(2,'0')].join('-'));
+    setReviewNote('');setMockExamEligible(false);setMockExamId('');setError('');
+  };
+  const submitApproval=async()=>{
+    if(!approval)return;
+    const discount=approvalMode==='DISCOUNT'?Number(discountAmount):0;
+    const amount=Number(approvedAmount);
+    if(!Number.isFinite(discount)||discount<0||discount>approval.item.originalTuition){setError('مبلغ تخفیف معتبر نیست.');return;}
+    if(approvalMode==='DISCOUNT'&&!discountReason.trim()){setError('علت تخفیف را وارد کنید.');return;}
+    if(approvalMode==='PAYMENT_EXCEPTION'&&!exceptionReason.trim()){setError('علت استثنای پرداخت را وارد کنید.');return;}
+    if(!Number.isFinite(amount)||amount<=0){setError('مبلغ تأییدشده باید بیشتر از صفر باشد.');return;}
+    const finalTuition=approval.item.originalTuition-discount;
+    if(amount<finalTuition&&!/^\\d{4}-\\d{2}-\\d{2}$/.test(firstDueDate)){setError('تاریخ سررسید اولین قسط را انتخاب کنید.');return;}
+    if(mockExamEligible&&!mockExamId){setError('آزمون آزمایشی را انتخاب کنید.');return;}
+    setSavingApproval(true);
+    try{
+      await call('/api/admin/registrations/'+encodeURIComponent(approval.item.id)+'/approve',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        mode:approvalMode,discountAmount:discount,discountReason:approvalMode==='DISCOUNT'?discountReason.trim():undefined,
+        exceptionReason:approvalMode==='PAYMENT_EXCEPTION'?exceptionReason.trim():undefined,paymentId:approval.payment.id,
+        approvedAmount:amount,firstDueDate:amount<finalTuition?firstDueDate:undefined,
+        mockExamEligible,mockExamId:mockExamEligible?mockExamId:undefined,reviewNote:reviewNote.trim()||undefined,
+      })});
+      setApproval(null);setNotice('ثبت‌نام با موفقیت تأیید شد.');await load();
+    }catch(e){setError(e instanceof Error?e.message:'تأیید ثبت‌نام انجام نشد.');}
+    finally{setSavingApproval(false);}
   };
   const correction=async(item:Registration)=>{
     const note=window.prompt('مواردی که باید اصلاح شوند را دقیق بنویسید.');
@@ -125,6 +124,21 @@ export function ManageRegistrations(){
     {error&&<div role="alert" style={{padding:12,borderRadius:10,background:'#fff0ef',color:'#a63730',fontSize:12}}>{error}</div>}
     {notice&&<div role="status" style={{padding:12,borderRadius:10,background:'#eaf6ef',color:'#216743',fontSize:12}}>{notice}</div>}
     {loading&&<p style={{fontSize:12,color:'var(--admin-sub)'}}>در حال دریافت اطلاعات…</p>}
+    {approval&&<div role="dialog" aria-modal="true" aria-labelledby="approval-title" style={{position:'fixed',inset:0,zIndex:1000,background:'rgba(0,0,0,.55)',display:'grid',placeItems:'center',padding:16}}>
+      <form onSubmit={e=>{e.preventDefault();void submitApproval();}} style={{width:'min(100%,620px)',maxHeight:'90vh',overflowY:'auto',background:'var(--admin-card)',color:'var(--admin-text)',border:'1px solid var(--admin-border)',borderRadius:16,padding:20,display:'grid',gap:13}}>
+        <div style={{display:'flex',justifyContent:'space-between',gap:10,alignItems:'center'}}><h3 id="approval-title" style={{margin:0,fontSize:16}}>تأیید ثبت‌نام · {approval.item.applicantFullName}</h3><button type="button" style={buttonStyle} onClick={()=>setApproval(null)}>بستن</button></div>
+        <div style={{padding:12,borderRadius:10,background:'var(--admin-inner)',fontSize:12,lineHeight:1.9}}>رسید قابل بررسی: <strong>پیش‌پرداخت</strong><br/>مبلغ اعلامی هنرجو: <strong>{money(approval.payment.claimedAmount)}</strong><br/>شهریه اولیه: <strong>{money(approval.item.originalTuition)}</strong></div>
+        <label style={{display:'grid',gap:6,fontSize:12}}>روش تأیید<select style={inputStyle} value={approvalMode} onChange={e=>setApprovalMode(e.target.value as typeof approvalMode)}><option value="NORMAL">تأیید عادی (حداقل ۶۰٪)</option><option value="DISCOUNT">تأیید با تخفیف</option><option value="PAYMENT_EXCEPTION">استثنای پرداخت (ویژه مدیر ارشد)</option></select></label>
+        {approvalMode==='DISCOUNT'&&<><label style={{display:'grid',gap:6,fontSize:12}}>مبلغ تخفیف (تومان)<input type="number" min="0" max={approval.item.originalTuition} required style={inputStyle} value={discountAmount} onChange={e=>setDiscountAmount(e.target.value)}/></label><label style={{display:'grid',gap:6,fontSize:12}}>علت تخفیف<textarea required style={inputStyle} value={discountReason} onChange={e=>setDiscountReason(e.target.value)}/></label></>}
+        {approvalMode==='PAYMENT_EXCEPTION'&&<label style={{display:'grid',gap:6,fontSize:12}}>علت استثنای پرداخت — فقط مدیر ارشد<textarea required style={inputStyle} value={exceptionReason} onChange={e=>setExceptionReason(e.target.value)}/></label>}
+        <label style={{display:'grid',gap:6,fontSize:12}}>مبلغ تأییدشده رسید (تومان)<input type="number" min="1" required style={inputStyle} value={approvedAmount} onChange={e=>setApprovedAmount(e.target.value)}/></label>
+        {Number(approvedAmount)>0&&Number(approvedAmount)<approval.item.originalTuition-(approvalMode==='DISCOUNT'?Number(discountAmount)||0:0)&&<label style={{display:'grid',gap:6,fontSize:12}}>سررسید اولین قسط (تقویم با نمایش فارسی)<input type="date" lang="fa-IR" required style={inputStyle} value={firstDueDate} onChange={e=>setFirstDueDate(e.target.value)}/><span style={{color:'var(--admin-sub)',fontSize:11}}>تاریخ انتخاب‌شده: {firstDueDate?new Intl.DateTimeFormat('fa-IR',{dateStyle:'full'}).format(new Date(firstDueDate+'T12:00:00')):'انتخاب نشده'}</span></label>}
+        <label style={{display:'flex',gap:8,alignItems:'center',fontSize:12}}><input type="checkbox" checked={mockExamEligible} onChange={e=>{setMockExamEligible(e.target.checked);if(!e.target.checked)setMockExamId('');}}/>هنرجو مشمول آزمون آزمایشی رایگان شود</label>
+        {mockExamEligible&&<label style={{display:'grid',gap:6,fontSize:12}}>آزمون آزمایشی<select required style={inputStyle} value={mockExamId} onChange={e=>setMockExamId(e.target.value)}><option value="">انتخاب آزمون…</option>{mockExams.map(exam=><option key={exam.id} value={exam.id}>{exam.title} · {new Date(exam.examDate).toLocaleDateString('fa-IR')} · {exam.level} / {exam.field}</option>)}</select>{mockExams.length===0&&<span style={{color:'#b44c48'}}>آزمون زمان‌بندی‌شده‌ای وجود ندارد.</span>}</label>}
+        <label style={{display:'grid',gap:6,fontSize:12}}>یادداشت مدیریت (اختیاری)<textarea style={inputStyle} value={reviewNote} onChange={e=>setReviewNote(e.target.value)}/></label>
+        <div style={{display:'flex',gap:8,justifyContent:'flex-end',flexWrap:'wrap'}}><button type="button" style={buttonStyle} onClick={()=>setApproval(null)}>انصراف</button><button type="submit" disabled={savingApproval} style={{...buttonStyle,background:'var(--admin-accent)',color:'#fff',opacity:savingApproval?.65:1}}>{savingApproval?'در حال ثبت…':'تأیید نهایی ثبت‌نام'}</button></div>
+      </form>
+    </div>}
     {tab==='registrations'?<div style={{display:'grid',gap:12,maxHeight:760,overflowY:'auto',paddingInlineEnd:3}}>
       {visibleRegistrations.map(item=><article key={item.id} style={{background:'var(--admin-card)',border:'1px solid var(--admin-border)',borderRadius:14,padding:16,display:'grid',gap:12}}>
         <div style={{display:'flex',justifyContent:'space-between',gap:10,flexWrap:'wrap',alignItems:'start'}}>
