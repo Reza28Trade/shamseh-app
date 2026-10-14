@@ -7,15 +7,15 @@ DECLARE
   duplicate_blocked BOOLEAN := FALSE;
 BEGIN
   INSERT INTO "Registration"
-    ("id", "applicantFullName", "nationalId", "phone", "academicLevel", "fieldCode", "originalTuition", "finalTuition", "status")
+    ("id", "applicantFullName", "nationalId", "phone", "academicLevel", "fieldCode", "originalTuition", "finalTuition", "status", "updatedAt")
   VALUES
-    ('ci-open-registration-1', 'CI Test', 'CI-REGISTRATION-UNIQUE-TEST', '0000000000', 'MASTER', 'CI', 100, 100, 'PENDING_REVIEW');
+    ('ci-open-registration-1', 'CI Test', 'CI-REGISTRATION-UNIQUE-TEST', '0000000000', 'MASTER', 'CI', 100, 100, 'PENDING_REVIEW', CURRENT_TIMESTAMP);
 
   BEGIN
     INSERT INTO "Registration"
-      ("id", "applicantFullName", "nationalId", "phone", "academicLevel", "fieldCode", "originalTuition", "finalTuition", "status")
+      ("id", "applicantFullName", "nationalId", "phone", "academicLevel", "fieldCode", "originalTuition", "finalTuition", "status", "updatedAt")
     VALUES
-      ('ci-open-registration-2', 'CI Test', 'CI-REGISTRATION-UNIQUE-TEST', '0000000000', 'MASTER', 'CI', 100, 100, 'PENDING_REVIEW');
+      ('ci-open-registration-2', 'CI Test', 'CI-REGISTRATION-UNIQUE-TEST', '0000000000', 'MASTER', 'CI', 100, 100, 'PENDING_REVIEW', CURRENT_TIMESTAMP);
   EXCEPTION WHEN unique_violation THEN
     duplicate_blocked := TRUE;
   END;
@@ -32,9 +32,9 @@ BEGIN
   duplicate_blocked := FALSE;
   BEGIN
     INSERT INTO "Registration"
-      ("id", "applicantFullName", "nationalId", "phone", "academicLevel", "fieldCode", "originalTuition", "finalTuition", "status")
+      ("id", "applicantFullName", "nationalId", "phone", "academicLevel", "fieldCode", "originalTuition", "finalTuition", "status", "updatedAt")
     VALUES
-      ('ci-open-registration-3', 'CI Test', 'CI-REGISTRATION-UNIQUE-TEST', '0000000000', 'MASTER', 'CI', 100, 100, 'PENDING_REVIEW');
+      ('ci-open-registration-3', 'CI Test', 'CI-REGISTRATION-UNIQUE-TEST', '0000000000', 'MASTER', 'CI', 100, 100, 'PENDING_REVIEW', CURRENT_TIMESTAMP);
   EXCEPTION WHEN unique_violation THEN
     duplicate_blocked := TRUE;
   END;
@@ -49,9 +49,9 @@ BEGIN
   WHERE "id" = 'ci-open-registration-1';
 
   INSERT INTO "Registration"
-    ("id", "applicantFullName", "nationalId", "phone", "academicLevel", "fieldCode", "originalTuition", "finalTuition", "status")
+    ("id", "applicantFullName", "nationalId", "phone", "academicLevel", "fieldCode", "originalTuition", "finalTuition", "status", "updatedAt")
   VALUES
-    ('ci-terminal-registration-1', 'CI Test', 'CI-REGISTRATION-UNIQUE-TEST', '0000000000', 'MASTER', 'CI', 100, 100, 'PENDING_REVIEW');
+    ('ci-terminal-registration-1', 'CI Test', 'CI-REGISTRATION-UNIQUE-TEST', '0000000000', 'MASTER', 'CI', 100, 100, 'PENDING_REVIEW', CURRENT_TIMESTAMP);
 END $$;
 
 ROLLBACK;
