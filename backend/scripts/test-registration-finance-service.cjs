@@ -14,10 +14,11 @@ async function main() {
   const service = new RegistrationsService(prisma);
 
   let adminId;
-  let courseId;
-  let registrationId;
   let studentId;
   let studentUserId;
+  let registrationId;
+  let secondRegistrationId;
+  const courseIds = [];
   const nationalId = '8' + String(randomInt(100000000, 999999999));
   const phone = '09123456789';
 
@@ -41,16 +42,16 @@ async function main() {
       sessionToken: 'ci-only-session',
     };
 
-    const course = await prisma.course.create({
+    const firstCourse = await prisma.course.create({
       data: {
-        title: 'CI finance course ' + nationalId,
+        title: 'CI finance course A ' + nationalId,
         professor: 'CI Test',
         price: 1000,
         status: 'ACTIVE',
       },
       select: { id: true },
     });
-    courseId = course.id;
+    courseIds.push(firstCourse.id);
 
     const jpeg = { buffer: Buffer.from([0xff, 0xd8, 0xff]), mimetype: 'image/jpeg', size: 3 };
     const submitted = await service.createPublicRegistration({
@@ -59,7 +60,7 @@ async function main() {
       phone,
       academicLevel: 'MASTER',
       fieldCode: 'CI',
-      courseIds: JSON.stringify([course.id]),
+      courseIds: JSON.stringify([firstCourse.id]),
       claimedAmount: 1200,
       trackingCode: 'CI-INITIAL-OVERPAYMENT',
     }, jpeg);
@@ -74,7 +75,7 @@ async function main() {
       approvedAmount: 1200,
       firstDueDate: new Date().toISOString().slice(0, 10),
       mockExamEligible: false,
-      reviewNote: 'CI end-to-end approval',
+      reviewNote: 'CI service integration approval',
     });
     assert.equal(approved.success, true);
     assert.equal(approved.finalTuition, 1000);
@@ -107,57 +108,122 @@ async function main() {
       permissions: [],
       sessionToken: 'ci-student-session',
     };
-    const studentRegistrations = await service.listStudentRegistrations(studentActor);
-    assert.equal(studentRegistrations.length, 1);
-    assert.equal(studentRegistrations[0].finalTuition, 1000);
-    assert.equal(studentRegistrations[0].installments.length, 0);
+    const firstStudentRegistrations = await service.listStudentRegistrations(studentActor);
+    assert.equal(firstStudentRegistrations.length, 1);
+    assert.equal(firstStudentRegistrations[0].finalTuition, 1000);
+    assert.equal(firstStudentRegistrations[0].installments.length, 0);
+
+    // A later registration has its own debt. It must not consume the earlier
+    // registration's unused overpayment when refund availability is calculated.
+    const secondCourse = await prisma.course.create({
+      data: {
+        title: 'CI finance course B ' + nationalId,
+        professor: 'CI Test',
+        price: 1000,
+        status: 'ACTIVE',
+      },
+      select: { id: true },
+    });
+    courseIds.push(secondCourse.id);
+    const secondSubmitted = await service.createPublicRegistration({
+      applicantFullName: 'CI Finance Student',
+      nationalId,
+      phone,
+      academicLevel: 'MASTER',
+      fieldCode: 'CI',
+      courseIds: JSON.stringify([secondCourse.id]),
+      claimedAmount: 600,
+      trackingCode: 'CI-SECOND-INITIAL',
+    }, jpeg);
+    secondRegistrationId = secondSubmitted.id;
+    const secondDue = new Date();
+    secondDue.setDate(secondDue.getDate() + 30);
+    const secondApproved = await service.reviewAndApprove(actor, secondSubmitted.id, {
+      mode: 'NORMAL',
+      discountAmount: 0,
+      paymentId: secondSubmitted.paymentId,
+      approvedAmount: 600,
+      firstDueDate: secondDue.toISOString().slice(0, 10),
+      mockExamEligible: false,
+      reviewNote: 'CI installment registration',
+    });
+    assert.equal(secondApproved.installmentCount, 2);
+    const secondInstallments = await prisma.installment.findMany({
+      where: { registrationId: secondRegistrationId },
+      orderBy: { sequence: 'asc' },
+    });
+    assert.equal(secondInstallments.length, 2);
+    assert.equal(Number(secondInstallments[0].amount), 200);
+    assert.equal(Number(secondInstallments[1].amount), 200);
 
     const refund = await service.createRefundRequest(studentActor, {
       registrationId,
       amountRequested: 150,
-      reason: 'CI test refund of verified overpayment',
+      reason: 'CI test refund of earlier registration overpayment',
     });
     assert.equal(Number(refund.amountRequested), 150);
     const reserved = await service.reviewRefundRequest(actor, refund.id, 'RESERVE', 'CI reserve');
     assert.equal(reserved.status, 'RESERVED');
     assert.equal(Number(reserved.amountReserved), 150);
-    const paid = await service.markRefundPaid(actor, refund.id, { transferReference: 'CI-TRANSFER-001' });
-    assert.equal(paid.status, 'PAID');
-    assert.equal(Number(paid.amountPaid), 150);
 
     const secondRefund = await service.createRefundRequest(studentActor, {
       registrationId,
       amountRequested: 100,
-      reason: 'CI test exceeding remaining refund balance',
+      reason: 'CI test exceeding remaining registration-specific refund balance',
     });
     await assert.rejects(
       () => service.reviewRefundRequest(actor, secondRefund.id, 'RESERVE', 'CI over-reservation check'),
       /موجودی قابل بازپرداخت کافی نیست/,
-      'refund reservations must not exceed the remaining overpayment',
+      'refund reservations must not exceed the remaining overpayment for that registration',
     );
 
+    const installmentPayment = await service.submitInstallmentPayment(
+      studentActor,
+      secondInstallments[0].id,
+      { claimedAmount: 200, trackingCode: 'CI-INSTALLMENT-1' },
+      jpeg,
+    );
+    const installmentReview = await service.reviewInstallmentPayment(actor, installmentPayment.id, {
+      status: 'APPROVED',
+      approvedAmount: 200,
+      reviewNote: 'CI installment approval',
+    });
+    assert.equal(installmentReview.status, 'APPROVED');
+    const updatedInstallment = await prisma.installment.findUniqueOrThrow({ where: { id: secondInstallments[0].id } });
+    assert.equal(updatedInstallment.status, 'PAID');
+
+    const paid = await service.markRefundPaid(actor, refund.id, { transferReference: 'CI-TRANSFER-001' });
+    assert.equal(paid.status, 'PAID');
+    assert.equal(Number(paid.amountPaid), 150);
     const visibleRefunds = await service.listStudentRefundRequests(studentActor);
     assert.equal(visibleRefunds.find((item) => item.id === refund.id).status, 'PAID');
     console.log('Registration finance service integration test passed.');
   } finally {
     try {
-      if (registrationId) {
-        const payments = await prisma.registrationPayment.findMany({ where: { registrationId }, select: { id: true } }).catch(() => []);
-        const installments = await prisma.installment.findMany({ where: { registrationId }, select: { id: true } }).catch(() => []);
-        const paymentIds = payments.map((item) => item.id);
-        const installmentIds = installments.map((item) => item.id);
-        await prisma.refundRequest.deleteMany({ where: { registrationId } }).catch(() => undefined);
-        await prisma.paymentAllocation.deleteMany({
-          where: { OR: [
-            ...(paymentIds.length ? [{ paymentId: { in: paymentIds } }] : []),
-            ...(installmentIds.length ? [{ installmentId: { in: installmentIds } }] : []),
-          ] },
-        }).catch(() => undefined);
-        if (paymentIds.length) await prisma.registrationPaymentReceipt.deleteMany({ where: { paymentId: { in: paymentIds } } }).catch(() => undefined);
-        await prisma.registrationPayment.deleteMany({ where: { registrationId } }).catch(() => undefined);
-        await prisma.installment.deleteMany({ where: { registrationId } }).catch(() => undefined);
-        await prisma.registrationReviewHistory.deleteMany({ where: { registrationId } }).catch(() => undefined);
-        await prisma.registration.delete({ where: { id: registrationId } }).catch(() => undefined);
+      const registrationIds = [registrationId, secondRegistrationId].filter(Boolean);
+      const payments = registrationIds.length
+        ? await prisma.registrationPayment.findMany({ where: { registrationId: { in: registrationIds } }, select: { id: true } }).catch(() => [])
+        : [];
+      const installments = registrationIds.length
+        ? await prisma.installment.findMany({ where: { registrationId: { in: registrationIds } }, select: { id: true } }).catch(() => [])
+        : [];
+      const paymentIds = payments.map((item) => item.id);
+      const installmentIds = installments.map((item) => item.id);
+      if (registrationIds.length) {
+        await prisma.refundRequest.deleteMany({ where: { registrationId: { in: registrationIds } } }).catch(() => undefined);
+      }
+      await prisma.paymentAllocation.deleteMany({
+        where: { OR: [
+          ...(paymentIds.length ? [{ paymentId: { in: paymentIds } }] : []),
+          ...(installmentIds.length ? [{ installmentId: { in: installmentIds } }] : []),
+        ] },
+      }).catch(() => undefined);
+      if (paymentIds.length) await prisma.registrationPaymentReceipt.deleteMany({ where: { paymentId: { in: paymentIds } } }).catch(() => undefined);
+      if (registrationIds.length) {
+        await prisma.registrationPayment.deleteMany({ where: { registrationId: { in: registrationIds } } }).catch(() => undefined);
+        await prisma.installment.deleteMany({ where: { registrationId: { in: registrationIds } } }).catch(() => undefined);
+        await prisma.registrationReviewHistory.deleteMany({ where: { registrationId: { in: registrationIds } } }).catch(() => undefined);
+        await prisma.registration.deleteMany({ where: { id: { in: registrationIds } } }).catch(() => undefined);
       }
       if (studentId) {
         await prisma.studentProfileHistory.deleteMany({ where: { studentId } }).catch(() => undefined);
@@ -170,7 +236,7 @@ async function main() {
         }).catch(() => undefined);
       }
       if (studentUserId) await prisma.user.delete({ where: { id: studentUserId } }).catch(() => undefined);
-      if (courseId) await prisma.course.delete({ where: { id: courseId } }).catch(() => undefined);
+      if (courseIds.length) await prisma.course.deleteMany({ where: { id: { in: courseIds } } }).catch(() => undefined);
       if (adminId) await prisma.user.delete({ where: { id: adminId } }).catch(() => undefined);
     } finally {
       await prisma.$disconnect().catch(() => undefined);
