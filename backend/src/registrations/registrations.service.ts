@@ -449,6 +449,9 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         });
       }
 
+      // Share the same per-student ledger lock used by installment approvals and refund reservations.
+      await tx.$queryRaw`SELECT "id" FROM "Student" WHERE "id" = ${student.id} FOR UPDATE`;
+
       await tx.registrationCourse.findMany({ where: { registrationId }, select: { courseId: true } }).then(async (items) => {
         for (const item of items) {
           const existing = await tx.enrollment.findUnique({
