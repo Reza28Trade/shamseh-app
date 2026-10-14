@@ -43,7 +43,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     try {
       const now = new Date();
       const threeDaysAhead = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
-      const twoDaysAhead = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000);
+      const threeDaysMinusSixHours = new Date(now.getTime() + 66 * 60 * 60 * 1000);
       const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
       const creator = await this.prisma.user.findFirst({
         where: { role: 'SUPER_ADMIN', status: 'ACTIVE' }, select: { id: true },
@@ -58,7 +58,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       const [dueSoon, overdue] = await Promise.all([
         this.prisma.installment.findMany({
           where: {
-            status: { not: 'PAID' }, dueDate: { gt: twoDaysAhead, lte: threeDaysAhead },
+            status: { not: 'PAID' }, dueDate: { gt: threeDaysMinusSixHours, lte: threeDaysAhead },
             lastReminderAt: null,
             registration: { status: 'APPROVED', studentId: { not: null } },
           },
