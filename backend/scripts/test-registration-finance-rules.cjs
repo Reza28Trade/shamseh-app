@@ -43,6 +43,18 @@ const exception = plan({
 });
 assert.deepEqual(exception.installmentAmounts, [25000, 25000]);
 
+// A one-cent balance must not create a zero-value installment.
+const oneCentException = plan({
+  mode: RegistrationApprovalMode.PAYMENT_EXCEPTION,
+  actorRole: 'SUPER_ADMIN',
+  originalTuition: 0.02,
+  approvedAmount: 0.01,
+  exceptionReason: 'Small-balance exception',
+});
+assert.equal(oneCentException.remaining, 0.01);
+assert.deepEqual(oneCentException.installmentAmounts, [0.01]);
+
+
 assert.throws(() => plan({ approvedAmount: 59999 }), /۶۰٪/);
 assert.throws(() => plan({
   mode: RegistrationApprovalMode.DISCOUNT,
