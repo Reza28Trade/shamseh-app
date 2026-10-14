@@ -8,6 +8,8 @@ const { CreateRefundRequestDto } = require('../dist/src/registrations/dto/create
 const { MarkRefundPaidDto } = require('../dist/src/registrations/dto/mark-refund-paid.dto');
 const { ReviewRegistrationDto } = require('../dist/src/registrations/dto/review-registration.dto');
 const { SubmitInstallmentPaymentDto } = require('../dist/src/registrations/dto/submit-installment-payment.dto');
+const { ReviewInstallmentPaymentDto } = require('../dist/src/registrations/dto/review-installment-payment.dto');
+const { ReviewRefundRequestDto } = require('../dist/src/registrations/dto/review-refund-request.dto');
 const { RegistrationApprovalMode } = require('@prisma/client');
 
 async function errorsFor(Type, input) {
@@ -85,6 +87,20 @@ async function main() {
   assert.deepEqual(await errorsFor(SubmitInstallmentPaymentDto, { claimedAmount: '2500' }), []);
   assert.ok((await errorsFor(SubmitInstallmentPaymentDto, { claimedAmount: '0' }))
     .some((error) => error.property === 'claimedAmount'));
+
+  const validInstallmentReview = { status: 'APPROVED', approvedAmount: '2500' };
+  const installmentReview = plainToInstance(ReviewInstallmentPaymentDto, validInstallmentReview);
+  assert.equal(installmentReview.approvedAmount, 2500);
+  assert.deepEqual(await errorsFor(ReviewInstallmentPaymentDto, validInstallmentReview), []);
+  assert.ok((await errorsFor(ReviewInstallmentPaymentDto, { status: 'UNKNOWN' }))
+    .some((error) => error.property === 'status'));
+  assert.ok((await errorsFor(ReviewInstallmentPaymentDto, { status: 'APPROVED', approvedAmount: '0' }))
+    .some((error) => error.property === 'approvedAmount'));
+
+  const validRefundReview = { decision: 'RESERVE', note: 'بررسی شد' };
+  assert.deepEqual(await errorsFor(ReviewRefundRequestDto, validRefundReview), []);
+  assert.ok((await errorsFor(ReviewRefundRequestDto, { decision: 'PAY' }))
+    .some((error) => error.property === 'decision'));
 
   console.log('Registration DTO validation: regression assertions passed.');
 }
