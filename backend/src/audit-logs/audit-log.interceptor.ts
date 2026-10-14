@@ -25,11 +25,11 @@ export class AuditLogInterceptor implements NestInterceptor {
     }
 
     const rawPath = (request.originalUrl || request.url).split('?')[0];
-    const path = rawPath.replace(/^\/api(?=\/)/, '');
+    const path = rawPath.replace(/^\\/api(?=\\/)/, '');
     // The audit viewer itself and authentication/session endpoints are not business mutations.
     if (
-      /^\/admin\/(audit-logs|logs)(\/|$)/.test(path) ||
-      /^\/auth\/(login|logout|me|session)(\/|$)/.test(path)
+      /^\\/admin\\/(audit-logs|logs)(\\/|$)/.test(path) ||
+      /^\\/auth\\/(login|logout|me|session)(\\/|$)/.test(path)
     ) {
       return next.handle();
     }
@@ -54,19 +54,22 @@ export class AuditLogInterceptor implements NestInterceptor {
             : undefined;
 
           try {
-            // Some finance workflows already write a richer domain-specific audit event
-            // inside their transaction. Avoid adding a second generic row for that same entity.
+            // Avoid duplicating a richer domain event for the same entity, but never let an
+            // unrelated generic HTTP event suppress this request's audit row.
             const entityId = this.entityId(routeParams);
             if (actor?.id && entityId) {
-              const existingDomainEvent = await this.prisma.auditLog.findFirst({
+              const existingEvents = await this.prisma.auditLog.findMany({
                 where: {
                   actorUserId: actor.id,
                   entityId,
                   createdAt: { gte: operationStartedAt },
                 },
-                select: { id: true },
+                select: { action: true },
               });
-              if (existingDomainEvent) return result;
+              const hasDomainEvent = existingEvents.some(
+                (event) => !/^(POST|PUT|PATCH|DELETE)\\s/.test(event.action),
+              );
+              if (hasDomainEvent) return result;
             }
             await this.prisma.auditLog.create({
               data: {
@@ -98,7 +101,7 @@ export class AuditLogInterceptor implements NestInterceptor {
     const routePath = request.route?.path;
     const baseUrl = request.baseUrl || '';
     const fullRoute = typeof routePath === 'string' ? `${baseUrl}${routePath}` : fallbackPath;
-    return fullRoute.replace(/^\/api(?=\/)/, '').slice(0, 500) || '/';
+    return fullRoute.replace(/^\\/api(?=\\/)/, '').slice(0, 500) || '/';
   }
 
   private entityType(segments: string[]): string {
