@@ -11,6 +11,7 @@ const { SubmitInstallmentPaymentDto } = require('../dist/src/registrations/dto/s
 const { ReviewInstallmentPaymentDto } = require('../dist/src/registrations/dto/review-installment-payment.dto');
 const { ReviewRefundRequestDto } = require('../dist/src/registrations/dto/review-refund-request.dto');
 const { AuthGuard } = require('../dist/src/auth/auth.guard');
+const { AUTH_COOKIE_NAME } = require('../dist/src/auth/auth.constants');
 const { RegistrationApprovalMode } = require('@prisma/client');
 
 async function errorsFor(Type, input) {
@@ -118,6 +119,33 @@ async function main() {
   }
   assert.equal(guard.permissionForPath('/admin/support/tickets'), 'messages');
   assert.equal(guard.permissionForPath('/admin/unmapped-sensitive-route'), null);
+
+  const makeContext = (path) => {
+    const request = { cookies: { [AUTH_COOKIE_NAME]: 'session-token' }, originalUrl: `/api${path}` };
+    return { request, context: { switchToHttp: () => ({ getRequest: () => request }) } };
+  };
+  guard.authService = { validateSession: async () => ({
+    id: 'staff-id', role: 'STAFF', permissions: ['finance'],
+  }) };
+  const financeContext = makeContext('/admin/registrations');
+  assert.equal(await guard.canActivate(financeContext.context), true);
+  assert.equal(financeContext.request.user.id, 'staff-id');
+
+  guard.authService = { validateSession: async () => ({
+    id: 'staff-id', role: 'STAFF', permissions: ['students'],
+  }) };
+  const deniedContext = makeContext('/admin/refunds');
+  await assert.rejects(
+    () => guard.canActivate(deniedContext.context),
+    (error) => error && typeof error.getStatus === 'function' && error.getStatus() === 403,
+  );
+
+  guard.authService = { validateSession: async () => null };
+  const expiredContext = makeContext('/admin/registrations');
+  await assert.rejects(
+    () => guard.canActivate(expiredContext.context),
+    (error) => error && typeof error.getStatus === 'function' && error.getStatus() === 401,
+  );
 
   console.log('Registration DTO validation: regression assertions passed.');
 }
