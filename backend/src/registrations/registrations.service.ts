@@ -16,7 +16,7 @@ import { SubmitInstallmentPaymentDto } from './dto/submit-installment-payment.dt
 import { ReviewInstallmentPaymentDto } from './dto/review-installment-payment.dto';
 import { CreateRefundRequestDto } from './dto/create-refund-request.dto';
 import { MarkRefundPaidDto } from './dto/mark-refund-paid.dto';
-import { calculateRegistrationApprovalPlan } from './registration-finance.rules';
+import { addOneMonthClamped, calculateRegistrationApprovalPlan } from './registration-finance.rules';
 
 const RECEIPT_DIR = process.env.REGISTRATION_RECEIPT_STORAGE_PATH
   || join(process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files', 'registration-receipts');
@@ -507,7 +507,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         await tx.installment.createMany({
           data: plan.installmentAmounts.map((amount, index) => ({
             registrationId, sequence: index + 1, amount,
-            dueDate: index === 0 ? firstDueDate : this.addOneMonthClamped(firstDueDate),
+            dueDate: index === 0 ? firstDueDate : addOneMonthClamped(firstDueDate),
           })),
         });
       }
@@ -973,16 +973,6 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     await mkdir(RECEIPT_DIR, { recursive: true });
     await writeFile(join(RECEIPT_DIR, key), file.buffer, { flag: 'wx', mode: 0o640 });
     return key;
-  }
-
-  private addOneMonthClamped(date: Date): Date {
-    const next = new Date(date);
-    const day = next.getDate();
-    next.setDate(1);
-    next.setMonth(next.getMonth() + 1);
-    const lastDay = new Date(next.getFullYear(), next.getMonth() + 1, 0).getDate();
-    next.setDate(Math.min(day, lastDay));
-    return next;
   }
 
   private requireFinanceAccess(actor: AuthenticatedUser) {
