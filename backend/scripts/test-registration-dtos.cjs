@@ -1,3 +1,4 @@
+require('reflect-metadata');
 const assert = require('node:assert/strict');
 const { plainToInstance } = require('class-transformer');
 const { validate } = require('class-validator');
