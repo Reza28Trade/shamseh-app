@@ -180,6 +180,9 @@ export class FinanceService {
     }
 
     const summary = await this.getStudentSummary(studentId);
+    if (summary.requiresFinanceReconciliation) {
+      throw new BadRequestException('این هنرجو در سیستم ثبت‌نام و اقساط جدید است؛ پرداخت را از بخش ثبت‌نام‌ها و اقساط ثبت کنید.');
+    }
     if (summary.unpricedCourses > 0) {
       throw new BadRequestException('Set a tuition price for every enrolled course before recording a payment');
     }
