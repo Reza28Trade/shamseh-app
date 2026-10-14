@@ -323,16 +323,18 @@ export class StudentsService {
     this.requireAdmin(user);
     const student = await this.prisma.student.findUnique({
       where: { id: studentId },
-      select: { id: true, userId: true },
+      select: { id: true },
     });
     if (!student) throw new NotFoundException('Student not found');
 
-    await this.prisma.$transaction(async (tx) => {
-      await tx.student.delete({ where: { id: student.id } });
-      await tx.user.delete({ where: { id: student.userId } });
+    // Keep the student's financial, registration, counseling, and audit history.
+    // The legacy DELETE endpoint is now a soft-delete for backward compatibility.
+    await this.prisma.student.update({
+      where: { id: studentId },
+      data: { isArchived: true },
     });
 
-    return { success: true };
+    return { success: true, isArchived: true };
   }
 
   async resetPassword(user: AuthenticatedUser, studentId: string, dto: ResetStudentPasswordDto) {
