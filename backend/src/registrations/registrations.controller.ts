@@ -182,6 +182,7 @@ export class RegistrationsController {
     const receipt = await this.registrationsService.viewReceipt(req.user, receiptId);
     res.setHeader('Content-Type', receipt.mimeType);
     res.setHeader('Content-Disposition', 'inline');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
     return createReadStream(receipt.path).pipe(res);
   }
 }
