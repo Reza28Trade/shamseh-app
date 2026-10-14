@@ -11,8 +11,9 @@ export class FinanceService {
   constructor(private readonly prisma: PrismaService) {}
 
   private requireAdmin(user: AuthenticatedUser) {
-    if (user.role !== 'SUPER_ADMIN' && user.role !== 'STAFF') {
-      throw new ForbiddenException('Admin access required');
+    if (user.role === 'SUPER_ADMIN') return;
+    if (user.role !== 'STAFF' || !user.permissions.includes('finance')) {
+      throw new ForbiddenException('Finance permission required');
     }
   }
 
@@ -34,6 +35,10 @@ export class FinanceService {
             tuitionAmount: true,
             course: { select: { id: true, title: true, price: true } },
           },
+        },
+        registrations: {
+          where: { status: 'APPROVED' },
+          select: { id: true },
         },
         payments: {
           where: { purpose: 'COURSE_FEE' },
@@ -69,7 +74,10 @@ export class FinanceService {
       0,
     );
     const balance = Math.max(0, tuitionTotal - paidTotal);
-    const status: FinanceStatus = enrolledCourses.length === 0
+    const requiresFinanceReconciliation = student.registrations.length > 0;
+    const status: FinanceStatus = requiresFinanceReconciliation
+      ? 'INCOMPLETE'
+      : enrolledCourses.length === 0
       ? 'NO_COURSES'
       : unpricedCourses > 0
       ? 'INCOMPLETE'
@@ -88,6 +96,8 @@ export class FinanceService {
       credit: Math.max(0, paidTotal - tuitionTotal),
       unpricedCourses,
       status,
+      requiresFinanceReconciliation,
+      approvedRegistrationCount: student.registrations.length,
       payments: student.payments.map((payment) => ({
         ...payment,
         amount: Number(payment.amount),
@@ -133,19 +143,23 @@ export class FinanceService {
         credit: summary.credit,
         unpricedCourses: summary.unpricedCourses,
         status: summary.status,
+        requiresFinanceReconciliation: summary.requiresFinanceReconciliation,
+        approvedRegistrationCount: summary.approvedRegistrationCount,
         payments: summary.payments,
       }));
 
+    const reconciledRows = rows.filter((row) => !row.requiresFinanceReconciliation);
     return {
       summary: {
         studentCount: rows.length,
-        tuitionTotal: rows.reduce((sum, row) => sum + row.tuitionTotal, 0),
-        paidTotal: rows.reduce((sum, row) => sum + row.paidTotal, 0),
-        outstandingBalance: rows.reduce((sum, row) => sum + row.balance, 0),
-        unpaidCount: rows.filter((row) => row.status === 'UNPAID').length,
-        partialCount: rows.filter((row) => row.status === 'PARTIAL').length,
-        paidCount: rows.filter((row) => row.status === 'PAID').length,
+        tuitionTotal: reconciledRows.reduce((sum, row) => sum + row.tuitionTotal, 0),
+        paidTotal: reconciledRows.reduce((sum, row) => sum + row.paidTotal, 0),
+        outstandingBalance: reconciledRows.reduce((sum, row) => sum + row.balance, 0),
+        unpaidCount: reconciledRows.filter((row) => row.status === 'UNPAID').length,
+        partialCount: reconciledRows.filter((row) => row.status === 'PARTIAL').length,
+        paidCount: reconciledRows.filter((row) => row.status === 'PAID').length,
         incompleteCount: rows.filter((row) => row.status === 'INCOMPLETE').length,
+        reconciliationRequiredCount: rows.filter((row) => row.requiresFinanceReconciliation).length,
         noCourseCount: rows.filter((row) => row.status === 'NO_COURSES').length,
       },
       students: rows,
