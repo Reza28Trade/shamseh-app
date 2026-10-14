@@ -196,7 +196,7 @@ export function App() {
 
   const adminName = currentAdmin?.fullName || 'مدیر کل سیستم';
 
-  if (window.location.pathname.replace(/\\/+$/, '') === '/register') {
+  if (window.location.pathname === '/register' || window.location.pathname === '/register/') {
     return <RegistrationPage />;
   }
 
