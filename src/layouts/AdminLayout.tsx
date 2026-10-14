@@ -36,8 +36,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
     { id: 'managementContact', label: 'انتقادات و پیشنهادات - ارتباط مستقیم با مدیریت', icon: ShieldCheck },
     { id: 'notifications', label: 'ارسال اطلاعیه', icon: Bell },
     { id: 'rules', label: 'قوانین و تحلیل کنکور', icon: FileText },
-    { id: 'finance', label: 'وضعیت مالی هنرجویان', icon: Wallet },
-    { id: 'registrations', label: 'ثبت‌نام و بازپرداخت مالی', icon: Wallet },
+    { id: 'registrations', label: 'مدیریت مالی، ثبت‌نام و بازپرداخت', icon: Wallet },
     { id: 'logs', label: 'گزارش‌های سیستمی', icon: ShieldAlert },
   ];
   const menuItems = allMenuItems.filter((item) => {
