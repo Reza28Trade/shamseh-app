@@ -25,6 +25,7 @@ export function ManageRegistrations(){
   const [tab,setTab]=useState<'registrations'|'refunds'>('registrations');
   const [statusFilter,setStatusFilter]=useState('PENDING_REVIEW');
   const [registrations,setRegistrations]=useState<Registration[]>([]);
+  const [mockExams,setMockExams]=useState<Array<{id:string;title:string;level:string;field:string;examDate:string;status:string}>>([]);
   const [refunds,setRefunds]=useState<Refund[]>([]);
   const [loading,setLoading]=useState(false);
   const [error,setError]=useState('');
@@ -39,8 +40,14 @@ export function ManageRegistrations(){
   const load=useCallback(async()=>{
     setLoading(true);setError('');
     try{
-      if(tab==='registrations')setRegistrations(await call('/api/admin/registrations?status='+encodeURIComponent(statusFilter)));
-      else setRefunds(await call('/api/admin/refunds?status='+encodeURIComponent(statusFilter)));
+      if(tab==='registrations'){
+        const [items,exams]=await Promise.all([
+          call('/api/admin/registrations?status='+encodeURIComponent(statusFilter)),
+          call('/api/admin/registrations/mock-exams'),
+        ]);
+        setRegistrations(items);
+        setMockExams(exams);
+      }else setRefunds(await call('/api/admin/refunds?status='+encodeURIComponent(statusFilter)));
     }catch(e){setError(e instanceof Error?e.message:'خطا در دریافت اطلاعات');}
     finally{setLoading(false);}
   },[tab,statusFilter]);
@@ -67,10 +74,21 @@ export function ManageRegistrations(){
     const firstDueDate=window.prompt('تاریخ سررسید اولین قسط به شکل YYYY-MM-DD',defaultDue);
     if(!firstDueDate)return;
     const reviewNote=window.prompt('یادداشت بررسی (اختیاری)')||undefined;
+    const mockExamEligible=window.confirm('آیا هنرجو مشمول آزمون آزمایشی رایگان شود؟');
+    let mockExamId:string|undefined;
+    if(mockExamEligible){
+      if(mockExams.length===0){setError('آزمون زمان‌بندی‌شده‌ای برای افزودن هنرجو وجود ندارد. ابتدا آزمون را در بخش آزمون‌های آزمایشی زمان‌بندی کنید.');return;}
+      const choices=mockExams.map((exam,index)=>`${index+1}) ${exam.title} · ${new Date(exam.examDate).toLocaleDateString('fa-IR')} · ${exam.level} / ${exam.field}`).join('\\n');
+      const selected=window.prompt('شماره آزمونی را انتخاب کنید تا هنرجو به فهرست شرکت‌کنندگان افزوده شود:\\n'+choices,'1');
+      if(selected===null)return;
+      const selectedIndex=Number(selected)-1;
+      if(!Number.isInteger(selectedIndex)||selectedIndex<0||selectedIndex>=mockExams.length){setError('شماره آزمون معتبر نیست.');return;}
+      mockExamId=mockExams[selectedIndex].id;
+    }
     await action('/api/admin/registrations/'+encodeURIComponent(item.id)+'/approve','PATCH',{
       mode,discountAmount,discountReason,exceptionReason,paymentId:payment.id,approvedAmount,
       firstDueDate:new Date(firstDueDate+'T12:00:00').toISOString(),
-      mockExamEligible:window.confirm('آیا هنرجو مشمول آزمون آزمایشی رایگان شود؟'),
+      mockExamEligible,mockExamId,
       reviewNote,
     });
   };
