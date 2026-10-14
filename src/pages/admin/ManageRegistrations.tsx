@@ -62,7 +62,9 @@ export function ManageRegistrations(){
     const exceptionReason=mode==='PAYMENT_EXCEPTION'?window.prompt('علت استثنای پرداخت (ویژه مدیر ارشد)'):undefined;
     const approvedAmount=Number(window.prompt('مبلغ نهایی تأییدشده رسید (تومان)',String(payment.claimedAmount)));
     if(!Number.isFinite(approvedAmount)||approvedAmount<=0){setError('مبلغ تأییدشده معتبر نیست.');return;}
-    const firstDueDate=window.prompt('تاریخ سررسید اولین قسط به شکل YYYY-MM-DD','2026-11-14');
+    const defaultDueDate=new Date();defaultDueDate.setDate(defaultDueDate.getDate()+30);
+    const defaultDue=defaultDueDate.toISOString().slice(0,10);
+    const firstDueDate=window.prompt('تاریخ سررسید اولین قسط به شکل YYYY-MM-DD',defaultDue);
     if(!firstDueDate)return;
     const reviewNote=window.prompt('یادداشت بررسی (اختیاری)')||undefined;
     await action('/api/admin/registrations/'+encodeURIComponent(item.id)+'/approve','PATCH',{
