@@ -989,7 +989,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
               : financeError ? <div style={{ padding: 14, borderRadius: 12, background: 'rgba(239,68,68,.1)', color: '#ef4444', fontSize: 12 }}>{financeError}</div>
               : !finance ? <div style={{ padding: 24, textAlign: 'center', color: subText, fontSize: 12 }}>اطلاعات مالی هنوز در دسترس نیست.</div>
               : <>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 170px), 1fr))', gap: 12 }}>
+                {!finance.requiresFinanceReconciliation && <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 170px), 1fr))', gap: 12 }}>
                   {[
                     { label: 'کل شهریه دوره‌ها', value: finance.tuitionTotal, color: textColor },
                     { label: 'مبلغ پرداخت‌شده', value: finance.paidTotal, color: '#10b981' },
@@ -998,18 +998,18 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                     <div style={{ fontSize: 11, color: subText, marginBottom: 8 }}>{item.label}</div>
                     <div style={{ fontSize: 15, fontWeight: 900, color: item.color, lineHeight: 1.8 }}>{new Intl.NumberFormat('fa-IR').format(Math.round(item.value || 0))} تومان</div>
                   </div>)}
-                </div>
+                </div>}
                 {finance.requiresFinanceReconciliation && <div role="alert" style={{ display: 'flex', gap: 8, alignItems: 'flex-start', padding: 12, borderRadius: 12, background: 'rgba(245,158,11,.1)', color: '#b45309', fontSize: 12, lineHeight: 1.9 }}><AlertCircle size={16} style={{ flexShrink: 0, marginTop: 3 }} /><span>برای شما ثبت‌نام تأییدشده در سیستم اقساط ثبت شده است. اعداد این نمای قدیمی ممکن است کامل نباشند؛ برای مشاهده شهریه نهایی، پرداخت‌های تأییدشده و مانده اقساط، جزئیات ثبت‌نام را در بخش پایین بررسی کنید.</span></div>}
                 {finance.unpricedCourses > 0 && <div style={{ display: 'flex', gap: 8, alignItems: 'center', padding: 12, borderRadius: 12, background: 'rgba(245,158,11,.1)', color: '#f59e0b', fontSize: 12 }}><AlertCircle size={16} />شهریه {finance.unpricedCourses} دوره هنوز توسط مؤسسه مشخص نشده است.</div>}
-                <div style={{ border: `1px solid ${borderColor}`, borderRadius: 14, overflow: 'hidden' }}>
+                {!finance.requiresFinanceReconciliation && <div style={{ border: `1px solid ${borderColor}`, borderRadius: 14, overflow: 'hidden' }}>
                   <div style={{ padding: 14, background: innerCardBg, borderBottom: `1px solid ${borderColor}`, fontSize: 13, fontWeight: 900, color: textColor }}>شهریه دوره‌های من</div>
                   {finance.enrolledCourses.length === 0 ? <div style={{ padding: 16, color: subText, fontSize: 12 }}>دوره فعالی برای محاسبه شهریه ثبت نشده است.</div>
                     : finance.enrolledCourses.map((course) => <div key={course.enrollmentId} style={{ padding: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap', borderBottom: `1px solid ${borderColor}` }}>
                       <span style={{ fontSize: 12, fontWeight: 700, color: textColor }}>{course.title}</span>
                       <strong style={{ fontSize: 12, color: textColor }}>{course.tuition === null ? 'شهریه مشخص نشده' : new Intl.NumberFormat('fa-IR').format(Math.round(course.tuition)) + ' تومان'}</strong>
                     </div>)}
-                </div>
-                <div style={{ border: `1px solid ${borderColor}`, borderRadius: 14, overflow: 'hidden' }}>
+                </div>}
+                {!finance.requiresFinanceReconciliation && <div style={{ border: `1px solid ${borderColor}`, borderRadius: 14, overflow: 'hidden' }}>
                   <div style={{ padding: 14, background: innerCardBg, borderBottom: `1px solid ${borderColor}`, display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 900, color: textColor }}><CreditCard size={16} />سوابق پرداخت</div>
                   {finance.payments.length === 0 ? <div style={{ padding: 16, color: subText, fontSize: 12 }}>هنوز پرداختی در سیستم ثبت نشده است.</div>
                     : finance.payments.map((payment) => <div key={payment.id} style={{ padding: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap', borderBottom: `1px solid ${borderColor}` }}>
@@ -1021,8 +1021,8 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                       </div>
                       <strong style={{ fontSize: 12, color: payment.status === 'APPROVED' ? '#10b981' : payment.status === 'REJECTED' ? '#ef4444' : '#f59e0b' }}>{new Intl.NumberFormat('fa-IR').format(Math.round(payment.amount))} تومان</strong>
                     </div>)}
-                </div>
-                <p style={{ margin: 0, color: subText, fontSize: 11, lineHeight: 1.8 }}>برای اصلاح مبلغ شهریه یا پیگیری پرداخت‌ها، با مدیریت مؤسسه هماهنگ کنید.</p>
+                </div>}
+                {!finance.requiresFinanceReconciliation && <p style={{ margin: 0, color: subText, fontSize: 11, lineHeight: 1.8 }}>برای اصلاح مبلغ شهریه یا پیگیری پرداخت‌ها، با مدیریت مؤسسه هماهنگ کنید.</p>}
               </>}
             <StudentRegistrationFinance />
           </section>
