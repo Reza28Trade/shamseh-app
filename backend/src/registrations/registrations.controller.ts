@@ -136,6 +136,12 @@ export class RegistrationsController {
     return this.registrationsService.markRefundPaid(req.user, refundId, dto);
   }
 
+  @Get('admin/registrations/mock-exams')
+  @UseGuards(AuthGuard)
+  listMockExamsForRegistrationReview(@Req() req: AuthenticatedRequest) {
+    return this.registrationsService.listMockExamsForRegistrationReview(req.user);
+  }
+
   @Get('admin/registrations')
   @UseGuards(AuthGuard)
   listAdminRegistrations(@Req() req: AuthenticatedRequest, @Query('status') status?: string) {
