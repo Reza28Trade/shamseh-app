@@ -116,8 +116,12 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     const nationalId = dto.nationalId.trim();
     const phone = dto.phone.trim();
     const existingStudent = await this.prisma.student.findUnique({
-      where: { nationalId }, select: { id: true },
+      where: { nationalId },
+      select: { id: true, fullName: true, phone: true, academicLevel: true, fieldCode: true },
     });
+    if (existingStudent?.phone && existingStudent.phone !== phone) {
+      throw new ConflictException('شماره موبایل این هنرجو فقط توسط مدیریت قابل تغییر است.');
+    }
     const openRegistration = await this.prisma.registration.findFirst({
       where: { nationalId, status: { in: ['PENDING_REVIEW', 'NEEDS_CORRECTION'] } },
       select: { id: true },
@@ -144,11 +148,11 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       const registration = await this.prisma.$transaction(async (tx) => {
         const created = await tx.registration.create({
           data: {
-            applicantFullName: dto.applicantFullName.trim(),
+            applicantFullName: existingStudent?.fullName ?? dto.applicantFullName.trim(),
             nationalId,
-            phone,
-            academicLevel: dto.academicLevel,
-            fieldCode: dto.fieldCode.trim(),
+            phone: existingStudent?.phone ?? phone,
+            academicLevel: existingStudent?.academicLevel ?? dto.academicLevel,
+            fieldCode: existingStudent?.fieldCode ?? dto.fieldCode.trim(),
             studentId: existingStudent?.id,
             originalTuition,
             finalTuition: originalTuition,
@@ -390,8 +394,19 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
           include: { user: true },
         });
       } else {
-        // Existing students keep their management-controlled profile data.
-        // A new registration must not silently change their phone or field code.
+        // Existing student profile fields can only be filled when missing, during this management approval.
+        if (!student.fieldCode && registration.fieldCode) {
+          await tx.studentProfileHistory.create({
+            data: { studentId: student.id, changedById: actor.id, fieldName: 'fieldCode', oldValue: null, newValue: registration.fieldCode, reason: 'Set during registration approval' },
+          });
+          await tx.student.update({ where: { id: student.id }, data: { fieldCode: registration.fieldCode } });
+        }
+        if (!student.phone && registration.phone) {
+          await tx.studentProfileHistory.create({
+            data: { studentId: student.id, changedById: actor.id, fieldName: 'phone', oldValue: null, newValue: registration.phone, reason: 'Set during registration approval' },
+          });
+          await tx.student.update({ where: { id: student.id }, data: { phone: registration.phone } });
+        }
       }
       if (dto.mockExamEligible) {
         await tx.student.update({ where: { id: student.id }, data: { freeMockExamEligible: true } });
