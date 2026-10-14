@@ -24,7 +24,7 @@ export class AuditLogsService {
       action: row.action,
       entityType: row.entityType,
       entityId: row.entityId,
-      performedBy: row.actor.username,
+      performedBy: row.actor?.username ?? 'کاربر عمومی / ناشناس',
       details: row.metadata ?? null,
       timestamp: row.createdAt.toISOString(),
       ipAddress: row.ipAddress,
