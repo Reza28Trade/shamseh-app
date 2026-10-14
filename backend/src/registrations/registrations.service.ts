@@ -940,7 +940,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         data: {
           actorUserId: actor.id, action: 'REFUND_MARKED_PAID',
           entityType: 'RefundRequest', entityId: refundId,
-          metadata: { amountPaid: Number(refund.amountReserved ?? 0), transferReference: dto.transferReference.trim() },
+          metadata: { amountPaid: Number(refund.amountReserved ?? 0), transferReference },
         },
       });
       return { success: true, status: 'PAID', amountPaid: Number(refund.amountReserved ?? 0) };
