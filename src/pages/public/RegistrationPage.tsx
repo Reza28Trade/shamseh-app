@@ -52,6 +52,7 @@ export function RegistrationPage() {
   }, []);
 
   const total = useMemo(() => courses.filter((c) => selected.includes(c.id)).reduce((sum, c) => sum + c.price, 0), [courses, selected]);
+  const suggestedPrepayment = Math.ceil(total * 0.6);
   const request = async (url: string, init?: RequestInit) => {
     const response = await fetch(url, { credentials: 'include', ...init });
     const data = await response.json().catch(() => ({}));
@@ -138,11 +139,12 @@ export function RegistrationPage() {
             <label className="reg-field">شماره موبایل<input required pattern="09\d{9}" maxLength={11} value={phone} onChange={e=>setPhone(toEnglishDigits(e.target.value))} inputMode="tel"/></label>
             <label className="reg-field">مقطع تحصیلی<select value={level} onChange={e=>setLevel(e.target.value as 'MASTER'|'DOCTORATE')}><option value="MASTER">کارشناسی ارشد</option><option value="DOCTORATE">دکتری</option></select></label>
             <label className="reg-field">کد رشته / کد گرایش<input required value={fieldCode} onChange={e=>setFieldCode(e.target.value)} /></label>
-            <label className="reg-field">مبلغ پرداخت‌شده (تومان)<input required type="number" min="1" step="1" value={amount} onChange={e=>setAmount(e.target.value)} inputMode="numeric"/></label>
+            <label className="reg-field">مبلغ پرداخت‌شده واقعی (تومان)<input required type="number" min="1" step="1" value={amount} onChange={e=>setAmount(e.target.value)} inputMode="numeric"/></label>
           </div>
           <h3 style={{fontSize:14,margin:'22px 0 4px'}}>انتخاب دوره‌ها</h3>
           {courses.length === 0 ? <p className="reg-muted">دوره فعال قیمت‌گذاری‌شده‌ای پیدا نشد.</p> : <div className="reg-course-list">{courses.map(course=><label className="reg-course" key={course.id}><input type="checkbox" checked={selected.includes(course.id)} onChange={e=>setSelected(prev=>e.target.checked?[...prev,course.id]:prev.filter(id=>id!==course.id))}/><span><strong>{course.title}</strong><small>{course.professor}{course.level ? ' · '+course.level : ''}</small><small>{money(course.price)}</small></span></label>)}</div>}
           <div className="reg-total"><span>جمع شهریه دوره‌های انتخاب‌شده</span><strong>{money(total)}</strong></div>
+          <div className="reg-total" style={{display:'grid',gap:8,alignItems:'stretch',background:'#f7f5e9',border:'1px solid #e9e0b5'}}><div style={{display:'flex',justifyContent:'space-between',gap:12,alignItems:'center'}}><span>پیش‌پرداخت پیشنهادی (۶۰٪ شهریه)</span><strong>{money(suggestedPrepayment)}</strong></div><p className="reg-small" style={{margin:0}}>این مبلغ فقط پیشنهاد است؛ مبلغ واقعی پرداخت‌شده مطابق رسید بانکی را وارد کنید. در صورت پرداخت کمتر، بررسی استثنا فقط توسط مدیر ارشد انجام می‌شود.</p><button type="button" className="reg-button" disabled={total<=0} onClick={()=>setAmount(String(suggestedPrepayment))}>استفاده از مبلغ پیشنهادی</button></div>
           <label className="reg-field" style={{marginBottom:16}}>تصویر رسید بانکی (JPG، PNG یا WEBP؛ حداکثر ۸ مگابایت)<input required type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>setReceipt(e.target.files?.[0] ?? null)}/></label>
           <button className="reg-button" disabled={loading || !courses.length} type="submit">{loading?'در حال ارسال…':'ثبت درخواست و ارسال رسید'}</button>
         </form>
