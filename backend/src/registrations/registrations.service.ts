@@ -377,12 +377,25 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       if (!registration || registration.status !== 'APPROVED' || !registration.studentId) {
         throw new NotFoundException('ثبت‌نام تأییدشده هنرجو پیدا نشد.');
       }
-      const initialPaid = registration.payments.reduce((sum, payment) =>
+      // Use the same per-student lock as payment approval to avoid settling a
+      // balance while an approved payment is being allocated to installments.
+      await tx.$queryRaw`SELECT "id" FROM "Student" WHERE "id" = ${registration.studentId} FOR UPDATE`;
+      const latest = await tx.registration.findUnique({
+        where: { id: registrationId },
+        include: {
+          payments: { select: { purpose: true, status: true, approvedAmount: true } },
+          installments: { include: { allocations: { select: { amount: true, payment: { select: { status: true } } } } } },
+        },
+      });
+      if (!latest || latest.status !== 'APPROVED' || !latest.studentId) {
+        throw new NotFoundException('ثبت‌نام تأییدشده هنرجو پیدا نشد.');
+      }
+      const initialPaid = latest.payments.reduce((sum, payment) =>
         payment.status === 'APPROVED' && payment.purpose === 'INITIAL' ? sum + Number(payment.approvedAmount ?? 0) : sum, 0);
-      const installmentPaid = registration.installments.reduce((sum, installment) => sum + installment.allocations
+      const installmentPaid = latest.installments.reduce((sum, installment) => sum + installment.allocations
         .filter((allocation) => allocation.payment.status === 'APPROVED')
         .reduce((itemSum, allocation) => itemSum + Number(allocation.amount), 0), 0);
-      const balance = Math.max(0, Number(registration.finalTuition) - initialPaid - installmentPaid - Number(registration.manualSettlementAmount));
+      const balance = Math.max(0, Number(latest.finalTuition) - initialPaid - installmentPaid - Number(latest.manualSettlementAmount));
       if (balance <= 0.0001) throw new ConflictException('برای این ثبت‌نام بدهی بازی باقی نمانده است.');
       const now = new Date();
       const updated = await tx.registration.update({
