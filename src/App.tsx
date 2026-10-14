@@ -31,7 +31,7 @@ const ADMIN_PERMISSION_OPTIONS = [
   ['messages', 'پیام‌ها و پرسش‌ها'],
   ['notifications', 'ارسال اطلاعیه'],
   ['rules', 'قوانین و تحلیل کنکور'],
-  ['finance', 'وضعیت مالی هنرجویان'],
+  ['finance', 'مدیریت مالی، ثبت‌نام و بازپرداخت'],
   ['logs', 'گزارش‌های سیستمی'],
 ] as const;
 
