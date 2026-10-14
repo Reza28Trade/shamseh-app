@@ -49,6 +49,8 @@ jobs:
       - run: npm run test:registration-finance-rules
       - name: Exercise registration approval and refund service flow
         run: node scripts/test-registration-finance-service.cjs
+      - name: Exercise registration and refund HTTP end-to-end flow
+        run: node scripts/test-registration-finance-http.cjs
 
   frontend:
     runs-on: ubuntu-latest
