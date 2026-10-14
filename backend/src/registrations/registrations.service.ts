@@ -16,6 +16,7 @@ import { SubmitInstallmentPaymentDto } from './dto/submit-installment-payment.dt
 import { ReviewInstallmentPaymentDto } from './dto/review-installment-payment.dto';
 import { CreateRefundRequestDto } from './dto/create-refund-request.dto';
 import { MarkRefundPaidDto } from './dto/mark-refund-paid.dto';
+import { calculateRegistrationApprovalPlan } from './registration-finance.rules';
 
 const RECEIPT_DIR = process.env.REGISTRATION_RECEIPT_STORAGE_PATH
   || join(process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files', 'registration-receipts');
@@ -349,35 +350,26 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       include: { receipts: true },
     });
     if (!payment || payment.receipts.length === 0) throw new BadRequestException('پرداخت در انتظار بررسی با رسید معتبر پیدا نشد.');
-    const discount = Number(dto.discountAmount);
-    if (!Number.isFinite(discount) || discount < 0 || discount > Number(registration.originalTuition)) {
-      throw new BadRequestException('مبلغ تخفیف معتبر نیست.');
-    }
-    if (dto.mode === RegistrationApprovalMode.NORMAL && (discount !== 0 || !Number.isFinite(dto.approvedAmount))) {
-      throw new BadRequestException('در حالت عادی تخفیف مجاز نیست.');
-    }
-    if (dto.mode === RegistrationApprovalMode.DISCOUNT && (discount <= 0 || !dto.discountReason?.trim())) {
-      throw new BadRequestException('برای حالت تخفیف، مبلغ و علت تخفیف الزامی است.');
-    }
-    if (dto.mode === RegistrationApprovalMode.PAYMENT_EXCEPTION) {
-      if (discount !== 0 || !dto.exceptionReason?.trim()) throw new BadRequestException('استثنای پرداخت بدون تخفیف و با علت مستند مجاز است.');
-      if (actor.role !== 'SUPER_ADMIN') throw new ForbiddenException('تأیید استثنای پرداخت فقط با مجوز مدیر ارشد انجام می‌شود.');
-    }
+    const otherApproved = registration.payments.reduce((sum, p) => sum + Number(p.approvedAmount ?? 0), 0);
+    const plan = calculateRegistrationApprovalPlan({
+      mode: dto.mode,
+      actorRole: actor.role,
+      originalTuition: Number(registration.originalTuition),
+      discountAmount: Number(dto.discountAmount),
+      discountReason: dto.discountReason,
+      exceptionReason: dto.exceptionReason,
+      approvedAmount: Number(dto.approvedAmount),
+      previouslyApprovedAmount: otherApproved,
+      firstDueDate: dto.firstDueDate,
+    });
     if (dto.mockExamEligible && !dto.mockExamId?.trim()) {
       throw new BadRequestException('برای ثبت امتیاز آزمون رایگان، انتخاب آزمون الزامی است.');
     }
-    const finalTuition = Number(registration.originalTuition) - discount;
-    if (!Number.isFinite(finalTuition) || finalTuition <= 0) throw new BadRequestException('شهریه نهایی باید بیشتر از صفر باشد.');
-    const otherApproved = registration.payments.reduce((sum, p) => sum + Number(p.approvedAmount ?? 0), 0);
-    const totalPaid = otherApproved + Number(dto.approvedAmount);
-    if (!Number.isFinite(totalPaid) || totalPaid <= 0) throw new BadRequestException('مبلغ تأییدشده معتبر نیست.');
-    const ratio = totalPaid / finalTuition;
-    if (dto.mode === RegistrationApprovalMode.NORMAL && ratio < 0.6) throw new BadRequestException('پیش‌پرداخت در حالت عادی باید حداقل ۶۰٪ باشد.');
-    if (dto.mode === RegistrationApprovalMode.DISCOUNT && ratio < 0.6) throw new BadRequestException('پس از تخفیف نیز پیش‌پرداخت باید حداقل ۶۰٪ شهریه نهایی باشد.');
-    if (dto.mode === RegistrationApprovalMode.PAYMENT_EXCEPTION && ratio >= 0.6) throw new BadRequestException('حالت استثنا فقط برای پرداخت کمتر از ۶۰٪ است.');
-    const firstDueDate = new Date(dto.firstDueDate);
-    if (Number.isNaN(firstDueDate.getTime())) throw new BadRequestException('تاریخ سررسید معتبر نیست.');
-    if (totalPaid < finalTuition && firstDueDate.getTime() < Date.now()) throw new BadRequestException('تاریخ اولین قسط نباید در گذشته باشد.');
+    const discount = Number(dto.discountAmount);
+    const finalTuition = plan.finalTuition;
+    const totalPaid = plan.totalPaid;
+    const ratio = plan.ratio;
+    const firstDueDate = plan.firstDueDate;
 
     return this.prisma.$transaction(async (tx) => {
       await tx.$queryRaw`SELECT "id" FROM "Registration" WHERE "id" = ${registrationId} FOR UPDATE`;
@@ -498,12 +490,11 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         }
       }
 
-      const remaining = Math.max(0, finalTuition - totalPaid);
-      const installments = remaining === 0 ? 0 : ratio >= 0.8 ? 1 : 2;
+      const remaining = plan.remaining;
+      const installments = plan.installmentAmounts.length;
       if (installments > 0) {
-        const amounts = installments === 1 ? [remaining] : [Math.floor((remaining / 2) * 100) / 100, remaining - Math.floor((remaining / 2) * 100) / 100];
         await tx.installment.createMany({
-          data: amounts.map((amount, index) => ({
+          data: plan.installmentAmounts.map((amount, index) => ({
             registrationId, sequence: index + 1, amount,
             dueDate: index === 0 ? firstDueDate : this.addOneMonthClamped(firstDueDate),
           })),
