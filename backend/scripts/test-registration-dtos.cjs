@@ -57,7 +57,6 @@ async function main() {
     ...validRefund, reason: '     ',
   })).some((error) => error.property === 'reason'));
 
-  const validTransfer = plainToInstance(MarkRefundPaidDto, { transferReference: ' TRX-123 ' });
   assert.deepEqual(await errorsFor(MarkRefundPaidDto, { transferReference: ' TRX-123 ' }), []);
   assert.ok((await errorsFor(MarkRefundPaidDto, { transferReference: '   ' }))
     .some((error) => error.property === 'transferReference'));
