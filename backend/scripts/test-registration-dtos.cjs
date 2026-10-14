@@ -5,6 +5,7 @@ const { validate } = require('class-validator');
 const { StudentLevel } = require('@prisma/client');
 const { CreateRegistrationDto } = require('../dist/src/registrations/dto/create-registration.dto');
 const { CreateRefundRequestDto } = require('../dist/src/registrations/dto/create-refund-request.dto');
+const { MarkRefundPaidDto } = require('../dist/src/registrations/dto/mark-refund-paid.dto');
 
 async function errorsFor(Type, input) {
   return validate(plainToInstance(Type, input));
@@ -25,7 +26,15 @@ async function main() {
   assert.equal(valid.phone, '09123456789');
   assert.equal(valid.applicantFullName, 'هنرجوی آزمایشی');
   assert.equal(valid.fieldCode, '1201');
+  assert.equal(valid.claimedAmount, 60000);
   assert.deepEqual(await errorsFor(CreateRegistrationDto, validRegistration), []);
+
+  const arabicIndic = plainToInstance(CreateRegistrationDto, {
+    ...validRegistration, nationalId: '١٢٣٤٥٦٧٨٩٠', phone: '٠٩١٢٣٤٥٦٧٨٩', claimedAmount: '٦٠٠٠٠',
+  });
+  assert.equal(arabicIndic.nationalId, '1234567890');
+  assert.equal(arabicIndic.phone, '09123456789');
+  assert.equal(arabicIndic.claimedAmount, 60000);
 
   assert.ok((await errorsFor(CreateRegistrationDto, {
     ...validRegistration, applicantFullName: '   ',
@@ -47,6 +56,11 @@ async function main() {
   assert.ok((await errorsFor(CreateRefundRequestDto, {
     ...validRefund, reason: '     ',
   })).some((error) => error.property === 'reason'));
+
+  const validTransfer = plainToInstance(MarkRefundPaidDto, { transferReference: ' TRX-123 ' });
+  assert.deepEqual(await errorsFor(MarkRefundPaidDto, { transferReference: ' TRX-123 ' }), []);
+  assert.ok((await errorsFor(MarkRefundPaidDto, { transferReference: '   ' }))
+    .some((error) => error.property === 'transferReference'));
 
   console.log('Registration DTO validation: regression assertions passed.');
 }
