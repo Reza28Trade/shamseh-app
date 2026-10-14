@@ -333,6 +333,12 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         ...payment,
         claimedAmount: Number(payment.claimedAmount),
         approvedAmount: payment.approvedAmount === null ? null : Number(payment.approvedAmount),
+        receipts: payment.receipts.map((receipt) => ({
+          ...receipt,
+          // Prisma BigInt values cannot be JSON-serialized by Nest/Express.
+          // Receipt uploads are capped at 8 MiB, so Number is exact and safe here.
+          fileSize: receipt.fileSize === null ? null : Number(receipt.fileSize),
+        })),
       })),
     })));
   }
