@@ -12,6 +12,8 @@ import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { ReviewRegistrationDto } from './dto/review-registration.dto';
 import { SubmitInstallmentPaymentDto } from './dto/submit-installment-payment.dto';
 import { ReviewInstallmentPaymentDto } from './dto/review-installment-payment.dto';
+import { CreateRefundRequestDto } from './dto/create-refund-request.dto';
+import { MarkRefundPaidDto } from './dto/mark-refund-paid.dto';
 import { RegistrationsService } from './registrations.service';
 
 type AuthenticatedRequest = Request & { user: AuthenticatedUser };
@@ -76,6 +78,44 @@ export class RegistrationsController {
     @Body() dto: ReviewInstallmentPaymentDto,
   ) {
     return this.registrationsService.reviewInstallmentPayment(req.user, paymentId, dto);
+  }
+
+  @Get('student/refunds')
+  @UseGuards(AuthGuard)
+  listStudentRefundRequests(@Req() req: AuthenticatedRequest) {
+    return this.registrationsService.listStudentRefundRequests(req.user);
+  }
+
+  @Post('student/refunds')
+  @UseGuards(AuthGuard)
+  createRefundRequest(@Req() req: AuthenticatedRequest, @Body() dto: CreateRefundRequestDto) {
+    return this.registrationsService.createRefundRequest(req.user, dto);
+  }
+
+  @Get('admin/refunds')
+  @UseGuards(AuthGuard)
+  listAdminRefundRequests(@Req() req: AuthenticatedRequest, @Query('status') status?: string) {
+    return this.registrationsService.listAdminRefundRequests(req.user, status);
+  }
+
+  @Patch('admin/refunds/:refundId/review')
+  @UseGuards(AuthGuard)
+  reviewRefundRequest(
+    @Req() req: AuthenticatedRequest,
+    @Param('refundId') refundId: string,
+    @Body() body: { decision: 'RESERVE' | 'REJECT'; note?: string },
+  ) {
+    return this.registrationsService.reviewRefundRequest(req.user, refundId, body.decision, body.note);
+  }
+
+  @Patch('admin/refunds/:refundId/paid')
+  @UseGuards(AuthGuard)
+  markRefundPaid(
+    @Req() req: AuthenticatedRequest,
+    @Param('refundId') refundId: string,
+    @Body() dto: MarkRefundPaidDto,
+  ) {
+    return this.registrationsService.markRefundPaid(req.user, refundId, dto);
   }
 
   @Get('admin/registrations')
