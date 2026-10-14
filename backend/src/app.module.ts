@@ -10,7 +10,6 @@ import { MockExamsModule } from './mock-exams/mock-exams.module';
 import { GeneralContentModule } from './general-content/general-content.module';
 import { CounselingModule } from './counseling/counseling.module';
 import { PublicContentModule } from './public-content/public-content.module';
-import { FinanceModule } from './finance/finance.module';
 import { ManagementContactModule } from './management-contact/management-contact.module';
 import { RegistrationsModule } from './registrations/registrations.module';
 
@@ -27,7 +26,6 @@ import { RegistrationsModule } from './registrations/registrations.module';
     GeneralContentModule,
     CounselingModule,
     PublicContentModule,
-    FinanceModule,
     ManagementContactModule,
     RegistrationsModule,
   ],
