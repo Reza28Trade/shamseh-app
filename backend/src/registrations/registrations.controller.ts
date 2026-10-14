@@ -14,6 +14,7 @@ import { SubmitInstallmentPaymentDto } from './dto/submit-installment-payment.dt
 import { ReviewInstallmentPaymentDto } from './dto/review-installment-payment.dto';
 import { CreateRefundRequestDto } from './dto/create-refund-request.dto';
 import { MarkRefundPaidDto } from './dto/mark-refund-paid.dto';
+import { ReviewRefundRequestDto } from './dto/review-refund-request.dto';
 import { RegistrationsService } from './registrations.service';
 
 type AuthenticatedRequest = Request & { user: AuthenticatedUser };
@@ -114,7 +115,7 @@ export class RegistrationsController {
   reviewRefundRequest(
     @Req() req: AuthenticatedRequest,
     @Param('refundId') refundId: string,
-    @Body() body: { decision: 'RESERVE' | 'REJECT'; note?: string },
+    @Body() body: ReviewRefundRequestDto,
   ) {
     return this.registrationsService.reviewRefundRequest(req.user, refundId, body.decision, body.note);
   }
