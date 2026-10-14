@@ -1,6 +1,10 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { IsDateString, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, Matches, Min, MinLength } from 'class-validator';
 import { StudentLevel } from '@prisma/client';
+
+const normalizeDigits = (value: unknown) => typeof value === 'string'
+  ? value.replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit))).replace(/[٠-٩]/g, (digit) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit)))
+  : value;
 
 export class CreateRegistrationDto {
   @IsString() @IsNotEmpty() @MinLength(3)
