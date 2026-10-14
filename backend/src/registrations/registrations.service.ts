@@ -206,6 +206,9 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       return { ...registration, message: 'درخواست ثبت‌نام با موفقیت ثبت شد. اطلاعات ورود پس از تأیید مدیریت ایجاد می‌شود.' };
     } catch (error) {
       await unlink(join(RECEIPT_DIR, storageKey)).catch(() => undefined);
+      if (typeof error === 'object' && error !== null && 'code' in error && error.code === 'P2002') {
+        throw new ConflictException('برای این کد ملی یک ثبت‌نام در انتظار بررسی وجود دارد.');
+      }
       throw error;
     }
   }
