@@ -151,6 +151,8 @@ export function ManageRegistrations(){
           <div style={{display:'flex',justifyContent:'space-between',gap:8,fontSize:12}}><span>شهریه اولیه</span><strong>{money(item.originalTuition)}</strong></div>
           {item.discountAmount>0&&<div style={{display:'flex',justifyContent:'space-between',gap:8,fontSize:12}}><span>تخفیف</span><strong>{money(item.discountAmount)}</strong></div>}
           <div style={{display:'flex',justifyContent:'space-between',gap:8,fontSize:13}}><span>شهریه نهایی</span><strong>{money(item.finalTuition)}</strong></div>
+          <div style={{display:'flex',justifyContent:'space-between',gap:8,fontSize:12,color:'#1d9a72'}}><span>مجموع پرداخت تأییدشده</span><strong>{money(item.payments.filter(p=>p.status==='APPROVED').reduce((sum,p)=>sum+(p.approvedAmount??0),0))}</strong></div>
+          <div style={{display:'flex',justifyContent:'space-between',gap:8,fontSize:13,color:Math.max(0,item.finalTuition-item.payments.filter(p=>p.status==='APPROVED').reduce((sum,p)=>sum+(p.approvedAmount??0),0))>0?'#c65b58':'#1d9a72'}}><span>مانده شهریه</span><strong>{money(Math.max(0,item.finalTuition-item.payments.filter(p=>p.status==='APPROVED').reduce((sum,p)=>sum+(p.approvedAmount??0),0)))}</strong></div>
         </div>
         <div style={{display:'grid',gap:8}}>
           <strong style={{fontSize:12}}>رسیدها و پرداخت‌ها</strong>
