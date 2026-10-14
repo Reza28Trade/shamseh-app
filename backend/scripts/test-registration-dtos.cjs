@@ -10,6 +10,7 @@ const { ReviewRegistrationDto } = require('../dist/src/registrations/dto/review-
 const { SubmitInstallmentPaymentDto } = require('../dist/src/registrations/dto/submit-installment-payment.dto');
 const { ReviewInstallmentPaymentDto } = require('../dist/src/registrations/dto/review-installment-payment.dto');
 const { ReviewRefundRequestDto } = require('../dist/src/registrations/dto/review-refund-request.dto');
+const { AuthGuard } = require('../dist/src/auth/auth.guard');
 const { RegistrationApprovalMode } = require('@prisma/client');
 
 async function errorsFor(Type, input) {
@@ -101,6 +102,22 @@ async function main() {
   assert.deepEqual(await errorsFor(ReviewRefundRequestDto, validRefundReview), []);
   assert.ok((await errorsFor(ReviewRefundRequestDto, { decision: 'PAY' }))
     .some((error) => error.property === 'decision'));
+
+  // Staff permission routing must protect every registration/receipt/refund admin endpoint.
+  const guard = Object.create(AuthGuard.prototype);
+  for (const path of [
+    '/admin/registrations',
+    '/admin/registrations/registration-id/approve',
+    '/admin/registration-payments/payment-id/review',
+    '/admin/registration-receipts/receipt-id',
+    '/admin/refunds',
+    '/admin/refunds/refund-id/review',
+    '/admin/refunds/refund-id/paid',
+  ]) {
+    assert.equal(guard.permissionForPath(path), 'finance', `finance permission mapping: ${path}`);
+  }
+  assert.equal(guard.permissionForPath('/admin/support/tickets'), 'messages');
+  assert.equal(guard.permissionForPath('/admin/unmapped-sensitive-route'), null);
 
   console.log('Registration DTO validation: regression assertions passed.');
 }
