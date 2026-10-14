@@ -19,6 +19,19 @@ const actionLabels: Record<string, string> = {
   REGISTRATION_DEBT_SETTLED: 'تسویه بدهی ثبت‌نام',
 };
 
+function formatAction(action: string): string {
+  if (actionLabels[action]) return actionLabels[action];
+  const match = action.match(/^(POST|PUT|PATCH|DELETE)\\s+(.+)$/);
+  if (!match) return action;
+  const verb: Record<string, string> = {
+    POST: 'ثبت عملیات',
+    PUT: 'ویرایش اطلاعات',
+    PATCH: 'تغییر اطلاعات',
+    DELETE: 'حذف اطلاعات',
+  };
+  return `${verb[match[1]] || match[1]} · ${match[2]}`;
+}
+
 function formatDetails(value: unknown): string {
   if (value == null) return 'جزئیاتی برای این رویداد ثبت نشده است.';
   if (typeof value === 'string') return value;
@@ -123,7 +136,7 @@ export const AuditLogs: React.FC = () => {
                   <div style={{ minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
                       <ShieldAlert size={17} />
-                      <strong>{actionLabels[log.action] || log.action}</strong>
+                      <strong>{formatAction(log.action)}</strong>
                       <span style={{ fontSize: 12, color: 'var(--admin-sub, #667675)' }}>({log.entityType}{log.entityId ? ` · ${log.entityId}` : ''})</span>
                     </div>
                     <div style={{ fontSize: 13, lineHeight: 1.8 }}>
