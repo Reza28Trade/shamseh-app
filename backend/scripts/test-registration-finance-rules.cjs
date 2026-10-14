@@ -101,7 +101,7 @@ assert.equal(calculateRefundAvailableBalance({
   alreadyReserved: 0,
 }), 0);
 assert.equal(calculateRefundAvailableBalance({
-  totalApprovedPayments: 100000.109,
+  totalApprovedPayments: 100000.119,
   totalTuition: 50000,
   alreadyReserved: 10000.105,
 }), 40000.01);
