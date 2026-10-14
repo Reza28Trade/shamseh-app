@@ -131,3 +131,50 @@ export function calculateRefundAvailableBalance(input: RefundBalanceInput): numb
   const available = input.totalApprovedPayments - input.totalTuition - input.alreadyReserved;
   return Math.round(Math.max(0, available) * 100) / 100;
 }
+
+export interface OutstandingInstallment {
+  id: string;
+  dueDate: Date;
+  amount: number;
+  allocated: number;
+  sequence?: number;
+}
+
+export interface InstallmentAllocationPlan {
+  installmentId: string;
+  amount: number;
+}
+
+/** Allocate a payment to the oldest outstanding installments without exceeding any balance. */
+export function planOldestDebtAllocations(
+  installments: OutstandingInstallment[],
+  paymentAmount: number,
+): InstallmentAllocationPlan[] {
+  if (!Number.isFinite(paymentAmount) || paymentAmount < 0) {
+    throw new BadRequestException('مبلغ تخصیص پرداخت معتبر نیست.');
+  }
+  for (const item of installments) {
+    if (!Number.isFinite(item.amount) || item.amount < 0
+      || !Number.isFinite(item.allocated) || item.allocated < 0
+      || Number.isNaN(item.dueDate.getTime())) {
+      throw new BadRequestException('اطلاعات قسط برای تخصیص پرداخت معتبر نیست.');
+    }
+  }
+  let left = Math.round(paymentAmount * 100) / 100;
+  const plan: InstallmentAllocationPlan[] = [];
+  const ordered = [...installments].sort((a, b) =>
+    a.dueDate.getTime() - b.dueDate.getTime()
+    || (a.sequence ?? 0) - (b.sequence ?? 0)
+    || a.id.localeCompare(b.id));
+  for (const item of ordered) {
+    if (left <= 0.0001) break;
+    const balance = Math.max(0, Math.round((item.amount - item.allocated) * 100) / 100);
+    if (balance <= 0.0001) continue;
+    const amount = Math.round(Math.min(left, balance) * 100) / 100;
+    if (amount <= 0) continue;
+    plan.push({ installmentId: item.id, amount });
+    left = Math.round((left - amount) * 100) / 100;
+  }
+  if (left > 0.0001) throw new BadRequestException('مبلغ پرداخت از مجموع بدهی‌های قابل تخصیص بیشتر است.');
+  return plan;
+}
