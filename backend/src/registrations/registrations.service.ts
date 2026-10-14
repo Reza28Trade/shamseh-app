@@ -249,6 +249,15 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     const storageKey = await this.storeReceipt(file);
     try {
       const payment = await this.prisma.$transaction(async (tx) => {
+        await tx.$queryRaw`SELECT "id" FROM "Registration" WHERE "id" = ${registrationId} FOR UPDATE`;
+        const currentRegistration = await tx.registration.findUnique({ where: { id: registrationId }, select: { status: true } });
+        if (!currentRegistration || currentRegistration.status !== 'NEEDS_CORRECTION') {
+          throw new ConflictException('درخواست اصلاح برای این ثبت‌نام فعال نیست یا رسید اصلاحی قبلاً ارسال شده است.');
+        }
+        const pendingInitial = await tx.registrationPayment.findFirst({
+          where: { registrationId, purpose: 'INITIAL', status: 'PENDING' }, select: { id: true },
+        });
+        if (pendingInitial) throw new ConflictException('یک رسید در انتظار بررسی برای این ثبت‌نام وجود دارد.');
         const created = await tx.registrationPayment.create({
           data: {
             registrationId,
@@ -359,6 +368,11 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     if (totalPaid < finalTuition && firstDueDate.getTime() < Date.now()) throw new BadRequestException('تاریخ اولین قسط نباید در گذشته باشد.');
 
     return this.prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT "id" FROM "Registration" WHERE "id" = ${registrationId} FOR UPDATE`;
+      const currentRegistration = await tx.registration.findUnique({ where: { id: registrationId }, select: { status: true } });
+      if (!currentRegistration || !['PENDING_REVIEW', 'NEEDS_CORRECTION'].includes(currentRegistration.status)) {
+        throw new ConflictException('این ثبت‌نام هم‌زمان توسط کاربر دیگری بررسی شده است.');
+      }
       const claimed = await tx.registrationPayment.updateMany({
         where: { id: payment.id, status: 'PENDING' },
         data: {
@@ -518,6 +532,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     this.requireFinanceAccess(actor);
     if (!note?.trim()) throw new BadRequestException('علت درخواست اصلاح الزامی است.');
     return this.prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT "id" FROM "Registration" WHERE "id" = ${registrationId} FOR UPDATE`;
       const registration = await tx.registration.findUnique({ where: { id: registrationId }, select: { id: true, status: true } });
       if (!registration || !['PENDING_REVIEW', 'NEEDS_CORRECTION'].includes(registration.status)) throw new NotFoundException('ثبت‌نام قابل اصلاح پیدا نشد.');
       await tx.registrationPayment.updateMany({
@@ -537,6 +552,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     this.requireFinanceAccess(actor);
     if (!reason?.trim()) throw new BadRequestException('علت رد ثبت‌نام الزامی است.');
     return this.prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT "id" FROM "Registration" WHERE "id" = ${registrationId} FOR UPDATE`;
       const registration = await tx.registration.findUnique({ where: { id: registrationId }, select: { id: true, status: true } });
       if (!registration || !['PENDING_REVIEW', 'NEEDS_CORRECTION'].includes(registration.status)) throw new NotFoundException('ثبت‌نام قابل رد پیدا نشد.');
       await tx.registrationPayment.updateMany({
