@@ -44,6 +44,8 @@ type StudentFinance = {
   balance: number;
   credit: number;
   unpricedCourses: number;
+  requiresFinanceReconciliation?: boolean;
+  approvedRegistrationCount?: number;
   status: 'PAID' | 'PARTIAL' | 'UNPAID' | 'INCOMPLETE' | 'NO_COURSES';
   enrolledCourses: Array<{ enrollmentId: string; courseId: string; title: string; tuition: number | null; status: string }>;
   payments: Array<{ id: string; amount: number; method: string; reference: string | null; note: string | null; paidAt: string; status: 'PENDING' | 'APPROVED' | 'REJECTED' }>;
@@ -997,6 +999,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                     <div style={{ fontSize: 15, fontWeight: 900, color: item.color, lineHeight: 1.8 }}>{new Intl.NumberFormat('fa-IR').format(Math.round(item.value || 0))} تومان</div>
                   </div>)}
                 </div>
+                {finance.requiresFinanceReconciliation && <div role="alert" style={{ display: 'flex', gap: 8, alignItems: 'flex-start', padding: 12, borderRadius: 12, background: 'rgba(245,158,11,.1)', color: '#b45309', fontSize: 12, lineHeight: 1.9 }}><AlertCircle size={16} style={{ flexShrink: 0, marginTop: 3 }} /><span>برای شما ثبت‌نام تأییدشده در سیستم اقساط ثبت شده است. اعداد این نمای قدیمی ممکن است کامل نباشند؛ برای مشاهده شهریه نهایی، پرداخت‌های تأییدشده و مانده اقساط، جزئیات ثبت‌نام را در بخش پایین بررسی کنید.</span></div>}
                 {finance.unpricedCourses > 0 && <div style={{ display: 'flex', gap: 8, alignItems: 'center', padding: 12, borderRadius: 12, background: 'rgba(245,158,11,.1)', color: '#f59e0b', fontSize: 12 }}><AlertCircle size={16} />شهریه {finance.unpricedCourses} دوره هنوز توسط مؤسسه مشخص نشده است.</div>}
                 <div style={{ border: `1px solid ${borderColor}`, borderRadius: 14, overflow: 'hidden' }}>
                   <div style={{ padding: 14, background: innerCardBg, borderBottom: `1px solid ${borderColor}`, fontSize: 13, fontWeight: 900, color: textColor }}>شهریه دوره‌های من</div>
