@@ -19,11 +19,11 @@ export class AuthService {
         role: true,
         status: true,
         permissions: true,
-        student: { select: { id: true, fullName: true, nationalId: true } },
+        student: { select: { id: true, fullName: true, nationalId: true, isArchived: true } },
       },
     });
 
-    if (!user || user.status !== 'ACTIVE' || !(await argon2.verify(user.passwordHash, password))) {
+    if (!user || user.status !== 'ACTIVE' || (user.role === 'STUDENT' && user.student?.isArchived) || !(await argon2.verify(user.passwordHash, password))) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -66,7 +66,7 @@ export class AuthService {
       },
     });
 
-    if (!session || session.expiresAt <= new Date() || session.user.status !== 'ACTIVE') {
+    if (!session || session.expiresAt <= new Date() || session.user.status !== 'ACTIVE' || (session.user.role === 'STUDENT' && session.user.student?.isArchived)) {
       return null;
     }
 
