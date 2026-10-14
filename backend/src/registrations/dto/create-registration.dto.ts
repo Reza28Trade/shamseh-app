@@ -1,4 +1,4 @@
-import { Transform, Type } from 'class-transformer';
+import { Transform } from 'class-transformer';
 import { IsDateString, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, Matches, Min, MinLength } from 'class-validator';
 import { StudentLevel } from '@prisma/client';
 
@@ -10,9 +10,11 @@ export class CreateRegistrationDto {
   @IsString() @IsNotEmpty() @MinLength(3)
   applicantFullName!: string;
 
+  @Transform(({ value }) => normalizeDigits(value))
   @IsString() @Matches(/^\d{10}$/)
   nationalId!: string;
 
+  @Transform(({ value }) => normalizeDigits(value))
   @IsString() @Matches(/^09\d{9}$/)
   phone!: string;
 
@@ -26,7 +28,8 @@ export class CreateRegistrationDto {
   @IsString()
   courseIds!: string;
 
-  @Type(() => Number) @IsNumber() @Min(1)
+  @Transform(({ value }) => Number(normalizeDigits(value)))
+  @IsNumber() @Min(1)
   claimedAmount!: number;
 
   @IsOptional() @IsDateString()
