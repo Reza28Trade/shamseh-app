@@ -739,6 +739,7 @@ model Registration {
   @@index([nationalId, status])
   @@index([studentId, status])
   @@index([status, createdAt])
+  @@index([manualSettledById])
 }
 
 model RegistrationReviewHistory {
