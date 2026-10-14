@@ -18,6 +18,7 @@ export class AuditLogInterceptor implements NestInterceptor {
     const request = http.getRequest<AuditRequest>();
     const response = http.getResponse<Response>();
     const method = request.method.toUpperCase();
+    const operationStartedAt = new Date();
 
     if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
       return next.handle();
@@ -53,12 +54,26 @@ export class AuditLogInterceptor implements NestInterceptor {
             : undefined;
 
           try {
+            // Some finance workflows already write a richer domain-specific audit event
+            // inside their transaction. Avoid adding a second generic row for that same entity.
+            const entityId = this.entityId(routeParams);
+            if (actor?.id && entityId) {
+              const existingDomainEvent = await this.prisma.auditLog.findFirst({
+                where: {
+                  actorUserId: actor.id,
+                  entityId,
+                  createdAt: { gte: operationStartedAt },
+                },
+                select: { id: true },
+              });
+              if (existingDomainEvent) return result;
+            }
             await this.prisma.auditLog.create({
               data: {
                 actorUserId: actor?.id ?? null,
                 action: `${method} ${route}`.slice(0, 191),
                 entityType,
-                entityId: this.entityId(routeParams),
+                entityId,
                 metadata: {
                   method,
                   route,
