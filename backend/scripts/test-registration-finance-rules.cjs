@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict');
 const { RegistrationApprovalMode } = require('@prisma/client');
-const { addOneMonthClamped, calculateRefundAvailableBalance, calculateRegistrationApprovalPlan } = require('../dist/src/registrations/registration-finance.rules');
+const { addOneMonthClamped, calculateRefundAvailableBalance, calculateRegistrationApprovalPlan, planOldestDebtAllocations } = require('../dist/src/registrations/registration-finance.rules');
 
 const future = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000);
 
@@ -110,5 +110,23 @@ assert.throws(() => calculateRefundAvailableBalance({
   totalTuition: 0,
   alreadyReserved: 0,
 }), /موجودی بازپرداخت/);
+
+// Payments must settle the oldest outstanding installment first and never exceed debt.
+const allocationPlan = planOldestDebtAllocations([
+  { id: 'newer', dueDate: new Date('2027-03-01T00:00:00.000Z'), sequence: 1, amount: 500, allocated: 0 },
+  { id: 'oldest', dueDate: new Date('2027-01-01T00:00:00.000Z'), sequence: 1, amount: 100, allocated: 20 },
+  { id: 'middle', dueDate: new Date('2027-02-01T00:00:00.000Z'), sequence: 1, amount: 200, allocated: 0 },
+], 250);
+assert.deepEqual(allocationPlan, [
+  { installmentId: 'oldest', amount: 80 },
+  { installmentId: 'middle', amount: 170 },
+]);
+assert.deepEqual(planOldestDebtAllocations([
+  { id: 'settled', dueDate: new Date('2027-01-01T00:00:00.000Z'), amount: 100, allocated: 100 },
+], 0), []);
+assert.throws(() => planOldestDebtAllocations([
+  { id: 'only', dueDate: new Date('2027-01-01T00:00:00.000Z'), amount: 100, allocated: 50 },
+], 51), /بیشتر از مجموع بدهی/);
+assert.throws(() => planOldestDebtAllocations([], -1), /مبلغ تخصیص/);
 
 console.log('Registration finance rules: regression assertions passed.');
