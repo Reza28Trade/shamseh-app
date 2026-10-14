@@ -105,7 +105,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
   async listMockExamsForRegistrationReview(actor: AuthenticatedUser) {
     this.requireFinanceAccess(actor);
     return this.prisma.mockExam.findMany({
-      where: { status: { in: ['SCHEDULED', 'LINK_AVAILABLE', 'LIVE'] } },
+      where: { status: { in: ['SCHEDULED', 'LINK_AVAILABLE'] }, examDate: { gte: new Date() } },
       select: { id: true, title: true, level: true, field: true, examDate: true, status: true },
       orderBy: { examDate: 'asc' },
     });
@@ -437,7 +437,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       }
       if (dto.mockExamEligible) {
         const mockExam = await tx.mockExam.findFirst({
-          where: { id: dto.mockExamId, status: { in: ['SCHEDULED', 'LINK_AVAILABLE', 'LIVE'] } },
+          where: { id: dto.mockExamId, status: { in: ['SCHEDULED', 'LINK_AVAILABLE'] }, examDate: { gte: new Date() } },
           select: { id: true },
         });
         if (!mockExam) throw new BadRequestException('آزمون انتخاب‌شده دیگر برای ثبت‌نام هنرجو قابل استفاده نیست.');
