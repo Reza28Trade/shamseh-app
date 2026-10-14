@@ -77,7 +77,16 @@ export function calculateRegistrationApprovalPlan(input: RegistrationApprovalPla
   if (Number.isNaN(firstDueDate.getTime())) throw new BadRequestException('تاریخ سررسید معتبر نیست.');
   const remaining = Math.max(0, finalTuition - totalPaid);
   const now = input.now ?? new Date();
-  if (remaining > 0 && firstDueDate.getTime() < now.getTime()) {
+  // HTML date inputs submit YYYY-MM-DD. Compare those as calendar dates so "today"
+  // is valid even though JavaScript parses it as midnight and the current time is later.
+  const isDateOnly = typeof input.firstDueDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(input.firstDueDate);
+  const dueDay = isDateOnly
+    ? Date.UTC(firstDueDate.getUTCFullYear(), firstDueDate.getUTCMonth(), firstDueDate.getUTCDate())
+    : firstDueDate.getTime();
+  const nowDay = isDateOnly
+    ? Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+    : now.getTime();
+  if (remaining > 0 && dueDay < nowDay) {
     throw new BadRequestException('تاریخ اولین قسط نباید در گذشته باشد.');
   }
 
