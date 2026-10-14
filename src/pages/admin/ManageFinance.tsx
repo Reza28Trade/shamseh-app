@@ -7,6 +7,7 @@ type FinanceStudent = {
   id: string; fullName: string; nationalId: string; phone: string | null;
   courseCount: number; courseTitles: string[]; tuitionTotal: number; paidTotal: number;
   balance: number; credit: number; unpricedCourses: number; status: FinanceStatus;
+  requiresFinanceReconciliation?: boolean; approvedRegistrationCount?: number;
   payments: Array<{ id: string; amount: number; method: string; reference: string | null; note: string | null; paidAt: string }>;
 };
 type FinanceResult = {
@@ -118,6 +119,7 @@ export const ManageFinance: React.FC = () => {
     { label: 'کل مبالغ دریافتی', value: money(result.summary.paidTotal), color: '#10b981' },
     { label: 'مانده قابل وصول', value: money(result.summary.outstandingBalance), color: '#ef4444' },
     { label: 'هنرجویان بدهکار', value: new Intl.NumberFormat('fa-IR').format(result.summary.unpaidCount + result.summary.partialCount), color: '#f59e0b' },
+    { label: 'نیازمند تطبیق سوابق', value: new Intl.NumberFormat('fa-IR').format(result.summary.reconciliationRequiredCount ?? 0), color: '#f59e0b' },
   ] : [];
 
   return (
@@ -129,6 +131,10 @@ export const ManageFinance: React.FC = () => {
 
       {error && <div role="alert" style={{ padding: 12, borderRadius: 10, background: 'rgba(239,68,68,.1)', color: '#ef4444', fontSize: 12 }}>{error}</div>}
       {success && <div role="status" style={{ padding: 12, borderRadius: 10, background: 'rgba(16,185,129,.1)', color: '#10b981', fontSize: 12 }}>{success}</div>}
+
+      {result && (result.summary.reconciliationRequiredCount ?? 0) > 0 && <div role="alert" style={{ padding: 14, borderRadius: 12, border: '1px solid rgba(245,158,11,.35)', background: 'rgba(245,158,11,.09)', color: colors.text, fontSize: 12, lineHeight: 1.9 }}>
+        <strong style={{ color: '#d97706' }}>تطبیق مالی لازم است.</strong> برای {new Intl.NumberFormat('fa-IR').format(result.summary.reconciliationRequiredCount)} هنرجو ثبت‌نام تأییدشده در سیستم جدید وجود دارد. اعداد مسیر مالی قدیمی برای این افراد از جمع کل کنار گذاشته شده‌اند و نباید مبنای دریافت یا اعلام بدهی قرار گیرند؛ جزئیات را در بخش «ثبت‌نام‌ها و اقساط» بررسی کنید.
+      </div>}
 
       {result && <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 190px), 1fr))', gap: 12 }}>
         {statCards.map((card) => <div key={card.label} style={{ padding: 18, background: colors.bg, border: `1px solid ${colors.border}`, borderRadius: 16 }}>
@@ -155,13 +161,14 @@ export const ManageFinance: React.FC = () => {
           <strong style={{ color: '#ef4444', fontSize: 12 }}>مانده بدهی: {money(selectedStudent.balance)}</strong>
         </div>
         {selectedStudent.unpricedCourses > 0 && <div style={{ color: '#f59e0b', fontSize: 12 }}>برای ثبت پرداخت، ابتدا شهریه همه دوره‌های این هنرجو را در پنل مدیریت دوره‌ها مشخص کنید.</div>}
+        {selectedStudent.requiresFinanceReconciliation && <div role="alert" style={{ color: '#d97706', fontSize: 12, lineHeight: 1.9 }}>این هنرجو ثبت‌نام تأییدشده در سیستم اقساط دارد. برای جلوگیری از ثبت تکراری یا تخصیص اشتباه وجه، پرداخت را از فرم مالی قدیمی ثبت نکنید؛ از بخش «ثبت‌نام‌ها و اقساط» استفاده کنید.</div>}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: 10 }}>
           <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>مبلغ پرداخت (تومان)<input type="number" min="1" max={Math.round(selectedStudent.balance)} required value={paymentAmount} onChange={(event) => setPaymentAmount(event.target.value)} style={inputStyle} /></label>
           <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>روش پرداخت<select value={paymentMethod} onChange={(event) => setPaymentMethod(event.target.value)} style={inputStyle}><option value="BANK_TRANSFER">کارت‌به‌کارت / واریز</option><option value="CASH">نقدی</option><option value="CARD">کارت‌خوان</option><option value="OTHER">سایر</option></select></label>
           <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>شماره پیگیری (اختیاری)<input value={paymentReference} onChange={(event) => setPaymentReference(event.target.value)} style={inputStyle} /></label>
           <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>توضیحات (اختیاری)<input value={paymentNote} onChange={(event) => setPaymentNote(event.target.value)} style={inputStyle} /></label>
         </div>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button type="submit" disabled={savingPayment || selectedStudent.unpricedCourses > 0 || selectedStudent.balance <= 0} style={{ ...buttonStyle, background: colors.accent, color: '#fff', borderColor: colors.accent, opacity: savingPayment ? .6 : 1 }}><CreditCard size={14} />{savingPayment ? 'در حال ثبت...' : 'ثبت پرداخت'}</button><button type="button" onClick={() => setSelectedStudent(null)} style={buttonStyle}>انصراف</button></div>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button type="submit" disabled={savingPayment || selectedStudent.unpricedCourses > 0 || selectedStudent.balance <= 0 || Boolean(selectedStudent.requiresFinanceReconciliation)} style={{ ...buttonStyle, background: colors.accent, color: '#fff', borderColor: colors.accent, opacity: savingPayment ? .6 : 1 }}><CreditCard size={14} />{savingPayment ? 'در حال ثبت...' : 'ثبت پرداخت'}</button><button type="button" onClick={() => setSelectedStudent(null)} style={buttonStyle}>انصراف</button></div>
       </form>}
 
       {loading ? <div style={{ padding: 36, textAlign: 'center', color: colors.muted }}>در حال دریافت اطلاعات مالی...</div>
