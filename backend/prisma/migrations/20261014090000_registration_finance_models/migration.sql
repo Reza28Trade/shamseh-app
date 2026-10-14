@@ -8,7 +8,7 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'StudentLevel') THEN
     CREATE TYPE "StudentLevel" AS ENUM ('MASTER', 'DOCTORATE');
   END IF;
-END
+END;
 $studentlevel$;
 ALTER TYPE "StudentLevel" ADD VALUE IF NOT EXISTS 'MASTER';
 ALTER TYPE "StudentLevel" ADD VALUE IF NOT EXISTS 'DOCTORATE';
