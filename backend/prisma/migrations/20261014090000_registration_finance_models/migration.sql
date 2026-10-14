@@ -1,6 +1,18 @@
 -- Registration workflow and finance ledger models.
 -- Existing Payment and PaymentReceipt tables are intentionally preserved.
 
+-- StudentLevel exists in the Prisma schema but may be absent in fresh databases
+-- because it was previously added manually in some environments.
+DO $
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'StudentLevel') THEN
+    CREATE TYPE "StudentLevel" AS ENUM ('MASTER', 'DOCTORATE');
+  END IF;
+END
+$;
+ALTER TYPE "StudentLevel" ADD VALUE IF NOT EXISTS 'MASTER';
+ALTER TYPE "StudentLevel" ADD VALUE IF NOT EXISTS 'DOCTORATE';
+
 CREATE TYPE "RegistrationStatus" AS ENUM ('PENDING_REVIEW', 'NEEDS_CORRECTION', 'APPROVED', 'REJECTED');
 CREATE TYPE "RegistrationApprovalMode" AS ENUM ('NORMAL', 'DISCOUNT', 'PAYMENT_EXCEPTION');
 CREATE TYPE "RegistrationPaymentStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
