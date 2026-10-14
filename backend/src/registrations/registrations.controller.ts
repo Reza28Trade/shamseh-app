@@ -92,6 +92,12 @@ export class RegistrationsController {
     return this.registrationsService.reviewInstallmentPayment(req.user, paymentId, dto);
   }
 
+  @Get('student/registrations')
+  @UseGuards(AuthGuard)
+  listStudentRegistrations(@Req() req: AuthenticatedRequest) {
+    return this.registrationsService.listStudentRegistrations(req.user);
+  }
+
   @Get('student/refunds')
   @UseGuards(AuthGuard)
   listStudentRefundRequests(@Req() req: AuthenticatedRequest) {
