@@ -4,14 +4,24 @@ import { RegistrationApprovalMode } from '@prisma/client';
 /** Add one calendar month while clamping month-end dates (e.g. Jan 31 -> Feb 28/29).
  * UTC calendar operations keep date-only values stable across server time zones.
  */
+export function addMonthsClamped(date: Date, months: number): Date {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())
+    || !Number.isInteger(months) || months < 0) {
+    throw new BadRequestException('تاریخ یا تعداد ماه‌های سررسید معتبر نیست.');
+  }
+  const day = date.getUTCDate();
+  const targetMonth = date.getUTCMonth() + months;
+  const targetYear = date.getUTCFullYear() + Math.floor(targetMonth / 12);
+  const normalizedMonth = targetMonth % 12;
+  const lastDay = new Date(Date.UTC(targetYear, normalizedMonth + 1, 0)).getUTCDate();
+  return new Date(Date.UTC(
+    targetYear, normalizedMonth, Math.min(day, lastDay),
+    date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds(), date.getUTCMilliseconds(),
+  ));
+}
+
 export function addOneMonthClamped(date: Date): Date {
-  const next = new Date(date);
-  const day = next.getUTCDate();
-  next.setUTCDate(1);
-  next.setUTCMonth(next.getUTCMonth() + 1);
-  const lastDay = new Date(Date.UTC(next.getUTCFullYear(), next.getUTCMonth() + 1, 0)).getUTCDate();
-  next.setUTCDate(Math.min(day, lastDay));
-  return next;
+  return addMonthsClamped(date, 1);
 }
 
 export interface RegistrationApprovalPlanInput {
