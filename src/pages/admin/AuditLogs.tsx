@@ -21,7 +21,7 @@ const actionLabels: Record<string, string> = {
 
 function formatAction(action: string): string {
   if (actionLabels[action]) return actionLabels[action];
-  const match = action.match(/^(POST|PUT|PATCH|DELETE)\\s+(.+)$/);
+  const match = action.match(/^(POST|PUT|PATCH|DELETE)\s+(.+)$/);
   if (!match) return action;
   const verb: Record<string, string> = {
     POST: 'ثبت عملیات',
