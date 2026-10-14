@@ -7,6 +7,7 @@ type RegistrationStatus = {
   courses: Array<{ courseTitleSnapshot: string; coursePriceSnapshot: number }>;
   payments: Array<{ id: string; purpose: string; status: string; claimedAmount: number; approvedAmount: number | null; rejectionReason: string | null; createdAt: string }>;
 };
+const toEnglishDigits = (value: string) => value.replace(/[۰-۹]/g, digit => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit))).replace(/[٠-٩]/g, digit => String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit)));
 const money = (value: number) => new Intl.NumberFormat('fa-IR').format(value) + ' تومان';
 const statusLabel: Record<string, string> = {
   PENDING_REVIEW: 'در انتظار بررسی مدیریت',
@@ -127,8 +128,8 @@ export function RegistrationPage() {
           <p className="reg-muted">دوره‌ها را انتخاب کنید، اطلاعات را تکمیل کنید و تصویر رسید پیش‌پرداخت را بفرستید. ساخت حساب فقط پس از تأیید مدیریت انجام می‌شود.</p>
           <div className="reg-fields">
             <label className="reg-field">نام و نام خانوادگی<input required minLength={3} value={fullName} onChange={e=>setFullName(e.target.value)} autoComplete="name"/></label>
-            <label className="reg-field">کد ملی<input required pattern="\d{10}" maxLength={10} value={nationalId} onChange={e=>setNationalId(e.target.value)} inputMode="numeric"/></label>
-            <label className="reg-field">شماره موبایل<input required pattern="09\d{9}" maxLength={11} value={phone} onChange={e=>setPhone(e.target.value)} inputMode="tel"/></label>
+            <label className="reg-field">کد ملی<input required pattern="\d{10}" maxLength={10} value={nationalId} onChange={e=>setNationalId(toEnglishDigits(e.target.value))} inputMode="numeric"/></label>
+            <label className="reg-field">شماره موبایل<input required pattern="09\d{9}" maxLength={11} value={phone} onChange={e=>setPhone(toEnglishDigits(e.target.value))} inputMode="tel"/></label>
             <label className="reg-field">مقطع تحصیلی<select value={level} onChange={e=>setLevel(e.target.value as 'MASTER'|'DOCTORATE')}><option value="MASTER">کارشناسی ارشد</option><option value="DOCTORATE">دکتری</option></select></label>
             <label className="reg-field">کد رشته / کد گرایش<input required value={fieldCode} onChange={e=>setFieldCode(e.target.value)} /></label>
             <label className="reg-field">مبلغ پرداخت‌شده (تومان)<input required type="number" min="1" step="1" value={amount} onChange={e=>setAmount(e.target.value)} inputMode="numeric"/></label>
