@@ -201,6 +201,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
   }
 
   async getPublicRegistrationStatus(registrationId: string, nationalId: string, phone: string) {
+    if (!nationalId?.trim() || !phone?.trim()) throw new BadRequestException('کد ملی و شماره موبایل الزامی است.');
     const registration = await this.prisma.registration.findFirst({
       where: {
         id: registrationId,
