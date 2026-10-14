@@ -158,7 +158,7 @@ export class FinanceService {
         unpaidCount: reconciledRows.filter((row) => row.status === 'UNPAID').length,
         partialCount: reconciledRows.filter((row) => row.status === 'PARTIAL').length,
         paidCount: reconciledRows.filter((row) => row.status === 'PAID').length,
-        incompleteCount: rows.filter((row) => row.status === 'INCOMPLETE').length,
+        incompleteCount: rows.filter((row) => row.status === 'INCOMPLETE' && !row.requiresFinanceReconciliation).length,
         reconciliationRequiredCount: rows.filter((row) => row.requiresFinanceReconciliation).length,
         noCourseCount: rows.filter((row) => row.status === 'NO_COURSES').length,
       },
