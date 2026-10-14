@@ -16,7 +16,7 @@ import { SubmitInstallmentPaymentDto } from './dto/submit-installment-payment.dt
 import { ReviewInstallmentPaymentDto } from './dto/review-installment-payment.dto';
 import { CreateRefundRequestDto } from './dto/create-refund-request.dto';
 import { MarkRefundPaidDto } from './dto/mark-refund-paid.dto';
-import { addOneMonthClamped, calculateRefundAvailableBalance, calculateRegistrationApprovalPlan, getInstallmentReminderWindows, planOldestDebtAllocations } from './registration-finance.rules';
+import { addOneMonthClamped, calculateRefundAvailableBalance, calculateRegistrationApprovalPlan, getInstallmentReminderWindows, isInstallmentPastDue, planOldestDebtAllocations } from './registration-finance.rules';
 
 const RECEIPT_DIR = process.env.REGISTRATION_RECEIPT_STORAGE_PATH
   || join(process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files', 'registration-receipts');
@@ -66,7 +66,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         this.prisma.installment.findMany({
           where: {
             status: { not: 'PAID' }, dueDate: { lt: todayStart },
-            OR: [{ lastReminderAt: null }, { lastReminderAt: { lte: overdueRepeatBefore } }],
+            OR: [{ lastReminderAt: null }, { lastReminderType: 'DUE_SOON' }, { lastReminderAt: { lte: overdueRepeatBefore } }],
             registration: { status: 'APPROVED', studentId: { not: null } },
           },
           select: { id: true, dueDate: true, amount: true, registrationId: true, lastReminderAt: true, registration: { select: { studentId: true } } },
@@ -727,7 +727,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
           const paidAfter = item.allocated + allocation.amount;
           const status = paidAfter + 0.0001 >= item.amount
             ? 'PAID'
-            : item.dueDate.getTime() < Date.now() ? 'OVERDUE' : 'PARTIALLY_PAID';
+            : isInstallmentPastDue(item.dueDate) ? 'OVERDUE' : 'PARTIALLY_PAID';
           await tx.installment.update({ where: { id: item.id }, data: { status } });
         }
       }
