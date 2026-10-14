@@ -175,3 +175,57 @@ ALTER TABLE "RefundRequest" ADD CONSTRAINT "RefundRequest_reviewedById_fkey"
   FOREIGN KEY ("reviewedById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 ALTER TABLE "RefundRequest" ADD CONSTRAINT "RefundRequest_paidById_fkey"
   FOREIGN KEY ("paidById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- Preserve the field/major code on the student and retain reviewer history.
+ALTER TABLE "Student" ADD COLUMN "fieldCode" TEXT;
+
+CREATE TABLE "RegistrationReviewHistory" (
+  "id" TEXT NOT NULL,
+  "registrationId" TEXT NOT NULL,
+  "actorUserId" TEXT,
+  "action" TEXT NOT NULL,
+  "fromStatus" "RegistrationStatus",
+  "toStatus" "RegistrationStatus",
+  "note" TEXT,
+  "metadata" JSONB,
+  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT "RegistrationReviewHistory_pkey" PRIMARY KEY ("id")
+);
+CREATE INDEX "RegistrationReviewHistory_registrationId_createdAt_idx"
+  ON "RegistrationReviewHistory"("registrationId", "createdAt");
+CREATE INDEX "RegistrationReviewHistory_actorUserId_createdAt_idx"
+  ON "RegistrationReviewHistory"("actorUserId", "createdAt");
+ALTER TABLE "RegistrationReviewHistory" ADD CONSTRAINT "RegistrationReviewHistory_registrationId_fkey"
+  FOREIGN KEY ("registrationId") REFERENCES "Registration"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "RegistrationReviewHistory" ADD CONSTRAINT "RegistrationReviewHistory_actorUserId_fkey"
+  FOREIGN KEY ("actorUserId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+CREATE TABLE "StudentProfileHistory" (
+  "id" TEXT NOT NULL,
+  "studentId" TEXT NOT NULL,
+  "changedById" TEXT,
+  "fieldName" TEXT NOT NULL,
+  "oldValue" TEXT,
+  "newValue" TEXT,
+  "reason" TEXT,
+  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT "StudentProfileHistory_pkey" PRIMARY KEY ("id")
+);
+CREATE INDEX "StudentProfileHistory_studentId_createdAt_idx"
+  ON "StudentProfileHistory"("studentId", "createdAt");
+CREATE INDEX "StudentProfileHistory_changedById_createdAt_idx"
+  ON "StudentProfileHistory"("changedById", "createdAt");
+ALTER TABLE "StudentProfileHistory" ADD CONSTRAINT "StudentProfileHistory_studentId_fkey"
+  FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "StudentProfileHistory" ADD CONSTRAINT "StudentProfileHistory_changedById_fkey"
+  FOREIGN KEY ("changedById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- Database-level sanity checks for monetary values.
+ALTER TABLE "Registration" ADD CONSTRAINT "Registration_tuition_nonnegative_check"
+  CHECK ("originalTuition" >= 0 AND "discountAmount" >= 0 AND "discountAmount" <= "originalTuition" AND "finalTuition" = "originalTuition" - "discountAmount");
+ALTER TABLE "RegistrationPayment" ADD CONSTRAINT "RegistrationPayment_claimed_positive_check"
+  CHECK ("claimedAmount" > 0 AND ("approvedAmount" IS NULL OR "approvedAmount" > 0));
+ALTER TABLE "Installment" ADD CONSTRAINT "Installment_amount_positive_check" CHECK ("amount" > 0);
+ALTER TABLE "PaymentAllocation" ADD CONSTRAINT "PaymentAllocation_amount_positive_check" CHECK ("amount" > 0);
+ALTER TABLE "RefundRequest" ADD CONSTRAINT "RefundRequest_amount_positive_check"
+  CHECK ("amountRequested" > 0 AND ("amountReserved" IS NULL OR "amountReserved" > 0));
