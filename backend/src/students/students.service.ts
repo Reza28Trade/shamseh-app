@@ -44,11 +44,9 @@ export class StudentsService {
       where: { id: studentId }, data: { isArchived }, select: { id: true, isArchived: true },
     });
 
-    // Archiving revokes all active sessions immediately. Restoring the profile
-    // permits a fresh login without deleting any historical or financial records.
-    if (isArchived) {
-      await this.prisma.session.deleteMany({ where: { userId: student.userId } });
-    }
+    // Revoke existing sessions on archive and restore so archived accounts
+    // cannot retain access, and restored accounts must authenticate afresh.
+    await this.prisma.session.deleteMany({ where: { userId: student.userId } });
 
     return updated;
   }
