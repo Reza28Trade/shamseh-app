@@ -25,11 +25,11 @@ export class AuditLogInterceptor implements NestInterceptor {
     }
 
     const rawPath = (request.originalUrl || request.url).split('?')[0];
-    const path = rawPath.replace(/^\\/api(?=\\/)/, '');
+    const path = rawPath.replace(/^\/api(?=\/)/, '');
     // The audit viewer itself and authentication/session endpoints are not business mutations.
     if (
-      /^\\/admin\\/(audit-logs|logs)(\\/|$)/.test(path) ||
-      /^\\/auth\\/(login|logout|me|session)(\\/|$)/.test(path)
+      /^\/admin\/(audit-logs|logs)(\/|$)/.test(path) ||
+      /^\/auth\/(login|logout|me|session)(\/|$)/.test(path)
     ) {
       return next.handle();
     }
@@ -67,7 +67,7 @@ export class AuditLogInterceptor implements NestInterceptor {
                 select: { action: true },
               });
               const hasDomainEvent = existingEvents.some(
-                (event) => !/^(POST|PUT|PATCH|DELETE)\\s/.test(event.action),
+                (event) => !/^(POST|PUT|PATCH|DELETE)\s/.test(event.action),
               );
               if (hasDomainEvent) return result;
             }
@@ -101,7 +101,7 @@ export class AuditLogInterceptor implements NestInterceptor {
     const routePath = request.route?.path;
     const baseUrl = request.baseUrl || '';
     const fullRoute = typeof routePath === 'string' ? `${baseUrl}${routePath}` : fallbackPath;
-    return fullRoute.replace(/^\\/api(?=\\/)/, '').slice(0, 500) || '/';
+    return fullRoute.replace(/^\/api(?=\/)/, '').slice(0, 500) || '/';
   }
 
   private entityType(segments: string[]): string {
