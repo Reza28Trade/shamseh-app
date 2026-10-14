@@ -186,6 +186,8 @@ model User {
   reviewedRegistrationPayments RegistrationPayment[] @relation("RegistrationPaymentReviewer")
   reviewedRefundRequests RefundRequest[] @relation("RefundReviewer")
   paidRefundRequests RefundRequest[] @relation("RefundPayer")
+  registrationReviewHistory RegistrationReviewHistory[]
+  studentProfileHistory StudentProfileHistory[] @relation("StudentProfileHistoryActor")
   counselorProfile CounselorProfile?
   sentCounselingMessages CounselingMessage[]
   assignedCounselingAssignments CounselingAssignment[] @relation("CounselingAssignmentActor")
@@ -210,6 +212,7 @@ model Student {
   nationalId String @unique
   phone String?
   academicLevel StudentLevel?
+  fieldCode String?
   isArchived Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -228,6 +231,7 @@ model Student {
   payments Payment[]
   registrations Registration[]
   refundRequests RefundRequest[]
+  profileHistory StudentProfileHistory[]
 }
 
 model Course {
@@ -722,11 +726,47 @@ model Registration {
   payments RegistrationPayment[]
   installments Installment[]
   refundRequests RefundRequest[]
+  reviewHistory RegistrationReviewHistory[]
   reviewer User? @relation("RegistrationReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
 
   @@index([nationalId, status])
   @@index([studentId, status])
   @@index([status, createdAt])
+}
+
+model RegistrationReviewHistory {
+  id String @id @default(cuid())
+  registrationId String
+  actorUserId String?
+  action String
+  fromStatus RegistrationStatus?
+  toStatus RegistrationStatus?
+  note String? @db.Text
+  metadata Json?
+  createdAt DateTime @default(now())
+
+  registration Registration @relation(fields: [registrationId], references: [id], onDelete: Restrict)
+  actor User? @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([registrationId, createdAt])
+  @@index([actorUserId, createdAt])
+}
+
+model StudentProfileHistory {
+  id String @id @default(cuid())
+  studentId String
+  changedById String?
+  fieldName String
+  oldValue String?
+  newValue String?
+  reason String? @db.Text
+  createdAt DateTime @default(now())
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  changedBy User? @relation("StudentProfileHistoryActor", fields: [changedById], references: [id], onDelete: SetNull)
+
+  @@index([studentId, createdAt])
+  @@index([changedById, createdAt])
 }
 
 model RegistrationCourse {
