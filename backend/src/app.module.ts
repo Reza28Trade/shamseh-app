@@ -12,6 +12,7 @@ import { CounselingModule } from './counseling/counseling.module';
 import { PublicContentModule } from './public-content/public-content.module';
 import { ManagementContactModule } from './management-contact/management-contact.module';
 import { RegistrationsModule } from './registrations/registrations.module';
+import { AuditLogsModule } from './audit-logs/audit-logs.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { RegistrationsModule } from './registrations/registrations.module';
     PublicContentModule,
     ManagementContactModule,
     RegistrationsModule,
+    AuditLogsModule,
   ],
 })
 export class AppModule {}
