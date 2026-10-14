@@ -62,7 +62,11 @@ export function RegistrationPage() {
     setError(''); setNotice('');
     const normalizedNationalId = toEnglishDigits(nId.trim());
     const normalizedPhone = toEnglishDigits(mobile.trim());
-    const data = await request('/api/public/registrations/' + encodeURIComponent(id) + '/status?nationalId=' + encodeURIComponent(normalizedNationalId) + '&phone=' + encodeURIComponent(normalizedPhone));
+    const data = await request('/api/public/registrations/' + encodeURIComponent(id) + '/status', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nationalId: normalizedNationalId, phone: normalizedPhone }),
+    });
     setStatus(data);
     setRegistrationId(id);
     setStatusNationalId(normalizedNationalId);
