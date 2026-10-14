@@ -69,4 +69,19 @@ assert.throws(() => plan({
   firstDueDate: new Date(Date.now() - 24 * 60 * 60 * 1000),
 }), /گذشته/);
 
-console.log('Registration finance rules: 11 checks passed.');
+// A date-only value from an HTML date input means the whole calendar day,
+// not midnight at the beginning of that day.
+const fixedNow = new Date('2026-10-14T15:00:00.000Z');
+const dueToday = plan({
+  approvedAmount: 60000,
+  firstDueDate: '2026-10-14',
+  now: fixedNow,
+});
+assert.equal(dueToday.installmentAmounts.length, 2);
+assert.throws(() => plan({
+  approvedAmount: 60000,
+  firstDueDate: '2026-10-13',
+  now: fixedNow,
+}), /گذشته/);
+
+console.log('Registration finance rules: regression assertions passed.');
