@@ -37,11 +37,11 @@ export class RegistrationsController {
     return this.registrationsService.createPublicRegistration(dto, file);
   }
 
-  @Get('public/registrations/:registrationId/status')
+  @Post('public/registrations/:registrationId/status')
   getPublicRegistrationStatus(
     @Param('registrationId') registrationId: string,
-    @Query('nationalId') nationalId: string,
-    @Query('phone') phone: string,
+    @Body('nationalId') nationalId: string,
+    @Body('phone') phone: string,
   ) {
     return this.registrationsService.getPublicRegistrationStatus(registrationId, nationalId, phone);
   }
