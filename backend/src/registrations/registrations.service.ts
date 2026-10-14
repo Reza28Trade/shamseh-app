@@ -612,6 +612,8 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     const storageKey = await this.storeReceipt(file);
     try {
       return await this.prisma.$transaction(async (tx) => {
+        // Serialize payment submissions for one student so simultaneous requests cannot over-claim the same balance.
+        await tx.$queryRaw`SELECT "id" FROM "Student" WHERE "id" = ${actor.studentId!} FOR UPDATE`;
         const registrations = await tx.registration.findMany({
           where: { studentId: actor.studentId!, status: 'APPROVED' },
           select: { id: true, installments: { include: { allocations: { select: { amount: true } } } } },
@@ -675,6 +677,8 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     }
 
     return this.prisma.$transaction(async (tx) => {
+      // Lock the student's ledger before calculating and allocating outstanding debt.
+      await tx.$queryRaw`SELECT "id" FROM "Student" WHERE "id" = ${payment.registration.studentId!} FOR UPDATE`;
       const current = await tx.registrationPayment.updateMany({
         where: { id: paymentId, status: 'PENDING' },
         data: {
@@ -831,7 +835,11 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     if (decision === 'REJECT' && !note?.trim()) throw new BadRequestException('علت رد درخواست بازپرداخت الزامی است.');
     return this.prisma.$transaction(async (tx) => {
       const refund = await tx.refundRequest.findUnique({ where: { id: refundId } });
-      if (!refund || refund.status !== 'REQUESTED') throw new ConflictException('این درخواست قبلاً بررسی شده یا وجود ندارد.');
+      if (!refund) throw new ConflictException('این درخواست قبلاً بررسی شده یا وجود ندارد.');
+      // Serialize all refund reservations for the same student to prevent over-reserving their balance.
+      await tx.$queryRaw`SELECT "id" FROM "Student" WHERE "id" = ${refund.studentId} FOR UPDATE`;
+      const currentRefund = await tx.refundRequest.findUnique({ where: { id: refundId } });
+      if (!currentRefund || currentRefund.status !== 'REQUESTED') throw new ConflictException('این درخواست قبلاً بررسی شده یا وجود ندارد.');
       if (decision === 'REJECT') {
         const changed = await tx.refundRequest.updateMany({
           where: { id: refundId, status: 'REQUESTED' },
@@ -845,7 +853,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       }
 
       const registrations = await tx.registration.findMany({
-        where: { studentId: refund.studentId, status: 'APPROVED' },
+        where: { studentId: currentRefund.studentId, status: 'APPROVED' },
         select: {
           id: true, finalTuition: true,
           courses: { select: { courseId: true } },
@@ -855,7 +863,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       const registeredCourseIds = [...new Set(registrations.flatMap((row) => row.courses.map((course) => course.courseId)))];
       const legacyEnrollments = await tx.enrollment.findMany({
         where: {
-          studentId: refund.studentId,
+          studentId: currentRefund.studentId,
           status: { in: [EnrollmentStatus.ACTIVE, EnrollmentStatus.COMPLETED] },
           ...(registeredCourseIds.length ? { courseId: { notIn: registeredCourseIds } } : {}),
         },
@@ -863,7 +871,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       });
       const legacyPayments = await tx.payment.findMany({
         where: {
-          studentId: refund.studentId,
+          studentId: currentRefund.studentId,
           purpose: 'COURSE_FEE',
           status: 'APPROVED',
           ...(registeredCourseIds.length
@@ -877,18 +885,18 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       const paid = registrations.reduce((sum, row) => sum + row.payments.reduce((p, payment) => p + Number(payment.approvedAmount ?? 0), 0), 0)
         + legacyPayments.reduce((sum, payment) => sum + Number(payment.amount), 0);
       const previousRefunds = await tx.refundRequest.findMany({
-        where: { studentId: refund.studentId, status: { in: ['RESERVED', 'PAID'] } },
+        where: { studentId: currentRefund.studentId, status: { in: ['RESERVED', 'PAID'] } },
         select: { amountReserved: true },
       });
       const alreadyReserved = previousRefunds.reduce((sum, item) => sum + Number(item.amountReserved ?? 0), 0);
       const available = Math.max(0, paid - tuition - alreadyReserved);
-      if (Number(refund.amountRequested) > available + 0.0001) {
+      if (Number(currentRefund.amountRequested) > available + 0.0001) {
         throw new BadRequestException('موجودی قابل بازپرداخت کافی نیست؛ بدهی‌های ثبت‌نام‌های دیگر ابتدا از اضافه‌پرداخت کسر می‌شوند.');
       }
       const changed = await tx.refundRequest.updateMany({
         where: { id: refundId, status: 'REQUESTED' },
         data: {
-          status: 'RESERVED', amountReserved: refund.amountRequested,
+          status: 'RESERVED', amountReserved: currentRefund.amountRequested,
           reviewedById: actor.id, approvedAt: new Date(), reviewNote: note?.trim() || null,
         },
       });
@@ -897,10 +905,10 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         data: {
           actorUserId: actor.id, action: 'REFUND_RESERVED',
           entityType: 'RefundRequest', entityId: refundId,
-          metadata: { amountReserved: Number(refund.amountRequested), availableBeforeReservation: available },
+          metadata: { amountReserved: Number(currentRefund.amountRequested), availableBeforeReservation: available },
         },
       });
-      return { success: true, status: 'RESERVED', amountReserved: Number(refund.amountRequested) };
+      return { success: true, status: 'RESERVED', amountReserved: Number(currentRefund.amountRequested) };
     }, { isolationLevel: 'Serializable' });
   }
 
