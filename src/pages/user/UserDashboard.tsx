@@ -4,6 +4,7 @@ import { useStore } from '../../store/useStore';
 import { FileViewer } from '../../components/FileViewer';
 import { StudentCounselingChat } from './StudentCounselingChat';
 import { StudentManagementContact } from './StudentManagementContact';
+import { StudentRegistrationFinance } from './StudentRegistrationFinance';
 import { BookOpen, LogOut, Video, FileText, Send, Sun, Moon, CheckCircle, Bell, Volume2, Presentation, Link as LinkIcon, AlertCircle, CalendarClock, ClipboardList, ExternalLink, Home, Wallet, CreditCard, MessageSquareText } from 'lucide-react';
 
 interface BackendSession {
@@ -1020,6 +1021,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                 </div>
                 <p style={{ margin: 0, color: subText, fontSize: 11, lineHeight: 1.8 }}>برای اصلاح مبلغ شهریه یا پیگیری پرداخت‌ها، با مدیریت مؤسسه هماهنگ کنید.</p>
               </>}
+            <StudentRegistrationFinance />
           </section>
         )}
 
