@@ -1,5 +1,5 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { EnrollmentStatus, PaymentMethod } from '@prisma/client';
+import { EnrollmentStatus, PaymentMethod, Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { CreatePaymentDto } from './dto/create-payment.dto';
@@ -17,8 +17,8 @@ export class FinanceService {
     }
   }
 
-  private async getStudentSummary(studentId: string) {
-    const student = await this.prisma.student.findUnique({
+  private async getStudentSummary(studentId: string, db: PrismaService | Prisma.TransactionClient = this.prisma) {
+    const student = await db.student.findUnique({
       where: { id: studentId },
       select: {
         id: true,
@@ -186,7 +186,7 @@ export class FinanceService {
 
       // Re-read after acquiring the lock so a concurrent payment that committed
       // immediately before this transaction is included in the balance check.
-      const summary = await this.getStudentSummary(studentId);
+      const summary = await this.getStudentSummary(studentId, tx);
       if (summary.requiresFinanceReconciliation) {
         throw new BadRequestException('این هنرجو در سیستم ثبت‌نام و اقساط جدید است؛ پرداخت را از بخش ثبت‌نام‌ها و اقساط ثبت کنید.');
       }
