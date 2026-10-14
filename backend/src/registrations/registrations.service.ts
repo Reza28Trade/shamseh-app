@@ -61,8 +61,8 @@ export class RegistrationsService {
       throw new BadRequestException('یک یا چند دوره انتخاب‌شده فعال نیست یا قیمت ندارد.');
     }
     const originalTuition = courses.reduce((sum, course) => sum + Number(course.price), 0);
-    if (!Number.isFinite(dto.claimedAmount) || dto.claimedAmount <= 0 || dto.claimedAmount > originalTuition) {
-      throw new BadRequestException('مبلغ رسید باید بیشتر از صفر و حداکثر برابر شهریه دوره‌ها باشد.');
+    if (!Number.isFinite(dto.claimedAmount) || dto.claimedAmount <= 0) {
+      throw new BadRequestException('مبلغ رسید باید بیشتر از صفر باشد.');
     }
 
     const storageKey = await this.storeReceipt(file);
@@ -386,6 +386,10 @@ export class RegistrationsService {
     return this.prisma.$transaction(async (tx) => {
       const registration = await tx.registration.findUnique({ where: { id: registrationId }, select: { id: true, status: true } });
       if (!registration || !['PENDING_REVIEW', 'NEEDS_CORRECTION'].includes(registration.status)) throw new NotFoundException('ثبت‌نام قابل اصلاح پیدا نشد.');
+      await tx.registrationPayment.updateMany({
+        where: { registrationId, purpose: 'INITIAL', status: 'PENDING' },
+        data: { status: 'REJECTED', rejectionReason: note.trim(), reviewedById: actor.id, reviewedAt: new Date() },
+      });
       await tx.registration.update({ where: { id: registrationId }, data: { status: 'NEEDS_CORRECTION', reviewedById: actor.id, reviewedAt: new Date(), reviewNote: note.trim() } });
       await tx.registrationReviewHistory.create({
         data: { registrationId, actorUserId: actor.id, action: 'NEEDS_CORRECTION', fromStatus: registration.status, toStatus: 'NEEDS_CORRECTION', note: note.trim() },
@@ -401,6 +405,10 @@ export class RegistrationsService {
     return this.prisma.$transaction(async (tx) => {
       const registration = await tx.registration.findUnique({ where: { id: registrationId }, select: { id: true, status: true } });
       if (!registration || !['PENDING_REVIEW', 'NEEDS_CORRECTION'].includes(registration.status)) throw new NotFoundException('ثبت‌نام قابل رد پیدا نشد.');
+      await tx.registrationPayment.updateMany({
+        where: { registrationId, status: 'PENDING' },
+        data: { status: 'REJECTED', rejectionReason: reason.trim(), reviewedById: actor.id, reviewedAt: new Date() },
+      });
       await tx.registration.update({ where: { id: registrationId }, data: { status: 'REJECTED', reviewedById: actor.id, reviewedAt: new Date(), reviewNote: reason.trim() } });
       await tx.registrationReviewHistory.create({
         data: { registrationId, actorUserId: actor.id, action: 'REJECTED', fromStatus: registration.status, toStatus: 'REJECTED', note: reason.trim() },
