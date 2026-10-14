@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict');
 const { RegistrationApprovalMode } = require('@prisma/client');
-const { calculateRegistrationApprovalPlan } = require('../dist/src/registrations/registration-finance.rules');
+const { addOneMonthClamped, calculateRegistrationApprovalPlan } = require('../dist/src/registrations/registration-finance.rules');
 
 const future = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000);
 
@@ -83,5 +83,10 @@ assert.throws(() => plan({
   firstDueDate: '2026-10-13',
   now: fixedNow,
 }), /گذشته/);
+
+// Month-end installment dates must clamp rather than overflow into the following month.
+assert.equal(addOneMonthClamped(new Date('2027-01-31T00:00:00.000Z')).toISOString(), '2027-02-28T00:00:00.000Z');
+assert.equal(addOneMonthClamped(new Date('2028-01-31T00:00:00.000Z')).toISOString(), '2028-02-29T00:00:00.000Z');
+assert.equal(addOneMonthClamped(new Date('2027-03-31T00:00:00.000Z')).toISOString(), '2027-04-30T00:00:00.000Z');
 
 console.log('Registration finance rules: regression assertions passed.');
