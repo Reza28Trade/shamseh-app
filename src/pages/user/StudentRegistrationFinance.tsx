@@ -66,7 +66,7 @@ export function StudentRegistrationFinance(){
   return <section style={{display:'grid',gap:14,marginTop:18}}>
     <div style={card}>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:10,flexWrap:'wrap'}}><h3 style={{margin:0,fontSize:14}}>ثبت‌نام‌های تأییدشده و اقساط</h3><button style={button} onClick={()=>void load()}>به‌روزرسانی</button></div>
-      <p style={{margin:'8px 0 0',fontSize:11,lineHeight:1.8,color:sub}}>پرداخت فقط بعد از تأیید مدیریت در محاسبه بدهی اعمال می‌شود. اگر رسید رد شود، علت آن نمایش داده می‌شود و می‌توانید رسید جدید ارسال کنید.</p>
+      <p style={{margin:'8px 0 0',fontSize:11,lineHeight:1.8,color:sub}}>پرداخت فقط بعد از تأیید مدیریت در محاسبه بدهی اعمال می‌شود. رسید را از بخش قسط مربوط ثبت کنید؛ پس از تأیید، مبلغ پرداختی ابتدا به قدیمی‌ترین بدهی تسویه‌نشده شما تخصیص می‌یابد. اگر رسید رد شود، علت آن نمایش داده می‌شود و می‌توانید رسید جدید ارسال کنید.</p>
     </div>
     {error&&<div role="alert" style={{...card,background:dark?'#321d1d':'#fff0ef',color:'#b33e37',fontSize:12}}>{error}</div>}
     {notice&&<div role="status" style={{...card,background:dark?'#183229':'#eaf6ef',color:dark?'#a5e3bf':'#216743',fontSize:12}}>{notice}</div>}
