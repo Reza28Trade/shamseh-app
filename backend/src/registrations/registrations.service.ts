@@ -596,6 +596,37 @@ export class RegistrationsService {
     }, { isolationLevel: 'Serializable' });
   }
 
+  async listStudentRegistrations(actor: AuthenticatedUser) {
+    if (actor.role !== 'STUDENT' || !actor.studentId) throw new ForbiddenException('Student access required');
+    const rows = await this.prisma.registration.findMany({
+      where: { studentId: actor.studentId, status: 'APPROVED' },
+      include: {
+        courses: { select: { id: true, courseTitleSnapshot: true, coursePriceSnapshot: true } },
+        installments: {
+          include: { allocations: { select: { amount: true, payment: { select: { status: true } } } } },
+          orderBy: [{ dueDate: 'asc' }, { sequence: 'asc' }],
+        },
+        payments: { where: { purpose: 'INSTALLMENT' }, orderBy: { createdAt: 'desc' }, select: { id: true, status: true, claimedAmount: true, approvedAmount: true, rejectionReason: true, paymentDate: true, createdAt: true } },
+      },
+      orderBy: { approvedAt: 'desc' },
+    });
+    return rows.map((row) => ({
+      id: row.id, status: row.status, approvalMode: row.approvalMode,
+      originalTuition: Number(row.originalTuition), discountAmount: Number(row.discountAmount),
+      finalTuition: Number(row.finalTuition), discountReason: row.discountReason,
+      exceptionReason: row.exceptionReason, approvedAt: row.approvedAt,
+      courses: row.courses.map((course) => ({ ...course, coursePriceSnapshot: Number(course.coursePriceSnapshot) })),
+      installments: row.installments.map((item) => {
+        const paid = item.allocations.filter((a) => a.payment.status === 'APPROVED').reduce((sum, a) => sum + Number(a.amount), 0);
+        return { id: item.id, sequence: item.sequence, amount: Number(item.amount), paid, balance: Math.max(0, Number(item.amount) - paid), dueDate: item.dueDate, status: item.status };
+      }),
+      payments: row.payments.map((payment) => ({
+        ...payment, claimedAmount: Number(payment.claimedAmount),
+        approvedAmount: payment.approvedAmount === null ? null : Number(payment.approvedAmount),
+      })),
+    }));
+  }
+
   async listStudentRefundRequests(actor: AuthenticatedUser) {
     if (actor.role !== 'STUDENT' || !actor.studentId) throw new ForbiddenException('Student access required');
     return this.prisma.refundRequest.findMany({
