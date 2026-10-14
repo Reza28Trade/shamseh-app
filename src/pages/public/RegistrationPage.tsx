@@ -60,11 +60,13 @@ export function RegistrationPage() {
   };
   const loadStatus = async (id = registrationId, nId = statusNationalId || nationalId, mobile = statusPhone || phone) => {
     setError(''); setNotice('');
-    const data = await request('/api/public/registrations/' + encodeURIComponent(id) + '/status?nationalId=' + encodeURIComponent(nId) + '&phone=' + encodeURIComponent(mobile));
+    const normalizedNationalId = toEnglishDigits(nId.trim());
+    const normalizedPhone = toEnglishDigits(mobile.trim());
+    const data = await request('/api/public/registrations/' + encodeURIComponent(id) + '/status?nationalId=' + encodeURIComponent(normalizedNationalId) + '&phone=' + encodeURIComponent(normalizedPhone));
     setStatus(data);
     setRegistrationId(id);
-    setStatusNationalId(nId);
-    setStatusPhone(mobile);
+    setStatusNationalId(normalizedNationalId);
+    setStatusPhone(normalizedPhone);
   };
 
   const submit = async (event: FormEvent) => {
@@ -74,8 +76,8 @@ export function RegistrationPage() {
       if (!receipt) throw new Error('تصویر رسید پرداخت را انتخاب کنید.');
       const form = new FormData();
       form.set('applicantFullName', fullName.trim());
-      form.set('nationalId', nationalId.trim());
-      form.set('phone', phone.trim());
+      form.set('nationalId', toEnglishDigits(nationalId.trim()));
+      form.set('phone', toEnglishDigits(phone.trim()));
       form.set('academicLevel', level);
       form.set('fieldCode', fieldCode.trim());
       form.set('courseIds', JSON.stringify(selected));
@@ -83,9 +85,9 @@ export function RegistrationPage() {
       form.set('receipt', receipt);
       const data = await request('/api/public/registrations', { method: 'POST', body: form });
       setRegistrationId(data.id);
-      setStatusNationalId(nationalId.trim());
-      setStatusPhone(phone.trim());
-      await loadStatus(data.id, nationalId.trim(), phone.trim());
+      setStatusNationalId(toEnglishDigits(nationalId.trim()));
+      setStatusPhone(toEnglishDigits(phone.trim()));
+      await loadStatus(data.id, toEnglishDigits(nationalId.trim()), toEnglishDigits(phone.trim()));
       setNotice('درخواست شما ثبت شد. شناسه ثبت‌نام را نگه دارید؛ حساب هنرجویی پس از تأیید مدیریت ساخته می‌شود.');
     } catch (e) { setError(e instanceof Error ? e.message : 'ثبت درخواست ناموفق بود.'); }
     finally { setLoading(false); }
@@ -96,8 +98,8 @@ export function RegistrationPage() {
     try {
       if (!correctionReceipt) throw new Error('رسید اصلاح‌شده را انتخاب کنید.');
       const form = new FormData();
-      form.set('nationalId', statusNationalId);
-      form.set('phone', statusPhone);
+      form.set('nationalId', toEnglishDigits(statusNationalId.trim()));
+      form.set('phone', toEnglishDigits(statusPhone.trim()));
       form.set('claimedAmount', correctionAmount);
       form.set('receipt', correctionReceipt);
       await request('/api/public/registrations/' + encodeURIComponent(registrationId) + '/receipts', { method: 'POST', body: form });
