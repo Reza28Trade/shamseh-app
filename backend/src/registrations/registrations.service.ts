@@ -122,16 +122,50 @@ export class RegistrationsService {
     }
   }
 
-  async uploadCorrectionReceipt(registrationId: string, body: { claimedAmount: number; paymentDate?: string; trackingCode?: string }, file: any) {
+  async getPublicRegistrationStatus(registrationId: string, nationalId: string, phone: string) {
+    const registration = await this.prisma.registration.findFirst({
+      where: {
+        id: registrationId,
+        nationalId: nationalId?.trim(),
+        phone: phone?.trim(),
+      },
+      include: {
+        courses: { select: { courseTitleSnapshot: true, coursePriceSnapshot: true } },
+        payments: {
+          orderBy: { createdAt: 'desc' },
+          select: { id: true, purpose: true, status: true, claimedAmount: true, approvedAmount: true, rejectionReason: true, createdAt: true },
+        },
+      },
+    });
+    if (!registration) throw new NotFoundException('ثبت‌نامی با این مشخصات پیدا نشد.');
+    return {
+      id: registration.id,
+      status: registration.status,
+      reviewNote: registration.reviewNote,
+      applicantFullName: registration.applicantFullName,
+      originalTuition: Number(registration.originalTuition),
+      discountAmount: Number(registration.discountAmount),
+      finalTuition: Number(registration.finalTuition),
+      courses: registration.courses.map((course) => ({ ...course, coursePriceSnapshot: Number(course.coursePriceSnapshot) })),
+      payments: registration.payments.map((payment) => ({
+        ...payment, claimedAmount: Number(payment.claimedAmount),
+        approvedAmount: payment.approvedAmount === null ? null : Number(payment.approvedAmount),
+      })),
+    };
+  }
+
+  async uploadCorrectionReceipt(registrationId: string, body: { nationalId: string; phone: string; claimedAmount: number; paymentDate?: string; trackingCode?: string }, file: any) {
     this.validateReceipt(file);
     if (!Number.isFinite(Number(body.claimedAmount)) || Number(body.claimedAmount) <= 0) {
       throw new BadRequestException('مبلغ پرداخت باید بیشتر از صفر باشد.');
     }
     const registration = await this.prisma.registration.findUnique({
-      where: { id: registrationId }, select: { id: true, status: true, originalTuition: true },
+      where: { id: registrationId }, select: { id: true, status: true, originalTuition: true, nationalId: true, phone: true },
     });
-    if (!registration || !['NEEDS_CORRECTION', 'PENDING_REVIEW'].includes(registration.status)) {
-      throw new NotFoundException('ثبت‌نامی برای اصلاح رسید پیدا نشد.');
+    if (!registration || !['NEEDS_CORRECTION', 'PENDING_REVIEW'].includes(registration.status)
+      || registration.nationalId !== body.nationalId?.trim()
+      || registration.phone !== body.phone?.trim()) {
+      throw new NotFoundException('ثبت‌نامی با این مشخصات برای اصلاح رسید پیدا نشد.');
     }
     const storageKey = await this.storeReceipt(file);
     try {
