@@ -791,7 +791,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
           include: { allocations: { select: { amount: true, payment: { select: { status: true } } } } },
           orderBy: [{ dueDate: 'asc' }, { sequence: 'asc' }],
         },
-        payments: { where: { purpose: 'INSTALLMENT' }, orderBy: { createdAt: 'desc' }, select: { id: true, status: true, claimedAmount: true, approvedAmount: true, rejectionReason: true, paymentDate: true, createdAt: true } },
+        payments: { orderBy: { createdAt: 'desc' }, select: { id: true, purpose: true, status: true, claimedAmount: true, approvedAmount: true, rejectionReason: true, paymentDate: true, createdAt: true } },
       },
       orderBy: { approvedAt: 'desc' },
     });
@@ -805,6 +805,20 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         const paid = item.allocations.filter((a) => a.payment.status === 'APPROVED').reduce((sum, a) => sum + Number(a.amount), 0);
         return { id: item.id, sequence: item.sequence, amount: Number(item.amount), paid, balance: Math.max(0, Number(item.amount) - paid), dueDate: item.dueDate, status: item.status };
       }),
+      paidTotal: row.payments.reduce((sum, payment) => {
+        if (payment.status !== 'APPROVED') return sum;
+        if (payment.purpose === 'INITIAL') return sum + Number(payment.approvedAmount ?? 0);
+        return sum;
+      }, 0) + row.installments.reduce((sum, item) => sum + item.allocations
+        .filter((allocation) => allocation.payment.status === 'APPROVED')
+        .reduce((itemSum, allocation) => itemSum + Number(allocation.amount), 0), 0),
+      balance: Math.max(0, Number(row.finalTuition) - (
+        row.payments.reduce((sum, payment) => payment.status === 'APPROVED' && payment.purpose === 'INITIAL'
+          ? sum + Number(payment.approvedAmount ?? 0) : sum, 0)
+        + row.installments.reduce((sum, item) => sum + item.allocations
+          .filter((allocation) => allocation.payment.status === 'APPROVED')
+          .reduce((itemSum, allocation) => itemSum + Number(allocation.amount), 0), 0)
+      )),
       payments: row.payments.map((payment) => ({
         ...payment, claimedAmount: Number(payment.claimedAmount),
         approvedAmount: payment.approvedAmount === null ? null : Number(payment.approvedAmount),
