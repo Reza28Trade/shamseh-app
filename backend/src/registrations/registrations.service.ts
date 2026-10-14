@@ -207,7 +207,16 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     } catch (error) {
       await unlink(join(RECEIPT_DIR, storageKey)).catch(() => undefined);
       if (typeof error === 'object' && error !== null && 'code' in error && error.code === 'P2002') {
-        throw new ConflictException('برای این کد ملی یک ثبت‌نام در انتظار بررسی وجود دارد.');
+        const meta = 'meta' in error && typeof error.meta === 'object' && error.meta !== null
+          ? error.meta as { target?: unknown }
+          : undefined;
+        const target = meta?.target;
+        const isOpenRegistrationConflict = target === 'Registration_one_open_per_nationalId_key'
+          || (typeof target === 'string' && target.includes('Registration_one_open_per_nationalId_key'))
+          || (Array.isArray(target) && target.includes('nationalId'));
+        if (isOpenRegistrationConflict) {
+          throw new ConflictException('برای این کد ملی یک ثبت‌نام در انتظار بررسی وجود دارد.');
+        }
       }
       throw error;
     }
