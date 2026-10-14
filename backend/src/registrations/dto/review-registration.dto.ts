@@ -28,5 +28,8 @@ export class ReviewRegistrationDto {
   mockExamEligible?: boolean;
 
   @IsOptional() @IsString()
+  mockExamId?: string;
+
+  @IsOptional() @IsString()
   reviewNote?: string;
 }
