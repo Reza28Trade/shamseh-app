@@ -102,6 +102,15 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  async listMockExamsForRegistrationReview(actor: AuthenticatedUser) {
+    this.requireFinanceAccess(actor);
+    return this.prisma.mockExam.findMany({
+      where: { status: { in: ['SCHEDULED', 'LINK_AVAILABLE', 'LIVE'] } },
+      select: { id: true, title: true, level: true, field: true, examDate: true, status: true },
+      orderBy: { examDate: 'asc' },
+    });
+  }
+
   async listPublicCourses() {
     return this.prisma.course.findMany({
       where: { status: 'ACTIVE', price: { not: null } },
@@ -354,6 +363,9 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       if (discount !== 0 || !dto.exceptionReason?.trim()) throw new BadRequestException('استثنای پرداخت بدون تخفیف و با علت مستند مجاز است.');
       if (actor.role !== 'SUPER_ADMIN') throw new ForbiddenException('تأیید استثنای پرداخت فقط با مجوز مدیر ارشد انجام می‌شود.');
     }
+    if (dto.mockExamEligible && !dto.mockExamId?.trim()) {
+      throw new BadRequestException('برای ثبت امتیاز آزمون رایگان، انتخاب آزمون الزامی است.');
+    }
     const finalTuition = Number(registration.originalTuition) - discount;
     if (!Number.isFinite(finalTuition) || finalTuition <= 0) throw new BadRequestException('شهریه نهایی باید بیشتر از صفر باشد.');
     const otherApproved = registration.payments.reduce((sum, p) => sum + Number(p.approvedAmount ?? 0), 0);
@@ -424,7 +436,17 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         }
       }
       if (dto.mockExamEligible) {
+        const mockExam = await tx.mockExam.findFirst({
+          where: { id: dto.mockExamId, status: { in: ['SCHEDULED', 'LINK_AVAILABLE', 'LIVE'] } },
+          select: { id: true },
+        });
+        if (!mockExam) throw new BadRequestException('آزمون انتخاب‌شده دیگر برای ثبت‌نام هنرجو قابل استفاده نیست.');
         await tx.student.update({ where: { id: student.id }, data: { freeMockExamEligible: true } });
+        await tx.mockExamParticipant.upsert({
+          where: { mockExamId_studentId: { mockExamId: mockExam.id, studentId: student.id } },
+          create: { mockExamId: mockExam.id, studentId: student.id },
+          update: {},
+        });
       }
 
       await tx.registrationCourse.findMany({ where: { registrationId }, select: { courseId: true } }).then(async (items) => {
