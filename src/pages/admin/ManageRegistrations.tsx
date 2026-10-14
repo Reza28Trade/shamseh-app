@@ -78,8 +78,8 @@ export function ManageRegistrations(){
     let mockExamId:string|undefined;
     if(mockExamEligible){
       if(mockExams.length===0){setError('آزمون زمان‌بندی‌شده‌ای برای افزودن هنرجو وجود ندارد. ابتدا آزمون را در بخش آزمون‌های آزمایشی زمان‌بندی کنید.');return;}
-      const choices=mockExams.map((exam,index)=>`${index+1}) ${exam.title} · ${new Date(exam.examDate).toLocaleDateString('fa-IR')} · ${exam.level} / ${exam.field}`).join('\\n');
-      const selected=window.prompt('شماره آزمونی را انتخاب کنید تا هنرجو به فهرست شرکت‌کنندگان افزوده شود:\\n'+choices,'1');
+      const choices=mockExams.map((exam,index)=>`${index+1}) ${exam.title} · ${new Date(exam.examDate).toLocaleDateString('fa-IR')} · ${exam.level} / ${exam.field}`).join('\n');
+      const selected=window.prompt('شماره آزمونی را انتخاب کنید تا هنرجو به فهرست شرکت‌کنندگان افزوده شود:\n'+choices,'1');
       if(selected===null)return;
       const selectedIndex=Number(selected)-1;
       if(!Number.isInteger(selectedIndex)||selectedIndex<0||selectedIndex>=mockExams.length){setError('شماره آزمون معتبر نیست.');return;}
