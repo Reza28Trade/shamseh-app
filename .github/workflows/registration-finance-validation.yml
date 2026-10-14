@@ -47,6 +47,8 @@ jobs:
       - name: Test registration uniqueness behavior
         run: psql "${DATABASE_URL%%\?*}" -v ON_ERROR_STOP=1 -f scripts/test-registration-db-constraints.sql
       - run: npm run test:registration-finance-rules
+      - name: Exercise registration approval and refund service flow
+        run: node scripts/test-registration-finance-service.cjs
 
   frontend:
     runs-on: ubuntu-latest
