@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { CoursesModule } from './courses/courses.module';
@@ -12,6 +13,8 @@ import { CounselingModule } from './counseling/counseling.module';
 import { PublicContentModule } from './public-content/public-content.module';
 import { ManagementContactModule } from './management-contact/management-contact.module';
 import { RegistrationsModule } from './registrations/registrations.module';
+import { AuditLogsModule } from './audit-logs/audit-logs.module';
+import { AuditLogInterceptor } from './audit-logs/audit-log.interceptor';
 
 @Module({
   imports: [
@@ -28,6 +31,8 @@ import { RegistrationsModule } from './registrations/registrations.module';
     PublicContentModule,
     ManagementContactModule,
     RegistrationsModule,
+    AuditLogsModule,
   ],
+  providers: [{ provide: APP_INTERCEPTOR, useClass: AuditLogInterceptor }],
 })
 export class AppModule {}
