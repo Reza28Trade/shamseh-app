@@ -236,7 +236,6 @@ export class RegistrationsService {
     const otherApproved = registration.payments.reduce((sum, p) => sum + Number(p.approvedAmount ?? 0), 0);
     const totalPaid = otherApproved + Number(dto.approvedAmount);
     if (!Number.isFinite(totalPaid) || totalPaid <= 0) throw new BadRequestException('مبلغ تأییدشده معتبر نیست.');
-    if (totalPaid > finalTuition) throw new BadRequestException('مبلغ پرداخت از شهریه نهایی بیشتر است؛ ابتدا باید نحوه تخصیص اضافه‌پرداخت مشخص شود.');
     const ratio = totalPaid / finalTuition;
     if (dto.mode === RegistrationApprovalMode.NORMAL && ratio < 0.6) throw new BadRequestException('پیش‌پرداخت در حالت عادی باید حداقل ۶۰٪ باشد.');
     if (dto.mode === RegistrationApprovalMode.DISCOUNT && ratio < 0.6) throw new BadRequestException('پس از تخفیف نیز پیش‌پرداخت باید حداقل ۶۰٪ شهریه نهایی باشد.');
@@ -303,6 +302,33 @@ export class RegistrationsService {
           }
         }
       });
+
+      // Any amount above this registration's final tuition is applied to the student's oldest unpaid installments first.
+      let excess = Math.max(0, totalPaid - finalTuition);
+      if (excess > 0) {
+        const olderInstallments = await tx.installment.findMany({
+          where: {
+            registration: { studentId: student.id, status: 'APPROVED' },
+            registrationId: { not: registrationId },
+          },
+          include: { allocations: { select: { amount: true } } },
+          orderBy: [{ dueDate: 'asc' }, { createdAt: 'asc' }],
+        });
+        for (const item of olderInstallments) {
+          if (excess <= 0.0001) break;
+          const alreadyAllocated = item.allocations.reduce((sum, allocation) => sum + Number(allocation.amount), 0);
+          const due = Number(item.amount) - alreadyAllocated;
+          if (due <= 0.0001) continue;
+          const amount = Math.min(excess, due);
+          await tx.paymentAllocation.create({ data: { paymentId: payment.id, installmentId: item.id, amount } });
+          const paidAfter = alreadyAllocated + amount;
+          await tx.installment.update({
+            where: { id: item.id },
+            data: { status: paidAfter + 0.0001 >= Number(item.amount) ? 'PAID' : 'PARTIALLY_PAID' },
+          });
+          excess = Math.round((excess - amount) * 100) / 100;
+        }
+      }
 
       const remaining = Math.max(0, finalTuition - totalPaid);
       const installments = remaining === 0 ? 0 : ratio >= 0.8 ? 1 : 2;
