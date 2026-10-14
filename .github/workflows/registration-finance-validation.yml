@@ -44,6 +44,8 @@ jobs:
       - run: npx prisma migrate deploy
       - name: Verify one-open-registration database constraint
         run: psql "${DATABASE_URL%%\?*}" -v ON_ERROR_STOP=1 -tAc "SELECT to_regclass('public.\"Registration_one_open_per_nationalId_key\"') IS NOT NULL" | grep -qx t
+      - name: Test registration uniqueness behavior
+        run: psql "${DATABASE_URL%%\?*}" -v ON_ERROR_STOP=1 -f scripts/test-registration-db-constraints.sql
       - run: npm run test:registration-finance-rules
 
   frontend:
