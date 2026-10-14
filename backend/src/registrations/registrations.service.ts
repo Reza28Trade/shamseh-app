@@ -862,7 +862,14 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         select: { tuitionAmount: true, course: { select: { price: true } } },
       });
       const legacyPayments = await tx.payment.findMany({
-        where: { studentId: refund.studentId, purpose: 'COURSE_FEE', status: 'APPROVED' },
+        where: {
+          studentId: refund.studentId,
+          purpose: 'COURSE_FEE',
+          status: 'APPROVED',
+          ...(registeredCourseIds.length
+            ? { OR: [{ courseId: null }, { courseId: { notIn: registeredCourseIds } }] }
+            : {}),
+        },
         select: { amount: true },
       });
       const tuition = registrations.reduce((sum, row) => sum + Number(row.finalTuition), 0)
