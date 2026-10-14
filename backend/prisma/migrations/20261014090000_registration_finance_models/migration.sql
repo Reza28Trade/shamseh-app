@@ -229,3 +229,9 @@ ALTER TABLE "Installment" ADD CONSTRAINT "Installment_amount_positive_check" CHE
 ALTER TABLE "PaymentAllocation" ADD CONSTRAINT "PaymentAllocation_amount_positive_check" CHECK ("amount" > 0);
 ALTER TABLE "RefundRequest" ADD CONSTRAINT "RefundRequest_amount_positive_check"
   CHECK ("amountRequested" > 0 AND ("amountReserved" IS NULL OR "amountReserved" > 0));
+
+
+-- Idempotent reminder scheduling state for installment due-date notifications.
+ALTER TABLE "Installment" ADD COLUMN "lastReminderAt" TIMESTAMP(3);
+ALTER TABLE "Installment" ADD COLUMN "lastReminderType" TEXT;
+CREATE INDEX "Installment_lastReminderAt_status_idx" ON "Installment"("lastReminderAt", "status");
