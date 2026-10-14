@@ -1,6 +1,6 @@
-import { IsString, MinLength } from 'class-validator';
+import { IsString, Matches, MinLength } from 'class-validator';
 
 export class MarkRefundPaidDto {
-  @IsString() @MinLength(3)
+  @IsString() @MinLength(3) @Matches(/\\S/)
   transferReference!: string;
 }
