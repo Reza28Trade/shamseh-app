@@ -16,7 +16,7 @@ import { SubmitInstallmentPaymentDto } from './dto/submit-installment-payment.dt
 import { ReviewInstallmentPaymentDto } from './dto/review-installment-payment.dto';
 import { CreateRefundRequestDto } from './dto/create-refund-request.dto';
 import { MarkRefundPaidDto } from './dto/mark-refund-paid.dto';
-import { addOneMonthClamped, calculateRefundAvailableBalance, calculateRegistrationApprovalPlan, planOldestDebtAllocations } from './registration-finance.rules';
+import { addOneMonthClamped, calculateRefundAvailableBalance, calculateRegistrationApprovalPlan, getInstallmentReminderWindows, planOldestDebtAllocations } from './registration-finance.rules';
 
 const RECEIPT_DIR = process.env.REGISTRATION_RECEIPT_STORAGE_PATH
   || join(process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files', 'registration-receipts');
@@ -43,13 +43,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
   private async sendDueInstallmentReminders() {
     try {
       const now = new Date();
-      const dayMs = 24 * 60 * 60 * 1000;
-      // Installment due dates are calendar dates. Compare date boundaries, not
-      // the current clock time, so a due date is never overdue during its own day.
-      const todayStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-      const threeDaysAhead = new Date(todayStart.getTime() + 3 * dayMs);
-      const fourDaysAhead = new Date(todayStart.getTime() + 4 * dayMs);
-      const threeDaysAgo = new Date(now.getTime() - 3 * dayMs);
+      const { todayStart, dueSoonStart, dueSoonEnd, overdueRepeatBefore } = getInstallmentReminderWindows(now);
       const creator = await this.prisma.user.findFirst({
         where: { role: 'SUPER_ADMIN', status: 'ACTIVE' }, select: { id: true },
       });
@@ -63,7 +57,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       const [dueSoon, overdue] = await Promise.all([
         this.prisma.installment.findMany({
           where: {
-            status: { not: 'PAID' }, dueDate: { gte: threeDaysAhead, lt: fourDaysAhead },
+            status: { not: 'PAID' }, dueDate: { gte: dueSoonStart, lt: dueSoonEnd },
             lastReminderAt: null,
             registration: { status: 'APPROVED', studentId: { not: null } },
           },
@@ -72,7 +66,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         this.prisma.installment.findMany({
           where: {
             status: { not: 'PAID' }, dueDate: { lt: todayStart },
-            OR: [{ lastReminderAt: null }, { lastReminderAt: { lte: threeDaysAgo } }],
+            OR: [{ lastReminderAt: null }, { lastReminderAt: { lte: overdueRepeatBefore } }],
             registration: { status: 'APPROVED', studentId: { not: null } },
           },
           select: { id: true, dueDate: true, amount: true, registrationId: true, lastReminderAt: true, registration: { select: { studentId: true } } },
