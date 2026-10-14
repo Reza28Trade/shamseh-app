@@ -249,3 +249,8 @@ ALTER TABLE "Installment" ADD COLUMN "lastReminderType" TEXT;
 CREATE INDEX "Installment_lastReminderAt_status_idx" ON "Installment"("lastReminderAt", "status");
 
 ALTER TABLE "Student" ADD COLUMN "freeMockExamEligible" BOOLEAN NOT NULL DEFAULT false;
+
+-- Enforce one unresolved registration per national ID even under concurrent public submissions.
+CREATE UNIQUE INDEX "Registration_one_open_per_nationalId_key"
+  ON "Registration" ("nationalId")
+  WHERE "status" IN ('PENDING_REVIEW', 'NEEDS_CORRECTION');
