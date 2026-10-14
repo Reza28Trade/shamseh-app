@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict');
 const { RegistrationApprovalMode } = require('@prisma/client');
-const { addOneMonthClamped, calculateRefundAvailableBalance, calculateRegistrationApprovalPlan, planOldestDebtAllocations } = require('../dist/src/registrations/registration-finance.rules');
+const { addOneMonthClamped, calculateRefundAvailableBalance, calculateRegistrationApprovalPlan, getInstallmentReminderWindows, planOldestDebtAllocations } = require('../dist/src/registrations/registration-finance.rules');
 
 const future = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000);
 
@@ -104,6 +104,14 @@ assert.throws(() => plan({
 assert.equal(addOneMonthClamped(new Date('2027-01-31T00:00:00.000Z')).toISOString(), '2027-02-28T00:00:00.000Z');
 assert.equal(addOneMonthClamped(new Date('2028-01-31T00:00:00.000Z')).toISOString(), '2028-02-29T00:00:00.000Z');
 assert.equal(addOneMonthClamped(new Date('2027-03-31T00:00:00.000Z')).toISOString(), '2027-04-30T00:00:00.000Z');
+
+// Calendar-based reminder windows must not mark an installment overdue during its due date.
+const reminderWindows = getInstallmentReminderWindows(new Date('2026-10-14T18:30:00.000Z'));
+assert.equal(reminderWindows.todayStart.toISOString(), '2026-10-14T00:00:00.000Z');
+assert.equal(reminderWindows.dueSoonStart.toISOString(), '2026-10-17T00:00:00.000Z');
+assert.equal(reminderWindows.dueSoonEnd.toISOString(), '2026-10-18T00:00:00.000Z');
+assert.equal(reminderWindows.overdueRepeatBefore.toISOString(), '2026-10-11T18:30:00.000Z');
+assert.throws(() => getInstallmentReminderWindows(new Date('invalid')), /تاریخ اجرای یادآوری/);
 
 // Refund availability must exclude tuition obligations and existing reservations.
 assert.equal(calculateRefundAvailableBalance({
