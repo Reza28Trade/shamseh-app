@@ -122,6 +122,16 @@ export interface RefundBalanceInput {
   alreadyReserved: number;
 }
 
+/** Whether a timestamp falls before today's UTC calendar-day boundary. */
+export function isInstallmentPastDue(dueDate: Date, now: Date = new Date()): boolean {
+  if (!(dueDate instanceof Date) || Number.isNaN(dueDate.getTime())
+    || !(now instanceof Date) || Number.isNaN(now.getTime())) {
+    throw new BadRequestException('تاریخ سررسید قسط معتبر نیست.');
+  }
+  const todayStart = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  return dueDate.getTime() < todayStart;
+}
+
 export interface InstallmentReminderWindows {
   todayStart: Date;
   dueSoonStart: Date;
