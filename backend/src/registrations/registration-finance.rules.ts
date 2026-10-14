@@ -175,6 +175,7 @@ export function planOldestDebtAllocations(
     plan.push({ installmentId: item.id, amount });
     left = Math.round((left - amount) * 100) / 100;
   }
-  if (left > 0.0001) throw new BadRequestException('مبلغ پرداخت از مجموع بدهی‌های قابل تخصیص بیشتر است.');
+  // A caller may intentionally allocate only the part that covers older debts;
+  // any remainder remains available for the caller's overpayment/refund policy.
   return plan;
 }
