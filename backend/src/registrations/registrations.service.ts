@@ -14,6 +14,8 @@ import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { ReviewRegistrationDto } from './dto/review-registration.dto';
 import { SubmitInstallmentPaymentDto } from './dto/submit-installment-payment.dto';
 import { ReviewInstallmentPaymentDto } from './dto/review-installment-payment.dto';
+import { CreateRefundRequestDto } from './dto/create-refund-request.dto';
+import { MarkRefundPaidDto } from './dto/mark-refund-paid.dto';
 
 const RECEIPT_DIR = process.env.REGISTRATION_RECEIPT_STORAGE_PATH
   || join(process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files', 'registration-receipts');
@@ -520,6 +522,136 @@ export class RegistrationsService {
         },
       });
       return { success: true, paymentId, status: dto.status, approvedAmount };
+    }, { isolationLevel: 'Serializable' });
+  }
+
+  async listStudentRefundRequests(actor: AuthenticatedUser) {
+    if (actor.role !== 'STUDENT' || !actor.studentId) throw new ForbiddenException('Student access required');
+    return this.prisma.refundRequest.findMany({
+      where: { studentId: actor.studentId },
+      orderBy: { requestedAt: 'desc' },
+      select: {
+        id: true, registrationId: true, amountRequested: true, amountReserved: true,
+        status: true, reason: true, reviewNote: true, transferReference: true,
+        requestedAt: true, approvedAt: true, paidAt: true,
+      },
+    }).then((rows) => rows.map((row) => ({
+      ...row,
+      amountRequested: Number(row.amountRequested),
+      amountReserved: row.amountReserved === null ? null : Number(row.amountReserved),
+    })));
+  }
+
+  async createRefundRequest(actor: AuthenticatedUser, dto: CreateRefundRequestDto) {
+    if (actor.role !== 'STUDENT' || !actor.studentId) throw new ForbiddenException('Student access required');
+    if (!Number.isFinite(dto.amountRequested) || dto.amountRequested <= 0) throw new BadRequestException('مبلغ بازپرداخت معتبر نیست.');
+    const registration = await this.prisma.registration.findFirst({
+      where: { id: dto.registrationId, studentId: actor.studentId, status: 'APPROVED' },
+      select: { id: true },
+    });
+    if (!registration) throw new NotFoundException('ثبت‌نام تأییدشده پیدا نشد.');
+    return this.prisma.refundRequest.create({
+      data: {
+        registrationId: registration.id,
+        studentId: actor.studentId,
+        amountRequested: dto.amountRequested,
+        reason: dto.reason.trim(),
+      },
+      select: { id: true, status: true, amountRequested: true, requestedAt: true },
+    }).then((row) => ({ ...row, amountRequested: Number(row.amountRequested) }));
+  }
+
+  async listAdminRefundRequests(actor: AuthenticatedUser, status?: string) {
+    this.requireFinanceAccess(actor);
+    const allowed = ['REQUESTED', 'RESERVED', 'PAID', 'REJECTED'];
+    if (status && status !== 'ALL' && !allowed.includes(status)) throw new BadRequestException('Invalid refund status');
+    return this.prisma.refundRequest.findMany({
+      where: status && status !== 'ALL' ? { status: status as any } : undefined,
+      include: {
+        student: { select: { fullName: true, nationalId: true, phone: true } },
+        registration: { select: { finalTuition: true, status: true } },
+      },
+      orderBy: { requestedAt: 'asc' },
+    }).then((rows) => rows.map((row) => ({
+      ...row,
+      amountRequested: Number(row.amountRequested),
+      amountReserved: row.amountReserved === null ? null : Number(row.amountReserved),
+      registration: { ...row.registration, finalTuition: Number(row.registration.finalTuition) },
+    })));
+  }
+
+  async reviewRefundRequest(actor: AuthenticatedUser, refundId: string, decision: 'RESERVE' | 'REJECT', note?: string) {
+    this.requireFinanceAccess(actor);
+    if (decision === 'REJECT' && !note?.trim()) throw new BadRequestException('علت رد درخواست بازپرداخت الزامی است.');
+    return this.prisma.$transaction(async (tx) => {
+      const refund = await tx.refundRequest.findUnique({ where: { id: refundId } });
+      if (!refund || refund.status !== 'REQUESTED') throw new ConflictException('این درخواست قبلاً بررسی شده یا وجود ندارد.');
+      if (decision === 'REJECT') {
+        const changed = await tx.refundRequest.updateMany({
+          where: { id: refundId, status: 'REQUESTED' },
+          data: { status: 'REJECTED', reviewedById: actor.id, approvedAt: new Date(), reviewNote: note!.trim() },
+        });
+        if (changed.count !== 1) throw new ConflictException('درخواست هم‌زمان بررسی شده است.');
+        await tx.auditLog.create({
+          data: { actorUserId: actor.id, action: 'REFUND_REJECTED', entityType: 'RefundRequest', entityId: refundId, metadata: { reason: note!.trim() } },
+        });
+        return { success: true, status: 'REJECTED' };
+      }
+
+      const registrations = await tx.registration.findMany({
+        where: { studentId: refund.studentId, status: 'APPROVED' },
+        select: { id: true, finalTuition: true, payments: { where: { status: 'APPROVED' }, select: { approvedAmount: true } } },
+      });
+      const tuition = registrations.reduce((sum, row) => sum + Number(row.finalTuition), 0);
+      const paid = registrations.reduce((sum, row) => sum + row.payments.reduce((p, payment) => p + Number(payment.approvedAmount ?? 0), 0), 0);
+      const previousRefunds = await tx.refundRequest.findMany({
+        where: { studentId: refund.studentId, status: { in: ['RESERVED', 'PAID'] } },
+        select: { amountReserved: true },
+      });
+      const alreadyReserved = previousRefunds.reduce((sum, item) => sum + Number(item.amountReserved ?? 0), 0);
+      const available = Math.max(0, paid - tuition - alreadyReserved);
+      if (Number(refund.amountRequested) > available + 0.0001) {
+        throw new BadRequestException('موجودی قابل بازپرداخت کافی نیست؛ بدهی‌های ثبت‌نام‌های دیگر ابتدا از اضافه‌پرداخت کسر می‌شوند.');
+      }
+      const changed = await tx.refundRequest.updateMany({
+        where: { id: refundId, status: 'REQUESTED' },
+        data: {
+          status: 'RESERVED', amountReserved: refund.amountRequested,
+          reviewedById: actor.id, approvedAt: new Date(), reviewNote: note?.trim() || null,
+        },
+      });
+      if (changed.count !== 1) throw new ConflictException('درخواست هم‌زمان بررسی شده است.');
+      await tx.auditLog.create({
+        data: {
+          actorUserId: actor.id, action: 'REFUND_RESERVED',
+          entityType: 'RefundRequest', entityId: refundId,
+          metadata: { amountReserved: Number(refund.amountRequested), availableBeforeReservation: available },
+        },
+      });
+      return { success: true, status: 'RESERVED', amountReserved: Number(refund.amountRequested) };
+    }, { isolationLevel: 'Serializable' });
+  }
+
+  async markRefundPaid(actor: AuthenticatedUser, refundId: string, dto: MarkRefundPaidDto) {
+    this.requireFinanceAccess(actor);
+    return this.prisma.$transaction(async (tx) => {
+      const changed = await tx.refundRequest.updateMany({
+        where: { id: refundId, status: 'RESERVED' },
+        data: { status: 'PAID', paidById: actor.id, paidAt: new Date(), transferReference: dto.transferReference.trim() },
+      });
+      if (changed.count !== 1) throw new ConflictException('فقط درخواست رزروشده را می‌توان پرداخت‌شده ثبت کرد.');
+      const refund = await tx.refundRequest.findUniqueOrThrow({
+        where: { id: refundId },
+        select: { amountReserved: true, studentId: true, registrationId: true },
+      });
+      await tx.auditLog.create({
+        data: {
+          actorUserId: actor.id, action: 'REFUND_MARKED_PAID',
+          entityType: 'RefundRequest', entityId: refundId,
+          metadata: { amountPaid: Number(refund.amountReserved ?? 0), transferReference: dto.transferReference.trim() },
+        },
+      });
+      return { success: true, status: 'PAID', amountPaid: Number(refund.amountReserved ?? 0) };
     }, { isolationLevel: 'Serializable' });
   }
 
