@@ -43,23 +43,27 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
   private async sendDueInstallmentReminders() {
     try {
       const now = new Date();
-      const threeDaysAhead = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
-      const threeDaysMinusSixHours = new Date(now.getTime() + 66 * 60 * 60 * 1000);
-      const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+      const dayMs = 24 * 60 * 60 * 1000;
+      // Installment due dates are calendar dates. Compare date boundaries, not
+      // the current clock time, so a due date is never overdue during its own day.
+      const todayStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+      const threeDaysAhead = new Date(todayStart.getTime() + 3 * dayMs);
+      const fourDaysAhead = new Date(todayStart.getTime() + 4 * dayMs);
+      const threeDaysAgo = new Date(now.getTime() - 3 * dayMs);
       const creator = await this.prisma.user.findFirst({
         where: { role: 'SUPER_ADMIN', status: 'ACTIVE' }, select: { id: true },
       });
       if (!creator) return;
 
       await this.prisma.installment.updateMany({
-        where: { status: { not: 'PAID' }, dueDate: { lt: now }, registration: { status: 'APPROVED', studentId: { not: null } } },
+        where: { status: { not: 'PAID' }, dueDate: { lt: todayStart }, registration: { status: 'APPROVED', studentId: { not: null } } },
         data: { status: 'OVERDUE' },
       });
 
       const [dueSoon, overdue] = await Promise.all([
         this.prisma.installment.findMany({
           where: {
-            status: { not: 'PAID' }, dueDate: { gt: threeDaysMinusSixHours, lte: threeDaysAhead },
+            status: { not: 'PAID' }, dueDate: { gte: threeDaysAhead, lt: fourDaysAhead },
             lastReminderAt: null,
             registration: { status: 'APPROVED', studentId: { not: null } },
           },
@@ -67,7 +71,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         }),
         this.prisma.installment.findMany({
           where: {
-            status: { not: 'PAID' }, dueDate: { lt: now },
+            status: { not: 'PAID' }, dueDate: { lt: todayStart },
             OR: [{ lastReminderAt: null }, { lastReminderAt: { lte: threeDaysAgo } }],
             registration: { status: 'APPROVED', studentId: { not: null } },
           },
