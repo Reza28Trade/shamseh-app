@@ -529,7 +529,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
             claimedPayment: Number(payment.claimedAmount), approvedPayment: Number(dto.approvedAmount),
             paymentAdjustment: Number(dto.approvedAmount) - Number(payment.claimedAmount),
             firstDueDate: firstDueDate.toISOString(), installmentCount: installments,
-            mockExamEligible: dto.mockExamEligible ?? false,
+            mockExamEligible: dto.mockExamEligible ?? false, mockExamId: dto.mockExamEligible ? dto.mockExamId : null,
           },
         },
       });
@@ -543,6 +543,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
             approvedPayment: Number(dto.approvedAmount),
             paymentAdjustment: Number(dto.approvedAmount) - Number(payment.claimedAmount),
             studentId: student.id,
+            mockExamEligible: dto.mockExamEligible ?? false, mockExamId: dto.mockExamEligible ? dto.mockExamId : null,
           },
         },
       });
