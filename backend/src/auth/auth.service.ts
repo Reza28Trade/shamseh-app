@@ -60,7 +60,7 @@ export class AuthService {
             role: true,
             status: true,
             permissions: true,
-            student: { select: { id: true, fullName: true, nationalId: true } },
+            student: { select: { id: true, fullName: true, nationalId: true, isArchived: true } },
           },
         },
       },
