@@ -385,12 +385,16 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
             phone: registration.phone,
             academicLevel: registration.academicLevel,
             fieldCode: registration.fieldCode,
+            freeMockExamEligible: dto.mockExamEligible ?? false,
           },
           include: { user: true },
         });
       } else {
         // Existing students keep their management-controlled profile data.
         // A new registration must not silently change their phone or field code.
+      }
+      if (dto.mockExamEligible) {
+        await tx.student.update({ where: { id: student.id }, data: { freeMockExamEligible: true } });
       }
 
       await tx.registrationCourse.findMany({ where: { registrationId }, select: { courseId: true } }).then(async (items) => {
