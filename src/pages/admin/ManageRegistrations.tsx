@@ -70,7 +70,7 @@ export function ManageRegistrations(){
     const approvedAmount=Number(window.prompt('مبلغ نهایی تأییدشده رسید (تومان)',String(payment.claimedAmount)));
     if(!Number.isFinite(approvedAmount)||approvedAmount<=0){setError('مبلغ تأییدشده معتبر نیست.');return;}
     const defaultDueDate=new Date();defaultDueDate.setDate(defaultDueDate.getDate()+30);
-    const defaultDue=defaultDueDate.toISOString().slice(0,10);
+    const defaultDue=[defaultDueDate.getFullYear(),String(defaultDueDate.getMonth()+1).padStart(2,'0'),String(defaultDueDate.getDate()).padStart(2,'0')].join('-');
     const firstDueDate=window.prompt('تاریخ سررسید اولین قسط به شکل YYYY-MM-DD',defaultDue);
     if(!firstDueDate)return;
     const reviewNote=window.prompt('یادداشت بررسی (اختیاری)')||undefined;
@@ -87,7 +87,7 @@ export function ManageRegistrations(){
     }
     await action('/api/admin/registrations/'+encodeURIComponent(item.id)+'/approve','PATCH',{
       mode,discountAmount,discountReason,exceptionReason,paymentId:payment.id,approvedAmount,
-      firstDueDate:new Date(firstDueDate+'T12:00:00').toISOString(),
+      firstDueDate,
       mockExamEligible,mockExamId,
       reviewNote,
     });
