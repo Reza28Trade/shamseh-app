@@ -11,7 +11,7 @@ type FinanceStudent = {
   payments: Array<{ id: string; amount: number; method: string; reference: string | null; note: string | null; paidAt: string }>;
 };
 type FinanceResult = {
-  summary: { studentCount: number; tuitionTotal: number; paidTotal: number; outstandingBalance: number; unpaidCount: number; partialCount: number; paidCount: number; incompleteCount: number };
+  summary: { studentCount: number; tuitionTotal: number; paidTotal: number; outstandingBalance: number; unpaidCount: number; partialCount: number; paidCount: number; incompleteCount: number; reconciliationRequiredCount?: number };
   students: FinanceStudent[];
 };
 type CourseOption = { id: string; title: string };
