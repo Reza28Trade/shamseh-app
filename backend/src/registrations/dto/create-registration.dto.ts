@@ -12,11 +12,11 @@ export class CreateRegistrationDto {
   applicantFullName!: string;
 
   @Transform(({ value }) => normalizeDigits(value))
-  @IsString() @Matches(/\S/)
+  @IsString() @Matches(/^\d{10}$/)
   nationalId!: string;
 
   @Transform(({ value }) => normalizeDigits(value))
-  @IsString() @Matches(/\S/)
+  @IsString() @Matches(/^09\d{9}$/)
   phone!: string;
 
   @IsEnum(StudentLevel)
