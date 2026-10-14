@@ -9,6 +9,6 @@ export class CreateRefundRequestDto {
   amountRequested!: number;
 
   @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
-  @IsString() @MinLength(5) @Matches(/\\S/)
+  @IsString() @MinLength(5) @Matches(/\S/)
   reason!: string;
 }
