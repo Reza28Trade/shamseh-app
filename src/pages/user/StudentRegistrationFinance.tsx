@@ -2,10 +2,10 @@ import { useCallback, useEffect, useState, type FormEvent, type CSSProperties } 
 import { useStore } from '../../store/useStore';
 
 type Installment = { id: string; sequence: number; amount: number; paid: number; balance: number; dueDate: string; status: string };
-type Registration = { id: string; originalTuition: number; discountAmount: number; finalTuition: number; discountReason: string|null; courses: Array<{id:string;courseTitleSnapshot:string;coursePriceSnapshot:number}>; installments: Installment[]; payments: Array<{id:string;status:string;claimedAmount:number;approvedAmount:number|null;rejectionReason:string|null;paymentDate:string}> };
+type Registration = { id: string; originalTuition: number; discountAmount: number; finalTuition: number; paidTotal: number; balance: number; discountReason: string|null; courses: Array<{id:string;courseTitleSnapshot:string;coursePriceSnapshot:number}>; installments: Installment[]; payments: Array<{id:string;purpose:'INITIAL'|'INSTALLMENT';status:string;claimedAmount:number;approvedAmount:number|null;rejectionReason:string|null;paymentDate:string}> };
 type Refund = { id:string; registrationId:string; amountRequested:number; amountReserved:number|null; status:string; reason:string; reviewNote:string|null; transferReference:string|null; requestedAt:string; paidAt:string|null };
 const money=(n:number)=>new Intl.NumberFormat('fa-IR').format(Math.round(n))+' تومان';
-const statusText:Record<string,string>={PENDING:'در انتظار بررسی رسید',APPROVED:'تأیید شده',REJECTED:'رد شده',PARTIALLY_PAID:'پرداخت بخشی از قسط',PAID:'تسویه‌شده',OVERDUE:'سررسید گذشته',REQUESTED:'در انتظار بررسی بازپرداخت',RESERVED:'مبلغ رزرو شده'};
+const statusText:Record<string,string>={INITIAL:'پیش‌پرداخت',INSTALLMENT:'پرداخت قسط',PENDING:'در انتظار بررسی رسید',APPROVED:'تأیید شده',REJECTED:'رد شده',PARTIALLY_PAID:'پرداخت بخشی از قسط',PAID:'تسویه‌شده',OVERDUE:'سررسید گذشته',REQUESTED:'در انتظار بررسی بازپرداخت',RESERVED:'مبلغ رزرو شده'};
 export function StudentRegistrationFinance(){
   const {theme}=useStore();
   const dark=theme==='dark';
@@ -74,6 +74,10 @@ export function StudentRegistrationFinance(){
     {!loading&&registrations.length===0&&<div style={{...card,textAlign:'center',fontSize:12,color:sub}}>ثبت‌نام تأییدشده‌ای برای نمایش اقساط وجود ندارد.</div>}
     {registrations.map(reg=><article key={reg.id} style={{...card,display:'grid',gap:12}}>
       <div style={{display:'flex',justifyContent:'space-between',gap:10,flexWrap:'wrap'}}><strong style={{fontSize:13}}>شهریه نهایی: {money(reg.finalTuition)}</strong><span style={{fontSize:11,color:sub}}>تخفیف: {money(reg.discountAmount)}</span></div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,150px),1fr))',gap:8}}>
+        <div style={{padding:11,borderRadius:10,background:dark?'#202729':'#eef5f2'}}><div style={{fontSize:10,color:sub,marginBottom:5}}>پرداخت تأییدشده</div><strong style={{fontSize:12,color:'#1d9a72'}}>{money(reg.paidTotal)}</strong></div>
+        <div style={{padding:11,borderRadius:10,background:dark?'#202729':'#eef5f2'}}><div style={{fontSize:10,color:sub,marginBottom:5}}>مانده شهریه</div><strong style={{fontSize:12,color:reg.balance>0?'#dc6863':'#1d9a72'}}>{money(reg.balance)}</strong></div>
+      </div>
       <div style={{display:'flex',gap:7,flexWrap:'wrap'}}>{reg.courses.map(c=><span key={c.id} style={{fontSize:11,padding:'6px 8px',borderRadius:8,background:dark?'#202729':'#eef5f2'}}>{c.courseTitleSnapshot}</span>)}</div>
       {reg.installments.length===0?<p style={{fontSize:12,color:'#1d9a72',margin:0}}>برای این ثبت‌نام قسط باقی نمانده است.</p>:reg.installments.map(inst=><div key={inst.id} style={{border:'1px solid '+(dark?'#303a3c':'#e1eae6'),borderRadius:12,padding:12,display:'grid',gap:9}}>
         <div style={{display:'flex',justifyContent:'space-between',gap:10,flexWrap:'wrap'}}><strong style={{fontSize:12}}>قسط {new Intl.NumberFormat('fa-IR').format(inst.sequence)} · {money(inst.amount)}</strong><span style={{fontSize:11,color:inst.status==='PAID'?'#1d9a72':inst.status==='OVERDUE'?'#dc6863':sub}}>{statusText[inst.status]||inst.status}</span></div>
@@ -85,7 +89,7 @@ export function StudentRegistrationFinance(){
           <button style={button} type="submit">ارسال رسید قسط</button>
         </form>}
       </div>)}
-      {reg.payments.length>0&&<div style={{borderTop:'1px solid '+(dark?'#303a3c':'#e1eae6'),paddingTop:10,display:'grid',gap:7}}><strong style={{fontSize:12}}>سوابق رسید اقساط</strong>{reg.payments.map(p=><div key={p.id} style={{display:'flex',justifyContent:'space-between',gap:10,flexWrap:'wrap',fontSize:11}}><span style={{color:sub}}>{new Date(p.paymentDate).toLocaleDateString('fa-IR')} · {statusText[p.status]||p.status}{p.rejectionReason?' · علت رد: '+p.rejectionReason:''}</span><strong>{money(p.approvedAmount??p.claimedAmount)}</strong></div>)}</div>}
+      {reg.payments.length>0&&<div style={{borderTop:'1px solid '+(dark?'#303a3c':'#e1eae6'),paddingTop:10,display:'grid',gap:7}}><strong style={{fontSize:12}}>سوابق پرداخت و رسیدها</strong>{reg.payments.map(p=><div key={p.id} style={{display:'flex',justifyContent:'space-between',gap:10,flexWrap:'wrap',fontSize:11}}><span style={{color:sub}}>{new Date(p.paymentDate).toLocaleDateString('fa-IR')} · {statusText[p.purpose]||p.purpose} · {statusText[p.status]||p.status}{p.rejectionReason?' · علت رد: '+p.rejectionReason:''}</span><strong>{money(p.approvedAmount??p.claimedAmount)}</strong></div>)}</div>}
       <form onSubmit={e=>void submitRefund(e,reg.id)} style={{borderTop:'1px solid '+(dark?'#303a3c':'#e1eae6'),paddingTop:12,display:'grid',gap:9}}>
         <strong style={{fontSize:12}}>درخواست بازپرداخت اضافه‌پرداخت</strong>
         <p style={{fontSize:11,color:sub,margin:0,lineHeight:1.8}}>مبلغ درخواست پس از بررسی کل بدهی‌های شما محاسبه می‌شود. با تأیید مدیریت، مبلغ فوراً رزرو می‌شود و پس از انتقال وجه وضعیت آن تکمیل خواهد شد.</p>
