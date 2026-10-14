@@ -1,13 +1,12 @@
 import {
   BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException,
 } from '@nestjs/common';
-import { createHash, randomUUID } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import { mkdir, unlink, writeFile } from 'node:fs/promises';
-import { extname, join } from 'node:path';
+import { join } from 'node:path';
 import * as argon2 from 'argon2';
 import {
   EnrollmentStatus, RegistrationApprovalMode, RegistrationStatus, RegistrationPaymentPurpose,
-  RegistrationPaymentStatus, StudentLevel,
 } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { AuthenticatedUser } from '../auth/auth.types';
