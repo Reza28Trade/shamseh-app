@@ -79,8 +79,8 @@ export function RegistrationPage() {
       setRegistrationId(data.id);
       setStatusNationalId(nationalId.trim());
       setStatusPhone(phone.trim());
-      setNotice('درخواست شما ثبت شد. شناسه ثبت‌نام را نگه دارید؛ حساب هنرجویی پس از تأیید مدیریت ساخته می‌شود.');
       await loadStatus(data.id, nationalId.trim(), phone.trim());
+      setNotice('درخواست شما ثبت شد. شناسه ثبت‌نام را نگه دارید؛ حساب هنرجویی پس از تأیید مدیریت ساخته می‌شود.');
     } catch (e) { setError(e instanceof Error ? e.message : 'ثبت درخواست ناموفق بود.'); }
     finally { setLoading(false); }
   };
@@ -94,10 +94,10 @@ export function RegistrationPage() {
       form.set('phone', statusPhone);
       form.set('claimedAmount', correctionAmount);
       form.set('receipt', correctionReceipt);
-      const data = await request('/api/public/registrations/' + encodeURIComponent(registrationId) + '/receipts', { method: 'POST', body: form });
-      setNotice('رسید جدید ثبت شد و برای بررسی دوباره ارسال شد.');
+      await request('/api/public/registrations/' + encodeURIComponent(registrationId) + '/receipts', { method: 'POST', body: form });
       setCorrectionReceipt(null);
       await loadStatus(registrationId, statusNationalId, statusPhone);
+      setNotice('رسید جدید ثبت شد و برای بررسی دوباره ارسال شد.');
     } catch (e) { setError(e instanceof Error ? e.message : 'ارسال رسید اصلاحی ناموفق بود.'); }
     finally { setLoading(false); }
   };
