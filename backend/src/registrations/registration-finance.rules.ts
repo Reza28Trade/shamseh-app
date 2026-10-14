@@ -122,6 +122,28 @@ export interface RefundBalanceInput {
   alreadyReserved: number;
 }
 
+export interface InstallmentReminderWindows {
+  todayStart: Date;
+  dueSoonStart: Date;
+  dueSoonEnd: Date;
+  overdueRepeatBefore: Date;
+}
+
+/** UTC calendar-day windows for reminder scheduling; a due date is not overdue during its own day. */
+export function getInstallmentReminderWindows(now: Date): InstallmentReminderWindows {
+  if (!(now instanceof Date) || Number.isNaN(now.getTime())) {
+    throw new BadRequestException('تاریخ اجرای یادآوری معتبر نیست.');
+  }
+  const dayMs = 24 * 60 * 60 * 1000;
+  const todayStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  return {
+    todayStart,
+    dueSoonStart: new Date(todayStart.getTime() + 3 * dayMs),
+    dueSoonEnd: new Date(todayStart.getTime() + 4 * dayMs),
+    overdueRepeatBefore: new Date(now.getTime() - 3 * dayMs),
+  };
+}
+
 /** Available refund balance after all approved tuition obligations and prior reservations. */
 export function calculateRefundAvailableBalance(input: RefundBalanceInput): number {
   const values = [input.totalApprovedPayments, input.totalTuition, input.alreadyReserved];
