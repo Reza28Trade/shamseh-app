@@ -61,6 +61,7 @@ export class RegistrationsService {
       throw new BadRequestException('یک یا چند دوره انتخاب‌شده فعال نیست یا قیمت ندارد.');
     }
     const originalTuition = courses.reduce((sum, course) => sum + Number(course.price), 0);
+    if (!Number.isFinite(originalTuition) || originalTuition <= 0) throw new BadRequestException('شهریه دوره‌های انتخاب‌شده باید بیشتر از صفر باشد.');
     if (!Number.isFinite(dto.claimedAmount) || dto.claimedAmount <= 0) {
       throw new BadRequestException('مبلغ رسید باید بیشتر از صفر باشد.');
     }
@@ -267,6 +268,7 @@ export class RegistrationsService {
       if (actor.role !== 'SUPER_ADMIN') throw new ForbiddenException('تأیید استثنای پرداخت فقط با مجوز مدیر ارشد انجام می‌شود.');
     }
     const finalTuition = Number(registration.originalTuition) - discount;
+    if (!Number.isFinite(finalTuition) || finalTuition <= 0) throw new BadRequestException('شهریه نهایی باید بیشتر از صفر باشد.');
     const otherApproved = registration.payments.reduce((sum, p) => sum + Number(p.approvedAmount ?? 0), 0);
     const totalPaid = otherApproved + Number(dto.approvedAmount);
     if (!Number.isFinite(totalPaid) || totalPaid <= 0) throw new BadRequestException('مبلغ تأییدشده معتبر نیست.');
@@ -515,6 +517,7 @@ export class RegistrationsService {
       where: { id: paymentId },
       include: { registration: { select: { id: true, studentId: true, status: true } }, receipts: true },
     });
+    if (payment?.registration.studentId == null) throw new ConflictException('این پرداخت به حساب هنرجویی متصل نیست.');
     if (!payment || payment.purpose !== RegistrationPaymentPurpose.INSTALLMENT || payment.status !== 'PENDING') {
       throw new NotFoundException('پرداخت قسط در انتظار بررسی پیدا نشد.');
     }
