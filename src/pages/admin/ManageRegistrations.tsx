@@ -85,7 +85,7 @@ export function ManageRegistrations(){
     if(approvalMode==='PAYMENT_EXCEPTION'&&!exceptionReason.trim()){setError('علت استثنای پرداخت را وارد کنید.');return;}
     if(!Number.isFinite(amount)||amount<=0){setError('مبلغ تأییدشده باید بیشتر از صفر باشد.');return;}
     const finalTuition=approval.item.originalTuition-discount;
-    if(amount<finalTuition&&!/^\\d{4}-\\d{2}-\\d{2}$/.test(firstDueDate)){setError('تاریخ سررسید اولین قسط را انتخاب کنید.');return;}
+    if(amount<finalTuition&&!/^\d{4}-\d{2}-\d{2}$/.test(firstDueDate)){setError('تاریخ سررسید اولین قسط را انتخاب کنید.');return;}
     if(mockExamEligible&&!mockExamId){setError('آزمون آزمایشی را انتخاب کنید.');return;}
     setSavingApproval(true);
     try{
@@ -136,7 +136,7 @@ export function ManageRegistrations(){
         <label style={{display:'flex',gap:8,alignItems:'center',fontSize:12}}><input type="checkbox" checked={mockExamEligible} onChange={e=>{setMockExamEligible(e.target.checked);if(!e.target.checked)setMockExamId('');}}/>هنرجو مشمول آزمون آزمایشی رایگان شود</label>
         {mockExamEligible&&<label style={{display:'grid',gap:6,fontSize:12}}>آزمون آزمایشی<select required style={inputStyle} value={mockExamId} onChange={e=>setMockExamId(e.target.value)}><option value="">انتخاب آزمون…</option>{mockExams.map(exam=><option key={exam.id} value={exam.id}>{exam.title} · {new Date(exam.examDate).toLocaleDateString('fa-IR')} · {exam.level} / {exam.field}</option>)}</select>{mockExams.length===0&&<span style={{color:'#b44c48'}}>آزمون زمان‌بندی‌شده‌ای وجود ندارد.</span>}</label>}
         <label style={{display:'grid',gap:6,fontSize:12}}>یادداشت مدیریت (اختیاری)<textarea style={inputStyle} value={reviewNote} onChange={e=>setReviewNote(e.target.value)}/></label>
-        <div style={{display:'flex',gap:8,justifyContent:'flex-end',flexWrap:'wrap'}}><button type="button" style={buttonStyle} onClick={()=>setApproval(null)}>انصراف</button><button type="submit" disabled={savingApproval} style={{...buttonStyle,background:'var(--admin-accent)',color:'#fff',opacity:savingApproval?.65:1}}>{savingApproval?'در حال ثبت…':'تأیید نهایی ثبت‌نام'}</button></div>
+        <div style={{display:'flex',gap:8,justifyContent:'flex-end',flexWrap:'wrap'}}><button type="button" style={buttonStyle} onClick={()=>setApproval(null)}>انصراف</button><button type="submit" disabled={savingApproval} style={{...buttonStyle,background:'var(--admin-accent)',color:'#fff',opacity:savingApproval ? 0.65 : 1}}>{savingApproval?'در حال ثبت…':'تأیید نهایی ثبت‌نام'}</button></div>
       </form>
     </div>}
     {tab==='registrations'?<div style={{display:'grid',gap:12,maxHeight:760,overflowY:'auto',paddingInlineEnd:3}}>
