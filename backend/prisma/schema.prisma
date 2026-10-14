@@ -833,6 +833,8 @@ model Installment {
   amount Decimal @db.Decimal(12, 2)
   dueDate DateTime
   status InstallmentStatus @default(PENDING)
+  lastReminderAt DateTime?
+  lastReminderType String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
