@@ -488,7 +488,9 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
           note: dto.reviewNote?.trim() || null,
           metadata: {
             mode: dto.mode, originalTuition: Number(registration.originalTuition),
-            discountAmount: discount, finalTuition, approvedPayment: Number(dto.approvedAmount),
+            discountAmount: discount, finalTuition,
+            claimedPayment: Number(payment.claimedAmount), approvedPayment: Number(dto.approvedAmount),
+            paymentAdjustment: Number(dto.approvedAmount) - Number(payment.claimedAmount),
             firstDueDate: firstDueDate.toISOString(), installmentCount: installments,
             mockExamEligible: dto.mockExamEligible ?? false,
           },
@@ -500,7 +502,10 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
           entityType: 'Registration', entityId: registrationId,
           metadata: {
             mode: dto.mode, discountAmount: discount, finalTuition,
-            approvedPayment: Number(dto.approvedAmount), studentId: student.id,
+            claimedPayment: Number(payment.claimedAmount),
+            approvedPayment: Number(dto.approvedAmount),
+            paymentAdjustment: Number(dto.approvedAmount) - Number(payment.claimedAmount),
+            studentId: student.id,
           },
         },
       });
