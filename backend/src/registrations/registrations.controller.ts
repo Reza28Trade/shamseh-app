@@ -36,6 +36,15 @@ export class RegistrationsController {
     return this.registrationsService.createPublicRegistration(dto, file);
   }
 
+  @Get('public/registrations/:registrationId/status')
+  getPublicRegistrationStatus(
+    @Param('registrationId') registrationId: string,
+    @Query('nationalId') nationalId: string,
+    @Query('phone') phone: string,
+  ) {
+    return this.registrationsService.getPublicRegistrationStatus(registrationId, nationalId, phone);
+  }
+
   @Post('public/registrations/:registrationId/receipts')
   @UseInterceptors(FileInterceptor('receipt', {
     storage: memoryStorage(),
@@ -43,6 +52,8 @@ export class RegistrationsController {
   }))
   uploadCorrectionReceipt(
     @Param('registrationId') registrationId: string,
+    @Body('nationalId') nationalId: string,
+    @Body('phone') phone: string,
     @Body('claimedAmount') claimedAmount: string,
     @Body('paymentDate') paymentDate: string,
     @Body('trackingCode') trackingCode: string,
@@ -50,7 +61,7 @@ export class RegistrationsController {
   ) {
     return this.registrationsService.uploadCorrectionReceipt(
       registrationId,
-      { claimedAmount: Number(claimedAmount), paymentDate, trackingCode },
+      { nationalId, phone, claimedAmount: Number(claimedAmount), paymentDate, trackingCode },
       file,
     );
   }
