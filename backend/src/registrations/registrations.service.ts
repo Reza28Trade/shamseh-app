@@ -368,7 +368,6 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     const discount = Number(dto.discountAmount);
     const finalTuition = plan.finalTuition;
     const totalPaid = plan.totalPaid;
-    const ratio = plan.ratio;
     const firstDueDate = plan.firstDueDate;
 
     return this.prisma.$transaction(async (tx) => {
