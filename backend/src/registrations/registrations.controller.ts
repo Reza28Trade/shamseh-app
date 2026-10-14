@@ -148,6 +148,16 @@ export class RegistrationsController {
     return this.registrationsService.listAdminRegistrations(req.user, status);
   }
 
+  @Patch('admin/registrations/:registrationId/settle-debt')
+  @UseGuards(AuthGuard)
+  settleRegistrationDebt(
+    @Req() req: AuthenticatedRequest,
+    @Param('registrationId') registrationId: string,
+    @Body('note') note: string,
+  ) {
+    return this.registrationsService.settleRegistrationDebt(req.user, registrationId, note);
+  }
+
   @Patch('admin/registrations/:registrationId/approve')
   @UseGuards(AuthGuard)
   reviewAndApprove(
