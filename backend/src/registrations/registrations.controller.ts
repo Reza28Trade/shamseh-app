@@ -10,6 +10,8 @@ import { AuthGuard } from '../auth/auth.guard';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { ReviewRegistrationDto } from './dto/review-registration.dto';
+import { SubmitInstallmentPaymentDto } from './dto/submit-installment-payment.dto';
+import { ReviewInstallmentPaymentDto } from './dto/review-installment-payment.dto';
 import { RegistrationsService } from './registrations.service';
 
 type AuthenticatedRequest = Request & { user: AuthenticatedUser };
@@ -49,6 +51,31 @@ export class RegistrationsController {
       { claimedAmount: Number(claimedAmount), paymentDate, trackingCode },
       file,
     );
+  }
+
+  @Post('student/installments/:installmentId/payments')
+  @UseGuards(AuthGuard)
+  @UseInterceptors(FileInterceptor('receipt', {
+    storage: memoryStorage(),
+    limits: { fileSize: 8 * 1024 * 1024, files: 1 },
+  }))
+  submitInstallmentPayment(
+    @Req() req: AuthenticatedRequest,
+    @Param('installmentId') installmentId: string,
+    @Body() dto: SubmitInstallmentPaymentDto,
+    @UploadedFile() file: any,
+  ) {
+    return this.registrationsService.submitInstallmentPayment(req.user, installmentId, dto, file);
+  }
+
+  @Patch('admin/registration-payments/:paymentId/review')
+  @UseGuards(AuthGuard)
+  reviewInstallmentPayment(
+    @Req() req: AuthenticatedRequest,
+    @Param('paymentId') paymentId: string,
+    @Body() dto: ReviewInstallmentPaymentDto,
+  ) {
+    return this.registrationsService.reviewInstallmentPayment(req.user, paymentId, dto);
   }
 
   @Get('admin/registrations')
