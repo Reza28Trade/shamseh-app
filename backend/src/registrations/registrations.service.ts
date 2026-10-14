@@ -366,6 +366,9 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       include: { receipts: true },
     });
     if (!payment || payment.receipts.length === 0) throw new BadRequestException('پرداخت در انتظار بررسی با رسید معتبر پیدا نشد.');
+    if (dto.approvedAmount > Number(payment.claimedAmount) + 0.0001) {
+      throw new BadRequestException('مبلغ تأییدشده نمی‌تواند از مبلغ اعلام‌شده در رسید بیشتر باشد.');
+    }
     const otherApproved = registration.payments.reduce((sum, p) => sum + Number(p.approvedAmount ?? 0), 0);
     const plan = calculateRegistrationApprovalPlan({
       mode: dto.mode,
@@ -708,6 +711,9 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     const approvedAmount = dto.status === 'APPROVED' ? Number(dto.approvedAmount ?? payment.claimedAmount) : null;
     if (dto.status === 'APPROVED' && (!Number.isFinite(approvedAmount) || approvedAmount! <= 0)) {
       throw new BadRequestException('مبلغ تأییدشده باید بیشتر از صفر باشد.');
+    }
+    if (dto.status === 'APPROVED' && approvedAmount! > Number(payment.claimedAmount) + 0.0001) {
+      throw new BadRequestException('مبلغ تأییدشده نمی‌تواند از مبلغ اعلام‌شده در رسید بیشتر باشد.');
     }
 
     return this.prisma.$transaction(async (tx) => {
