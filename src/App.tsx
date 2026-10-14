@@ -17,6 +17,7 @@ import { Login } from './pages/user/Login';
 import { UserDashboard } from './pages/user/UserDashboard';
 import { CounselorPortal } from './pages/counselor/CounselorPortal';
 import { RegistrationPage } from './pages/public/RegistrationPage';
+import { ManageRegistrations } from './pages/admin/ManageRegistrations';
 import type { Student, Admin } from './types';
 
 type AuthUser = { id: string; username: string; role: 'SUPER_ADMIN' | 'STAFF' | 'STUDENT' | 'COUNSELOR'; studentId: string | null; permissions?: string[]; student?: { fullName: string; nationalId: string } | null };
@@ -113,7 +114,7 @@ export function App() {
   } = useStore();
 
   const [view, setView] = useState<'checking' | 'login' | 'admin' | 'user' | 'counselor'>('checking');
-  type AdminTab = 'dashboard' | 'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'managementContact' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams' | 'counseling' | 'finance';
+  type AdminTab = 'dashboard' | 'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'managementContact' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams' | 'counseling' | 'finance' | 'registrations';
   const [adminTab, setAdminTab] = useState<AdminTab>('dashboard');
   const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
 
@@ -241,6 +242,8 @@ export function App() {
           <ManagePublicContent />
         ) : adminTab === 'finance' ? (
           <ManageFinance />
+        ) : adminTab === 'registrations' ? (
+          <ManageRegistrations />
         ) : adminTab === 'admins' && currentAdmin?.role === 'super_admin' ? (
           <AdminAccounts />
         ) : (
