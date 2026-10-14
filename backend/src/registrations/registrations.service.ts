@@ -278,23 +278,8 @@ export class RegistrationsService {
           include: { user: true },
         });
       } else {
-        if (student.fieldCode && student.fieldCode !== registration.fieldCode) {
-          await tx.studentProfileHistory.create({
-            data: {
-              studentId: student.id, changedById: actor.id, fieldName: 'fieldCode',
-              oldValue: student.fieldCode, newValue: registration.fieldCode,
-              reason: 'Registration approval review',
-            },
-          });
-        }
-        await tx.student.update({
-          where: { id: student.id },
-          data: {
-            phone: registration.phone,
-            academicLevel: registration.academicLevel,
-            fieldCode: registration.fieldCode,
-          },
-        });
+        // Existing students keep their management-controlled profile data.
+        // A new registration must not silently change their phone or field code.
       }
 
       await tx.registrationCourse.findMany({ where: { registrationId }, select: { courseId: true } }).then(async (items) => {
