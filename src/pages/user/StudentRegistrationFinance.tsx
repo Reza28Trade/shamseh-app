@@ -5,7 +5,7 @@ type Installment = { id: string; sequence: number; amount: number; paid: number;
 type Registration = { id: string; originalTuition: number; discountAmount: number; finalTuition: number; discountReason: string|null; courses: Array<{id:string;courseTitleSnapshot:string;coursePriceSnapshot:number}>; installments: Installment[]; payments: Array<{id:string;status:string;claimedAmount:number;approvedAmount:number|null;rejectionReason:string|null;paymentDate:string}> };
 type Refund = { id:string; registrationId:string; amountRequested:number; amountReserved:number|null; status:string; reason:string; reviewNote:string|null; transferReference:string|null; requestedAt:string; paidAt:string|null };
 const money=(n:number)=>new Intl.NumberFormat('fa-IR').format(Math.round(n))+' تومان';
-const statusText:Record<string,string>={PENDING:'در انتظار بررسی رسید',PARTIALLY_PAID:'پرداخت بخشی از قسط',PAID:'تسویه‌شده',OVERDUE:'سررسید گذشته',REQUESTED:'در انتظار بررسی بازپرداخت',RESERVED:'مبلغ رزرو شده',REJECTED:'رد شده'};
+const statusText:Record<string,string>={PENDING:'در انتظار بررسی رسید',APPROVED:'تأیید شده',REJECTED:'رد شده',PARTIALLY_PAID:'پرداخت بخشی از قسط',PAID:'تسویه‌شده',OVERDUE:'سررسید گذشته',REQUESTED:'در انتظار بررسی بازپرداخت',RESERVED:'مبلغ رزرو شده'};
 export function StudentRegistrationFinance(){
   const {theme}=useStore();
   const dark=theme==='dark';
