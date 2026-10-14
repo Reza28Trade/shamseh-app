@@ -12,6 +12,8 @@ import { PrismaService } from '../database/prisma.service';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { ReviewRegistrationDto } from './dto/review-registration.dto';
+import { SubmitInstallmentPaymentDto } from './dto/submit-installment-payment.dto';
+import { ReviewInstallmentPaymentDto } from './dto/review-installment-payment.dto';
 
 const RECEIPT_DIR = process.env.REGISTRATION_RECEIPT_STORAGE_PATH
   || join(process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files', 'registration-receipts');
@@ -378,6 +380,147 @@ export class RegistrationsService {
       await tx.auditLog.create({ data: { actorUserId: actor.id, action: 'REGISTRATION_REJECTED', entityType: 'Registration', entityId: registrationId, metadata: { reason: reason.trim() } } });
       return { success: true, status: 'REJECTED' };
     });
+  }
+
+  async submitInstallmentPayment(actor: AuthenticatedUser, installmentId: string, dto: SubmitInstallmentPaymentDto, file: any) {
+    if (actor.role !== 'STUDENT' || !actor.studentId) throw new ForbiddenException('Student access required');
+    this.validateReceipt(file);
+    if (!Number.isFinite(dto.claimedAmount) || dto.claimedAmount <= 0) throw new BadRequestException('مبلغ پرداخت باید بیشتر از صفر باشد.');
+    const installment = await this.prisma.installment.findUnique({
+      where: { id: installmentId },
+      include: { registration: { select: { id: true, studentId: true, status: true } } },
+    });
+    if (!installment || installment.registration.studentId !== actor.studentId || installment.registration.status !== 'APPROVED') {
+      throw new NotFoundException('قسط متعلق به حساب شما پیدا نشد.');
+    }
+    const storageKey = await this.storeReceipt(file);
+    try {
+      return await this.prisma.$transaction(async (tx) => {
+        const registrations = await tx.registration.findMany({
+          where: { studentId: actor.studentId!, status: 'APPROVED' },
+          select: { id: true, installments: { include: { allocations: { select: { amount: true } } } } },
+        });
+        const outstanding = registrations.flatMap((registration) => registration.installments.map((item) => ({
+          id: item.id,
+          amount: Number(item.amount),
+          allocated: item.allocations.reduce((sum, allocation) => sum + Number(allocation.amount), 0),
+        }))).reduce((sum, item) => sum + Math.max(0, item.amount - item.allocated), 0);
+        const pending = await tx.registrationPayment.findMany({
+          where: { registrationId: { in: registrations.map((item) => item.id) }, purpose: 'INSTALLMENT', status: 'PENDING' },
+          select: { claimedAmount: true },
+        });
+        const pendingTotal = pending.reduce((sum, item) => sum + Number(item.claimedAmount), 0);
+        if (dto.claimedAmount > outstanding - pendingTotal + 0.0001) {
+          throw new BadRequestException('مبلغ رسید از بدهی باقی‌مانده بیشتر است؛ پرداخت‌های در انتظار بررسی نیز محاسبه شده‌اند.');
+        }
+        const payment = await tx.registrationPayment.create({
+          data: {
+            registrationId: installment.registration.id,
+            purpose: RegistrationPaymentPurpose.INSTALLMENT,
+            claimedAmount: dto.claimedAmount,
+            paymentDate: dto.paymentDate ? new Date(dto.paymentDate) : new Date(),
+            trackingCode: dto.trackingCode?.trim() || null,
+            receipts: { create: { storageKey, mimeType: file.mimetype, fileSize: BigInt(file.size), uploaderUserId: actor.id } },
+          },
+          select: { id: true, registrationId: true, status: true, claimedAmount: true },
+        });
+        await tx.registrationReviewHistory.create({
+          data: {
+            registrationId: installment.registration.id, actorUserId: actor.id,
+            action: 'INSTALLMENT_PAYMENT_SUBMITTED',
+            metadata: { paymentId: payment.id, installmentId, claimedAmount: dto.claimedAmount },
+          },
+        });
+        return payment;
+      }, { isolationLevel: 'Serializable' });
+    } catch (error) {
+      await unlink(join(RECEIPT_DIR, storageKey)).catch(() => undefined);
+      throw error;
+    }
+  }
+
+  async reviewInstallmentPayment(actor: AuthenticatedUser, paymentId: string, dto: ReviewInstallmentPaymentDto) {
+    this.requireFinanceAccess(actor);
+    const payment = await this.prisma.registrationPayment.findUnique({
+      where: { id: paymentId },
+      include: { registration: { select: { id: true, studentId: true, status: true } }, receipts: true },
+    });
+    if (!payment || payment.purpose !== RegistrationPaymentPurpose.INSTALLMENT || payment.status !== 'PENDING') {
+      throw new NotFoundException('پرداخت قسط در انتظار بررسی پیدا نشد.');
+    }
+    if (payment.receipts.length === 0) throw new BadRequestException('برای این پرداخت رسید ثبت نشده است.');
+    if (dto.status === 'REJECTED' && !dto.rejectionReason?.trim()) {
+      throw new BadRequestException('علت رد رسید الزامی است.');
+    }
+    const approvedAmount = dto.status === 'APPROVED' ? Number(dto.approvedAmount ?? payment.claimedAmount) : null;
+    if (dto.status === 'APPROVED' && (!Number.isFinite(approvedAmount) || approvedAmount! <= 0)) {
+      throw new BadRequestException('مبلغ تأییدشده باید بیشتر از صفر باشد.');
+    }
+
+    return this.prisma.$transaction(async (tx) => {
+      const current = await tx.registrationPayment.updateMany({
+        where: { id: paymentId, status: 'PENDING' },
+        data: {
+          status: dto.status,
+          approvedAmount,
+          rejectionReason: dto.status === 'REJECTED' ? dto.rejectionReason!.trim() : null,
+          reviewNote: dto.reviewNote?.trim() || null,
+          reviewedById: actor.id,
+          reviewedAt: new Date(),
+        },
+      });
+      if (current.count !== 1) throw new ConflictException('این رسید هم‌زمان توسط کاربر دیگری بررسی شده است.');
+
+      if (dto.status === 'APPROVED') {
+        const registrations = await tx.registration.findMany({
+          where: { studentId: payment.registration.studentId, status: 'APPROVED' },
+          select: { id: true, installments: { include: { allocations: { select: { amount: true } } } } },
+        });
+        const debt = registrations.flatMap((registration) => registration.installments.map((item) => ({
+          id: item.id,
+          dueDate: item.dueDate,
+          amount: Number(item.amount),
+          allocated: item.allocations.reduce((sum, allocation) => sum + Number(allocation.amount), 0),
+        }))).filter((item) => item.amount - item.allocated > 0.0001)
+          .sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
+        const outstanding = debt.reduce((sum, item) => sum + item.amount - item.allocated, 0);
+        if (approvedAmount! > outstanding + 0.0001) {
+          throw new BadRequestException('مبلغ تأییدشده از کل بدهی باقی‌مانده بیشتر است.');
+        }
+        let left = approvedAmount!;
+        for (const item of debt) {
+          if (left <= 0.0001) break;
+          const allocationAmount = Math.min(left, item.amount - item.allocated);
+          await tx.paymentAllocation.create({
+            data: { paymentId, installmentId: item.id, amount: allocationAmount },
+          });
+          const paidAfter = item.allocated + allocationAmount;
+          const status = paidAfter + 0.0001 >= item.amount
+            ? 'PAID'
+            : item.dueDate.getTime() < Date.now() ? 'OVERDUE' : 'PARTIALLY_PAID';
+          await tx.installment.update({ where: { id: item.id }, data: { status } });
+          left = Math.round((left - allocationAmount) * 100) / 100;
+        }
+      }
+
+      await tx.registrationReviewHistory.create({
+        data: {
+          registrationId: payment.registrationId, actorUserId: actor.id,
+          action: dto.status === 'APPROVED' ? 'INSTALLMENT_PAYMENT_APPROVED' : 'INSTALLMENT_PAYMENT_REJECTED',
+          note: dto.status === 'REJECTED' ? dto.rejectionReason!.trim() : dto.reviewNote?.trim() || null,
+          metadata: { paymentId, claimedAmount: Number(payment.claimedAmount), approvedAmount },
+        },
+      });
+      await tx.auditLog.create({
+        data: {
+          actorUserId: actor.id,
+          action: dto.status === 'APPROVED' ? 'INSTALLMENT_PAYMENT_APPROVED' : 'INSTALLMENT_PAYMENT_REJECTED',
+          entityType: 'RegistrationPayment', entityId: paymentId,
+          metadata: { claimedAmount: Number(payment.claimedAmount), approvedAmount, reason: dto.rejectionReason ?? null },
+        },
+      });
+      return { success: true, paymentId, status: dto.status, approvedAmount };
+    }, { isolationLevel: 'Serializable' });
   }
 
   private parseCourseIds(value: string): string[] {
