@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Archive, BarChart3, CheckCircle2, Download, FileSpreadsheet, Filter, Pencil, Search, Trash2, Upload, UserPlus, Users, X } from 'lucide-react';
+import { Archive, BarChart3, CheckCircle2, Download, FileSpreadsheet, Filter, Pencil, Search, Upload, UserPlus, Users, X } from 'lucide-react';
 import type { Student, Course } from '../../types';
 import '../../styles/AdminStudents.css';
 
@@ -150,31 +150,6 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
     setSelectedStudentIds([]);
     await loadStudents();
     if (failures.length) setError(`عملیات برای ${targets.length - failures.length} نفر انجام شد؛ ناموفق: ${failures.join('، ')}`);
-    setBulkProcessing(false);
-  };
-
-  const bulkDeleteStudents = async () => {
-    const targets = apiStudents.filter(student => selectedStudentIds.includes(student.id));
-    if (!targets.length) return;
-    if (!window.confirm(`هشدار: ${targets.length} هنرجوی انتخاب‌شده برای همیشه حذف شوند؟ این کار سوابق آن‌ها را نیز حذف می‌کند و قابل بازگشت نیست.`)) return;
-    setBulkProcessing(true);
-    setError('');
-    const failures: string[] = [];
-    for (const student of targets) {
-      try {
-        const response = await fetch(`/api/admin/students/${student.id}`, { method: 'DELETE', credentials: 'include' });
-        if (!response.ok) {
-          const body = await response.json().catch(() => null);
-          failures.push(`${student.fullName}: ${body?.message || 'خطا'}`);
-        }
-      } catch {
-        failures.push(student.fullName);
-      }
-    }
-    setSelectedStudentIds([]);
-    setSelectedStudent(null);
-    await loadStudents();
-    if (failures.length) setError(`حذف ${targets.length - failures.length} نفر انجام شد؛ ناموفق: ${failures.join('، ')}`);
     setBulkProcessing(false);
   };
 
@@ -373,11 +348,10 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
         {selectedStudentIds.length > 0 && <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap',padding:'10px 12px',marginBottom:12,border:'1px solid var(--admin-border)',borderRadius:12,background:'var(--admin-inner)'}}>
           <strong>{selectedStudentIds.length} نفر انتخاب شده</strong>
           <button type="button" className="secondary-action" disabled={bulkProcessing} onClick={()=>void bulkArchiveStudents(! (studentSection === 'ARCHIVED'))}><Archive size={14}/>{studentSection==='ARCHIVED'?'بازگردانی انتخاب‌شده‌ها':'بایگانی انتخاب‌شده‌ها'}</button>
-          <button type="button" className="secondary-action" disabled={bulkProcessing} onClick={()=>void bulkDeleteStudents()}><Trash2 size={14}/> حذف انتخاب‌شده‌ها</button>
           <button type="button" className="secondary-action" disabled={bulkProcessing} onClick={()=>setSelectedStudentIds([])}><X size={14}/> لغو انتخاب</button>
           {bulkProcessing && <span>در حال انجام عملیات گروهی…</span>}
         </div>}
-        {loading ? <div className="students-empty">در حال دریافت فهرست هنرجویان...</div> : <div className="student-table-wrap"><table><thead><tr><th><input type="checkbox" className="student-select-checkbox" aria-label="انتخاب همه هنرجویان نمایش‌داده‌شده" checked={filteredStudents.length > 0 && filteredStudents.every(student => selectedStudentIds.includes(student.id))} onChange={toggleAllVisibleStudents} /></th><th>هنرجو</th><th>مقطع</th><th>دوره‌های فعال</th><th>آخرین ثبت‌نام</th><th>عملیات</th></tr></thead><tbody>{filteredStudents.map(student=><tr key={student.id} className="student-clickable-row" tabIndex={0} aria-label={`مشاهده جزئیات ${student.fullName}`} onClick={()=>setSelectedStudent(student)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setSelectedStudent(student);}}}><td><input type="checkbox" className="student-select-checkbox" aria-label={`انتخاب ${student.fullName}`} checked={selectedStudentIds.includes(student.id)} onClick={e=>e.stopPropagation()} onChange={()=>toggleStudentSelection(student.id)} /></td><td><strong>{student.fullName}</strong><small>{student.nationalId} · {student.phone || '—'}</small></td><td><span className="level-badge">{levelLabel(student.academicLevel)}</span></td><td><div className="enrollment-chips">{student.enrollments.filter(e=>e.status==='ACTIVE').slice(0,3).map(e=><span key={e.id}>{e.course.title}</span>)}{student.enrollments.filter(e=>e.status==='ACTIVE').length>3 && <span>+{student.enrollments.filter(e=>e.status==='ACTIVE').length-3}</span>}</div></td><td>{student.enrollments.length ? new Date(student.enrollments[0].enrolledAt).toLocaleDateString('fa-IR') : '—'}</td><td><div className="row-actions"><button type="button" onClick={e=>{e.stopPropagation();handleEdit(student);}} title="ویرایش" aria-label="ویرایش هنرجو"><Pencil size={14}/></button><button type="button" onClick={e=>{e.stopPropagation();void changeStudentArchive(student);}} title={student.isArchived?'بازگردانی به فهرست فعال':'بایگانی هنرجو'} aria-label={student.isArchived?'بازگردانی هنرجو':'بایگانی هنرجو'}>{student.isArchived?<CheckCircle2 size={14}/>:<Archive size={14}/>}</button><button type="button" className="danger" title="حذف" onClick={e=>{e.stopPropagation();void (async()=>{if(!window.confirm(`حذف «${student.fullName}»؟`)) return; const response=await fetch(`/api/admin/students/${student.id}`,{method:'DELETE',credentials:'include'}); if(!response.ok){setError((await response.json().catch(()=>null))?.message||'حذف انجام نشد.');return;} setSelectedStudent(null); await loadStudents();})()}} aria-label="حذف هنرجو"><Trash2 size={14}/></button></div></td></tr>)}</tbody></table>{!filteredStudents.length && <div className="students-empty">هنرجویی با این فیلتر پیدا نشد.</div>}</div>}
+        {loading ? <div className="students-empty">در حال دریافت فهرست هنرجویان...</div> : <div className="student-table-wrap"><table><thead><tr><th><input type="checkbox" className="student-select-checkbox" aria-label="انتخاب همه هنرجویان نمایش‌داده‌شده" checked={filteredStudents.length > 0 && filteredStudents.every(student => selectedStudentIds.includes(student.id))} onChange={toggleAllVisibleStudents} /></th><th>هنرجو</th><th>مقطع</th><th>دوره‌های فعال</th><th>آخرین ثبت‌نام</th><th>عملیات</th></tr></thead><tbody>{filteredStudents.map(student=><tr key={student.id} className="student-clickable-row" tabIndex={0} aria-label={`مشاهده جزئیات ${student.fullName}`} onClick={()=>setSelectedStudent(student)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setSelectedStudent(student);}}}><td><input type="checkbox" className="student-select-checkbox" aria-label={`انتخاب ${student.fullName}`} checked={selectedStudentIds.includes(student.id)} onClick={e=>e.stopPropagation()} onChange={()=>toggleStudentSelection(student.id)} /></td><td><strong>{student.fullName}</strong><small>{student.nationalId} · {student.phone || '—'}</small></td><td><span className="level-badge">{levelLabel(student.academicLevel)}</span></td><td><div className="enrollment-chips">{student.enrollments.filter(e=>e.status==='ACTIVE').slice(0,3).map(e=><span key={e.id}>{e.course.title}</span>)}{student.enrollments.filter(e=>e.status==='ACTIVE').length>3 && <span>+{student.enrollments.filter(e=>e.status==='ACTIVE').length-3}</span>}</div></td><td>{student.enrollments.length ? new Date(student.enrollments[0].enrolledAt).toLocaleDateString('fa-IR') : '—'}</td><td><div className="row-actions"><button type="button" onClick={e=>{e.stopPropagation();handleEdit(student);}} title="ویرایش" aria-label="ویرایش هنرجو"><Pencil size={14}/></button><button type="button" onClick={e=>{e.stopPropagation();void changeStudentArchive(student);}} title={student.isArchived?'بازگردانی به فهرست فعال':'بایگانی هنرجو'} aria-label={student.isArchived?'بازگردانی هنرجو':'بایگانی هنرجو'}>{student.isArchived?<CheckCircle2 size={14}/>:<Archive size={14}/>}</button></div></td></tr>)}</tbody></table>{!filteredStudents.length && <div className="students-empty">هنرجویی با این فیلتر پیدا نشد.</div>}</div>}
       </section>
       {selectedStudent && <div className="student-detail-backdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setSelectedStudent(null);}}>
         <section className="student-detail-modal" role="dialog" aria-modal="true" aria-labelledby="student-detail-title">
