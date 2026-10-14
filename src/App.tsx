@@ -12,7 +12,6 @@ import { ManageMockExams } from './pages/admin/ManageMockExams';
 import { ManageCounseling } from './pages/admin/ManageCounseling';
 import { ManageNotifications } from './pages/admin/ManageNotifications';
 import { ManagePublicContent } from './pages/admin/ManagePublicContent';
-import { ManageFinance } from './pages/admin/ManageFinance';
 import { Login } from './pages/user/Login';
 import { UserDashboard } from './pages/user/UserDashboard';
 import { CounselorPortal } from './pages/counselor/CounselorPortal';
@@ -240,9 +239,7 @@ export function App() {
           <ManageNotifications />
         ) : adminTab === 'rules' ? (
           <ManagePublicContent />
-        ) : adminTab === 'finance' ? (
-          <ManageFinance />
-        ) : adminTab === 'registrations' ? (
+        ) : adminTab === 'finance' || adminTab === 'registrations' ? (
           <ManageRegistrations />
         ) : adminTab === 'admins' && currentAdmin?.role === 'super_admin' ? (
           <AdminAccounts />
