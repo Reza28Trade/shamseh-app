@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict');
 const { RegistrationApprovalMode } = require('@prisma/client');
-const { addOneMonthClamped, calculateRegistrationApprovalPlan } = require('../dist/src/registrations/registration-finance.rules');
+const { addOneMonthClamped, calculateRefundAvailableBalance, calculateRegistrationApprovalPlan } = require('../dist/src/registrations/registration-finance.rules');
 
 const future = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000);
 
@@ -88,5 +88,27 @@ assert.throws(() => plan({
 assert.equal(addOneMonthClamped(new Date('2027-01-31T00:00:00.000Z')).toISOString(), '2027-02-28T00:00:00.000Z');
 assert.equal(addOneMonthClamped(new Date('2028-01-31T00:00:00.000Z')).toISOString(), '2028-02-29T00:00:00.000Z');
 assert.equal(addOneMonthClamped(new Date('2027-03-31T00:00:00.000Z')).toISOString(), '2027-04-30T00:00:00.000Z');
+
+// Refund availability must exclude tuition obligations and existing reservations.
+assert.equal(calculateRefundAvailableBalance({
+  totalApprovedPayments: 150000,
+  totalTuition: 100000,
+  alreadyReserved: 10000,
+}), 40000);
+assert.equal(calculateRefundAvailableBalance({
+  totalApprovedPayments: 90000,
+  totalTuition: 100000,
+  alreadyReserved: 0,
+}), 0);
+assert.equal(calculateRefundAvailableBalance({
+  totalApprovedPayments: 100000.109,
+  totalTuition: 50000,
+  alreadyReserved: 10000.105,
+}), 40000.01);
+assert.throws(() => calculateRefundAvailableBalance({
+  totalApprovedPayments: -1,
+  totalTuition: 0,
+  alreadyReserved: 0,
+}), /موجودی بازپرداخت/);
 
 console.log('Registration finance rules: regression assertions passed.');
