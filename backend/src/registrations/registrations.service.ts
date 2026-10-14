@@ -240,7 +240,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     const registration = await this.prisma.registration.findUnique({
       where: { id: registrationId }, select: { id: true, status: true, originalTuition: true, nationalId: true, phone: true },
     });
-    if (!registration || !['NEEDS_CORRECTION', 'PENDING_REVIEW'].includes(registration.status)
+    if (!registration || registration.status !== 'NEEDS_CORRECTION'
       || registration.nationalId !== body.nationalId?.trim()
       || registration.phone !== body.phone?.trim()) {
       throw new NotFoundException('ثبت‌نامی با این مشخصات برای اصلاح رسید پیدا نشد.');
