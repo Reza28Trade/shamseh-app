@@ -7,7 +7,8 @@ const normalizeDigits = (value: unknown) => typeof value === 'string'
   : value;
 
 export class CreateRegistrationDto {
-  @IsString() @IsNotEmpty() @MinLength(3)
+  @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
+  @IsString() @IsNotEmpty() @MinLength(3) @Matches(/\\S/)
   applicantFullName!: string;
 
   @Transform(({ value }) => normalizeDigits(value))
@@ -21,7 +22,8 @@ export class CreateRegistrationDto {
   @IsEnum(StudentLevel)
   academicLevel!: StudentLevel;
 
-  @IsString() @IsNotEmpty()
+  @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
+  @IsString() @IsNotEmpty() @Matches(/\\S/)
   fieldCode!: string;
 
   // Multipart form field containing a JSON array of course IDs.
