@@ -145,8 +145,8 @@ export function RegistrationPage() {
           <p className="reg-muted">شناسه ثبت‌نام، کد ملی و شماره موبایل را وارد کنید تا وضعیت بررسی و علت اصلاح را ببینید.</p>
           <form className="reg-status-form" onSubmit={e=>{e.preventDefault();setLoading(true);void loadStatus().catch(err=>setError(err instanceof Error?err.message:'پیگیری ناموفق بود.')).finally(()=>setLoading(false));}}>
             <label className="reg-field">شناسه ثبت‌نام<input required value={registrationId} onChange={e=>setRegistrationId(e.target.value)}/></label>
-            <label className="reg-field">کد ملی<input required value={statusNationalId} onChange={e=>setStatusNationalId(e.target.value)} inputMode="numeric"/></label>
-            <label className="reg-field">شماره موبایل<input required value={statusPhone} onChange={e=>setStatusPhone(e.target.value)} inputMode="tel"/></label>
+            <label className="reg-field">کد ملی<input required value={statusNationalId} onChange={e=>setStatusNationalId(toEnglishDigits(e.target.value))} inputMode="numeric"/></label>
+            <label className="reg-field">شماره موبایل<input required value={statusPhone} onChange={e=>setStatusPhone(toEnglishDigits(e.target.value))} inputMode="tel"/></label>
             <button className="reg-button" disabled={loading} type="submit">بررسی وضعیت</button>
           </form>
           {status && <div className="reg-history">
