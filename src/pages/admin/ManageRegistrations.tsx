@@ -69,10 +69,18 @@ export function ManageRegistrations(){
     const exceptionReason=mode==='PAYMENT_EXCEPTION'?window.prompt('علت استثنای پرداخت (ویژه مدیر ارشد)'):undefined;
     const approvedAmount=Number(window.prompt('مبلغ نهایی تأییدشده رسید (تومان)',String(payment.claimedAmount)));
     if(!Number.isFinite(approvedAmount)||approvedAmount<=0){setError('مبلغ تأییدشده معتبر نیست.');return;}
-    const defaultDueDate=new Date();defaultDueDate.setDate(defaultDueDate.getDate()+30);
-    const defaultDue=[defaultDueDate.getFullYear(),String(defaultDueDate.getMonth()+1).padStart(2,'0'),String(defaultDueDate.getDate()).padStart(2,'0')].join('-');
-    const firstDueDate=window.prompt('تاریخ سررسید اولین قسط به شکل YYYY-MM-DD',defaultDue);
-    if(!firstDueDate)return;
+    const today=new Date();
+    const todayDate=[today.getFullYear(),String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0')].join('-');
+    const finalTuition=item.originalTuition-discountAmount;
+    let firstDueDate=todayDate;
+    if(approvedAmount<finalTuition){
+      const defaultDueDate=new Date();defaultDueDate.setDate(defaultDueDate.getDate()+30);
+      const defaultDue=[defaultDueDate.getFullYear(),String(defaultDueDate.getMonth()+1).padStart(2,'0'),String(defaultDueDate.getDate()).padStart(2,'0')].join('-');
+      const selectedDueDate=window.prompt('تاریخ سررسید اولین قسط به شکل YYYY-MM-DD',defaultDue);
+      if(!selectedDueDate)return;
+      if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(selectedDueDate)){setError('تاریخ را به شکل YYYY-MM-DD وارد کنید.');return;}
+      firstDueDate=selectedDueDate;
+    }
     const reviewNote=window.prompt('یادداشت بررسی (اختیاری)')||undefined;
     const mockExamEligible=window.confirm('آیا هنرجو مشمول آزمون آزمایشی رایگان شود؟');
     let mockExamId:string|undefined;
