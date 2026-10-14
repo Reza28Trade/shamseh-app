@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict');
 const { RegistrationApprovalMode } = require('@prisma/client');
-const { addOneMonthClamped, calculateRefundAvailableBalance, calculateRegistrationApprovalPlan, getInstallmentReminderWindows, planOldestDebtAllocations } = require('../dist/src/registrations/registration-finance.rules');
+const { addOneMonthClamped, calculateRefundAvailableBalance, calculateRegistrationApprovalPlan, getInstallmentReminderWindows, isInstallmentPastDue, planOldestDebtAllocations } = require('../dist/src/registrations/registration-finance.rules');
 
 const future = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000);
 
@@ -104,6 +104,12 @@ assert.throws(() => plan({
 assert.equal(addOneMonthClamped(new Date('2027-01-31T00:00:00.000Z')).toISOString(), '2027-02-28T00:00:00.000Z');
 assert.equal(addOneMonthClamped(new Date('2028-01-31T00:00:00.000Z')).toISOString(), '2028-02-29T00:00:00.000Z');
 assert.equal(addOneMonthClamped(new Date('2027-03-31T00:00:00.000Z')).toISOString(), '2027-04-30T00:00:00.000Z');
+
+// A date is overdue only after its full UTC calendar day has passed.
+assert.equal(isInstallmentPastDue(new Date('2026-10-14T00:00:00.000Z'), new Date('2026-10-14T18:30:00.000Z')), false);
+assert.equal(isInstallmentPastDue(new Date('2026-10-13T23:59:59.999Z'), new Date('2026-10-14T00:00:00.000Z')), true);
+assert.equal(isInstallmentPastDue(new Date('2026-10-15T00:00:00.000Z'), new Date('2026-10-14T18:30:00.000Z')), false);
+assert.throws(() => isInstallmentPastDue(new Date('invalid')), /تاریخ سررسید قسط/);
 
 // Calendar-based reminder windows must not mark an installment overdue during its due date.
 const reminderWindows = getInstallmentReminderWindows(new Date('2026-10-14T18:30:00.000Z'));
