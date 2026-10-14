@@ -235,3 +235,5 @@ ALTER TABLE "RefundRequest" ADD CONSTRAINT "RefundRequest_amount_positive_check"
 ALTER TABLE "Installment" ADD COLUMN "lastReminderAt" TIMESTAMP(3);
 ALTER TABLE "Installment" ADD COLUMN "lastReminderType" TEXT;
 CREATE INDEX "Installment_lastReminderAt_status_idx" ON "Installment"("lastReminderAt", "status");
+
+ALTER TABLE "Student" ADD COLUMN "freeMockExamEligible" BOOLEAN NOT NULL DEFAULT false;
