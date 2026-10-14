@@ -1,5 +1,5 @@
-import { Type } from 'class-transformer';
-import { IsNumber, IsString, Min, MinLength } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { IsNumber, IsString, Matches, Min, MinLength } from 'class-validator';
 
 export class CreateRefundRequestDto {
   @IsString() @MinLength(1)
@@ -8,6 +8,7 @@ export class CreateRefundRequestDto {
   @Type(() => Number) @IsNumber() @Min(1)
   amountRequested!: number;
 
-  @IsString() @MinLength(5)
+  @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
+  @IsString() @MinLength(5) @Matches(/\\S/)
   reason!: string;
 }
