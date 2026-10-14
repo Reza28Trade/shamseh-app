@@ -860,46 +860,55 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         return { success: true, status: 'REJECTED' };
       }
 
-      const registrations = await tx.registration.findMany({
-        where: { studentId: currentRefund.studentId, status: 'APPROVED' },
-        select: {
-          id: true, finalTuition: true,
-          courses: { select: { courseId: true } },
-          payments: { where: { status: 'APPROVED' }, select: { approvedAmount: true } },
-        },
+      const registration = await tx.registration.findFirst({
+        where: { id: currentRefund.registrationId, studentId: currentRefund.studentId, status: 'APPROVED' },
+        select: { id: true, finalTuition: true },
       });
-      const registeredCourseIds = [...new Set(registrations.flatMap((row) => row.courses.map((course) => course.courseId)))];
-      const legacyEnrollments = await tx.enrollment.findMany({
-        where: {
-          studentId: currentRefund.studentId,
-          status: { in: [EnrollmentStatus.ACTIVE, EnrollmentStatus.COMPLETED] },
-          ...(registeredCourseIds.length ? { courseId: { notIn: registeredCourseIds } } : {}),
-        },
-        select: { tuitionAmount: true, course: { select: { price: true } } },
-      });
-      const legacyPayments = await tx.payment.findMany({
-        where: {
-          studentId: currentRefund.studentId,
-          purpose: 'COURSE_FEE',
-          status: 'APPROVED',
-          ...(registeredCourseIds.length
-            ? { OR: [{ courseId: null }, { courseId: { notIn: registeredCourseIds } }] }
-            : {}),
-        },
-        select: { amount: true },
-      });
-      const tuition = registrations.reduce((sum, row) => sum + Number(row.finalTuition), 0)
-        + legacyEnrollments.reduce((sum, enrollment) => sum + Number(enrollment.tuitionAmount ?? enrollment.course.price ?? 0), 0);
-      const paid = registrations.reduce((sum, row) => sum + row.payments.reduce((p, payment) => p + Number(payment.approvedAmount ?? 0), 0), 0)
-        + legacyPayments.reduce((sum, payment) => sum + Number(payment.amount), 0);
-      const previousRefunds = await tx.refundRequest.findMany({
-        where: { studentId: currentRefund.studentId, status: { in: ['RESERVED', 'PAID'] } },
-        select: { amountReserved: true },
-      });
+      if (!registration) throw new ConflictException('ثبت‌نام مربوط به بازپرداخت دیگر معتبر نیست.');
+
+      // Refund credit is scoped to its originating registration. A surplus from one
+      // registration must not silently pay a later registration's debt. Cross-registration
+      // allocations made at approval time are the only permitted way to move that value.
+      const [payments, outgoingAllocations, incomingAllocations, previousRefunds] = await Promise.all([
+        tx.registrationPayment.findMany({
+          where: { registrationId: registration.id, status: 'APPROVED' },
+          select: { approvedAmount: true },
+        }),
+        tx.paymentAllocation.findMany({
+          where: {
+            payment: { is: { registrationId: registration.id, status: 'APPROVED' } },
+          },
+          include: {
+            payment: { select: { registrationId: true } },
+            installment: { select: { registrationId: true } },
+          },
+        }),
+        tx.paymentAllocation.findMany({
+          where: {
+            installment: { is: { registrationId: registration.id } },
+            payment: { is: { status: 'APPROVED', registrationId: { not: registration.id } } },
+          },
+          select: { amount: true },
+        }),
+        tx.refundRequest.findMany({
+          where: {
+            registrationId: registration.id,
+            status: { in: ['RESERVED', 'PAID'] },
+          },
+          select: { amountReserved: true },
+        }),
+      ]);
+      const ownPayments = payments.reduce((sum, payment) => sum + Number(payment.approvedAmount ?? 0), 0);
+      const appliedToOtherRegistrations = outgoingAllocations
+        .filter((allocation) => allocation.installment.registrationId !== registration.id)
+        .reduce((sum, allocation) => sum + Number(allocation.amount), 0);
+      const receivedFromOtherRegistrations = incomingAllocations
+        .reduce((sum, allocation) => sum + Number(allocation.amount), 0);
+      const effectivePaid = Math.max(0, ownPayments - appliedToOtherRegistrations + receivedFromOtherRegistrations);
       const alreadyReserved = previousRefunds.reduce((sum, item) => sum + Number(item.amountReserved ?? 0), 0);
       const available = calculateRefundAvailableBalance({
-        totalApprovedPayments: paid,
-        totalTuition: tuition,
+        totalApprovedPayments: effectivePaid,
+        totalTuition: Number(registration.finalTuition),
         alreadyReserved,
       });
       if (Number(currentRefund.amountRequested) > available + 0.0001) {
