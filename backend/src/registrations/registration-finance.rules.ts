@@ -1,6 +1,19 @@
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { RegistrationApprovalMode } from '@prisma/client';
 
+/** Add one calendar month while clamping month-end dates (e.g. Jan 31 -> Feb 28/29).
+ * UTC calendar operations keep date-only values stable across server time zones.
+ */
+export function addOneMonthClamped(date: Date): Date {
+  const next = new Date(date);
+  const day = next.getUTCDate();
+  next.setUTCDate(1);
+  next.setUTCMonth(next.getUTCMonth() + 1);
+  const lastDay = new Date(Date.UTC(next.getUTCFullYear(), next.getUTCMonth() + 1, 0)).getUTCDate();
+  next.setUTCDate(Math.min(day, lastDay));
+  return next;
+}
+
 export interface RegistrationApprovalPlanInput {
   mode: RegistrationApprovalMode;
   actorRole: string;
