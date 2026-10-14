@@ -191,6 +191,7 @@ model User {
   counselorProfile CounselorProfile?
   sentCounselingMessages CounselingMessage[]
   assignedCounselingAssignments CounselingAssignment[] @relation("CounselingAssignmentActor")
+  settledRegistrations Registration[] @relation("RegistrationDebtSettlementActor")
 }
 
 model Session {
@@ -719,6 +720,10 @@ model Registration {
   reviewedById String?
   reviewedAt DateTime?
   approvedAt DateTime?
+  manualSettlementAmount Decimal @default(0) @db.Decimal(12, 2)
+  manualSettledAt DateTime?
+  manualSettlementNote String? @db.Text
+  manualSettledById String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -729,6 +734,7 @@ model Registration {
   refundRequests RefundRequest[]
   reviewHistory RegistrationReviewHistory[]
   reviewer User? @relation("RegistrationReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  manualSettledBy User? @relation("RegistrationDebtSettlementActor", fields: [manualSettledById], references: [id], onDelete: SetNull)
 
   @@index([nationalId, status])
   @@index([studentId, status])
