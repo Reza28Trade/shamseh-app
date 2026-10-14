@@ -1,5 +1,5 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { EnrollmentStatus, PaymentMethod } from '@prisma/client';
+import { EnrollmentStatus, PaymentMethod, Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { CreatePaymentDto } from './dto/create-payment.dto';
@@ -11,13 +11,14 @@ export class FinanceService {
   constructor(private readonly prisma: PrismaService) {}
 
   private requireAdmin(user: AuthenticatedUser) {
-    if (user.role !== 'SUPER_ADMIN' && user.role !== 'STAFF') {
-      throw new ForbiddenException('Admin access required');
+    if (user.role === 'SUPER_ADMIN') return;
+    if (user.role !== 'STAFF' || !user.permissions.includes('finance')) {
+      throw new ForbiddenException('Finance permission required');
     }
   }
 
-  private async getStudentSummary(studentId: string) {
-    const student = await this.prisma.student.findUnique({
+  private async getStudentSummary(studentId: string, db: PrismaService | Prisma.TransactionClient = this.prisma) {
+    const student = await db.student.findUnique({
       where: { id: studentId },
       select: {
         id: true,
@@ -34,6 +35,10 @@ export class FinanceService {
             tuitionAmount: true,
             course: { select: { id: true, title: true, price: true } },
           },
+        },
+        registrations: {
+          where: { status: 'APPROVED' },
+          select: { id: true },
         },
         payments: {
           where: { purpose: 'COURSE_FEE' },
@@ -69,7 +74,10 @@ export class FinanceService {
       0,
     );
     const balance = Math.max(0, tuitionTotal - paidTotal);
-    const status: FinanceStatus = enrolledCourses.length === 0
+    const requiresFinanceReconciliation = student.registrations.length > 0;
+    const status: FinanceStatus = requiresFinanceReconciliation
+      ? 'INCOMPLETE'
+      : enrolledCourses.length === 0
       ? 'NO_COURSES'
       : unpricedCourses > 0
       ? 'INCOMPLETE'
@@ -88,6 +96,8 @@ export class FinanceService {
       credit: Math.max(0, paidTotal - tuitionTotal),
       unpricedCourses,
       status,
+      requiresFinanceReconciliation,
+      approvedRegistrationCount: student.registrations.length,
       payments: student.payments.map((payment) => ({
         ...payment,
         amount: Number(payment.amount),
@@ -133,19 +143,23 @@ export class FinanceService {
         credit: summary.credit,
         unpricedCourses: summary.unpricedCourses,
         status: summary.status,
+        requiresFinanceReconciliation: summary.requiresFinanceReconciliation,
+        approvedRegistrationCount: summary.approvedRegistrationCount,
         payments: summary.payments,
       }));
 
+    const reconciledRows = rows.filter((row) => !row.requiresFinanceReconciliation);
     return {
       summary: {
         studentCount: rows.length,
-        tuitionTotal: rows.reduce((sum, row) => sum + row.tuitionTotal, 0),
-        paidTotal: rows.reduce((sum, row) => sum + row.paidTotal, 0),
-        outstandingBalance: rows.reduce((sum, row) => sum + row.balance, 0),
-        unpaidCount: rows.filter((row) => row.status === 'UNPAID').length,
-        partialCount: rows.filter((row) => row.status === 'PARTIAL').length,
-        paidCount: rows.filter((row) => row.status === 'PAID').length,
-        incompleteCount: rows.filter((row) => row.status === 'INCOMPLETE').length,
+        tuitionTotal: reconciledRows.reduce((sum, row) => sum + row.tuitionTotal, 0),
+        paidTotal: reconciledRows.reduce((sum, row) => sum + row.paidTotal, 0),
+        outstandingBalance: reconciledRows.reduce((sum, row) => sum + row.balance, 0),
+        unpaidCount: reconciledRows.filter((row) => row.status === 'UNPAID').length,
+        partialCount: reconciledRows.filter((row) => row.status === 'PARTIAL').length,
+        paidCount: reconciledRows.filter((row) => row.status === 'PAID').length,
+        incompleteCount: rows.filter((row) => row.status === 'INCOMPLETE' && !row.requiresFinanceReconciliation).length,
+        reconciliationRequiredCount: rows.filter((row) => row.requiresFinanceReconciliation).length,
         noCourseCount: rows.filter((row) => row.status === 'NO_COURSES').length,
       },
       students: rows,
@@ -165,27 +179,38 @@ export class FinanceService {
       throw new BadRequestException('Payment amount must be greater than zero');
     }
 
-    const summary = await this.getStudentSummary(studentId);
-    if (summary.unpricedCourses > 0) {
-      throw new BadRequestException('Set a tuition price for every enrolled course before recording a payment');
-    }
-    if (dto.amount > summary.balance) {
-      throw new BadRequestException('Payment amount cannot exceed the remaining balance');
-    }
+    await this.prisma.$transaction(async (tx) => {
+      // Serialize legacy payment writes per student. Without this lock, two admins
+      // could both read the same balance and collectively record more than the debt.
+      await tx.$queryRaw`SELECT "id" FROM "Student" WHERE "id" = ${studentId} FOR UPDATE`;
 
-    await this.prisma.payment.create({
-      data: {
-        studentId,
-        amount: dto.amount,
-        method: dto.method ?? PaymentMethod.OTHER,
-        reference: dto.reference?.trim() || null,
-        note: dto.note?.trim() || null,
-        purpose: 'COURSE_FEE',
-        status: 'APPROVED',
-        paymentDate: dto.paidAt ? new Date(dto.paidAt) : new Date(),
-        paidAt: dto.paidAt ? new Date(dto.paidAt) : new Date(),
-        createdById: user.id,
-      },
+      // Re-read after acquiring the lock so a concurrent payment that committed
+      // immediately before this transaction is included in the balance check.
+      const summary = await this.getStudentSummary(studentId, tx);
+      if (summary.requiresFinanceReconciliation) {
+        throw new BadRequestException('این هنرجو در سیستم ثبت‌نام و اقساط جدید است؛ پرداخت را از بخش ثبت‌نام‌ها و اقساط ثبت کنید.');
+      }
+      if (summary.unpricedCourses > 0) {
+        throw new BadRequestException('Set a tuition price for every enrolled course before recording a payment');
+      }
+      if (dto.amount > summary.balance) {
+        throw new BadRequestException('Payment amount cannot exceed the remaining balance');
+      }
+
+      await tx.payment.create({
+        data: {
+          studentId,
+          amount: dto.amount,
+          method: dto.method ?? PaymentMethod.OTHER,
+          reference: dto.reference?.trim() || null,
+          note: dto.note?.trim() || null,
+          purpose: 'COURSE_FEE',
+          status: 'APPROVED',
+          paymentDate: dto.paidAt ? new Date(dto.paidAt) : new Date(),
+          paidAt: dto.paidAt ? new Date(dto.paidAt) : new Date(),
+          createdById: user.id,
+        },
+      });
     });
 
     return this.getStudentSummary(studentId);
