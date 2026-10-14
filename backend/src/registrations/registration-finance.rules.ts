@@ -115,3 +115,19 @@ export function calculateRegistrationApprovalPlan(input: RegistrationApprovalPla
 
   return { finalTuition, totalPaid, ratio, remaining, installmentAmounts, firstDueDate };
 }
+
+export interface RefundBalanceInput {
+  totalApprovedPayments: number;
+  totalTuition: number;
+  alreadyReserved: number;
+}
+
+/** Available refund balance after all approved tuition obligations and prior reservations. */
+export function calculateRefundAvailableBalance(input: RefundBalanceInput): number {
+  const values = [input.totalApprovedPayments, input.totalTuition, input.alreadyReserved];
+  if (values.some((value) => !Number.isFinite(value) || value < 0)) {
+    throw new BadRequestException('مقادیر محاسبهٔ موجودی بازپرداخت معتبر نیستند.');
+  }
+  const available = input.totalApprovedPayments - input.totalTuition - input.alreadyReserved;
+  return Math.round(Math.max(0, available) * 100) / 100;
+}
