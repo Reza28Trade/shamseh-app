@@ -7,10 +7,11 @@ type FinanceStudent = {
   id: string; fullName: string; nationalId: string; phone: string | null;
   courseCount: number; courseTitles: string[]; tuitionTotal: number; paidTotal: number;
   balance: number; credit: number; unpricedCourses: number; status: FinanceStatus;
+  requiresFinanceReconciliation?: boolean; approvedRegistrationCount?: number;
   payments: Array<{ id: string; amount: number; method: string; reference: string | null; note: string | null; paidAt: string }>;
 };
 type FinanceResult = {
-  summary: { studentCount: number; tuitionTotal: number; paidTotal: number; outstandingBalance: number; unpaidCount: number; partialCount: number; paidCount: number; incompleteCount: number };
+  summary: { studentCount: number; tuitionTotal: number; paidTotal: number; outstandingBalance: number; unpaidCount: number; partialCount: number; paidCount: number; incompleteCount: number; reconciliationRequiredCount?: number };
   students: FinanceStudent[];
 };
 type CourseOption = { id: string; title: string };
@@ -118,6 +119,7 @@ export const ManageFinance: React.FC = () => {
     { label: 'کل مبالغ دریافتی', value: money(result.summary.paidTotal), color: '#10b981' },
     { label: 'مانده قابل وصول', value: money(result.summary.outstandingBalance), color: '#ef4444' },
     { label: 'هنرجویان بدهکار', value: new Intl.NumberFormat('fa-IR').format(result.summary.unpaidCount + result.summary.partialCount), color: '#f59e0b' },
+    { label: 'نیازمند تطبیق سوابق', value: new Intl.NumberFormat('fa-IR').format(result.summary.reconciliationRequiredCount ?? 0), color: '#f59e0b' },
   ] : [];
 
   return (
@@ -129,6 +131,10 @@ export const ManageFinance: React.FC = () => {
 
       {error && <div role="alert" style={{ padding: 12, borderRadius: 10, background: 'rgba(239,68,68,.1)', color: '#ef4444', fontSize: 12 }}>{error}</div>}
       {success && <div role="status" style={{ padding: 12, borderRadius: 10, background: 'rgba(16,185,129,.1)', color: '#10b981', fontSize: 12 }}>{success}</div>}
+
+      {result && (result.summary.reconciliationRequiredCount ?? 0) > 0 && <div role="alert" style={{ padding: 14, borderRadius: 12, border: '1px solid rgba(245,158,11,.35)', background: 'rgba(245,158,11,.09)', color: colors.text, fontSize: 12, lineHeight: 1.9 }}>
+        <strong style={{ color: '#d97706' }}>تطبیق مالی لازم است.</strong> برای {new Intl.NumberFormat('fa-IR').format(result.summary.reconciliationRequiredCount ?? 0)} هنرجو ثبت‌نام تأییدشده در سیستم جدید وجود دارد. اعداد مسیر مالی قدیمی برای این افراد از جمع کل کنار گذاشته شده‌اند و نباید مبنای دریافت یا اعلام بدهی قرار گیرند؛ جزئیات را در بخش «ثبت‌نام‌ها و اقساط» بررسی کنید.
+      </div>}
 
       {result && <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 190px), 1fr))', gap: 12 }}>
         {statCards.map((card) => <div key={card.label} style={{ padding: 18, background: colors.bg, border: `1px solid ${colors.border}`, borderRadius: 16 }}>
@@ -155,13 +161,14 @@ export const ManageFinance: React.FC = () => {
           <strong style={{ color: '#ef4444', fontSize: 12 }}>مانده بدهی: {money(selectedStudent.balance)}</strong>
         </div>
         {selectedStudent.unpricedCourses > 0 && <div style={{ color: '#f59e0b', fontSize: 12 }}>برای ثبت پرداخت، ابتدا شهریه همه دوره‌های این هنرجو را در پنل مدیریت دوره‌ها مشخص کنید.</div>}
+        {selectedStudent.requiresFinanceReconciliation && <div role="alert" style={{ color: '#d97706', fontSize: 12, lineHeight: 1.9 }}>این هنرجو ثبت‌نام تأییدشده در سیستم اقساط دارد. برای جلوگیری از ثبت تکراری یا تخصیص اشتباه وجه، پرداخت را از فرم مالی قدیمی ثبت نکنید؛ از بخش «ثبت‌نام‌ها و اقساط» استفاده کنید.</div>}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: 10 }}>
           <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>مبلغ پرداخت (تومان)<input type="number" min="1" max={Math.round(selectedStudent.balance)} required value={paymentAmount} onChange={(event) => setPaymentAmount(event.target.value)} style={inputStyle} /></label>
           <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>روش پرداخت<select value={paymentMethod} onChange={(event) => setPaymentMethod(event.target.value)} style={inputStyle}><option value="BANK_TRANSFER">کارت‌به‌کارت / واریز</option><option value="CASH">نقدی</option><option value="CARD">کارت‌خوان</option><option value="OTHER">سایر</option></select></label>
           <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>شماره پیگیری (اختیاری)<input value={paymentReference} onChange={(event) => setPaymentReference(event.target.value)} style={inputStyle} /></label>
           <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>توضیحات (اختیاری)<input value={paymentNote} onChange={(event) => setPaymentNote(event.target.value)} style={inputStyle} /></label>
         </div>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button type="submit" disabled={savingPayment || selectedStudent.unpricedCourses > 0 || selectedStudent.balance <= 0} style={{ ...buttonStyle, background: colors.accent, color: '#fff', borderColor: colors.accent, opacity: savingPayment ? .6 : 1 }}><CreditCard size={14} />{savingPayment ? 'در حال ثبت...' : 'ثبت پرداخت'}</button><button type="button" onClick={() => setSelectedStudent(null)} style={buttonStyle}>انصراف</button></div>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button type="submit" disabled={savingPayment || selectedStudent.unpricedCourses > 0 || selectedStudent.balance <= 0 || Boolean(selectedStudent.requiresFinanceReconciliation)} style={{ ...buttonStyle, background: colors.accent, color: '#fff', borderColor: colors.accent, opacity: savingPayment ? .6 : 1 }}><CreditCard size={14} />{savingPayment ? 'در حال ثبت...' : 'ثبت پرداخت'}</button><button type="button" onClick={() => setSelectedStudent(null)} style={buttonStyle}>انصراف</button></div>
       </form>}
 
       {loading ? <div style={{ padding: 36, textAlign: 'center', color: colors.muted }}>در حال دریافت اطلاعات مالی...</div>
@@ -174,16 +181,19 @@ export const ManageFinance: React.FC = () => {
                 <div style={{ color: colors.muted, fontSize: 11, lineHeight: 1.9 }}>{student.phone || 'شماره تماس ثبت نشده'} · {student.courseCount} دوره</div>
                 <div style={{ color: colors.muted, fontSize: 11, lineHeight: 1.9, marginTop: 4 }}>{student.courseTitles.length ? student.courseTitles.join('، ') : 'دوره‌ای ثبت نشده'}</div>
                 {student.unpricedCourses > 0 && <div style={{ color: '#f59e0b', fontSize: 11, marginTop: 5 }}><AlertCircle size={13} style={{ verticalAlign: 'middle', marginLeft: 4 }} />شهریه {student.unpricedCourses} دوره هنوز مشخص نشده است.</div>}
+                {student.requiresFinanceReconciliation && <div role="alert" style={{ color: '#d97706', fontSize: 11, marginTop: 5, lineHeight: 1.8 }}><AlertCircle size={13} style={{ verticalAlign: 'middle', marginLeft: 4 }} />ثبت‌نام اقساطی دارد؛ ماندهٔ این بخش معتبر نیست.</div>}
               </div>
-              <span style={{ padding: '6px 10px', borderRadius: 999, background: student.status === 'PAID' ? 'rgba(16,185,129,.12)' : student.status === 'INCOMPLETE' || student.status === 'NO_COURSES' ? 'rgba(245,158,11,.12)' : student.status === 'PARTIAL' ? 'rgba(245,158,11,.12)' : 'rgba(239,68,68,.1)', color: student.status === 'PAID' ? '#10b981' : student.status === 'INCOMPLETE' || student.status === 'PARTIAL' || student.status === 'NO_COURSES' ? '#f59e0b' : '#ef4444', fontSize: 10, fontWeight: 900, whiteSpace: 'nowrap' }}>{statusLabels[student.status]}</span>
+              <span style={{ padding: '6px 10px', borderRadius: 999, background: student.status === 'PAID' ? 'rgba(16,185,129,.12)' : student.status === 'INCOMPLETE' || student.status === 'NO_COURSES' ? 'rgba(245,158,11,.12)' : student.status === 'PARTIAL' ? 'rgba(245,158,11,.12)' : 'rgba(239,68,68,.1)', color: student.status === 'PAID' ? '#10b981' : student.status === 'INCOMPLETE' || student.status === 'PARTIAL' || student.status === 'NO_COURSES' ? '#f59e0b' : '#ef4444', fontSize: 10, fontWeight: 900, whiteSpace: 'nowrap' }}>{student.requiresFinanceReconciliation ? 'نیازمند تطبیق' : statusLabels[student.status]}</span>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 145px), 1fr))', gap: 10, marginTop: 16 }}>
-              <div style={{ padding: 12, background: colors.alt, borderRadius: 12 }}><div style={{ color: colors.muted, fontSize: 10, marginBottom: 6 }}>کل شهریه</div><strong style={{ fontSize: 12 }}>{money(student.tuitionTotal)}</strong></div>
-              <div style={{ padding: 12, background: colors.alt, borderRadius: 12 }}><div style={{ color: colors.muted, fontSize: 10, marginBottom: 6 }}>پرداخت‌شده</div><strong style={{ fontSize: 12, color: '#10b981' }}>{money(student.paidTotal)}</strong></div>
-              <div style={{ padding: 12, background: colors.alt, borderRadius: 12 }}><div style={{ color: colors.muted, fontSize: 10, marginBottom: 6 }}>مانده بدهی</div><strong style={{ fontSize: 12, color: student.balance > 0 ? '#ef4444' : colors.text }}>{money(student.balance)}</strong></div>
-            </div>
+            {student.requiresFinanceReconciliation
+              ? <div role="alert" style={{ marginTop: 16, padding: 12, borderRadius: 12, background: 'rgba(245,158,11,.08)', color: '#b45309', fontSize: 11, lineHeight: 1.9 }}>مبالغ این نمای قدیمی پنهان شده‌اند چون ثبت‌نام اقساطی تأییدشده وجود دارد. برای مبلغ نهایی، پرداخت‌ها و مانده واقعی، بخش «ثبت‌نام‌ها و اقساط» را بررسی کنید.</div>
+              : <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 145px), 1fr))', gap: 10, marginTop: 16 }}>
+                <div style={{ padding: 12, background: colors.alt, borderRadius: 12 }}><div style={{ color: colors.muted, fontSize: 10, marginBottom: 6 }}>کل شهریه</div><strong style={{ fontSize: 12 }}>{money(student.tuitionTotal)}</strong></div>
+                <div style={{ padding: 12, background: colors.alt, borderRadius: 12 }}><div style={{ color: colors.muted, fontSize: 10, marginBottom: 6 }}>پرداخت‌شده</div><strong style={{ fontSize: 12, color: '#10b981' }}>{money(student.paidTotal)}</strong></div>
+                <div style={{ padding: 12, background: colors.alt, borderRadius: 12 }}><div style={{ color: colors.muted, fontSize: 10, marginBottom: 6 }}>مانده بدهی</div><strong style={{ fontSize: 12, color: student.balance > 0 ? '#ef4444' : colors.text }}>{money(student.balance)}</strong></div>
+              </div>}
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 12 }}>
-              <button type="button" onClick={() => openPayment(student)} disabled={student.balance <= 0 || student.unpricedCourses > 0} style={{ ...buttonStyle, background: colors.accent, color: '#fff', borderColor: colors.accent, opacity: student.balance <= 0 || student.unpricedCourses > 0 ? .5 : 1 }}><CreditCard size={14} /> ثبت پرداخت</button>
+              <button type="button" onClick={() => openPayment(student)} disabled={student.balance <= 0 || student.unpricedCourses > 0 || Boolean(student.requiresFinanceReconciliation)} style={{ ...buttonStyle, background: colors.accent, color: '#fff', borderColor: colors.accent, opacity: student.balance <= 0 || student.unpricedCourses > 0 || student.requiresFinanceReconciliation ? .5 : 1 }}><CreditCard size={14} /> ثبت پرداخت</button>
               <button type="button" onClick={() => setExpandedStudentId(expandedStudentId === student.id ? null : student.id)} style={buttonStyle}>{expandedStudentId === student.id ? 'بستن سوابق پرداخت' : 'مشاهده سوابق پرداخت'} ({student.payments.length})</button>
             </div>
             {expandedStudentId === student.id && <div style={{ marginTop: 14, borderTop: `1px solid ${colors.border}`, paddingTop: 12 }}>
