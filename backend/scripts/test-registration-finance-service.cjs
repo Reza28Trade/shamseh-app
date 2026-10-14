@@ -18,6 +18,8 @@ async function main() {
   let studentUserId;
   let registrationId;
   let secondRegistrationId;
+  let thirdRegistrationId;
+  let examId;
   const courseIds = [];
   const nationalId = '8' + String(randomInt(100000000, 999999999));
   const phone = '09123456789';
@@ -53,6 +55,18 @@ async function main() {
     });
     courseIds.push(firstCourse.id);
 
+    const mockExam = await prisma.mockExam.create({
+      data: {
+        title: 'CI mock exam ' + nationalId,
+        level: 'MASTER',
+        field: 'CI',
+        examDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        status: 'SCHEDULED',
+      },
+      select: { id: true },
+    });
+    examId = mockExam.id;
+
     const jpeg = { buffer: Buffer.from([0xff, 0xd8, 0xff]), mimetype: 'image/jpeg', size: 3 };
     const submitted = await service.createPublicRegistration({
       applicantFullName: 'CI Finance Student',
@@ -74,7 +88,8 @@ async function main() {
       paymentId: submitted.paymentId,
       approvedAmount: 1200,
       firstDueDate: new Date().toISOString().slice(0, 10),
-      mockExamEligible: false,
+      mockExamEligible: true,
+      mockExamId: examId,
       reviewNote: 'CI service integration approval',
     });
     assert.equal(approved.success, true);
@@ -82,6 +97,11 @@ async function main() {
     assert.equal(approved.remaining, 0);
     assert.equal(approved.installmentCount, 0);
     studentId = approved.studentId;
+    const participant = await prisma.mockExamParticipant.findUnique({
+      where: { mockExamId_studentId: { mockExamId: examId, studentId } },
+    });
+    assert.ok(participant, 'eligible student must be added to the selected scheduled mock exam');
+    assert.equal(await service.listMockExamsForRegistrationReview(actor).then((items) => items.some((item) => item.id === examId)), true);
 
     const adminRows = await service.listAdminRegistrations(actor, 'APPROVED');
     const adminRow = adminRows.find((row) => row.id === registrationId);
@@ -156,6 +176,40 @@ async function main() {
     assert.equal(Number(secondInstallments[0].amount), 200);
     assert.equal(Number(secondInstallments[1].amount), 200);
 
+    // Reminder delivery must be idempotent, and the first overdue alert must
+    // follow a prior due-soon alert without waiting another three days.
+    const { getInstallmentReminderWindows } = require('../dist/src/registrations/registration-finance.rules');
+    const reminderWindows = getInstallmentReminderWindows(new Date());
+    await prisma.installment.update({
+      where: { id: secondInstallments[0].id },
+      data: { dueDate: reminderWindows.dueSoonStart, status: 'PENDING', lastReminderAt: null, lastReminderType: null },
+    });
+    await service.sendDueInstallmentReminders();
+    const dueSoonCount = await prisma.notification.count({
+      where: { createdById: adminId, title: 'یادآوری سررسید قسط' },
+    });
+    assert.equal(dueSoonCount, 1);
+    await service.sendDueInstallmentReminders();
+    assert.equal(await prisma.notification.count({
+      where: { createdById: adminId, title: 'یادآوری سررسید قسط' },
+    }), dueSoonCount, 'a due-soon reminder must not duplicate on the next scheduler run');
+
+    const yesterday = new Date(reminderWindows.todayStart.getTime() - 24 * 60 * 60 * 1000);
+    await prisma.installment.update({
+      where: { id: secondInstallments[0].id },
+      data: { dueDate: yesterday },
+    });
+    await service.sendDueInstallmentReminders();
+    const overdueCount = await prisma.notification.count({
+      where: { createdById: adminId, title: 'یادآوری قسط سررسیدگذشته' },
+    });
+    assert.equal(overdueCount, 1, 'the first overdue reminder should follow the due-soon reminder');
+    await service.sendDueInstallmentReminders();
+    assert.equal(await prisma.notification.count({
+      where: { createdById: adminId, title: 'یادآوری قسط سررسیدگذشته' },
+    }), overdueCount, 'overdue reminders must be throttled for three days');
+    assert.equal((await prisma.installment.findUniqueOrThrow({ where: { id: secondInstallments[0].id } })).status, 'OVERDUE');
+
     const refund = await service.createRefundRequest(studentActor, {
       registrationId,
       amountRequested: 150,
@@ -197,10 +251,45 @@ async function main() {
     assert.equal(Number(paid.amountPaid), 150);
     const visibleRefunds = await service.listStudentRefundRequests(studentActor);
     assert.equal(visibleRefunds.find((item) => item.id === refund.id).status, 'PAID');
+
+    // Corrected receipts must be appended as a new payment and preserve the old receipt.
+    const thirdCourse = await prisma.course.create({
+      data: { title: 'CI finance course C ' + nationalId, professor: 'CI Test', price: 500, status: 'ACTIVE' },
+      select: { id: true },
+    });
+    courseIds.push(thirdCourse.id);
+    const thirdSubmitted = await service.createPublicRegistration({
+      applicantFullName: 'CI Finance Student',
+      nationalId,
+      phone,
+      academicLevel: 'MASTER',
+      fieldCode: 'CI',
+      courseIds: JSON.stringify([thirdCourse.id]),
+      claimedAmount: 300,
+      trackingCode: 'CI-RECEIPT-TO-CORRECT',
+    }, jpeg);
+    thirdRegistrationId = thirdSubmitted.id;
+    await service.requestCorrection(actor, thirdRegistrationId, 'Please upload a clearer receipt.');
+    const correctedPayment = await service.uploadCorrectionReceipt(thirdRegistrationId, {
+      nationalId,
+      phone,
+      claimedAmount: 300,
+      trackingCode: 'CI-CORRECTED-RECEIPT',
+    }, jpeg);
+    assert.equal(correctedPayment.status, 'PENDING');
+    const correctedRegistration = await prisma.registration.findUniqueOrThrow({
+      where: { id: thirdRegistrationId },
+      include: { payments: { include: { receipts: true } } },
+    });
+    assert.equal(correctedRegistration.status, 'PENDING_REVIEW');
+    assert.equal(correctedRegistration.payments.length, 2);
+    assert.equal(correctedRegistration.payments.find((item) => item.id === thirdSubmitted.paymentId).status, 'REJECTED');
+    assert.equal(correctedRegistration.payments.find((item) => item.id === correctedPayment.id).receipts.length, 1);
+    assert.equal(correctedRegistration.payments.find((item) => item.id === thirdSubmitted.paymentId).receipts.length, 1);
     console.log('Registration finance service integration test passed.');
   } finally {
     try {
-      const registrationIds = [registrationId, secondRegistrationId].filter(Boolean);
+      const registrationIds = [registrationId, secondRegistrationId, thirdRegistrationId].filter(Boolean);
       const payments = registrationIds.length
         ? await prisma.registrationPayment.findMany({ where: { registrationId: { in: registrationIds } }, select: { id: true } }).catch(() => [])
         : [];
@@ -235,7 +324,9 @@ async function main() {
           where: { actorUserId: { in: [adminId, studentUserId].filter(Boolean) } },
         }).catch(() => undefined);
       }
+      await prisma.notification.deleteMany({ where: { createdById: adminId, title: { in: ['یادآوری سررسید قسط', 'یادآوری قسط سررسیدگذشته'] } } }).catch(() => undefined);
       if (studentUserId) await prisma.user.delete({ where: { id: studentUserId } }).catch(() => undefined);
+      if (examId) await prisma.mockExam.delete({ where: { id: examId } }).catch(() => undefined);
       if (courseIds.length) await prisma.course.deleteMany({ where: { id: { in: courseIds } } }).catch(() => undefined);
       if (adminId) await prisma.user.delete({ where: { id: adminId } }).catch(() => undefined);
     } finally {
