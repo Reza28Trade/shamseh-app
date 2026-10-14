@@ -1,5 +1,5 @@
 import {
-  BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException,
+  BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException, OnModuleDestroy, OnModuleInit,
 } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { mkdir, unlink, writeFile } from 'node:fs/promises';
@@ -26,8 +26,81 @@ const ALLOWED_RECEIPT_TYPES: Record<string, string> = {
 };
 
 @Injectable()
-export class RegistrationsService {
+export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
+  private reminderTimer: ReturnType<typeof setInterval> | null = null;
   constructor(private readonly prisma: PrismaService) {}
+
+  onModuleInit() {
+    void this.sendDueInstallmentReminders();
+    this.reminderTimer = setInterval(() => void this.sendDueInstallmentReminders(), 6 * 60 * 60 * 1000);
+  }
+
+  onModuleDestroy() {
+    if (this.reminderTimer) clearInterval(this.reminderTimer);
+  }
+
+  private async sendDueInstallmentReminders() {
+    try {
+      const now = new Date();
+      const threeDaysAhead = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
+      const twoDaysAhead = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000);
+      const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+      const creator = await this.prisma.user.findFirst({
+        where: { role: 'SUPER_ADMIN', status: 'ACTIVE' }, select: { id: true },
+      });
+      if (!creator) return;
+
+      await this.prisma.installment.updateMany({
+        where: { status: { not: 'PAID' }, dueDate: { lt: now }, registration: { status: 'APPROVED', studentId: { not: null } } },
+        data: { status: 'OVERDUE' },
+      });
+
+      const [dueSoon, overdue] = await Promise.all([
+        this.prisma.installment.findMany({
+          where: {
+            status: { not: 'PAID' }, dueDate: { gt: twoDaysAhead, lte: threeDaysAhead },
+            lastReminderAt: null,
+            registration: { status: 'APPROVED', studentId: { not: null } },
+          },
+          select: { id: true, dueDate: true, amount: true, registrationId: true, lastReminderAt: true, registration: { select: { studentId: true } } },
+        }),
+        this.prisma.installment.findMany({
+          where: {
+            status: { not: 'PAID' }, dueDate: { lt: now },
+            OR: [{ lastReminderAt: null }, { lastReminderAt: { lte: threeDaysAgo } }],
+            registration: { status: 'APPROVED', studentId: { not: null } },
+          },
+          select: { id: true, dueDate: true, amount: true, registrationId: true, lastReminderAt: true, registration: { select: { studentId: true } } },
+        }),
+      ]);
+
+      for (const item of [...dueSoon.map((x) => ({ ...x, kind: 'DUE_SOON' as const })), ...overdue.map((x) => ({ ...x, kind: 'OVERDUE' as const }))]) {
+        if (!item.registration.studentId) continue;
+        await this.prisma.$transaction(async (tx) => {
+          const claimed = await tx.installment.updateMany({
+            where: { id: item.id, status: { not: 'PAID' }, lastReminderAt: item.lastReminderAt },
+            data: { lastReminderAt: now, lastReminderType: item.kind, ...(item.kind === 'OVERDUE' ? { status: 'OVERDUE' as const } : {}) },
+          });
+          if (claimed.count !== 1) return;
+          await tx.notification.create({
+            data: {
+              title: item.kind === 'DUE_SOON' ? 'یادآوری سررسید قسط' : 'یادآوری قسط سررسیدگذشته',
+              content: item.kind === 'DUE_SOON'
+                ? `قسط شما در تاریخ ${item.dueDate.toLocaleDateString('fa-IR')} سررسید می‌شود. اگر رسید پرداخت را ارسال کرده‌اید، تا تأیید مدیریت وضعیت قسط همچنان باز است.`
+                : `قسط سررسیدشده شما مربوط به تاریخ ${item.dueDate.toLocaleDateString('fa-IR')} هنوز تسویه نشده است. یادآوری هر سه روز تا تأیید پرداخت ادامه خواهد داشت.`,
+              type: 'IMPORTANT',
+              targetType: 'STUDENT',
+              createdById: creator.id,
+              students: { create: { studentId: item.registration.studentId! } },
+            },
+          });
+        });
+      }
+    } catch (error) {
+      // Keep the application alive; the next scheduled run retries safely.
+      console.error('[RegistrationFinance] installment reminder run failed', error);
+    }
+  }
 
   async listPublicCourses() {
     return this.prisma.course.findMany({
