@@ -336,7 +336,7 @@ export class StudentsService {
     this.requireAdmin(user);
     const student = await this.prisma.student.findUnique({
       where: { id: studentId },
-      select: { id: true },
+      select: { id: true, userId: true },
     });
     if (!student) throw new NotFoundException('Student not found');
 
@@ -346,7 +346,7 @@ export class StudentsService {
       where: { id: studentId },
       data: { isArchived: true },
     });
-    await this.prisma.session.deleteMany({ where: { userId: (await this.prisma.student.findUniqueOrThrow({ where: { id: studentId }, select: { userId: true } })).userId } });
+    await this.prisma.session.deleteMany({ where: { userId: student.userId } });
 
     return { success: true, isArchived: true };
   }
