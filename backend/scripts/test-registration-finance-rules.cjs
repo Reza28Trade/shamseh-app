@@ -64,6 +64,22 @@ assert.throws(() => plan({
   exceptionReason: 'استثنا',
 }), /بدون تخفیف/);
 assert.deepEqual(plan({ approvedAmount: 100000 }).installmentAmounts, []);
+const overpaid = plan({ approvedAmount: 110000 });
+assert.equal(overpaid.remaining, 0);
+assert.deepEqual(overpaid.installmentAmounts, []);
+assert.equal(overpaid.totalPaid - overpaid.finalTuition, 10000);
+assert.throws(() => plan({
+  mode: RegistrationApprovalMode.PAYMENT_EXCEPTION,
+  actorRole: 'SUPER_ADMIN',
+  approvedAmount: 60000,
+  exceptionReason: 'استثنای پرداخت',
+}), /کمتر از ۶۰٪/);
+assert.throws(() => plan({
+  mode: RegistrationApprovalMode.DISCOUNT,
+  discountAmount: 0,
+  discountReason: 'تخفیف',
+  approvedAmount: 60000,
+}), /مبلغ و علت تخفیف/);
 assert.throws(() => plan({
   approvedAmount: 60000,
   firstDueDate: new Date(Date.now() - 24 * 60 * 60 * 1000),
