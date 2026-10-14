@@ -3,13 +3,13 @@
 
 -- StudentLevel exists in the Prisma schema but may be absent in fresh databases
 -- because it was previously added manually in some environments.
-DO $
+DO $studentlevel$
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'StudentLevel') THEN
     CREATE TYPE "StudentLevel" AS ENUM ('MASTER', 'DOCTORATE');
   END IF;
 END
-$;
+$studentlevel$;
 ALTER TYPE "StudentLevel" ADD VALUE IF NOT EXISTS 'MASTER';
 ALTER TYPE "StudentLevel" ADD VALUE IF NOT EXISTS 'DOCTORATE';
 
