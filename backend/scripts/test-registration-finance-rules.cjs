@@ -124,9 +124,9 @@ assert.deepEqual(allocationPlan, [
 assert.deepEqual(planOldestDebtAllocations([
   { id: 'settled', dueDate: new Date('2027-01-01T00:00:00.000Z'), amount: 100, allocated: 100 },
 ], 0), []);
-assert.throws(() => planOldestDebtAllocations([
+assert.deepEqual(planOldestDebtAllocations([
   { id: 'only', dueDate: new Date('2027-01-01T00:00:00.000Z'), amount: 100, allocated: 50 },
-], 51), /بیشتر از مجموع بدهی/);
+], 51), [{ installmentId: 'only', amount: 50 }]);
 assert.throws(() => planOldestDebtAllocations([], -1), /مبلغ تخصیص/);
 
 console.log('Registration finance rules: regression assertions passed.');
