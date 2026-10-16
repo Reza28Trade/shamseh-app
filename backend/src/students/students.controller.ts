@@ -47,6 +47,11 @@ export class StudentsController {
     return this.studentsService.updateStudent(req.user, studentId, dto);
   }
 
+  @Patch('admin/students/:studentId/archive')
+  archiveStudent(@Req() req: AuthenticatedRequest, @Param('studentId') studentId: string, @Body('isArchived') isArchived: boolean) {
+    return this.studentsService.setStudentArchived(req.user, studentId, isArchived);
+  }
+
   @Delete('admin/students/:studentId')
   deleteStudent(@Req() req: AuthenticatedRequest, @Param('studentId') studentId: string) {
     return this.studentsService.deleteStudent(req.user, studentId);

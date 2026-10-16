@@ -11,6 +11,7 @@ enum UserRole {
   SUPER_ADMIN
   STAFF
   STUDENT
+  COUNSELOR
 }
 
 enum UserStatus {
@@ -82,6 +83,11 @@ enum MockExamStatus {
   CANCELLED
 }
 
+enum PublicContentType {
+  RULES
+  EXAM_ANALYSIS
+}
+
 enum CounselingSlotStatus {
   AVAILABLE
   BOOKED
@@ -109,12 +115,58 @@ enum PaymentPurpose {
   OTHER
 }
 
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
+  CARD
+  OTHER
+}
+
+enum RegistrationStatus {
+  PENDING_REVIEW
+  NEEDS_CORRECTION
+  APPROVED
+  REJECTED
+}
+
+enum RegistrationApprovalMode {
+  NORMAL
+  DISCOUNT
+  PAYMENT_EXCEPTION
+}
+
+enum RegistrationPaymentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum RegistrationPaymentPurpose {
+  INITIAL
+  INSTALLMENT
+}
+
+enum InstallmentStatus {
+  PENDING
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+}
+
+enum RefundRequestStatus {
+  REQUESTED
+  RESERVED
+  PAID
+  REJECTED
+}
+
 model User {
   id String @id @default(cuid())
   username String @unique
   passwordHash String
   role UserRole
   status UserStatus @default(ACTIVE)
+  permissions String[] @default([])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   lastLoginAt DateTime?
@@ -126,7 +178,20 @@ model User {
   reviewedRequests OfflineRequest[] @relation("OfflineRequestReviewer")
   reviewedPayments Payment[] @relation("PaymentReviewer")
   supportMessages SupportMessage[]
+  managementContactMessages ManagementContactMessage[]
   updatedContent GeneralContent[] @relation("GeneralContentUpdater")
+  publicContents PublicContent[]
+  recordedPayments Payment[] @relation("PaymentRecorder")
+  reviewedRegistrations Registration[] @relation("RegistrationReviewer")
+  reviewedRegistrationPayments RegistrationPayment[] @relation("RegistrationPaymentReviewer")
+  reviewedRefundRequests RefundRequest[] @relation("RefundReviewer")
+  paidRefundRequests RefundRequest[] @relation("RefundPayer")
+  registrationReviewHistory RegistrationReviewHistory[]
+  studentProfileHistory StudentProfileHistory[] @relation("StudentProfileHistoryActor")
+  counselorProfile CounselorProfile?
+  sentCounselingMessages CounselingMessage[]
+  assignedCounselingAssignments CounselingAssignment[] @relation("CounselingAssignmentActor")
+  settledRegistrations Registration[] @relation("RegistrationDebtSettlementActor")
 }
 
 model Session {
@@ -148,6 +213,9 @@ model Student {
   nationalId String @unique
   phone String?
   academicLevel StudentLevel?
+  fieldCode String?
+  freeMockExamEligible Boolean @default(false)
+  isArchived Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -156,10 +224,16 @@ model Student {
   notificationTargets NotificationTargetStudent[]
   notificationReads NotificationRead[]
   supportTickets SupportTicket[]
+  managementContactTickets ManagementContactTicket[]
   offlineRequests OfflineRequest[]
   mockExamParticipants MockExamParticipant[]
   counselingRequests CounselingRequest[]
+  counselingAssignments CounselingAssignment[]
+  counselingConversations CounselingConversation[]
   payments Payment[]
+  registrations Registration[]
+  refundRequests RefundRequest[]
+  profileHistory StudentProfileHistory[]
 }
 
 model Course {
@@ -170,6 +244,8 @@ model Course {
   description String?
   term String?
   category String?
+  startDate String?
+  schedule String?
   price Decimal? @db.Decimal(12, 2)
   coverImage String?
   coverImageStorageKey String?
@@ -187,6 +263,8 @@ model Course {
   notifications Notification[]
   offlineRequests OfflineRequest[]
   payments Payment[]
+  mockExams MockExamCourse[]
+  registrationCourses RegistrationCourse[]
 }
 
 model Enrollment {
@@ -194,6 +272,7 @@ model Enrollment {
   studentId String
   courseId String
   status EnrollmentStatus @default(ACTIVE)
+  tuitionAmount Decimal? @db.Decimal(12, 2)
   enrolledAt DateTime @default(now())
 
   student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
@@ -305,6 +384,33 @@ model SupportMessage {
   @@index([ticketId, createdAt])
 }
 
+model ManagementContactTicket {
+  id String @id @default(cuid())
+  studentId String
+  subject String
+  status SupportTicketStatus @default(OPEN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  messages ManagementContactMessage[]
+
+  @@index([studentId, status])
+}
+
+model ManagementContactMessage {
+  id String @id @default(cuid())
+  ticketId String
+  senderUserId String
+  content String
+  createdAt DateTime @default(now())
+
+  ticket ManagementContactTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  sender User @relation(fields: [senderUserId], references: [id])
+
+  @@index([ticketId, createdAt])
+}
+
 model OfflineRequest {
   id String @id @default(cuid())
   studentId String
@@ -329,6 +435,7 @@ model MockExam {
   title String
   level String
   field String
+  description String?
   examDate DateTime
   examUrl String?
   status MockExamStatus @default(DRAFT)
@@ -336,6 +443,7 @@ model MockExam {
   updatedAt DateTime @updatedAt
 
   participants MockExamParticipant[]
+  courses MockExamCourse[]
 
   @@index([status, examDate])
   @@index([level, field])
@@ -351,6 +459,17 @@ model MockExamParticipant {
 
   @@id([mockExamId, studentId])
   @@index([studentId])
+}
+
+model MockExamCourse {
+  mockExamId String
+  courseId String
+
+  mockExam MockExam @relation(fields: [mockExamId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@id([mockExamId, courseId])
+  @@index([courseId])
 }
 
 model PastExam {
@@ -393,6 +512,76 @@ model PastExamQuestion {
 
   @@unique([pastExamCodeId, questionNumber])
   @@index([pastExamCodeId])
+}
+
+
+model CounselorProfile {
+  id String @id @default(cuid())
+  userId String @unique
+  displayName String
+  bio String?
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  assignments CounselingAssignment[]
+  conversations CounselingConversation[]
+
+  @@index([isActive, displayName])
+}
+
+model CounselingAssignment {
+  id String @id @default(cuid())
+  studentId String
+  counselorId String
+  assignedById String
+  startedAt DateTime @default(now())
+  endedAt DateTime?
+  createdAt DateTime @default(now())
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  counselor CounselorProfile @relation(fields: [counselorId], references: [id], onDelete: Restrict)
+  assignedBy User @relation("CounselingAssignmentActor", fields: [assignedById], references: [id], onDelete: Restrict)
+
+  @@index([studentId, endedAt])
+  @@index([counselorId, endedAt])
+  @@index([assignedById, createdAt])
+}
+
+model CounselingConversation {
+  id String @id @default(cuid())
+  studentId String
+  counselorId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  counselor CounselorProfile @relation(fields: [counselorId], references: [id], onDelete: Restrict)
+  messages CounselingMessage[]
+
+  @@unique([studentId, counselorId])
+  @@index([studentId, updatedAt])
+  @@index([counselorId, updatedAt])
+}
+
+model CounselingMessage {
+  id String @id @default(cuid())
+  conversationId String
+  senderUserId String
+  content String @db.Text
+  attachmentStorageKey String?
+  attachmentName String?
+  attachmentMimeType String?
+  attachmentSize Int?
+  readAt DateTime?
+  createdAt DateTime @default(now())
+
+  conversation CounselingConversation @relation(fields: [conversationId], references: [id], onDelete: Restrict)
+  sender User @relation(fields: [senderUserId], references: [id], onDelete: Restrict)
+
+  @@index([conversationId, createdAt])
+  @@index([senderUserId, createdAt])
 }
 
 model CounselingSlot {
@@ -440,6 +629,28 @@ model Book {
   @@index([isActive, displayOrder])
 }
 
+model PublicContent {
+  id String @id @default(cuid())
+  type PublicContentType
+  slug String @unique
+  title String
+  subtitle String?
+  content String @db.Text
+  examYear String?
+  examLevel String?
+  resourceUrl String?
+  published Boolean @default(false)
+  sortOrder Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  updatedById String?
+
+  updatedBy User? @relation(fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@index([type, published, sortOrder])
+  @@index([examYear, examLevel])
+}
+
 model Payment {
   id String @id @default(cuid())
   studentId String
@@ -451,6 +662,11 @@ model Payment {
   trackingCode String?
   status PaymentStatus @default(PENDING)
   rejectionReason String?
+  method PaymentMethod @default(OTHER)
+  reference String?
+  note String?
+  paidAt DateTime @default(now())
+  createdById String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   reviewedAt DateTime?
@@ -460,12 +676,15 @@ model Payment {
   course Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
   book Book? @relation(fields: [bookId], references: [id], onDelete: SetNull)
   reviewer User? @relation("PaymentReviewer", fields: [reviewedBy], references: [id], onDelete: SetNull)
+  createdBy User? @relation("PaymentRecorder", fields: [createdById], references: [id], onDelete: SetNull)
   receipts PaymentReceipt[]
 
   @@index([studentId, status])
   @@index([courseId])
   @@index([bookId])
   @@index([paymentDate])
+  @@index([studentId, paidAt])
+  @@index([createdById, createdAt])
 }
 
 model PaymentReceipt {
@@ -479,6 +698,202 @@ model PaymentReceipt {
   payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
 
   @@index([paymentId, uploadedAt])
+}
+
+model Registration {
+  id String @id @default(cuid())
+  applicantFullName String
+  nationalId String
+  phone String
+  academicLevel StudentLevel
+  fieldCode String
+  studentId String?
+  status RegistrationStatus @default(PENDING_REVIEW)
+  approvalMode RegistrationApprovalMode?
+  originalTuition Decimal @db.Decimal(12, 2)
+  discountAmount Decimal @default(0) @db.Decimal(12, 2)
+  finalTuition Decimal @db.Decimal(12, 2)
+  discountReason String? @db.Text
+  exceptionReason String? @db.Text
+  reviewNote String? @db.Text
+  mockExamEligible Boolean?
+  reviewedById String?
+  reviewedAt DateTime?
+  approvedAt DateTime?
+  manualSettlementAmount Decimal @default(0) @db.Decimal(12, 2)
+  manualSettledAt DateTime?
+  manualSettlementNote String? @db.Text
+  manualSettledById String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student Student? @relation(fields: [studentId], references: [id], onDelete: SetNull)
+  courses RegistrationCourse[]
+  payments RegistrationPayment[]
+  installments Installment[]
+  refundRequests RefundRequest[]
+  reviewHistory RegistrationReviewHistory[]
+  reviewer User? @relation("RegistrationReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  manualSettledBy User? @relation("RegistrationDebtSettlementActor", fields: [manualSettledById], references: [id], onDelete: SetNull)
+
+  @@index([nationalId, status])
+  @@index([studentId, status])
+  @@index([status, createdAt])
+  @@index([manualSettledById])
+}
+
+model RegistrationReviewHistory {
+  id String @id @default(cuid())
+  registrationId String
+  actorUserId String?
+  action String
+  fromStatus RegistrationStatus?
+  toStatus RegistrationStatus?
+  note String? @db.Text
+  metadata Json?
+  createdAt DateTime @default(now())
+
+  registration Registration @relation(fields: [registrationId], references: [id], onDelete: Restrict)
+  actor User? @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([registrationId, createdAt])
+  @@index([actorUserId, createdAt])
+}
+
+model StudentProfileHistory {
+  id String @id @default(cuid())
+  studentId String
+  changedById String?
+  fieldName String
+  oldValue String?
+  newValue String?
+  reason String? @db.Text
+  createdAt DateTime @default(now())
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  changedBy User? @relation("StudentProfileHistoryActor", fields: [changedById], references: [id], onDelete: SetNull)
+
+  @@index([studentId, createdAt])
+  @@index([changedById, createdAt])
+}
+
+model RegistrationCourse {
+  id String @id @default(cuid())
+  registrationId String
+  courseId String
+  courseTitleSnapshot String
+  coursePriceSnapshot Decimal @db.Decimal(12, 2)
+  createdAt DateTime @default(now())
+
+  registration Registration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Restrict)
+
+  @@unique([registrationId, courseId])
+  @@index([courseId])
+}
+
+model RegistrationPayment {
+  id String @id @default(cuid())
+  registrationId String
+  purpose RegistrationPaymentPurpose
+  status RegistrationPaymentStatus @default(PENDING)
+  claimedAmount Decimal @db.Decimal(12, 2)
+  approvedAmount Decimal? @db.Decimal(12, 2)
+  paymentDate DateTime
+  method PaymentMethod @default(BANK_TRANSFER)
+  trackingCode String?
+  reference String?
+  reviewNote String? @db.Text
+  rejectionReason String? @db.Text
+  reviewedById String?
+  reviewedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  registration Registration @relation(fields: [registrationId], references: [id], onDelete: Restrict)
+  reviewer User? @relation("RegistrationPaymentReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  receipts RegistrationPaymentReceipt[]
+  allocations PaymentAllocation[]
+
+  @@index([registrationId, status])
+  @@index([purpose, status])
+  @@index([reviewedById, reviewedAt])
+}
+
+model RegistrationPaymentReceipt {
+  id String @id @default(cuid())
+  paymentId String
+  storageKey String
+  mimeType String
+  fileSize BigInt?
+  uploadedAt DateTime @default(now())
+  uploaderUserId String?
+
+  payment RegistrationPayment @relation(fields: [paymentId], references: [id], onDelete: Restrict)
+
+  @@index([paymentId, uploadedAt])
+}
+
+model Installment {
+  id String @id @default(cuid())
+  registrationId String
+  sequence Int
+  amount Decimal @db.Decimal(12, 2)
+  dueDate DateTime
+  status InstallmentStatus @default(PENDING)
+  lastReminderAt DateTime?
+  lastReminderType String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  registration Registration @relation(fields: [registrationId], references: [id], onDelete: Restrict)
+  allocations PaymentAllocation[]
+
+  @@unique([registrationId, sequence])
+  @@index([dueDate, status])
+  @@index([registrationId, status])
+}
+
+model PaymentAllocation {
+  id String @id @default(cuid())
+  paymentId String
+  installmentId String
+  amount Decimal @db.Decimal(12, 2)
+  createdAt DateTime @default(now())
+
+  payment RegistrationPayment @relation(fields: [paymentId], references: [id], onDelete: Restrict)
+  installment Installment @relation(fields: [installmentId], references: [id], onDelete: Restrict)
+
+  @@unique([paymentId, installmentId])
+  @@index([installmentId])
+}
+
+model RefundRequest {
+  id String @id @default(cuid())
+  registrationId String
+  studentId String
+  amountRequested Decimal @db.Decimal(12, 2)
+  amountReserved Decimal? @db.Decimal(12, 2)
+  status RefundRequestStatus @default(REQUESTED)
+  reason String @db.Text
+  reviewNote String? @db.Text
+  transferReference String?
+  requestedAt DateTime @default(now())
+  reviewedById String?
+  approvedAt DateTime?
+  paidById String?
+  paidAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  registration Registration @relation(fields: [registrationId], references: [id], onDelete: Restrict)
+  student Student @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  reviewer User? @relation("RefundReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  paidBy User? @relation("RefundPayer", fields: [paidById], references: [id], onDelete: SetNull)
+
+  @@index([studentId, status])
+  @@index([registrationId, status])
+  @@index([status, requestedAt])
 }
 
 model GeneralContent {
@@ -514,7 +929,7 @@ model Achievement {
 
 model AuditLog {
   id String @id @default(cuid())
-  actorUserId String
+  actorUserId String?
   action String
   entityType String
   entityId String?
@@ -522,7 +937,7 @@ model AuditLog {
   ipAddress String?
   createdAt DateTime @default(now())
 
-  actor User @relation(fields: [actorUserId], references: [id])
+  actor User? @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
 
   @@index([actorUserId, createdAt])
   @@index([entityType, entityId])

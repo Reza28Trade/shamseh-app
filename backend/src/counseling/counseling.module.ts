@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
 import { DatabaseModule } from '../database/database.module';
-import { CounselingController } from './counseling.controller';
-import { CounselingService } from './counseling.service';
+import { CounselingChatController } from './counseling-chat.controller';
+import { CounselingChatService } from './counseling-chat.service';
 
 @Module({
   imports: [DatabaseModule, AuthModule],
-  controllers: [CounselingController],
-  providers: [CounselingService],
+  // Only the online chat workflow is exposed. Legacy appointment/slot models
+  // remain in the schema for data preservation, but their HTTP routes are disabled.
+  controllers: [CounselingChatController],
+  providers: [CounselingChatService],
 })
 export class CounselingModule {}

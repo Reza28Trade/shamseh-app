@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { BarChart3, Download, FileSpreadsheet, Filter, Pencil, Search, Trash2, Upload, UserPlus, Users, X } from 'lucide-react';
+import { Archive, BarChart3, CheckCircle2, Download, FileSpreadsheet, Filter, Pencil, Search, Upload, UserPlus, Users, X } from 'lucide-react';
 import type { Student, Course } from '../../types';
 import '../../styles/AdminStudents.css';
 
@@ -21,6 +21,7 @@ type EnrollmentView = {
 
 type ApiStudent = Student & {
   phone?: string;
+  isArchived: boolean;
   enrollments: EnrollmentView[];
 };
 
@@ -45,10 +46,17 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
   const [error, setError] = useState('');
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
   const [editingStudentId, setEditingStudentId] = useState<string | null>(null);
+  const [selectedStudent, setSelectedStudent] = useState<ApiStudent | null>(null);
   const [studentLevelFilter, setStudentLevelFilter] = useState<'ALL' | 'MASTER' | 'DOCTORATE'>('ALL');
   const [yearFilter, setYearFilter] = useState<'ALL' | string>('ALL');
   const [termFilter, setTermFilter] = useState<'ALL' | string>('ALL');
+  const [termChartRange, setTermChartRange] = useState<'latest' | 'all'>('latest');
   const [search, setSearch] = useState('');
+  const [studentCourseFilter, setStudentCourseFilter] = useState('ALL');
+  const [studentEnrollmentFilter, setStudentEnrollmentFilter] = useState<'ALL' | 'ENROLLED' | 'NONE'>('ALL');
+  const [studentSection, setStudentSection] = useState<'ACTIVE' | 'ARCHIVED'>('ACTIVE');
+  const [selectedStudentIds, setSelectedStudentIds] = useState<string[]>([]);
+  const [bulkProcessing, setBulkProcessing] = useState(false);
   const [coursePickerLevel, setCoursePickerLevel] = useState<'MASTER' | 'DOCTORATE' | ''>('');
   const [coursePickerYear, setCoursePickerYear] = useState<'ALL' | string>('ALL');
   const [coursePickerTerm, setCoursePickerTerm] = useState<'ALL' | string>('ALL');
@@ -67,12 +75,12 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
       const [data, courseData] = await Promise.all([studentsResponse.json(), coursesResponse.json()]);
       setApiCourses(courseData.map((course: any) => ({
         id: course.id, title: course.title, professor: course.professor ?? '', level: course.level ?? '',
-        schedule: '', startDate: '', description: course.description ?? '', term: course.term, price: course.price ? Number(course.price) : 0,
+        schedule: course.schedule ?? '', startDate: course.startDate ?? '', description: course.description ?? '', term: course.term, price: course.price ? Number(course.price) : 0,
         category: course.category, coverImage: course.coverImage, academicYear: course.academicYear, classDays: course.classDays ?? [],
         classStartTime: course.classStartTime, classEndTime: course.classEndTime,
       })));
       setApiStudents(data.map((student: any) => ({
-        id: student.id, fullName: student.fullName, nationalId: student.nationalId, academicLevel: student.academicLevel ?? '',
+        id: student.id, fullName: student.fullName, nationalId: student.nationalId, academicLevel: student.academicLevel ?? '', isArchived: Boolean(student.isArchived),
         enrolledCourseIds: student.enrollments.filter((e: any) => e.status === 'ACTIVE').map((e: any) => e.courseId),
         levels: [], phone: student.phone,
         enrollments: student.enrollments,
@@ -88,21 +96,106 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
   const availableTerms = useMemo(() => Array.from(new Set(apiCourses.map(c => c.term).filter(Boolean) as string[])), [apiCourses]);
 
   const filteredStudents = useMemo(() => apiStudents.filter(student => {
+    if (student.isArchived !== (studentSection === 'ARCHIVED')) return false;
     if (studentLevelFilter !== 'ALL' && student.academicLevel !== studentLevelFilter) return false;
     if (search && ![student.fullName, student.nationalId, student.phone || ''].some(v => v.toLowerCase().includes(search.toLowerCase()))) return false;
+    if (studentCourseFilter !== 'ALL' && !student.enrollments.some(e => e.courseId === studentCourseFilter)) return false;
+    const hasActiveEnrollment = student.enrollments.some(e => e.status === 'ACTIVE');
+    if (studentEnrollmentFilter === 'ENROLLED' && !hasActiveEnrollment) return false;
+    if (studentEnrollmentFilter === 'NONE' && hasActiveEnrollment) return false;
     const matching = student.enrollments.filter(e => e.status === 'ACTIVE').filter(e => {
       if (yearFilter !== 'ALL' && String(e.course.academicYear ?? '') !== yearFilter) return false;
       if (termFilter !== 'ALL' && e.course.term !== termFilter) return false;
       return true;
     });
     return yearFilter === 'ALL' && termFilter === 'ALL' ? true : matching.length > 0;
-  }), [apiStudents, studentLevelFilter, yearFilter, termFilter, search]);
+  }), [apiStudents, studentLevelFilter, yearFilter, termFilter, search, studentCourseFilter, studentEnrollmentFilter, studentSection]);
+
+  const toggleStudentSelection = (studentId: string) => {
+    setSelectedStudentIds(current => current.includes(studentId) ? current.filter(id => id !== studentId) : [...current, studentId]);
+  };
+
+  const toggleAllVisibleStudents = () => {
+    const visibleIds = filteredStudents.map(student => student.id);
+    const allSelected = visibleIds.length > 0 && visibleIds.every(id => selectedStudentIds.includes(id));
+    setSelectedStudentIds(current => allSelected
+      ? current.filter(id => !visibleIds.includes(id))
+      : [...new Set([...current, ...visibleIds])]);
+  };
+
+  const bulkArchiveStudents = async (isArchived: boolean) => {
+    const targets = apiStudents.filter(student => selectedStudentIds.includes(student.id));
+    if (!targets.length) return;
+    const action = isArchived ? 'بایگانی' : 'بازگردانی به فهرست فعال';
+    if (!window.confirm(`${targets.length} هنرجوی انتخاب‌شده ${action} شوند؟ سوابق آن‌ها حفظ می‌شود.`)) return;
+    setBulkProcessing(true);
+    setError('');
+    const failures: string[] = [];
+    for (const student of targets) {
+      try {
+        const response = await fetch(`/api/admin/students/${student.id}/archive`, {
+          method: 'PATCH',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ isArchived }),
+        });
+        if (!response.ok) {
+          const body = await response.json().catch(() => null);
+          failures.push(`${student.fullName}: ${body?.message || 'خطا'}`);
+        }
+      } catch {
+        failures.push(student.fullName);
+      }
+    }
+    setSelectedStudentIds([]);
+    await loadStudents();
+    if (failures.length) setError(`عملیات برای ${targets.length - failures.length} نفر انجام شد؛ ناموفق: ${failures.join('، ')}`);
+    setBulkProcessing(false);
+  };
+
+  const changeStudentArchive = async (student: ApiStudent) => {
+    const isArchived = !student.isArchived;
+    const action = isArchived ? 'بایگانی' : 'بازگردانی به فهرست فعال';
+    if (!window.confirm(`هنرجوی «${student.fullName}» ${action} شود؟ سوابق او حفظ می‌شود.`)) return;
+    setError('');
+    try {
+      const response = await fetch(`/api/admin/students/${student.id}/archive`, { method: 'PATCH', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ isArchived }) });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'تغییر وضعیت بایگانی انجام نشد.');
+      if (selectedStudent?.id === student.id) setSelectedStudent({ ...selectedStudent, isArchived });
+      await loadStudents();
+    } catch (e) { setError(e instanceof Error ? e.message : 'تغییر وضعیت بایگانی انجام نشد.'); }
+  };
 
   const activeEnrollments = apiStudents.reduce((n,s) => n + s.enrollments.filter(e => e.status === 'ACTIVE').length, 0);
   const masterCount = apiStudents.filter(s => s.academicLevel === 'MASTER').length;
   const doctorateCount = apiStudents.filter(s => s.academicLevel === 'DOCTORATE').length;
-  const termCounts = availableTerms.map(term => ({ term, count: apiStudents.filter(s => s.enrollments.some(e => e.status === 'ACTIVE' && e.course.term === term)).length }));
-  const maxTermCount = Math.max(1, ...termCounts.map(x => x.count));
+  const latestAcademicYear = availableYears[0];
+  const termCounts = useMemo(() => {
+    const colors = ['#FF6838', '#FFC820', '#97C95C', '#1CB2F6', '#9B7BDE', '#1685B8'];
+    const grouped = new Map<string, Set<string>>();
+    apiStudents.forEach(student => {
+      student.enrollments.filter(enrollment => {
+        if (enrollment.status !== 'ACTIVE') return false;
+        if (termChartRange === 'latest' && latestAcademicYear !== undefined && enrollment.course.academicYear !== latestAcademicYear) return false;
+        return true;
+      }).forEach(enrollment => {
+        const term = termLabel(enrollment.course.term);
+        if (!grouped.has(term)) grouped.set(term, new Set<string>());
+        grouped.get(term)!.add(student.id);
+      });
+    });
+    const rows = [...grouped.entries()].map(([term, ids], index) => ({ term, count: ids.size, color: colors[index % colors.length] })).filter(row => row.count > 0);
+    const total = rows.reduce((sum, row) => sum + row.count, 0);
+    let offset = 0;
+    const slices = rows.map(row => {
+      const next = offset + (total ? row.count / total * 100 : 0);
+      const slice = row.color + ' ' + offset + '% ' + next + '%';
+      offset = next;
+      return slice;
+    });
+    return { rows, total, gradient: slices.length ? 'conic-gradient(' + slices.join(', ') + ')' : 'conic-gradient(var(--admin-inner) 0% 100%)' };
+  }, [apiStudents, termChartRange, latestAcademicYear]);
 
   const pickerCourses = useMemo(() => apiCourses.filter(course => {
     if (coursePickerLevel && course.level !== coursePickerLevel) return false;
@@ -181,7 +274,6 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
     <div className="admin-legacy-page admin-students-page">
       <section className="students-page-head">
         <div>
-          <span className="students-eyebrow">STUDENT MANAGEMENT</span>
           <h2><Users size={19} /> مدیریت هنرجویان</h2>
           <p>مدیریت هنرجویان، دوره‌ها و ثبت‌نام‌ها بر اساس مقطع و ترم تحصیلی</p>
         </div>
@@ -200,10 +292,24 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
 
       <div className="students-main-grid">
         <section className="student-chart-card">
-          <div className="section-title"><BarChart3 size={17}/><h3>توزیع هنرجویان بر اساس ترم</h3></div>
-          <div className="term-bars">
-            {termCounts.length ? termCounts.map(item => <div className="term-bar-row" key={item.term}><span>{item.term}</span><div><i style={{width: `${Math.max(7, item.count / maxTermCount * 100)}%`}}/></div><b>{item.count}</b></div>) : <p>هنوز داده‌ای برای نمایش آماری ثبت نشده است.</p>}
+          <div className="student-chart-heading">
+            <div className="section-title"><BarChart3 size={17}/><h3>توزیع هنرجویان بر اساس ترم</h3></div>
+            <div className="student-term-switch">
+              <button type="button" className={termChartRange === 'latest' ? 'active' : ''} onClick={() => setTermChartRange('latest')}>امسال{latestAcademicYear !== undefined ? ` (${latestAcademicYear})` : ''}</button>
+              <button type="button" className={termChartRange === 'all' ? 'active' : ''} onClick={() => setTermChartRange('all')}>همه سال‌ها</button>
+            </div>
           </div>
+          <div className="student-term-chart-layout">
+            <div className="student-term-donut" style={{background: termCounts.gradient}}>
+              <div className="student-term-donut-center"><strong>{termCounts.total}</strong><span>هنرجو</span></div>
+            </div>
+            <div className="student-term-legend">
+              {termCounts.rows.length ? termCounts.rows.map(item => <div className="student-term-legend-row" key={item.term}>
+                <i style={{background:item.color}}/><span>{item.term}</span><strong>{item.count}</strong><small>{termCounts.total ? Math.round(item.count / termCounts.total * 100) : 0}٪</small>
+              </div>) : <p className="student-term-empty">هنوز داده‌ای برای نمایش آماری ثبت نشده است.</p>}
+            </div>
+          </div>
+          <p className="student-term-note">هر هنرجو در هر ترم فقط یک‌بار شمرده می‌شود.</p>
         </section>
 
         <section className="student-form-card">
@@ -236,11 +342,35 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
       </section>
 
       <section className="student-list-card">
-        <div className="list-head"><div><div className="section-title"><Users size={17}/><h3>فهرست هنرجویان</h3></div><span>{filteredStudents.length} نفر نمایش داده می‌شود</span></div><div className="student-search"><Search size={15}/><input placeholder="جستجوی نام، کد ملی یا موبایل" value={search} onChange={e=>setSearch(e.target.value)}/></div></div>
-        <div className="student-filters"><Filter size={15}/><select value={studentLevelFilter} onChange={e=>setStudentLevelFilter(e.target.value as any)}><option value="ALL">همه مقاطع</option><option value="MASTER">ارشد</option><option value="DOCTORATE">دکتری</option></select><select value={yearFilter} onChange={e=>setYearFilter(e.target.value)}><option value="ALL">همه سال‌ها</option>{availableYears.map(y=><option key={y} value={y}>{y}</option>)}</select><select value={termFilter} onChange={e=>setTermFilter(e.target.value)}><option value="ALL">همه ترم‌ها</option>{availableTerms.map(t=><option key={t} value={t}>{t}</option>)}</select></div>
+        <div className="list-head"><div><div className="section-title"><Users size={17}/><h3>{studentSection==='ACTIVE'?'فهرست هنرجویان فعال':'بایگانی هنرجویان'}</h3></div><span>{filteredStudents.length} نفر نمایش داده می‌شود</span></div><div className="student-search"><Search size={15}/><input placeholder="جستجوی نام، کد ملی یا موبایل" value={search} onChange={e=>setSearch(e.target.value)}/></div></div>
+        <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}><button type="button" className={studentSection==='ACTIVE'?'primary-action':'secondary-action'} onClick={()=>{setStudentSection('ACTIVE');setSelectedStudentIds([]);}}><Users size={14}/> هنرجویان فعال ({apiStudents.filter(s=>!s.isArchived).length})</button><button type="button" className={studentSection==='ARCHIVED'?'primary-action':'secondary-action'} onClick={()=>{setStudentSection('ARCHIVED');setSelectedStudentIds([]);}}><Archive size={14}/> بایگانی ({apiStudents.filter(s=>s.isArchived).length})</button></div><div className="student-filters"><Filter size={15}/><select value={studentLevelFilter} onChange={e=>setStudentLevelFilter(e.target.value as any)}><option value="ALL">همه مقاطع</option><option value="MASTER">ارشد</option><option value="DOCTORATE">دکتری</option></select><select value={yearFilter} onChange={e=>setYearFilter(e.target.value)}><option value="ALL">همه سال‌ها</option>{availableYears.map(y=><option key={y} value={y}>{y}</option>)}</select><select value={termFilter} onChange={e=>setTermFilter(e.target.value)}><option value="ALL">همه ترم‌ها</option>{availableTerms.map(t=><option key={t} value={t}>{t}</option>)}</select><select value={studentCourseFilter} onChange={e=>setStudentCourseFilter(e.target.value)}><option value="ALL">همه دوره‌ها</option>{apiCourses.map(course=><option key={course.id} value={course.id}>{course.title}</option>)}</select><select value={studentEnrollmentFilter} onChange={e=>setStudentEnrollmentFilter(e.target.value as 'ALL'|'ENROLLED'|'NONE')}><option value="ALL">همه وضعیت ثبت‌نام</option><option value="ENROLLED">دارای دوره فعال</option><option value="NONE">بدون دوره فعال</option></select></div>
         {error && <div className="students-error">{error}</div>}
-        {loading ? <div className="students-empty">در حال دریافت فهرست هنرجویان...</div> : <div className="student-table-wrap"><table><thead><tr><th>هنرجو</th><th>مقطع</th><th>دوره‌های فعال</th><th>آخرین ثبت‌نام</th><th>عملیات</th></tr></thead><tbody>{filteredStudents.map(student=><tr key={student.id}><td><strong>{student.fullName}</strong><small>{student.nationalId} · {student.phone || '—'}</small></td><td><span className="level-badge">{levelLabel(student.academicLevel)}</span></td><td><div className="enrollment-chips">{student.enrollments.filter(e=>e.status==='ACTIVE').slice(0,3).map(e=><span key={e.id}>{e.course.title}</span>)}{student.enrollments.filter(e=>e.status==='ACTIVE').length>3 && <span>+{student.enrollments.filter(e=>e.status==='ACTIVE').length-3}</span>}</div></td><td>{student.enrollments.length ? new Date(student.enrollments[0].enrolledAt).toLocaleDateString('fa-IR') : '—'}</td><td><div className="row-actions"><button type="button" onClick={()=>handleEdit(student)} title="ویرایش"><Pencil size={14}/></button><button type="button" className="danger" title="حذف" onClick={()=>void (async()=>{if(!window.confirm(`حذف «${student.fullName}»؟`)) return; const response=await fetch(`/api/admin/students/${student.id}`,{method:'DELETE',credentials:'include'}); if(!response.ok){setError((await response.json().catch(()=>null))?.message||'حذف انجام نشد.');return;} await loadStudents();})()}><Trash2 size={14}/></button></div></td></tr>)}</tbody></table>{!filteredStudents.length && <div className="students-empty">هنرجویی با این فیلتر پیدا نشد.</div>}</div>}
+        {selectedStudentIds.length > 0 && <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap',padding:'10px 12px',marginBottom:12,border:'1px solid var(--admin-border)',borderRadius:12,background:'var(--admin-inner)'}}>
+          <strong>{selectedStudentIds.length} نفر انتخاب شده</strong>
+          <button type="button" className="secondary-action" disabled={bulkProcessing} onClick={()=>void bulkArchiveStudents(! (studentSection === 'ARCHIVED'))}><Archive size={14}/>{studentSection==='ARCHIVED'?'بازگردانی انتخاب‌شده‌ها':'بایگانی انتخاب‌شده‌ها'}</button>
+          <button type="button" className="secondary-action" disabled={bulkProcessing} onClick={()=>setSelectedStudentIds([])}><X size={14}/> لغو انتخاب</button>
+          {bulkProcessing && <span>در حال انجام عملیات گروهی…</span>}
+        </div>}
+        {loading ? <div className="students-empty">در حال دریافت فهرست هنرجویان...</div> : <div className="student-table-wrap"><table><thead><tr><th><input type="checkbox" className="student-select-checkbox" aria-label="انتخاب همه هنرجویان نمایش‌داده‌شده" checked={filteredStudents.length > 0 && filteredStudents.every(student => selectedStudentIds.includes(student.id))} onChange={toggleAllVisibleStudents} /></th><th>هنرجو</th><th>مقطع</th><th>دوره‌های فعال</th><th>آخرین ثبت‌نام</th><th>عملیات</th></tr></thead><tbody>{filteredStudents.map(student=><tr key={student.id} className="student-clickable-row" tabIndex={0} aria-label={`مشاهده جزئیات ${student.fullName}`} onClick={()=>setSelectedStudent(student)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setSelectedStudent(student);}}}><td><input type="checkbox" className="student-select-checkbox" aria-label={`انتخاب ${student.fullName}`} checked={selectedStudentIds.includes(student.id)} onClick={e=>e.stopPropagation()} onChange={()=>toggleStudentSelection(student.id)} /></td><td><strong>{student.fullName}</strong><small>{student.nationalId} · {student.phone || '—'}</small></td><td><span className="level-badge">{levelLabel(student.academicLevel)}</span></td><td><div className="enrollment-chips">{student.enrollments.filter(e=>e.status==='ACTIVE').slice(0,3).map(e=><span key={e.id}>{e.course.title}</span>)}{student.enrollments.filter(e=>e.status==='ACTIVE').length>3 && <span>+{student.enrollments.filter(e=>e.status==='ACTIVE').length-3}</span>}</div></td><td>{student.enrollments.length ? new Date(student.enrollments[0].enrolledAt).toLocaleDateString('fa-IR') : '—'}</td><td><div className="row-actions"><button type="button" onClick={e=>{e.stopPropagation();handleEdit(student);}} title="ویرایش" aria-label="ویرایش هنرجو"><Pencil size={14}/></button><button type="button" onClick={e=>{e.stopPropagation();void changeStudentArchive(student);}} title={student.isArchived?'بازگردانی به فهرست فعال':'بایگانی هنرجو'} aria-label={student.isArchived?'بازگردانی هنرجو':'بایگانی هنرجو'}>{student.isArchived?<CheckCircle2 size={14}/>:<Archive size={14}/>}</button></div></td></tr>)}</tbody></table>{!filteredStudents.length && <div className="students-empty">هنرجویی با این فیلتر پیدا نشد.</div>}</div>}
       </section>
+      {selectedStudent && <div className="student-detail-backdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setSelectedStudent(null);}}>
+        <section className="student-detail-modal" role="dialog" aria-modal="true" aria-labelledby="student-detail-title">
+          <header className="student-detail-header"><div><span className="student-detail-kicker">پرونده هنرجو</span><h3 id="student-detail-title">{selectedStudent.fullName}</h3><p>اطلاعات فردی و سوابق ثبت‌نام</p></div><button type="button" className="student-detail-close" onClick={()=>setSelectedStudent(null)} aria-label="بستن پنجره"><X size={18}/></button></header>
+          <div className="student-detail-facts">
+            <div><span>کد ملی</span><strong>{selectedStudent.nationalId || '—'}</strong></div>
+            <div><span>شماره موبایل</span><strong>{selectedStudent.phone || 'ثبت نشده'}</strong></div>
+            <div><span>مقطع تحصیلی</span><strong className={selectedStudent.academicLevel==='DOCTORATE'?'detail-doctorate':'detail-master'}>{levelLabel(selectedStudent.academicLevel)}</strong></div>
+            <div><span>تعداد دوره‌های فعال</span><strong>{selectedStudent.enrollments.filter(e=>e.status==='ACTIVE').length}</strong></div>
+          </div>
+          <div className="student-detail-enrollments"><div className="student-detail-section-title"><h4>سوابق دوره‌ها و ثبت‌نام‌ها</h4><span>{selectedStudent.enrollments.length} مورد</span></div>
+            {selectedStudent.enrollments.length ? <div className="student-detail-course-list">{selectedStudent.enrollments.map(enrollment=><article key={enrollment.id} className={enrollment.status==='ACTIVE'?'detail-course-active':'detail-course-inactive'}>
+              <div className="detail-course-top"><strong>{enrollment.course.title}</strong><span className={enrollment.status==='ACTIVE'?'detail-status-active':'detail-status-inactive'}>{enrollment.status==='ACTIVE'?'فعال':enrollment.status==='CANCELLED'?'لغوشده':enrollment.status==='COMPLETED'?'تکمیل‌شده':enrollment.status}</span></div>
+              <div className="detail-course-meta"><span>مقطع دوره: {levelLabel(enrollment.course.level)}</span><span>سال تحصیلی: {enrollment.course.academicYear ?? '—'}</span><span>ترم: {termLabel(enrollment.course.term)}</span><span>تاریخ ثبت‌نام: {enrollment.enrolledAt ? new Date(enrollment.enrolledAt).toLocaleDateString('fa-IR') : '—'}</span></div>
+            </article>)}</div> : <div className="students-empty">برای این هنرجو سابقه ثبت‌نامی وجود ندارد.</div>}
+          </div>
+          <footer className="student-detail-footer"><button type="button" className="secondary-action" onClick={()=>setSelectedStudent(null)}>بستن</button><button type="button" className="secondary-action" onClick={()=>void changeStudentArchive(selectedStudent)}>{selectedStudent.isArchived?<CheckCircle2 size={14}/>:<Archive size={14}/>} {selectedStudent.isArchived?'بازگردانی به فهرست فعال':'بایگانی هنرجو'}</button><button type="button" className="primary-action" onClick={()=>{const student=selectedStudent;setSelectedStudent(null);handleEdit(student);}}><Pencil size={14}/> ویرایش اطلاعات هنرجو</button></footer>
+        </section>
+      </div>}
     </div>
   );
 };

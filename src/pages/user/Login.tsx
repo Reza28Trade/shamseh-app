@@ -1,17 +1,40 @@
-import React,{useEffect,useState} from 'react';
+import React,{useState} from 'react';
 import type { Student,Admin } from '../../types';
 import { User,Shield,Lock,ArrowRight,Send,Globe,Camera,Play,BookOpen,FileText,BarChart3 } from 'lucide-react';
+import { CourseCatalogPage, RulesPage, ExamAnalysisPage } from '../public/PublicPages';
 
-interface AuthUser{ id:string; username:string; role:'SUPER_ADMIN'|'STAFF'|'STUDENT'; studentId:string|null; student?:{fullName:string;nationalId:string}|null; }
+interface AuthUser{ id:string; username:string; role:'SUPER_ADMIN'|'STAFF'|'STUDENT'|'COUNSELOR'; studentId:string|null; student?:{fullName:string;nationalId:string}|null; }
 interface LoginProps{students:Student[];admins:Admin[];onLoginSuccess:(user:AuthUser)=>void;onAdminLoginSuccess:(user:AuthUser)=>void;rulesText?:string;}
 
-export const Login:React.FC<LoginProps>=({students,admins,onLoginSuccess,onAdminLoginSuccess,rulesText=''})=>{
- const [viewState,setViewState]=useState<'welcome'|'studentLogin'|'adminLogin'|'courses'|'rules'|'analysis'>('welcome');
- const [studentNationalId,setStudentNationalId]=useState(''),[studentPhone,setStudentPhone]=useState(''),[adminUsername,setAdminUsername]=useState(''),[adminPassword,setAdminPassword]=useState(''),[error,setError]=useState(''),[liveRulesText,setLiveRulesText]=useState(rulesText);
- useEffect(()=>{void (async()=>{try{const r=await fetch('/api/content/rules');if(r.ok){const d=await r.json();setLiveRulesText(d.content??'')}}catch{}})()},[]);
+export const Login:React.FC<LoginProps>=({students,admins,onLoginSuccess,onAdminLoginSuccess})=>{
+ const [viewState,setViewState]=useState<'welcome'|'studentLogin'|'adminLogin'|'counselorLogin'|'courses'|'rules'|'analysis'>('welcome');
+ const [studentNationalId,setStudentNationalId]=useState(''),[studentPhone,setStudentPhone]=useState(''),[adminUsername,setAdminUsername]=useState(''),[adminPassword,setAdminPassword]=useState(''),[counselorUsername,setCounselorUsername]=useState(''),[counselorPassword,setCounselorPassword]=useState(''),[error,setError]=useState('');
  const studentSubmit=(e:React.FormEvent)=>{e.preventDefault();setError('');void students;(async()=>{try{const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({username:studentNationalId.trim(),password:studentPhone.trim()})});if(!r.ok)throw 0;const d=await r.json();if(d.user?.role!=='STUDENT')throw 0;onLoginSuccess(d.user)}catch{setError('کد ملی یا شماره موبایل هنرجو اشتباه است.')}})()};
- const adminSubmit=(e:React.FormEvent)=>{e.preventDefault();setError('');void admins;(async()=>{try{const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({username:adminUsername.trim(),password:adminPassword})});if(!r.ok)throw 0;const d=await r.json();if(d.user?.role!=='SUPER_ADMIN'&&d.user?.role!=='STAFF')throw 0;onAdminLoginSuccess(d.user)}catch{setError('نام کاربری یا رمز عبور ادمین اشتباه است.')}})()};
+ const adminSubmit=(e:React.FormEvent)=>{e.preventDefault();setError('');void admins;(async()=>{try{const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({username:adminUsername.trim(),password:adminPassword})});if(!r.ok)throw 0;const d=await r.json();if(d.user?.role!=='SUPER_ADMIN'&&d.user?.role!=='STAFF'&&d.user?.role!=='COUNSELOR')throw 0;onAdminLoginSuccess(d.user)}catch{setError('نام کاربری یا رمز عبور ادمین اشتباه است.')}})()};
+ const counselorSubmit=(e:React.FormEvent)=>{
+  e.preventDefault();
+  setError('');
+  void (async()=>{
+   try{
+    const r=await fetch('/api/auth/login',{
+     method:'POST',
+     headers:{'Content-Type':'application/json'},
+     credentials:'include',
+     body:JSON.stringify({username:counselorUsername.trim(),password:counselorPassword})
+    });
+    if(!r.ok) throw 0;
+    const d=await r.json();
+    if(d.user?.role!=='COUNSELOR') throw 0;
+    onAdminLoginSuccess(d.user);
+   }catch{
+    setError('نام کاربری یا رمز عبور مشاور اشتباه است.');
+   }
+  })();
+ };
  const back=()=>{setViewState('welcome');setError('')};
+ if (viewState === 'courses') return <CourseCatalogPage onBack={() => setViewState('welcome')} />;
+ if (viewState === 'rules') return <RulesPage onBack={() => setViewState('welcome')} />;
+ if (viewState === 'analysis') return <ExamAnalysisPage onBack={() => setViewState('welcome')} />;
  return <div className="sh-login">
    <div className="sh-login-visual">
      <div className="sh-login-orbit one"/><div className="sh-login-orbit two"/>
@@ -23,6 +46,7 @@ export const Login:React.FC<LoginProps>=({students,admins,onLoginSuccess,onAdmin
      <div className="sh-login-top"><span>مرکز آموزشی شمسه</span><button type="button" onClick={back}>بازگشت به صفحه اصلی</button></div>
      {viewState==='welcome'&&<div className="sh-welcome"><div className="sh-kicker">ورود به سامانه</div><h2>از اینجا شروع کنید</h2><p>برای ادامه، بخش موردنظر خود را انتخاب کنید.</p><div className="sh-entry-list">
        <button className="sh-entry primary" onClick={()=>setViewState('studentLogin')}><span className="sh-entry-icon"><User size={18}/></span><span><strong>پنل هنرجویی</strong><small>دسترسی به دوره‌ها، آزمون‌ها و فایل‌های من</small></span><ArrowRight size={15}/></button>
+       <button className="sh-entry" onClick={()=>setViewState('counselorLogin')}><span className="sh-entry-icon"><Shield size={18}/></span><span><strong>ورود مشاور</strong><small>ورود به پنل اختصاصی مشاوره</small></span><ArrowRight size={15}/></button>
        <button className="sh-entry" onClick={()=>setViewState('courses')}><span className="sh-entry-icon"><BookOpen size={18}/></span><span><strong>معرفی دوره‌ها</strong><small>آشنایی با دوره‌های آموزشی شمسه</small></span><ArrowRight size={15}/></button>
        <button className="sh-entry" onClick={()=>setViewState('analysis')}><span className="sh-entry-icon"><BarChart3 size={18}/></span><span><strong>آنالیز سؤالات کنکور ۱۴۰۵</strong><small>ارشد و دکتری هنر</small></span><ArrowRight size={15}/></button>
        <button className="sh-entry" onClick={()=>setViewState('rules')}><span className="sh-entry-icon"><FileText size={18}/></span><span><strong>قوانین و مقررات آموزشی</strong><small>راهنمای استفاده از خدمات آموزشی</small></span><ArrowRight size={15}/></button>
@@ -32,7 +56,15 @@ export const Login:React.FC<LoginProps>=({students,admins,onLoginSuccess,onAdmin
        <label>رمز عبور<div className="sh-input"><Lock size={16}/><input type="password" value={viewState==='studentLogin'?studentPhone:adminPassword} onChange={e=>viewState==='studentLogin'?setStudentPhone(e.target.value):setAdminPassword(e.target.value)} placeholder={viewState==='studentLogin'?'شماره موبایل خود را وارد کنید':'••••••••'} required/></div></label>
        <button className="sh-submit" type="submit">{viewState==='studentLogin'?'ورود به پنل کاربری':'ورود به مدیریت سیستم'}<ArrowRight size={15}/></button>
      </form>}
-     {(viewState==='courses'||viewState==='rules'||viewState==='analysis')&&<div className="sh-info"><button className="sh-back" onClick={back}><ArrowRight size={14}/> بازگشت</button><div className="sh-kicker">{viewState==='courses'?'آموزش':viewState==='rules'?'راهنما':'تحلیل'}</div><h2>{viewState==='courses'?'معرفی دوره‌ها':viewState==='rules'?'قوانین و مقررات آموزشی':'آنالیز کنکور سال قبل'}</h2><p>{viewState==='courses'?'دوره‌های تخصصی آمادگی آزمون ارشد و دکتری هنر، پژوهش هنر و معماری با حضور اساتید برجسته، جزوات انحصاری و کلاس‌های آنلاین.':viewState==='rules'?(liveRulesText||rulesText):'بررسی آماری و تخصصی سوالات آزمون ارشد و دکتری هنر سال گذشته، تعیین ضریب دشواری مباحث و ارائه کلید پیشنهادی اساتید شمسه.'}</p></div>}
+     {viewState==='counselorLogin'&&<form className="sh-form" onSubmit={counselorSubmit}>
+       <button type="button" className="sh-back" onClick={back}><ArrowRight size={14}/> بازگشت</button>
+       <div className="sh-kicker">پنل مشاوره</div><h2>ورود مشاور</h2>
+       <p>اطلاعات حساب مشاوره خود را وارد کنید.</p>
+       {error&&<div className="sh-error">{error}</div>}
+       <label>نام کاربری<div className="sh-input"><span><User size={16}/></span><input value={counselorUsername} onChange={e=>setCounselorUsername(e.target.value)} placeholder="نام کاربری مشاور" autoComplete="username" required/></div></label>
+       <label>رمز عبور<div className="sh-input"><Lock size={16}/><input type="password" value={counselorPassword} onChange={e=>setCounselorPassword(e.target.value)} placeholder="رمز عبور" autoComplete="current-password" required/></div></label>
+       <button className="sh-submit" type="submit">ورود به پنل مشاور <ArrowRight size={15}/></button>
+     </form>}
      <div className="sh-social"><div><a href="https://t.me" target="_blank" rel="noreferrer"><Send size={14}/></a><a href="https://instagram.com" target="_blank" rel="noreferrer"><Camera size={14}/></a><a href="https://youtube.com" target="_blank" rel="noreferrer"><Play size={14}/></a><a href="https://shamseh.ir" target="_blank" rel="noreferrer"><Globe size={14}/></a></div><small>تمامی حقوق مادی و معنوی برای آکادمی شمسه محفوظ است. © 2026</small></div>
    </div>
    <style>{`

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { MessageSquare, Send, RefreshCw, X } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { MessageSquare, Send, RefreshCw, X, Clock3, CheckCircle2, CircleDot, MessagesSquare } from 'lucide-react';
 
 interface SupportMessage {
   id: string;
@@ -7,7 +7,6 @@ interface SupportMessage {
   createdAt: string;
   senderUserId: string;
 }
-
 interface SupportTicket {
   id: string;
   studentId: string;
@@ -16,11 +15,7 @@ interface SupportTicket {
   createdAt: string;
   updatedAt: string;
   messages: SupportMessage[];
-  student: {
-    id: string;
-    fullName: string;
-    nationalId: string;
-  };
+  student: { id: string; fullName: string; nationalId: string };
 }
 
 export const ManageMessages: React.FC = () => {
@@ -45,19 +40,23 @@ export const ManageMessages: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    void loadTickets();
-  }, []);
+  useEffect(() => { void loadTickets(); }, []);
+
+  const counts = useMemo(() => ({
+    all: tickets.length,
+    open: tickets.filter(ticket => ticket.status === 'OPEN').length,
+    answered: tickets.filter(ticket => ticket.status === 'ANSWERED').length,
+    closed: tickets.filter(ticket => ticket.status === 'CLOSED').length,
+  }), [tickets]);
 
   const handleReply = async (ticketId: string) => {
     const content = replyText[ticketId]?.trim();
     if (!content || sendingTicketId) return;
-
     setSendingTicketId(ticketId);
+    setError('');
     try {
       const response = await fetch(`/api/admin/support/tickets/${ticketId}/messages`, {
-        method: 'POST',
-        credentials: 'include',
+        method: 'POST', credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content }),
       });
@@ -65,7 +64,6 @@ export const ManageMessages: React.FC = () => {
         const data = await response.json().catch(() => null);
         throw new Error(data?.message || 'ارسال پاسخ انجام نشد.');
       }
-
       setReplyText(current => ({ ...current, [ticketId]: '' }));
       setSelectedTicketId(null);
       await loadTickets();
@@ -76,11 +74,11 @@ export const ManageMessages: React.FC = () => {
     }
   };
 
-  const handleStatus = async (ticketId: string, status: 'OPEN' | 'ANSWERED' | 'CLOSED') => {
+  const handleStatus = async (ticketId: string, status: SupportTicket['status']) => {
+    setError('');
     try {
       const response = await fetch(`/api/admin/support/tickets/${ticketId}/status`, {
-        method: 'PATCH',
-        credentials: 'include',
+        method: 'PATCH', credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status }),
       });
@@ -95,80 +93,85 @@ export const ManageMessages: React.FC = () => {
     status === 'ANSWERED' ? 'پاسخ داده شده' : status === 'CLOSED' ? 'بسته شده' : 'در انتظار پاسخ';
 
   return (
-    <div className="admin-legacy-page admin-messages-page" style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%', boxSizing: 'border-box' }}>
-      <div style={{ background: 'linear-gradient(135deg, rgba(109, 0, 26, 0.2) 0%, rgba(10, 10, 10, 0.8) 100%)', border: '1px solid rgba(109, 0, 26, 0.4)', padding: '24px 32px', borderRadius: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '20px' }}>
-        <div>
-          <h2 style={{ fontSize: '20px', fontWeight: 900, color: '#fff', margin: '0 0 6px 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <MessageSquare size={20} color="#ff3366" /> صندوق پیام‌ها و تیکت‌های دانشجویان
-          </h2>
-          <p style={{ fontSize: '12px', color: '#94a3b8', margin: 0 }}>مشاهده، پاسخ و مدیریت مستقیم تیکت‌های ثبت‌شده در سامانه</p>
+    <div className="admin-legacy-page admin-messages-page">
+      <header className="messages-page-head">
+        <div className="messages-page-title">
+          <span className="messages-page-eyebrow"><MessagesSquare size={14} /> مرکز مدیریت شمسه</span>
+          <h2><MessageSquare size={21} /> پیام‌ها و پرسش‌ها</h2>
+          <p>مدیریت پیام‌های هنرجویان، پاسخ‌گویی و پیگیری وضعیت درخواست‌ها</p>
         </div>
-        <button onClick={() => void loadTickets()} disabled={loading} style={{ background: 'rgba(255,255,255,0.06)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', padding: '9px 14px', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '7px', fontSize: '11px', fontWeight: 700 }}>
-          <RefreshCw size={14} /> بروزرسانی
+        <button className="messages-refresh" onClick={() => void loadTickets()} disabled={loading}>
+          <RefreshCw size={14} className={loading ? 'messages-spin' : ''} /> بروزرسانی
         </button>
-      </div>
+      </header>
 
-      {error && (
-        <div style={{ backgroundColor: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', color: '#f87171', padding: '12px 16px', borderRadius: '12px', fontSize: '12px' }}>
-          {error}
+      {error && <div className="messages-error" role="alert">{error}</div>}
+
+      <section className="messages-stats" aria-label="خلاصه وضعیت تیکت‌ها">
+        <div className="messages-stat messages-stat-all"><span className="messages-stat-icon"><MessagesSquare size={17} /></span><span className="messages-stat-copy"><small>همه تیکت‌ها</small><strong>{counts.all}</strong></span></div>
+        <div className="messages-stat messages-stat-open"><span className="messages-stat-icon"><Clock3 size={17} /></span><span className="messages-stat-copy"><small>در انتظار پاسخ</small><strong>{counts.open}</strong></span></div>
+        <div className="messages-stat messages-stat-answered"><span className="messages-stat-icon"><CheckCircle2 size={17} /></span><span className="messages-stat-copy"><small>پاسخ داده شده</small><strong>{counts.answered}</strong></span></div>
+        <div className="messages-stat messages-stat-closed"><span className="messages-stat-icon"><CircleDot size={17} /></span><span className="messages-stat-copy"><small>بسته شده</small><strong>{counts.closed}</strong></span></div>
+      </section>
+
+      <section className="messages-ticket-section">
+        <div className="messages-section-head">
+          <div><h3>فهرست تیکت‌ها</h3><p>برای مشاهده جزئیات و پاسخ‌گویی، روی ردیف تیکت بزنید.</p></div>
+          <span className="messages-total">{tickets.length} مورد</span>
         </div>
-      )}
-
-      <div style={{ backgroundColor: 'rgba(14,14,17,0.75)', border: '1px solid rgba(255,255,255,0.08)', padding: '24px 32px', borderRadius: '24px' }}>
         {loading ? (
-          <div style={{ textAlign: 'center', color: '#94a3b8', padding: '50px 0', fontSize: '12px' }}>در حال دریافت تیکت‌ها...</div>
+          <div className="messages-empty"><span className="messages-loading-mark"><RefreshCw size={19} /></span><strong>در حال دریافت تیکت‌ها...</strong></div>
         ) : tickets.length === 0 ? (
-          <div style={{ textAlign: 'center', color: '#94a3b8', padding: '50px 0', fontSize: '12px' }}>هیچ تیکتی از طرف هنرجویان ثبت نشده است.</div>
+          <div className="messages-empty"><span className="messages-empty-mark"><MessageSquare size={20} /></span><strong>هنوز تیکتی ثبت نشده است</strong><p>درخواست‌های هنرجویان پس از ثبت در این قسمت نمایش داده می‌شوند.</p></div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {tickets.map(ticket => (
-              <div key={ticket.id} style={{ backgroundColor: 'rgba(20,20,25,0.9)', padding: '20px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '15px', flexWrap: 'wrap' }}>
-                  <div>
-                    <div style={{ color: '#fff', fontSize: '14px', fontWeight: 900 }}>{ticket.subject}</div>
-                    <div style={{ color: '#38bdf8', fontSize: '11px', marginTop: '5px' }}>{ticket.student.fullName} — کد ملی: {ticket.student.nationalId}</div>
-                  </div>
-                  <select value={ticket.status} onChange={e => void handleStatus(ticket.id, e.target.value as SupportTicket['status'])} style={{ backgroundColor: '#0e0e11', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', padding: '7px 10px', borderRadius: '8px', fontSize: '10px' }}>
-                    <option value="OPEN">{statusLabel('OPEN')}</option>
-                    <option value="ANSWERED">{statusLabel('ANSWERED')}</option>
-                    <option value="CLOSED">{statusLabel('CLOSED')}</option>
-                  </select>
-                </div>
-
-                <div style={{ marginTop: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {ticket.messages.map(message => (
-                    <div key={message.id} style={{ backgroundColor: message.senderUserId === ticket.studentId ? 'rgba(109,0,26,0.12)' : 'rgba(52,211,153,0.06)', border: '1px solid rgba(255,255,255,0.06)', padding: '12px', borderRadius: '10px' }}>
-                      <div style={{ color: message.senderUserId === ticket.studentId ? '#ff6688' : '#34d399', fontSize: '10px', fontWeight: 800, marginBottom: '5px' }}>
-                        {message.senderUserId === ticket.studentId ? 'هنرجو' : 'پشتیبانی'}
-                      </div>
-                      <p style={{ color: '#e2e8f0', fontSize: '12px', lineHeight: 1.7, margin: 0 }}>{message.content}</p>
-                      <span style={{ color: '#64748b', fontSize: '9px' }}>{new Date(message.createdAt).toLocaleString('fa-IR')}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {selectedTicketId === ticket.id ? (
-                  <div style={{ marginTop: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <textarea value={replyText[ticket.id] || ''} onChange={e => setReplyText(current => ({ ...current, [ticket.id]: e.target.value }))} placeholder="متن پاسخ پشتیبانی را بنویسید..." rows={3} style={{ width: '100%', boxSizing: 'border-box', backgroundColor: '#0e0e11', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', padding: '12px', fontSize: '12px', resize: 'vertical', outline: 'none' }} />
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <button onClick={() => void handleReply(ticket.id)} disabled={sendingTicketId === ticket.id} style={{ backgroundColor: '#6D001A', color: '#fff', border: 'none', padding: '9px 15px', borderRadius: '9px', cursor: 'pointer', fontSize: '11px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <Send size={13} /> {sendingTicketId === ticket.id ? 'در حال ارسال...' : 'ارسال پاسخ'}
-                      </button>
-                      <button onClick={() => setSelectedTicketId(null)} style={{ backgroundColor: 'transparent', color: '#94a3b8', border: '1px solid rgba(255,255,255,0.1)', padding: '9px 15px', borderRadius: '9px', cursor: 'pointer', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <X size={13} /> انصراف
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <button onClick={() => setSelectedTicketId(ticket.id)} style={{ marginTop: '14px', backgroundColor: '#6D001A', color: '#fff', border: 'none', padding: '9px 15px', borderRadius: '9px', cursor: 'pointer', fontSize: '11px', fontWeight: 800 }}>
-                    پاسخ به تیکت
-                  </button>
-                )}
-              </div>
-            ))}
+          <div className="messages-table-wrap">
+            <table className="messages-table">
+              <thead><tr><th>موضوع تیکت</th><th>هنرجو</th><th>تعداد پیام</th><th>آخرین بروزرسانی</th><th>وضعیت</th><th>جزئیات</th></tr></thead>
+              <tbody>
+                {tickets.map(ticket => (
+                  <tr key={ticket.id} className={`messages-table-row messages-ticket-${ticket.status.toLowerCase()} ${selectedTicketId === ticket.id ? 'is-selected' : ''}`} onClick={() => setSelectedTicketId(current => current === ticket.id ? null : ticket.id)} tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedTicketId(current => current === ticket.id ? null : ticket.id); } }}>
+                    <td><strong className="messages-table-subject">{ticket.subject}</strong><small className="messages-table-id">کد: {ticket.id.slice(0, 8)}</small></td>
+                    <td><span className="messages-table-student">{ticket.student.fullName}</span><small className="messages-table-id">{ticket.student.nationalId}</small></td>
+                    <td><span className="messages-count-pill">{ticket.messages.length} پیام</span></td>
+                    <td><span className="messages-table-date">{new Date(ticket.updatedAt || ticket.createdAt).toLocaleDateString('fa-IR')}</span></td>
+                    <td onClick={e => e.stopPropagation()}><select className="messages-table-status" aria-label={`وضعیت تیکت ${ticket.subject}`} value={ticket.status} onChange={e => void handleStatus(ticket.id, e.target.value as SupportTicket['status'])}><option value="OPEN">{statusLabel('OPEN')}</option><option value="ANSWERED">{statusLabel('ANSWERED')}</option><option value="CLOSED">{statusLabel('CLOSED')}</option></select></td>
+                    <td><button type="button" className="messages-open-ticket" aria-label={`مشاهده تیکت ${ticket.subject}`} onClick={e => { e.stopPropagation(); setSelectedTicketId(current => current === ticket.id ? null : ticket.id); }}>{selectedTicketId === ticket.id ? <X size={15}/> : <MessageSquare size={15}/>}<span>{selectedTicketId === ticket.id ? 'بستن' : 'مشاهده'}</span></button></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
-      </div>
+      </section>
+
+      {selectedTicketId && (() => {
+        const ticket = tickets.find(item => item.id === selectedTicketId);
+        if (!ticket) return null;
+        return <section className="messages-detail-section">
+          <div className="messages-detail-head">
+            <div><span className="messages-detail-kicker">پرونده انتخاب‌شده</span><h3>{ticket.subject}</h3><p>{ticket.student.fullName} · کد ملی: {ticket.student.nationalId}</p></div>
+            <button type="button" className="messages-detail-close" onClick={() => setSelectedTicketId(null)}><X size={15}/> بستن جزئیات</button>
+          </div>
+          <div className="messages-thread-head"><span>تاریخچه گفت‌وگو</span><span>{ticket.messages.length} پیام</span></div>
+          <div className="messages-thread">
+            {ticket.messages.map(message => {
+              const fromStudent = message.senderUserId === ticket.studentId;
+              return <div key={message.id} className={`messages-bubble ${fromStudent ? 'messages-bubble-student' : 'messages-bubble-support'}`}>
+                <div className="messages-bubble-meta"><strong>{fromStudent ? 'هنرجو' : 'پشتیبانی شمسه'}</strong><time>{new Date(message.createdAt).toLocaleString('fa-IR')}</time></div>
+                <p>{message.content}</p>
+              </div>;
+            })}
+          </div>
+          <form className="messages-reply-form" onSubmit={e => { e.preventDefault(); void handleReply(ticket.id); }}>
+            <label htmlFor={`reply-${ticket.id}`}>پاسخ پشتیبانی</label>
+            <textarea id={`reply-${ticket.id}`} value={replyText[ticket.id] || ''} onChange={e => setReplyText(current => ({ ...current, [ticket.id]: e.target.value }))} placeholder="پاسخ خود را اینجا بنویسید..." rows={3} />
+            <div className="messages-reply-actions">
+              <button type="submit" className="messages-send" disabled={sendingTicketId === ticket.id || !replyText[ticket.id]?.trim()}><Send size={14} />{sendingTicketId === ticket.id ? 'در حال ارسال...' : 'ارسال پاسخ'}</button>
+              <button type="button" className="messages-cancel" onClick={() => setSelectedTicketId(null)}><X size={14} /> انصراف</button>
+            </div>
+          </form>
+        </section>;
+      })()}
     </div>
   );
 };

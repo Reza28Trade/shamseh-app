@@ -136,6 +136,7 @@ export class CoursesService {
     if (!titleCol || !professorCol) throw new BadRequestException('ستون‌های «عنوان دوره» و «استاد» در فایل Excel الزامی هستند.');
 
     let created = 0;
+    let updated = 0;
     let skipped = 0;
     const errors: string[] = [];
     for (let rowNumber = 2; rowNumber <= sheet.rowCount; rowNumber += 1) {
@@ -156,22 +157,44 @@ export class CoursesService {
       const status = statusMap[statusRaw] || 'DRAFT';
       if (academicYearRaw && (!Number.isInteger(academicYear) || academicYear! < 1300)) { skipped += 1; errors.push(`ردیف ${rowNumber}: سال تحصیلی معتبر نیست.`); continue; }
       if (priceRaw && (!Number.isFinite(price) || price! < 0)) { skipped += 1; errors.push(`ردیف ${rowNumber}: قیمت معتبر نیست.`); continue; }
+      const startDate = value(row, 'تاریخ شروع', 'startDate') || undefined;
+      const schedule = value(row, 'برنامه کلاس', 'schedule') || undefined;
+      const term = value(row, 'ترم', 'term') || undefined;
+      const category = value(row, 'دسته‌بندی', 'category') || undefined;
+      const description = value(row, 'توضیحات', 'description') || undefined;
+      const classStartTime = value(row, 'ساعت شروع', 'classStartTime') || undefined;
+      const classEndTime = value(row, 'ساعت پایان', 'classEndTime') || undefined;
+      const data = {
+        title, professor, level,
+        description, term, category, startDate, schedule,
+        price, coverImage: value(row, 'تصویر جلد', 'coverImage') || undefined,
+        academicYear, classDays, classStartTime, classEndTime, status,
+      };
       try {
-        await this.prisma.course.create({
-          data: {
-            title, professor, level,
-            description: value(row, 'توضیحات', 'description') || undefined,
-            term: value(row, 'ترم', 'term') || undefined,
-            category: value(row, 'دسته‌بندی', 'category') || undefined,
-            price, coverImage: value(row, 'تصویر جلد', 'coverImage') || undefined, academicYear, classDays,
-            classStartTime: value(row, 'ساعت شروع', 'classStartTime') || undefined,
-            classEndTime: value(row, 'ساعت پایان', 'classEndTime') || undefined, status,
+        // Match the full class identity so parallel sessions of the same subject remain separate.
+        const existing = await this.prisma.course.findFirst({
+          where: {
+            title, professor,
+            level: level ?? null,
+            term: term ?? null,
+            startDate: startDate ?? null,
+            schedule: schedule ?? null,
+            classStartTime: classStartTime ?? null,
+            classEndTime: classEndTime ?? null,
+            classDays: { equals: classDays },
           },
+          select: { id: true },
         });
-        created += 1;
+        if (existing) {
+          await this.prisma.course.update({ where: { id: existing.id }, data });
+          updated += 1;
+        } else {
+          await this.prisma.course.create({ data });
+          created += 1;
+        }
       } catch (error: any) { skipped += 1; errors.push(`ردیف ${rowNumber}: ${error?.message || 'ذخیره دوره انجام نشد.'}`); }
     }
-    return { created, skipped, errors: errors.slice(0, 30) };
+    return { created, updated, skipped, errors: errors.slice(0, 30) };
   }
   private publicCourse(course: any) {
     return {
@@ -246,9 +269,11 @@ export class CoursesService {
     await this.ensureCourse(courseId);
     const student = await this.prisma.student.findUnique({ where: { id: studentId }, select: { id: true } });
     if (!student) throw new NotFoundException('Student not found');
+    const course = await this.prisma.course.findUnique({ where: { id: courseId }, select: { id: true, price: true } });
+    if (!course) throw new NotFoundException('Course not found');
     try {
       return await this.prisma.enrollment.create({
-        data: { courseId, studentId },
+        data: { courseId, studentId, tuitionAmount: course.price },
         select: {
           id: true,
           status: true,
