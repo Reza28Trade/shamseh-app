@@ -70,10 +70,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
     if (!allowed) return null;
     try {
       const response = await fetch(url, { credentials: 'include', headers: { Accept: 'application/json' } });
-      if (!response.ok) return null;
+      if (!response.ok) {
+        setRefreshError('بخشی از اطلاعات داشبورد دریافت نشد؛ وضعیت همان بخش با خط تیره مشخص می‌شود.');
+        return null;
+      }
       const payload: unknown = await response.json();
-      return Array.isArray(payload) ? payload as T[] : null;
+      if (!Array.isArray(payload)) {
+        setRefreshError('ساختار پاسخ یکی از بخش‌ها قابل نمایش نیست؛ وضعیت همان بخش با خط تیره مشخص می‌شود.');
+        return null;
+      }
+      return payload as T[];
     } catch {
+      setRefreshError('بخشی از اطلاعات داشبورد دریافت نشد؛ وضعیت همان بخش با خط تیره مشخص می‌شود.');
       return null;
     }
   }, []);
@@ -96,7 +104,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
         loadList<CounselingRequestRow>('/api/admin/counseling/requests', isAllowed('counseling')),
         loadList<AdminAccountRow>('/api/auth/admin/admins', admin?.role === 'super_admin'),
         loadList<PublicContentRow>('/api/admin/public-content', isAllowed('rules')),
-        loadList<AuditRow>('/api/admin/audit-logs', isAllowed('logs')),
+        loadList<AuditRow>('/api/admin/audit-logs', admin?.role === 'super_admin'),
       ]);
       setData({ courses, students, registrations, refunds, exams, tickets, counselors, conversations, offlineRequests, managementTickets, counselingRequests, admins, publicContent, logs });
       setLastUpdated(new Date().toISOString());
@@ -109,7 +117,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
 
   useEffect(() => { void loadDashboard(); }, [loadDashboard]);
 
-  const activeCourses = useMemo(() => data.courses?.filter(course => String(course.status || '').toUpperCase() !== 'ARCHIVED') ?? null, [data.courses]);
+  const activeCourses = useMemo(() => data.courses?.filter(course => String(course.status || '').toUpperCase() === 'ACTIVE') ?? null, [data.courses]);
   const pendingRegistrations = data.registrations?.filter(item => item.status === 'PENDING_REVIEW' || item.status === 'NEEDS_CORRECTION') ?? null;
   const pendingPayments = data.registrations?.flatMap(item => item.payments || []).filter(payment => payment.status === 'PENDING') ?? null;
   const openRefunds = data.refunds?.filter(item => item.status === 'REQUESTED' || item.status === 'RESERVED') ?? null;
@@ -250,7 +258,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
             {isAllowed('rules') && <button onClick={() => onNavigate('rules')}><span className="admin-module-icon"><FileCheck2 size={16} /></span><span><strong>قوانین و تحلیل کنکور</strong><small>{data.publicContent === null ? 'اطلاعات در دسترس نیست' : numberFa(publicRules?.length ?? 0) + ' بخش قوانین منتشرشده · ' + numberFa(publishedAnalyses?.length ?? 0) + ' تحلیل منتشرشده'}</small></span><ArrowLeft size={13} /></button>}
             {admin?.role === 'super_admin' && <button onClick={() => onNavigate('managementContact')}><span className="admin-module-icon"><MessageSquare size={16} /></span><span><strong>ارتباط مستقیم با مدیریت</strong><small>{data.managementTickets === null ? 'اطلاعات در دسترس نیست' : numberFa(data.managementTickets.length) + ' درخواست ثبت‌شده · ' + numberFa(openManagementTickets?.length ?? 0) + ' باز'}</small></span><ArrowLeft size={13} /></button>}
             {admin?.role === 'super_admin' && <button onClick={() => onNavigate('admins')}><span className="admin-module-icon"><Users size={16} /></span><span><strong>حساب‌های مدیریتی</strong><small>{data.admins === null ? 'اطلاعات در دسترس نیست' : numberFa(data.admins.length) + ' حساب تعریف‌شده · ' + numberFa(activeAdmins?.length ?? 0) + ' فعال'}</small></span><ArrowLeft size={13} /></button>}
-            {isAllowed('notifications') && <button onClick={() => onNavigate('notifications')}><span className="admin-module-icon"><Bell size={16} /></span><span><strong>اطلاعیه‌ها</strong><small>دسترسی به ابزار ارسال اطلاعیه؛ API فعلی فهرست اطلاعیه‌ها را برای مدیریت ارائه نمی‌کند.</small></span><ArrowLeft size={13} /></button>}
+            {isAllowed('notifications') && <button onClick={() => onNavigate('notifications')}><span className="admin-module-icon"><Bell size={16} /></span><span><strong>اطلاعیه‌ها</strong><small>ابزار ارسال اطلاعیه در دسترس است؛ آمار ارسال‌ها در داشبورد نمایش داده نمی‌شود.</small></span><ArrowLeft size={13} /></button>}
           </div>
         </section>
       </div>
