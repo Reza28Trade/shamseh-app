@@ -81,7 +81,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
           <nav className="admin-nav" aria-label="منوی مدیریت">
             {menuItems.map((item) => {
               const Icon = item.icon;
-              const active = activeItem.id === item.id;
+              const active = activeTab === item.id;
               return <button key={item.id} className={active ? 'active' : ''} aria-current={active ? 'page' : undefined} onClick={() => { setActiveTab(item.id); setIsSidebarOpen(false); }}>
                 <span className="admin-nav-icon"><Icon size={18} strokeWidth={1.9} /></span><span className="admin-nav-label">{item.label}</span>{active && <span className="admin-nav-indicator" />}
               </button>;
