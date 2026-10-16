@@ -104,7 +104,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'Ù…Ø
         loadList<CounselingRequestRow>('/api/admin/counseling/requests', isAllowed('counseling')),
         loadList<AdminAccountRow>('/api/auth/admin/admins', admin?.role === 'super_admin'),
         loadList<PublicContentRow>('/api/admin/public-content', isAllowed('rules')),
-        loadList<AuditRow>('/api/admin/audit-logs', isAllowed('logs')),
+        loadList<AuditRow>('/api/admin/audit-logs', admin?.role === 'super_admin'),
       ]);
       setData({ courses, students, registrations, refunds, exams, tickets, counselors, conversations, offlineRequests, managementTickets, counselingRequests, admins, publicContent, logs });
       setLastUpdated(new Date().toISOString());
