@@ -168,7 +168,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
     { label: 'گزارش‌های سیستمی', note: 'رویدادهای مدیریتی ثبت‌شده', icon: ShieldAlert, tab: 'logs' as const, permission: 'logs' },
     { label: 'مدیریت مدیران و دسترسی‌ها', note: 'حساب‌های مدیریتی و سطح دسترسی', icon: Users, tab: 'admins' as const, permission: 'admins' },
     { label: 'ارتباط مستقیم با مدیریت', note: 'درخواست‌ها و پیام‌های هنرجویان', icon: MessageSquare, tab: 'managementContact' as const, permission: 'managementContact' },
-  ].filter(item => item.tab === 'admins' || item.tab === 'managementContact' ? admin?.role === 'super_admin' : isAllowed(item.permission));
+  ].filter(item => item.tab === 'admins' || item.tab === 'managementContact' || item.tab === 'messages' ? admin?.role === 'super_admin' : isAllowed(item.permission));
 
   return (
     <div className="admin-dashboard-page">
@@ -263,7 +263,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
         </section>
       </div>
 
-      {isAllowed('logs') && <section className="admin-panel-card">
+      {admin?.role === 'super_admin' && isAllowed('logs') && <section className="admin-panel-card">
         <div className="admin-panel-heading"><div><span>ردپای مدیریتی</span><h2>آخرین رویدادهای سیستمی</h2></div><button onClick={() => onNavigate('logs')}>مشاهده گزارش‌ها <ArrowLeft size={13} /></button></div>
         {data.logs === null ? <div className="admin-empty">گزارش‌های سیستمی در دسترس نیست یا مجوز مشاهده آن وجود ندارد.</div> :
           data.logs.length === 0 ? <div className="admin-empty">رویدادی برای نمایش ثبت نشده است.</div> :
