@@ -41,7 +41,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
   ];
   const menuItems = allMenuItems.filter((item) => {
     if (item.id === 'dashboard') return true;
-    if (item.id === 'admins' || item.id === 'managementContact') return admin?.role === 'super_admin';
+    if (item.id === 'admins' || item.id === 'managementContact' || item.id === 'messages') return admin?.role === 'super_admin';
     if (item.id === 'registrations') return admin?.role === 'super_admin' || Boolean(admin?.permissions?.includes('finance'));
     if (admin?.role === 'super_admin') return true;
     return Boolean(admin?.permissions?.includes(item.id));
