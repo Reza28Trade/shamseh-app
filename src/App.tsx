@@ -212,7 +212,7 @@ export function App() {
         onLogout={handleLogout}
       >
         {adminTab === 'dashboard' ? (
-          <AdminDashboard adminName={adminName} onNavigate={setAdminTab} />
+          <AdminDashboard adminName={adminName} admin={currentAdmin || undefined} onNavigate={setAdminTab} />
         ) : adminTab === 'courses' ? (
           <ManageCourses />
         ) : adminTab === 'students' ? (
