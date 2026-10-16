@@ -119,11 +119,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
   }, [data.registrations]);
 
   const statCards = [
-    { label: 'دوره‌های فعال', value: activeCourses ? numberFa(activeCourses.length) : '—', note: activeCourses ? 'بر اساس فهرست دوره‌ها' : 'داده در دسترس نیست', icon: BookOpen, tab: 'courses' as const },
-    { label: 'هنرجویان ثبت‌شده', value: data.students ? numberFa(data.students.length) : '—', note: data.students ? 'بر اساس فهرست هنرجویان' : 'داده در دسترس نیست', icon: Users, tab: 'students' as const },
-    { label: 'ثبت‌نام‌های نیازمند بررسی', value: pendingRegistrations ? numberFa(pendingRegistrations.length) : '—', note: pendingRegistrations ? 'در انتظار بررسی یا اصلاح' : 'داده در دسترس نیست', icon: FileCheck2, tab: 'registrations' as const },
-    { label: 'رسیدهای پرداخت در انتظار', value: pendingPayments ? numberFa(pendingPayments.length) : '—', note: pendingPayments ? 'نیازمند بررسی مالی' : 'داده در دسترس نیست', icon: CreditCard, tab: 'registrations' as const },
-  ];
+    { label: 'دوره‌های فعال', value: activeCourses ? numberFa(activeCourses.length) : '—', note: activeCourses ? 'بر اساس فهرست دوره‌ها' : 'داده در دسترس نیست', icon: BookOpen, tab: 'courses' as const, permission: 'courses' },
+    { label: 'هنرجویان ثبت‌شده', value: data.students ? numberFa(data.students.length) : '—', note: data.students ? 'بر اساس فهرست هنرجویان' : 'داده در دسترس نیست', icon: Users, tab: 'students' as const, permission: 'students' },
+    { label: 'ثبت‌نام‌های نیازمند بررسی', value: pendingRegistrations ? numberFa(pendingRegistrations.length) : '—', note: pendingRegistrations ? 'در انتظار بررسی یا اصلاح' : 'داده در دسترس نیست', icon: FileCheck2, tab: 'registrations' as const, permission: 'finance' },
+    { label: 'رسیدهای پرداخت در انتظار', value: pendingPayments ? numberFa(pendingPayments.length) : '—', note: pendingPayments ? 'نیازمند بررسی مالی' : 'داده در دسترس نیست', icon: CreditCard, tab: 'registrations' as const, permission: 'finance' },
+  ].filter(item => isAllowed(item.permission));
 
   const quickLinks = [
     { label: 'مدیریت دوره‌ها', note: 'دوره‌ها و محتوای آموزشی', icon: BookOpen, tab: 'courses' as const, permission: 'courses' },
@@ -168,26 +168,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
       </section>
 
       <section className="admin-followup-grid" aria-label="موارد نیازمند پیگیری">
-        <button className="admin-followup-card" onClick={() => onNavigate('registrations')}>
-          <span className="admin-followup-icon amber"><FileCheck2 size={17} /></span>
-          <span><small>ثبت‌نام‌های نیازمند پیگیری</small><strong>{pendingRegistrations ? numberFa(pendingRegistrations.length) : '—'}</strong></span>
-          <ArrowLeft size={14} />
-        </button>
-        <button className="admin-followup-card" onClick={() => onNavigate('registrations')}>
-          <span className="admin-followup-icon amber"><CreditCard size={17} /></span>
-          <span><small>رسیدهای در انتظار بررسی</small><strong>{pendingPayments ? numberFa(pendingPayments.length) : '—'}</strong></span>
-          <ArrowLeft size={14} />
-        </button>
-        <button className="admin-followup-card" onClick={() => onNavigate('registrations')}>
-          <span className="admin-followup-icon amber"><Wallet size={17} /></span>
-          <span><small>درخواست‌های بازپرداخت</small><strong>{openRefunds ? numberFa(openRefunds.length) : '—'}</strong></span>
-          <ArrowLeft size={14} />
-        </button>
-        <button className="admin-followup-card" onClick={() => onNavigate('messages')}>
-          <span className="admin-followup-icon"><MessageSquare size={17} /></span>
-          <span><small>تیکت‌های در انتظار پاسخ</small><strong>{openTickets ? numberFa(openTickets.length) : '—'}</strong></span>
-          <ArrowLeft size={14} />
-        </button>
+        {isAllowed('finance') && <>
+          <button className="admin-followup-card" onClick={() => onNavigate('registrations')}><span className="admin-followup-icon amber"><FileCheck2 size={17} /></span><span><small>ثبت‌نام‌های نیازمند پیگیری</small><strong>{pendingRegistrations ? numberFa(pendingRegistrations.length) : '—'}</strong></span><ArrowLeft size={14} /></button>
+          <button className="admin-followup-card" onClick={() => onNavigate('registrations')}><span className="admin-followup-icon amber"><CreditCard size={17} /></span><span><small>رسیدهای در انتظار بررسی</small><strong>{pendingPayments ? numberFa(pendingPayments.length) : '—'}</strong></span><ArrowLeft size={14} /></button>
+          <button className="admin-followup-card" onClick={() => onNavigate('registrations')}><span className="admin-followup-icon amber"><Wallet size={17} /></span><span><small>درخواست‌های بازپرداخت</small><strong>{openRefunds ? numberFa(openRefunds.length) : '—'}</strong></span><ArrowLeft size={14} /></button>
+        </>}
+        {isAllowed('messages') && <button className="admin-followup-card" onClick={() => onNavigate('messages')}><span className="admin-followup-icon"><MessageSquare size={17} /></span><span><small>تیکت‌های در انتظار پاسخ</small><strong>{openTickets ? numberFa(openTickets.length) : '—'}</strong></span><ArrowLeft size={14} /></button>}
       </section>
 
       <div className="admin-dashboard-grid">
@@ -226,22 +212,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
         <section className="admin-panel-card">
           <div className="admin-panel-heading"><div><span>آزمون و ارتباطات</span><h2>وضعیت سایر بخش‌ها</h2></div></div>
           <div className="admin-module-status-list">
-            <button onClick={() => onNavigate('mockExams')}><span className="admin-module-icon"><ClipboardList size={16} /></span><span><strong>آزمون‌های آزمایشی</strong><small>{data.exams === null ? 'اطلاعات در دسترس نیست' : numberFa(data.exams.length) + ' آزمون ثبت‌شده'}</small></span><ArrowLeft size={13} /></button>
-            <button onClick={() => onNavigate('mockExams')}><span className="admin-module-icon"><CalendarClock size={16} /></span><span><strong>آزمون‌های پیش‌رو</strong><small>{upcomingExams === null ? 'اطلاعات در دسترس نیست' : numberFa(upcomingExams.length) + ' آزمون آینده'}</small></span><ArrowLeft size={13} /></button>
-            <button onClick={() => onNavigate('counseling')}><span className="admin-module-icon"><Users size={16} /></span><span><strong>مشاوران فعال</strong><small>{data.counselors === null ? 'اطلاعات در دسترس نیست' : numberFa(data.counselors.filter(c => c.isActive && c.user?.status === 'ACTIVE').length) + ' مشاور فعال'}</small></span><ArrowLeft size={13} /></button>
-            <button onClick={() => onNavigate('counseling')}><span className="admin-module-icon"><MessageSquare size={16} /></span><span><strong>گفتگوهای مشاوره</strong><small>{data.conversations === null ? 'اطلاعات در دسترس نیست' : numberFa(data.conversations.length) + ' گفتگوی ثبت‌شده'}</small></span><ArrowLeft size={13} /></button>
+            {isAllowed('mockExams') && <button onClick={() => onNavigate('mockExams')}><span className="admin-module-icon"><ClipboardList size={16} /></span><span><strong>آزمون‌های آزمایشی</strong><small>{data.exams === null ? 'اطلاعات در دسترس نیست' : numberFa(data.exams.length) + ' آزمون ثبت‌شده'}</small></span><ArrowLeft size={13} /></button>}
+            {isAllowed('mockExams') && <button onClick={() => onNavigate('mockExams')}><span className="admin-module-icon"><CalendarClock size={16} /></span><span><strong>آزمون‌های پیش‌رو</strong><small>{upcomingExams === null ? 'اطلاعات در دسترس نیست' : numberFa(upcomingExams.length) + ' آزمون آینده'}</small></span><ArrowLeft size={13} /></button>}
+            {isAllowed('counseling') && <button onClick={() => onNavigate('counseling')}><span className="admin-module-icon"><Users size={16} /></span><span><strong>مشاوران فعال</strong><small>{data.counselors === null ? 'اطلاعات در دسترس نیست' : numberFa(data.counselors.filter(c => c.isActive && c.user?.status === 'ACTIVE').length) + ' مشاور فعال'}</small></span><ArrowLeft size={13} /></button>}
+            {isAllowed('counseling') && <button onClick={() => onNavigate('counseling')}><span className="admin-module-icon"><MessageSquare size={16} /></span><span><strong>گفتگوهای مشاوره</strong><small>{data.conversations === null ? 'اطلاعات در دسترس نیست' : numberFa(data.conversations.length) + ' گفتگوی ثبت‌شده'}</small></span><ArrowLeft size={13} /></button>}
           </div>
         </section>
       </div>
 
-      <section className="admin-panel-card">
+      {isAllowed('logs') && <section className="admin-panel-card">
         <div className="admin-panel-heading"><div><span>ردپای مدیریتی</span><h2>آخرین رویدادهای سیستمی</h2></div><button onClick={() => onNavigate('logs')}>مشاهده گزارش‌ها <ArrowLeft size={13} /></button></div>
         {data.logs === null ? <div className="admin-empty">گزارش‌های سیستمی در دسترس نیست یا مجوز مشاهده آن وجود ندارد.</div> :
           data.logs.length === 0 ? <div className="admin-empty">رویدادی برای نمایش ثبت نشده است.</div> :
           <div className="admin-audit-list">{[...data.logs].sort((a, b) => new Date(b.timestamp || 0).getTime() - new Date(a.timestamp || 0).getTime()).slice(0, 5).map(log => <div className="admin-audit-row" key={log.id}>
             <span className="admin-audit-icon"><ShieldAlert size={15} /></span><span className="admin-audit-copy"><strong>{log.action}</strong><small>{log.entityType || 'رویداد سیستمی'} · {log.performedBy || 'کاربر نامشخص'}</small></span><time>{dateFa(log.timestamp)}</time>
           </div>)}</div>}
-      </section>
+      </section>}
 
       <style>{`
         .admin-dashboard-page{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:16px;color:var(--admin-text);font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif}
