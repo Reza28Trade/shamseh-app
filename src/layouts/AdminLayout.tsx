@@ -41,12 +41,12 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
   ];
   const menuItems = allMenuItems.filter((item) => {
     if (item.id === 'dashboard') return true;
-    if (item.id === 'admins' || item.id === 'managementContact' || item.id === 'messages') return admin?.role === 'super_admin';
+    if (item.id === 'admins' || item.id === 'managementContact') return admin?.role === 'super_admin';
     if (item.id === 'registrations') return admin?.role === 'super_admin' || Boolean(admin?.permissions?.includes('finance'));
     if (admin?.role === 'super_admin') return true;
     return Boolean(admin?.permissions?.includes(item.id));
   });
-  const activeItem = menuItems.find((item) => item.id === activeTab || (activeTab === 'finance' && item.id === 'registrations')) ?? menuItems[0];
+  const activeItem = menuItems.find((item) => item.id === activeTab) ?? menuItems[0];
   const vars = {
     '--admin-bg': isDark ? '#1e1c1c' : '#EAE0D3',
     '--admin-card': isDark ? '#262424' : '#F5EFE6',
