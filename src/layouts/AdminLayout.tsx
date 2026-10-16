@@ -153,7 +153,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
         @media(max-width:900px){.admin-shell{display:block}.admin-sidebar{display:none;position:fixed;top:0;right:0;bottom:0;width:min(350px,88vw);height:100dvh;max-height:100dvh;min-height:0;overflow:hidden;z-index:100;box-shadow:-18px 0 48px rgba(0,0,0,.28)}.admin-sidebar.open{display:flex}.admin-sidebar-backdrop{display:block;position:fixed;inset:0;border:0;background:rgba(0,0,0,.48);z-index:90}.admin-main{padding:0 18px 30px}.admin-mobile-topbar{height:64px;display:flex;align-items:center;gap:9px;margin:0 -18px 22px;padding:0 16px;background:var(--admin-card);border-bottom:1px solid var(--admin-border)}.admin-mobile-menu{display:grid;place-items:center;width:38px;height:38px;border:1px solid var(--admin-border);border-radius:11px;background:var(--admin-inner);color:var(--admin-text);cursor:pointer}.admin-mobile-topbar img{width:37px;height:37px;object-fit:contain}.admin-mobile-topbar strong{font-size:12px;font-weight:900}.admin-mobile-topbar span{margin-right:auto;color:var(--admin-sub);font-size:10px;max-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
         @media(max-width:560px){.admin-main{padding-inline:12px}.admin-mobile-topbar{margin-inline:-12px;padding-inline:11px}.admin-page-heading h1{font-size:18px}.admin-sidebar{padding:15px 12px}.admin-brand-logo{width:65px;height:65px;flex-basis:65px}.admin-sidebar-actions{grid-template-columns:1fr}.admin-change-password,.admin-logout{padding:9px}}
         @media(prefers-reduced-motion:reduce){.admin-shell *{transition:none!important;scroll-behavior:auto!important}}
-      `}
+      `}</style>
     </div>
   );
 };
