@@ -47,7 +47,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
     return Boolean(admin?.permissions?.includes(item.id));
   });
   const activeItem = menuItems.find((item) => item.id === activeTab || (activeTab === 'finance' && item.id === 'registrations')) ?? menuItems[0];
-  const vars: React.CSSProperties = {
+  const vars = {
     '--admin-bg': isDark ? '#1e1c1c' : '#EAE0D3',
     '--admin-card': isDark ? '#262424' : '#F5EFE6',
     '--admin-inner': isDark ? '#302d2d' : '#FFF9F0',
