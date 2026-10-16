@@ -4,7 +4,7 @@ import { useStore } from '../store/useStore';
 import '../styles/AdminLegacy.css';
 import { LayoutDashboard, BookOpen, Users, MessageSquare, ShieldAlert, FileText, LogOut, Sun, Moon, Menu, X, CheckSquare, ClipboardList, Bell, Wallet, ShieldCheck, KeyRound } from 'lucide-react';
 
-interface AdminLayoutProps { admin?: Admin; onLogout: () => void; activeTab: string; setActiveTab: (tab: string) => void; children: React.ReactNode; }
+interface AdminLayoutProps { admin?: Admin; onLogout: () => void; activeTab: string; setActiveTab: any; children: React.ReactNode; }
 
 export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activeTab, setActiveTab, children }) => {
   const { theme, toggleTheme } = useStore();
