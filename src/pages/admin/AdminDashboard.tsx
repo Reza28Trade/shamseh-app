@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import type { Admin } from '../../types';
 import {
-  Activity, ArrowLeft, Bell, BookOpen, CalendarClock, CheckCircle2, ClipboardList,
-  Clock3, CreditCard, FileCheck2, RefreshCw, ShieldAlert, Users, Wallet, MessageSquare,
+  Activity, ArrowLeft, Bell, BookOpen, CalendarClock, ClipboardList,
+  CreditCard, FileCheck2, RefreshCw, ShieldAlert, Users, Wallet, MessageSquare,
 } from 'lucide-react';
 
 type CourseRow = { id: string; title: string; professor?: string | null; status?: string | null; startDate?: string | null };
