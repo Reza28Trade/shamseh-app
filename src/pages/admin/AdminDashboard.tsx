@@ -152,7 +152,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
     { label: 'هنرجویان ثبت‌شده', value: data.students ? numberFa(data.students.length) : '—', note: data.students ? 'بر اساس فهرست هنرجویان' : 'داده در دسترس نیست', icon: Users, tab: 'students' as const, permission: 'students' },
     { label: 'ثبت‌نام‌های نیازمند بررسی', value: pendingRegistrations ? numberFa(pendingRegistrations.length) : '—', note: pendingRegistrations ? 'در انتظار بررسی یا اصلاح' : 'داده در دسترس نیست', icon: FileCheck2, tab: 'registrations' as const, permission: 'finance' },
     { label: 'رسیدهای پرداخت در انتظار', value: pendingPayments ? numberFa(pendingPayments.length) : '—', note: pendingPayments ? 'نیازمند بررسی مالی' : 'داده در دسترس نیست', icon: CreditCard, tab: 'registrations' as const, permission: 'finance' },
-    { label: 'درخواست‌های آفلاین در انتظار', value: pendingOfflineRequests ? numberFa(pendingOfflineRequests.length) : '—', note: pendingOfflineRequests ? 'نیازمند بررسی مدیریت' : 'داده در دسترس نیست', icon: ClipboardList, tab: 'offlineRequests' as const, permission: 'offlineRequests' },
   ].filter(item => isAllowed(item.permission));
 
   const quickLinks = [
