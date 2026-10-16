@@ -14,6 +14,11 @@ type ExamRow = { id: string; title: string; examDate?: string; status?: string }
 type TicketRow = { id: string; subject: string; status: string; updatedAt?: string; student?: { fullName?: string } };
 type CounselorRow = { id: string; displayName?: string; isActive?: boolean; user?: { status?: string } };
 type ConversationRow = { id: string; updatedAt?: string; student?: { fullName?: string }; counselor?: { displayName?: string }; _count?: { messages?: number } };
+type OfflineRequestRow = { id: string; status: string; createdAt?: string; student?: { fullName?: string }; course?: { title?: string } };
+type ManagementTicketRow = { id: string; subject?: string; status: string; updatedAt?: string; student?: { fullName?: string } };
+type CounselingRequestRow = { id: string; status: string; createdAt?: string; slot?: { startAt?: string } };
+type AdminAccountRow = { id: string; username: string; status: string; permissions?: string[]; lastLoginAt?: string | null };
+type PublicContentRow = { id: string; type: 'RULES' | 'EXAM_ANALYSIS'; title?: string; examYear?: string | null; published: boolean; updatedAt?: string };
 type AuditRow = { id: string; action: string; entityType?: string; performedBy?: string; timestamp?: string; details?: unknown };
 
 type DashboardData = {
@@ -25,10 +30,15 @@ type DashboardData = {
   tickets: TicketRow[] | null;
   counselors: CounselorRow[] | null;
   conversations: ConversationRow[] | null;
+  offlineRequests: OfflineRequestRow[] | null;
+  managementTickets: ManagementTicketRow[] | null;
+  counselingRequests: CounselingRequestRow[] | null;
+  admins: AdminAccountRow[] | null;
+  publicContent: PublicContentRow[] | null;
   logs: AuditRow[] | null;
 };
-const emptyData: DashboardData = { courses: null, students: null, registrations: null, refunds: null, exams: null, tickets: null, counselors: null, conversations: null, logs: null };
-type DashboardTab = 'dashboard' | 'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams' | 'counseling' | 'finance' | 'registrations';
+const emptyData: DashboardData = { courses: null, students: null, registrations: null, refunds: null, exams: null, tickets: null, counselors: null, conversations: null, offlineRequests: null, managementTickets: null, counselingRequests: null, admins: null, publicContent: null, logs: null };
+type DashboardTab = 'dashboard' | 'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams' | 'counseling' | 'finance' | 'registrations' | 'managementContact';
 
 interface AdminDashboardProps {
   adminName?: string;
@@ -60,10 +70,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
     if (!allowed) return null;
     try {
       const response = await fetch(url, { credentials: 'include', headers: { Accept: 'application/json' } });
-      if (!response.ok) return null;
+      if (!response.ok) {
+        setRefreshError('بخشی از اطلاعات داشبورد دریافت نشد؛ وضعیت همان بخش با خط تیره مشخص می‌شود.');
+        return null;
+      }
       const payload: unknown = await response.json();
-      return Array.isArray(payload) ? payload as T[] : null;
+      if (!Array.isArray(payload)) {
+        setRefreshError('ساختار پاسخ یکی از بخش‌ها قابل نمایش نیست؛ وضعیت همان بخش با خط تیره مشخص می‌شود.');
+        return null;
+      }
+      return payload as T[];
     } catch {
+      setRefreshError('بخشی از اطلاعات داشبورد دریافت نشد؛ وضعیت همان بخش با خط تیره مشخص می‌شود.');
       return null;
     }
   }, []);
@@ -72,7 +90,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
     setLoading(true);
     setRefreshError('');
     try {
-      const [courses, students, registrations, refunds, exams, tickets, counselors, conversations, logs] = await Promise.all([
+      const [courses, students, registrations, refunds, exams, tickets, counselors, conversations, offlineRequests, managementTickets, counselingRequests, admins, publicContent, logs] = await Promise.all([
         loadList<CourseRow>('/api/courses', isAllowed('courses')),
         loadList<StudentRow>('/api/admin/students', isAllowed('students')),
         loadList<RegistrationRow>('/api/admin/registrations?status=ALL', isAllowed('finance')),
@@ -81,9 +99,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
         loadList<TicketRow>('/api/admin/support/tickets', admin?.role === 'super_admin'),
         loadList<CounselorRow>('/api/admin/counselors', isAllowed('counseling')),
         loadList<ConversationRow>('/api/counseling/conversations', isAllowed('counseling')),
-        loadList<AuditRow>('/api/admin/audit-logs', isAllowed('logs')),
+        loadList<OfflineRequestRow>('/api/admin/offline-requests', isAllowed('offlineRequests')),
+        loadList<ManagementTicketRow>('/api/admin/management-contact/tickets', admin?.role === 'super_admin'),
+        loadList<CounselingRequestRow>('/api/admin/counseling/requests', isAllowed('counseling')),
+        loadList<AdminAccountRow>('/api/auth/admin/admins', admin?.role === 'super_admin'),
+        loadList<PublicContentRow>('/api/admin/public-content', isAllowed('rules')),
+        loadList<AuditRow>('/api/admin/audit-logs', admin?.role === 'super_admin'),
       ]);
-      setData({ courses, students, registrations, refunds, exams, tickets, counselors, conversations, logs });
+      setData({ courses, students, registrations, refunds, exams, tickets, counselors, conversations, offlineRequests, managementTickets, counselingRequests, admins, publicContent, logs });
       setLastUpdated(new Date().toISOString());
     } catch {
       setRefreshError('بروزرسانی داشبورد کامل نشد. بخش‌هایی که داده معتبر دریافت نکرده‌اند با خط تیره مشخص می‌شوند.');
@@ -94,11 +117,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
 
   useEffect(() => { void loadDashboard(); }, [loadDashboard]);
 
-  const activeCourses = useMemo(() => data.courses?.filter(course => String(course.status || '').toUpperCase() !== 'ARCHIVED') ?? null, [data.courses]);
+  const activeCourses = useMemo(() => data.courses?.filter(course => String(course.status || '').toUpperCase() === 'ACTIVE') ?? null, [data.courses]);
   const pendingRegistrations = data.registrations?.filter(item => item.status === 'PENDING_REVIEW' || item.status === 'NEEDS_CORRECTION') ?? null;
   const pendingPayments = data.registrations?.flatMap(item => item.payments || []).filter(payment => payment.status === 'PENDING') ?? null;
   const openRefunds = data.refunds?.filter(item => item.status === 'REQUESTED' || item.status === 'RESERVED') ?? null;
   const openTickets = data.tickets?.filter(item => item.status === 'OPEN') ?? null;
+  const pendingOfflineRequests = data.offlineRequests?.filter(item => item.status === 'PENDING') ?? null;
+  const pendingCounselingRequests = data.counselingRequests?.filter(item => item.status === 'PENDING') ?? null;
+  const openManagementTickets = data.managementTickets?.filter(item => item.status === 'OPEN') ?? null;
+  const activeAdmins = data.admins?.filter(item => item.status === 'ACTIVE') ?? null;
+  const publicRules = data.publicContent?.filter(item => item.type === 'RULES' && item.published) ?? null;
+  const publishedAnalyses = data.publicContent?.filter(item => item.type === 'EXAM_ANALYSIS' && item.published) ?? null;
   const upcomingExams = data.exams?.filter(exam => {
     if (!exam.examDate || ['COMPLETED', 'CANCELLED'].includes(String(exam.status || '').toUpperCase())) return false;
     const timestamp = new Date(exam.examDate).getTime();
@@ -123,18 +152,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
     { label: 'هنرجویان ثبت‌شده', value: data.students ? numberFa(data.students.length) : '—', note: data.students ? 'بر اساس فهرست هنرجویان' : 'داده در دسترس نیست', icon: Users, tab: 'students' as const, permission: 'students' },
     { label: 'ثبت‌نام‌های نیازمند بررسی', value: pendingRegistrations ? numberFa(pendingRegistrations.length) : '—', note: pendingRegistrations ? 'در انتظار بررسی یا اصلاح' : 'داده در دسترس نیست', icon: FileCheck2, tab: 'registrations' as const, permission: 'finance' },
     { label: 'رسیدهای پرداخت در انتظار', value: pendingPayments ? numberFa(pendingPayments.length) : '—', note: pendingPayments ? 'نیازمند بررسی مالی' : 'داده در دسترس نیست', icon: CreditCard, tab: 'registrations' as const, permission: 'finance' },
+    { label: 'درخواست‌های آفلاین در انتظار', value: pendingOfflineRequests ? numberFa(pendingOfflineRequests.length) : '—', note: pendingOfflineRequests ? 'نیازمند بررسی مدیریت' : 'داده در دسترس نیست', icon: ClipboardList, tab: 'offlineRequests' as const, permission: 'offlineRequests' },
   ].filter(item => isAllowed(item.permission));
 
   const quickLinks = [
     { label: 'مدیریت دوره‌ها', note: 'دوره‌ها و محتوای آموزشی', icon: BookOpen, tab: 'courses' as const, permission: 'courses' },
     { label: 'مدیریت هنرجویان', note: 'حساب‌ها و وضعیت هنرجویان', icon: Users, tab: 'students' as const, permission: 'students' },
+    { label: 'درخواست‌های آفلاین', note: 'بررسی درخواست دسترسی به جلسات', icon: ClipboardList, tab: 'offlineRequests' as const, permission: 'offlineRequests' },
     { label: 'آزمون‌های آزمایشی', note: 'زمان‌بندی و شرکت‌کنندگان', icon: ClipboardList, tab: 'mockExams' as const, permission: 'mockExams' },
-    { label: 'مشاوره و گفتگوها', note: 'مشاوران و مکالمات', icon: CalendarClock, tab: 'counseling' as const, permission: 'counseling' },
+    { label: 'مشاوره و گفتگوها', note: 'مشاوران، درخواست‌ها و مکالمات', icon: CalendarClock, tab: 'counseling' as const, permission: 'counseling' },
     { label: 'پیام‌ها و پرسش‌ها', note: 'پیگیری تیکت‌های هنرجویان', icon: MessageSquare, tab: 'messages' as const, permission: 'messages' },
     { label: 'امور مالی و ثبت‌نام', note: 'شهریه، رسیدها و بازپرداخت', icon: Wallet, tab: 'registrations' as const, permission: 'finance' },
+    { label: 'قوانین و تحلیل کنکور', note: 'قوانین آموزشی و تحلیل‌های منتشرشده', icon: FileCheck2, tab: 'rules' as const, permission: 'rules' },
     { label: 'ارسال اطلاعیه', note: 'اطلاع‌رسانی به هنرجویان', icon: Bell, tab: 'notifications' as const, permission: 'notifications' },
     { label: 'گزارش‌های سیستمی', note: 'رویدادهای مدیریتی ثبت‌شده', icon: ShieldAlert, tab: 'logs' as const, permission: 'logs' },
-  ].filter(item => item.tab === 'messages' ? admin?.role === 'super_admin' : isAllowed(item.permission));
+    { label: 'مدیریت مدیران و دسترسی‌ها', note: 'حساب‌های مدیریتی و سطح دسترسی', icon: Users, tab: 'admins' as const, permission: 'admins' },
+    { label: 'ارتباط مستقیم با مدیریت', note: 'درخواست‌ها و پیام‌های هنرجویان', icon: MessageSquare, tab: 'managementContact' as const, permission: 'managementContact' },
+  ].filter(item => item.tab === 'admins' || item.tab === 'managementContact' ? admin?.role === 'super_admin' : isAllowed(item.permission));
 
   return (
     <div className="admin-dashboard-page">
@@ -174,6 +208,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
           <button className="admin-followup-card" onClick={() => onNavigate('registrations')}><span className="admin-followup-icon amber"><Wallet size={17} /></span><span><small>درخواست‌های بازپرداخت</small><strong>{openRefunds ? numberFa(openRefunds.length) : '—'}</strong></span><ArrowLeft size={14} /></button>
         </>}
         {admin?.role === 'super_admin' && <button className="admin-followup-card" onClick={() => onNavigate('messages')}><span className="admin-followup-icon"><MessageSquare size={17} /></span><span><small>تیکت‌های در انتظار پاسخ</small><strong>{openTickets ? numberFa(openTickets.length) : '—'}</strong></span><ArrowLeft size={14} /></button>}
+        {isAllowed('offlineRequests') && <button className="admin-followup-card" onClick={() => onNavigate('offlineRequests')}><span className="admin-followup-icon"><ClipboardList size={17} /></span><span><small>درخواست‌های آفلاین در انتظار</small><strong>{pendingOfflineRequests ? numberFa(pendingOfflineRequests.length) : '—'}</strong></span><ArrowLeft size={14} /></button>}
+        {isAllowed('counseling') && <button className="admin-followup-card" onClick={() => onNavigate('counseling')}><span className="admin-followup-icon"><CalendarClock size={17} /></span><span><small>درخواست‌های مشاوره در انتظار</small><strong>{pendingCounselingRequests ? numberFa(pendingCounselingRequests.length) : '—'}</strong></span><ArrowLeft size={14} /></button>}
+        {admin?.role === 'super_admin' && <button className="admin-followup-card" onClick={() => onNavigate('managementContact')}><span className="admin-followup-icon"><MessageSquare size={17} /></span><span><small>پیام‌های ارتباط با مدیریت</small><strong>{openManagementTickets ? numberFa(openManagementTickets.length) : '—'}</strong></span><ArrowLeft size={14} /></button>}
       </section>
 
       <div className="admin-dashboard-grid">
@@ -216,6 +253,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
             {isAllowed('mockExams') && <button onClick={() => onNavigate('mockExams')}><span className="admin-module-icon"><CalendarClock size={16} /></span><span><strong>آزمون‌های پیش‌رو</strong><small>{upcomingExams === null ? 'اطلاعات در دسترس نیست' : numberFa(upcomingExams.length) + ' آزمون آینده'}</small></span><ArrowLeft size={13} /></button>}
             {isAllowed('counseling') && <button onClick={() => onNavigate('counseling')}><span className="admin-module-icon"><Users size={16} /></span><span><strong>مشاوران فعال</strong><small>{data.counselors === null ? 'اطلاعات در دسترس نیست' : numberFa(data.counselors.filter(c => c.isActive && c.user?.status === 'ACTIVE').length) + ' مشاور فعال'}</small></span><ArrowLeft size={13} /></button>}
             {isAllowed('counseling') && <button onClick={() => onNavigate('counseling')}><span className="admin-module-icon"><MessageSquare size={16} /></span><span><strong>گفتگوهای مشاوره</strong><small>{data.conversations === null ? 'اطلاعات در دسترس نیست' : numberFa(data.conversations.length) + ' گفتگوی ثبت‌شده'}</small></span><ArrowLeft size={13} /></button>}
+            {isAllowed('counseling') && <button onClick={() => onNavigate('counseling')}><span className="admin-module-icon"><CalendarClock size={16} /></span><span><strong>درخواست‌های مشاوره</strong><small>{data.counselingRequests === null ? 'اطلاعات در دسترس نیست' : numberFa(data.counselingRequests.length) + ' درخواست ثبت‌شده · ' + numberFa(pendingCounselingRequests?.length ?? 0) + ' در انتظار'}</small></span><ArrowLeft size={13} /></button>}
+            {isAllowed('offlineRequests') && <button onClick={() => onNavigate('offlineRequests')}><span className="admin-module-icon"><ClipboardList size={16} /></span><span><strong>درخواست‌های آفلاین</strong><small>{data.offlineRequests === null ? 'اطلاعات در دسترس نیست' : numberFa(data.offlineRequests.length) + ' درخواست ثبت‌شده · ' + numberFa(pendingOfflineRequests?.length ?? 0) + ' در انتظار'}</small></span><ArrowLeft size={13} /></button>}
+            {isAllowed('rules') && <button onClick={() => onNavigate('rules')}><span className="admin-module-icon"><FileCheck2 size={16} /></span><span><strong>قوانین و تحلیل کنکور</strong><small>{data.publicContent === null ? 'اطلاعات در دسترس نیست' : numberFa(publicRules?.length ?? 0) + ' بخش قوانین منتشرشده · ' + numberFa(publishedAnalyses?.length ?? 0) + ' تحلیل منتشرشده'}</small></span><ArrowLeft size={13} /></button>}
+            {admin?.role === 'super_admin' && <button onClick={() => onNavigate('managementContact')}><span className="admin-module-icon"><MessageSquare size={16} /></span><span><strong>ارتباط مستقیم با مدیریت</strong><small>{data.managementTickets === null ? 'اطلاعات در دسترس نیست' : numberFa(data.managementTickets.length) + ' درخواست ثبت‌شده · ' + numberFa(openManagementTickets?.length ?? 0) + ' باز'}</small></span><ArrowLeft size={13} /></button>}
+            {admin?.role === 'super_admin' && <button onClick={() => onNavigate('admins')}><span className="admin-module-icon"><Users size={16} /></span><span><strong>حساب‌های مدیریتی</strong><small>{data.admins === null ? 'اطلاعات در دسترس نیست' : numberFa(data.admins.length) + ' حساب تعریف‌شده · ' + numberFa(activeAdmins?.length ?? 0) + ' فعال'}</small></span><ArrowLeft size={13} /></button>}
+            {isAllowed('notifications') && <button onClick={() => onNavigate('notifications')}><span className="admin-module-icon"><Bell size={16} /></span><span><strong>اطلاعیه‌ها</strong><small>ابزار ارسال اطلاعیه در دسترس است؛ آمار ارسال‌ها در داشبورد نمایش داده نمی‌شود.</small></span><ArrowLeft size={13} /></button>}
           </div>
         </section>
       </div>
