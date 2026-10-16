@@ -78,7 +78,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
         loadList<RegistrationRow>('/api/admin/registrations?status=ALL', isAllowed('finance')),
         loadList<RefundRow>('/api/admin/refunds?status=ALL', isAllowed('finance')),
         loadList<ExamRow>('/api/admin/mock-exams', isAllowed('mockExams')),
-        loadList<TicketRow>('/api/admin/support/tickets', isAllowed('messages')),
+        loadList<TicketRow>('/api/admin/support/tickets', admin?.role === 'super_admin'),
         loadList<CounselorRow>('/api/admin/counselors', isAllowed('counseling')),
         loadList<ConversationRow>('/api/counseling/conversations', isAllowed('counseling')),
         loadList<AuditRow>('/api/admin/audit-logs', isAllowed('logs')),
@@ -90,7 +90,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
     } finally {
       setLoading(false);
     }
-  }, [isAllowed, loadList]);
+  }, [admin?.role, isAllowed, loadList]);
 
   useEffect(() => { void loadDashboard(); }, [loadDashboard]);
 
@@ -123,7 +123,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
     { label: 'هنرجویان ثبت‌شده', value: data.students ? numberFa(data.students.length) : '—', note: data.students ? 'بر اساس فهرست هنرجویان' : 'داده در دسترس نیست', icon: Users, tab: 'students' as const, permission: 'students' },
     { label: 'ثبت‌نام‌های نیازمند بررسی', value: pendingRegistrations ? numberFa(pendingRegistrations.length) : '—', note: pendingRegistrations ? 'در انتظار بررسی یا اصلاح' : 'داده در دسترس نیست', icon: FileCheck2, tab: 'registrations' as const, permission: 'finance' },
     { label: 'رسیدهای پرداخت در انتظار', value: pendingPayments ? numberFa(pendingPayments.length) : '—', note: pendingPayments ? 'نیازمند بررسی مالی' : 'داده در دسترس نیست', icon: CreditCard, tab: 'registrations' as const, permission: 'finance' },
-  ].filter(item => isAllowed(item.permission));
+  ].filter(item => item.tab === 'messages' ? admin?.role === 'super_admin' : isAllowed(item.permission));
 
   const quickLinks = [
     { label: 'مدیریت دوره‌ها', note: 'دوره‌ها و محتوای آموزشی', icon: BookOpen, tab: 'courses' as const, permission: 'courses' },
@@ -173,7 +173,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
           <button className="admin-followup-card" onClick={() => onNavigate('registrations')}><span className="admin-followup-icon amber"><CreditCard size={17} /></span><span><small>رسیدهای در انتظار بررسی</small><strong>{pendingPayments ? numberFa(pendingPayments.length) : '—'}</strong></span><ArrowLeft size={14} /></button>
           <button className="admin-followup-card" onClick={() => onNavigate('registrations')}><span className="admin-followup-icon amber"><Wallet size={17} /></span><span><small>درخواست‌های بازپرداخت</small><strong>{openRefunds ? numberFa(openRefunds.length) : '—'}</strong></span><ArrowLeft size={14} /></button>
         </>}
-        {isAllowed('messages') && <button className="admin-followup-card" onClick={() => onNavigate('messages')}><span className="admin-followup-icon"><MessageSquare size={17} /></span><span><small>تیکت‌های در انتظار پاسخ</small><strong>{openTickets ? numberFa(openTickets.length) : '—'}</strong></span><ArrowLeft size={14} /></button>}
+        {admin?.role === 'super_admin' && <button className="admin-followup-card" onClick={() => onNavigate('messages')}><span className="admin-followup-icon"><MessageSquare size={17} /></span><span><small>تیکت‌های در انتظار پاسخ</small><strong>{openTickets ? numberFa(openTickets.length) : '—'}</strong></span><ArrowLeft size={14} /></button>}
       </section>
 
       <div className="admin-dashboard-grid">
