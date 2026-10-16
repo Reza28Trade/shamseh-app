@@ -123,7 +123,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
     { label: 'هنرجویان ثبت‌شده', value: data.students ? numberFa(data.students.length) : '—', note: data.students ? 'بر اساس فهرست هنرجویان' : 'داده در دسترس نیست', icon: Users, tab: 'students' as const, permission: 'students' },
     { label: 'ثبت‌نام‌های نیازمند بررسی', value: pendingRegistrations ? numberFa(pendingRegistrations.length) : '—', note: pendingRegistrations ? 'در انتظار بررسی یا اصلاح' : 'داده در دسترس نیست', icon: FileCheck2, tab: 'registrations' as const, permission: 'finance' },
     { label: 'رسیدهای پرداخت در انتظار', value: pendingPayments ? numberFa(pendingPayments.length) : '—', note: pendingPayments ? 'نیازمند بررسی مالی' : 'داده در دسترس نیست', icon: CreditCard, tab: 'registrations' as const, permission: 'finance' },
-  ].filter(item => item.tab === 'messages' ? admin?.role === 'super_admin' : isAllowed(item.permission));
+  ].filter(item => isAllowed(item.permission));
 
   const quickLinks = [
     { label: 'مدیریت دوره‌ها', note: 'دوره‌ها و محتوای آموزشی', icon: BookOpen, tab: 'courses' as const, permission: 'courses' },
@@ -134,7 +134,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
     { label: 'امور مالی و ثبت‌نام', note: 'شهریه، رسیدها و بازپرداخت', icon: Wallet, tab: 'registrations' as const, permission: 'finance' },
     { label: 'ارسال اطلاعیه', note: 'اطلاع‌رسانی به هنرجویان', icon: Bell, tab: 'notifications' as const, permission: 'notifications' },
     { label: 'گزارش‌های سیستمی', note: 'رویدادهای مدیریتی ثبت‌شده', icon: ShieldAlert, tab: 'logs' as const, permission: 'logs' },
-  ].filter(item => isAllowed(item.permission));
+  ].filter(item => item.tab === 'messages' ? admin?.role === 'super_admin' : isAllowed(item.permission));
 
   return (
     <div className="admin-dashboard-page">
