@@ -46,7 +46,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
     if (admin?.role === 'super_admin') return true;
     return Boolean(admin?.permissions?.includes(item.id));
   });
-  const activeItem = menuItems.find((item) => item.id === activeTab) ?? menuItems[0];
+  const activeItem = menuItems.find((item) => item.id === activeTab || (activeTab === 'finance' && item.id === 'registrations')) ?? menuItems[0];
   const vars = {
     '--admin-bg': isDark ? '#1e1c1c' : '#EAE0D3',
     '--admin-card': isDark ? '#262424' : '#F5EFE6',
@@ -81,7 +81,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
           <nav className="admin-nav" aria-label="منوی مدیریت">
             {menuItems.map((item) => {
               const Icon = item.icon;
-              const active = activeTab === item.id;
+              const active = activeItem.id === item.id;
               return <button key={item.id} className={active ? 'active' : ''} aria-current={active ? 'page' : undefined} onClick={() => { setActiveTab(item.id); setIsSidebarOpen(false); }}>
                 <span className="admin-nav-icon"><Icon size={18} strokeWidth={1.9} /></span><span className="admin-nav-label">{item.label}</span>{active && <span className="admin-nav-indicator" />}
               </button>;
