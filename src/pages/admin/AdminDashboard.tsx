@@ -55,7 +55,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'Ù…Ø
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const [refreshError, setRefreshError] = useState('');
 
-  const isAllowed = (permission: string) => admin?.role === 'super_admin' || Boolean(admin?.permissions?.includes(permission));
+  const isAllowed = useCallback((permission: string) => admin?.role === 'super_admin' || Boolean(admin?.permissions?.includes(permission)), [admin?.role, admin?.permissions]);
   const loadList = useCallback(async <T,>(url: string, allowed: boolean): Promise<T[] | null> => {
     if (!allowed) return null;
     try {
