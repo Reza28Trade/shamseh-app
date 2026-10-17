@@ -2313,3 +2313,97 @@
     overflow-wrap: anywhere;
   }
 }
+
+
+/* Final module-specific responsive pass for dense admin workflows. */
+@media (max-width: 760px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-request-row,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-review,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-review-actions,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-item,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-selected-student,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-list-head,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-section-head,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-detail-head {
+    min-width: 0;
+    flex-wrap: wrap;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-request-main,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-review,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-list,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .admin-counseling-conversations-grid,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-list-card,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-ticket-section,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-detail-section {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .admin-counseling-conversations-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-list {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-table {
+    min-width: 600px;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-thread,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-reply-form {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-bubble {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-logs-page table {
+    min-width: 620px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-stats,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-stats,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-stats-grid,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stats {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-filters {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-request-row button,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-reply-actions button,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-item button {
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-table {
+    min-width: 560px;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-logs-page table {
+    min-width: 560px;
+  }
+}
