@@ -2536,3 +2536,63 @@
     border-radius: 12px !important;
   }
 }
+
+/* Shared component contract: one typography, control, and table language across admin modules. */
+.admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) {
+  color: var(--admin-text);
+  font-family: Vazirmatn, IRANSansX, Tahoma, system-ui, sans-serif;
+  font-size: 12px;
+  line-height: 1.75;
+  min-width: 0;
+}
+.admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) :is(input, select, textarea) {
+  box-sizing: border-box;
+  max-width: 100%;
+  font-family: inherit;
+  font-size: 12px !important;
+  line-height: 1.5;
+  border-radius: 10px !important;
+}
+.admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) :is(button, input, select, textarea) {
+  font-family: inherit;
+}
+.admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) button {
+  line-height: 1.5;
+}
+.admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) :is(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid var(--admin-accent) !important;
+  outline-offset: 2px;
+}
+.admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) :is(th, td) {
+  border-color: var(--admin-border);
+  vertical-align: middle;
+}
+.admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) :is(img, svg, canvas, video) {
+  max-width: 100%;
+}
+.admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) :is(p, strong, span, label, small, time, code) {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 760px) {
+  .admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) {
+    gap: 14px;
+  }
+  .admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) :is(input, select, textarea) {
+    min-width: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) *,
+  .admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) *::before,
+  .admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
