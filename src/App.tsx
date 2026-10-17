@@ -72,9 +72,7 @@ function AdminAccounts() {
     <style>{`
       .admin-accounts-redesign{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.92fr);gap:12px;align-items:start;direction:rtl;color:var(--admin-text);font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif}
       .admin-accounts-redesign *{box-sizing:border-box}
-      .admin-accounts-redesign,.admin-accounts-redesign .accounts-card{background:var(--admin-card)!important;background-color:var(--admin-card)!important;background-image:none!important}
-      .admin-accounts-redesign .accounts-card{min-width:0;padding:17px;border:1px solid var(--admin-border);border-radius:17px;box-shadow:var(--admin-shadow)}
-      .admin-accounts-redesign .accounts-card:before,.admin-accounts-redesign .accounts-card:after{display:none!important;content:none!important}
+      .admin-accounts-redesign .accounts-card{min-width:0;padding:17px;border:1px solid var(--admin-border);border-radius:17px;background:var(--admin-card);box-shadow:var(--admin-shadow)}
       .admin-accounts-redesign .accounts-card-head{display:flex;flex-direction:column;gap:4px;margin-bottom:13px}
       .admin-accounts-redesign .accounts-eyebrow{font-size:9px;font-weight:900;color:var(--admin-accent);letter-spacing:0}
       .admin-accounts-redesign .accounts-card-head h2{margin:0;font-size:15px;line-height:1.6;font-weight:900;color:var(--admin-text)}
