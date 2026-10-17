@@ -70,29 +70,30 @@ function AdminAccounts() {
   };
   return <section className="admin-legacy-page admin-accounts-page admin-accounts-redesign">
     <style>{`
-      .admin-accounts-redesign{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.92fr);gap:16px;align-items:start;direction:rtl;color:var(--admin-text)}
-      .admin-accounts-redesign .accounts-card{min-width:0;padding:20px;border:1px solid var(--admin-border);border-radius:13px;background:var(--admin-card);box-shadow:none}
-      .admin-accounts-redesign .accounts-card-head{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
-      .admin-accounts-redesign .accounts-eyebrow{font-size:10px;font-weight:800;color:#31e6dc;letter-spacing:.2px}
-      .admin-accounts-redesign .accounts-card-head h2{margin:0;font-size:17px;font-weight:900;color:var(--admin-text)}
-      .admin-accounts-redesign .accounts-description{margin:0 0 16px;color:var(--admin-sub);font-size:11px;line-height:1.9}
-      .admin-accounts-redesign .accounts-fields{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:14px}
-      .admin-accounts-redesign .accounts-fields label{color:var(--admin-sub);font-size:11px!important;font-weight:700}
-      .admin-accounts-redesign .accounts-fields input{width:100%;box-sizing:border-box;margin-top:2px;border-radius:9px!important}
-      .admin-accounts-redesign .accounts-permission-picker{position:relative;margin-bottom:14px}
-      .admin-accounts-redesign .accounts-permission-toggle{display:flex;justify-content:space-between;align-items:center;width:100%;padding:11px 12px;border:1px solid var(--admin-border);border-radius:9px;background:var(--admin-inner);color:var(--admin-text);font:inherit;font-size:11px;cursor:pointer}
-      .admin-accounts-redesign .accounts-permission-menu{display:grid;grid-template-columns:1fr;gap:9px;margin-top:7px;padding:12px;border:1px solid var(--admin-border);border-radius:9px;background:var(--admin-inner)}
-      .admin-accounts-redesign .accounts-permission-menu label,.admin-accounts-redesign .accounts-saved-permissions label{display:flex;gap:9px;align-items:center;color:var(--admin-text);font-size:11px!important;line-height:1.6}
-      .admin-accounts-redesign input[type=checkbox]{width:15px;height:15px;accent-color:#31e6dc;flex:none}
-      .admin-accounts-redesign .accounts-primary-action{width:100%;margin-top:2px;border-radius:9px!important;padding:11px 14px!important;background:#123e40!important;border:1px solid #31e6dc!important;color:#dffffb!important;font-size:11px!important;font-weight:800!important}
-      .admin-accounts-redesign .accounts-admin-row{padding:14px 0;border-top:1px solid var(--admin-border)}
-      .admin-accounts-redesign .accounts-admin-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px}
-      .admin-accounts-redesign .accounts-admin-toolbar strong{font-size:13px;color:var(--admin-text);margin-left:auto}
-      .admin-accounts-redesign .accounts-admin-toolbar button{font-size:10px!important;padding:7px 9px!important;border-radius:7px!important}
+      .admin-accounts-redesign{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.92fr);gap:12px;align-items:start;direction:rtl;color:var(--admin-text);font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif}
+      .admin-accounts-redesign *{box-sizing:border-box}
+      .admin-accounts-redesign .accounts-card{min-width:0;padding:17px;border:1px solid var(--admin-border);border-radius:17px;background:var(--admin-card);box-shadow:var(--admin-shadow)}
+      .admin-accounts-redesign .accounts-card-head{display:flex;flex-direction:column;gap:4px;margin-bottom:13px}
+      .admin-accounts-redesign .accounts-eyebrow{font-size:9px;font-weight:900;color:var(--admin-accent);letter-spacing:0}
+      .admin-accounts-redesign .accounts-card-head h2{margin:0;font-size:15px;line-height:1.6;font-weight:900;color:var(--admin-text)}
+      .admin-accounts-redesign .accounts-description{margin:0 0 13px;color:var(--admin-sub);font-size:10px;line-height:1.9}
+      .admin-accounts-redesign .accounts-fields{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:12px}
+      .admin-accounts-redesign .accounts-fields label{color:var(--admin-sub);font-size:10px!important;font-weight:800;line-height:1.8}
+      .admin-accounts-redesign .accounts-fields input{width:100%;box-sizing:border-box;margin-top:4px;border-radius:9px!important;font-size:11px!important}
+      .admin-accounts-redesign .accounts-permission-picker{position:relative;margin-bottom:12px}
+      .admin-accounts-redesign .accounts-permission-toggle{display:flex;justify-content:space-between;align-items:center;width:100%;padding:10px 11px;border:1px solid var(--admin-border);border-radius:11px;background:var(--admin-inner);color:var(--admin-text);font:inherit;font-size:10px;cursor:pointer}
+      .admin-accounts-redesign .accounts-permission-menu{display:grid;grid-template-columns:1fr;gap:8px;margin-top:7px;padding:11px;border:1px solid var(--admin-border);border-radius:11px;background:var(--admin-inner)}
+      .admin-accounts-redesign .accounts-permission-menu label,.admin-accounts-redesign .accounts-saved-permissions label{display:flex;gap:8px;align-items:center;color:var(--admin-text);font-size:10px!important;line-height:1.7}
+      .admin-accounts-redesign input[type=checkbox]{width:14px;height:14px;accent-color:var(--admin-accent);flex:none}
+      .admin-accounts-redesign .accounts-primary-action{width:100%;margin-top:2px;border-radius:10px!important;padding:10px 13px!important;background:var(--admin-accent-soft)!important;border:1px solid var(--admin-brand-border)!important;color:var(--admin-text)!important;font-size:10px!important;font-weight:900!important}
+      .admin-accounts-redesign .accounts-admin-row{padding:12px 0;border-top:1px solid var(--admin-border)}
+      .admin-accounts-redesign .accounts-admin-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-bottom:11px}
+      .admin-accounts-redesign .accounts-admin-toolbar strong{font-size:12px;color:var(--admin-text);margin-left:auto}
+      .admin-accounts-redesign .accounts-admin-toolbar button{font-size:9px!important;padding:7px 9px!important;border-radius:9px!important}
       .admin-accounts-redesign .accounts-saved-permissions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-      .admin-accounts-redesign .accounts-list-card>p{font-size:11px!important}
+      .admin-accounts-redesign .accounts-list-card>p{font-size:10px!important}
       @media(max-width:900px){.admin-accounts-redesign{grid-template-columns:1fr}.admin-accounts-redesign .accounts-create-card{grid-row:1}.admin-accounts-redesign .accounts-list-card{grid-row:2}}
-      @media(max-width:520px){.admin-accounts-redesign .accounts-card{padding:14px}.admin-accounts-redesign .accounts-saved-permissions{grid-template-columns:1fr}}
+      @media(max-width:520px){.admin-accounts-redesign .accounts-card{padding:14px;border-radius:13px}.admin-accounts-redesign .accounts-saved-permissions{grid-template-columns:1fr}}
     `}</style>
     <div className="accounts-card accounts-create-card">
       <header className="accounts-card-head"><span className="accounts-eyebrow">مدیریت دسترسی‌ها</span><h2>ایجاد حساب مدیر</h2></header>
