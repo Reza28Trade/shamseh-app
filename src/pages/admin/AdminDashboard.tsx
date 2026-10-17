@@ -386,6 +386,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         @media(max-width:680px){.admin-dashboard-page{gap:17px}.admin-overview-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:0}.admin-action-grid{grid-template-columns:1fr;gap:8px}.admin-overview-card{height:76px;min-height:76px;padding:9px}.admin-overview-copy strong{font-size:19px}.admin-action-card{height:auto;min-height:112px;padding:11px 12px;gap:8px}.admin-action-copy strong{font-size:11px}.admin-action-copy small{font-size:9px}}
 
 
+
+        /* Remove colored top strips from every dashboard card while preserving the approved layout. */
+        .admin-dashboard-page .admin-overview-card,
+        .admin-dashboard-page .admin-stat,
+        .admin-dashboard-page .admin-panel-card,
+        .admin-dashboard-page .admin-action-group,
+        .admin-dashboard-page .admin-action-card {
+          border-top: 1px solid var(--admin-border) !important;
+        }
+        .admin-dashboard-page .admin-overview-card:nth-child(n) {
+          border-top-color: var(--admin-border) !important;
+        }
+
       `}</style>
     </div>
   );
