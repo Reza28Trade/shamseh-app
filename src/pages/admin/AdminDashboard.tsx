@@ -299,40 +299,44 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
 
 
 
-        /* Keep every overview metric in one row; medium-width, premium flat cards. */
-        .admin-dashboard-page{max-width:1240px;gap:24px}
-        .admin-overview-section,.admin-actions-section{gap:14px}
-        .admin-section-heading{padding-bottom:10px}
-        .admin-section-heading h2{font-size:17px}
-        .admin-overview-grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
-        .admin-overview-card{min-width:0;min-height:112px;padding:14px 12px;gap:10px;flex-direction:column;align-items:stretch;justify-content:space-between;border:1px solid var(--admin-border);border-right:2px solid var(--admin-accent);border-radius:12px;background-color:var(--admin-card)!important;background-image:linear-gradient(270deg,rgba(56,131,138,.075) 0%,rgba(56,131,138,.02) 26%,transparent 52%)!important;box-shadow:none}
+
+        /* Compact, aligned dashboard cards with restrained height. */
+        .admin-dashboard-page{max-width:1240px;gap:20px}
+        .admin-overview-section,.admin-actions-section{gap:11px}
+        .admin-section-heading{padding-bottom:8px}
+        .admin-section-heading h2{font-size:16px}
+        .admin-section-heading>small{font-size:9px}
+        .admin-overview-grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;align-items:stretch}
+        .admin-overview-card{min-width:0;min-height:84px;height:84px;padding:10px 12px;gap:8px;flex-direction:row;align-items:center;justify-content:flex-start;border:1px solid var(--admin-border);border-right:2px solid var(--admin-accent);border-radius:10px;background-color:var(--admin-card)!important;background-image:linear-gradient(270deg,rgba(56,131,138,.07) 0%,rgba(56,131,138,.02) 26%,transparent 52%)!important;box-shadow:none}
         .admin-overview-card:after{display:none!important}
-        .admin-overview-card:hover{transform:translateY(-2px);background-color:var(--admin-inner)!important;background-image:linear-gradient(270deg,rgba(56,131,138,.09) 0%,rgba(56,131,138,.025) 28%,transparent 55%)!important;box-shadow:0 5px 14px rgba(0,0,0,.08)}
-        .admin-overview-icon{width:31px;height:31px;border-radius:9px;background:var(--admin-inner)!important;border:1px solid var(--admin-border);align-self:flex-start}
+        .admin-overview-card:hover{transform:translateY(-1px);background-color:var(--admin-inner)!important;background-image:linear-gradient(270deg,rgba(56,131,138,.08) 0%,rgba(56,131,138,.02) 28%,transparent 55%)!important;box-shadow:none}
+        .admin-overview-icon{width:31px;height:31px;min-width:31px;border-radius:8px;background:var(--admin-inner)!important;border:1px solid var(--admin-border)}
         .admin-overview-icon svg{width:15px;height:15px}
-        .admin-overview-copy{gap:3px}
-        .admin-overview-copy small{font-size:10px;line-height:1.5;white-space:normal}
-        .admin-overview-copy strong{font-size:22px;line-height:1.2}
-        .admin-overview-copy span{font-size:9px;line-height:1.5}
-        .admin-overview-arrow{position:absolute;left:11px;top:15px;width:13px;height:13px}
-        .admin-action-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-        .admin-action-card{min-height:146px;padding:15px 17px;gap:11px;border:1px solid var(--admin-border);border-right:2px solid var(--admin-accent);border-radius:12px;background-color:var(--admin-card)!important;background-image:linear-gradient(270deg,rgba(56,131,138,.07) 0%,rgba(56,131,138,.02) 24%,transparent 50%)!important;box-shadow:none}
+        .admin-overview-copy{gap:2px}
+        .admin-overview-copy small{font-size:9px;line-height:1.45}
+        .admin-overview-copy strong{font-size:20px;line-height:1.15}
+        .admin-overview-copy span{font-size:8px;line-height:1.35}
+        .admin-overview-arrow{position:absolute;left:8px;top:9px;width:11px;height:11px}
+        .admin-action-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:stretch}
+        .admin-action-card{min-height:118px;height:118px;padding:11px 14px;gap:8px;border:1px solid var(--admin-border);border-right:2px solid var(--admin-accent);border-radius:10px;background-color:var(--admin-card)!important;background-image:linear-gradient(270deg,rgba(56,131,138,.06) 0%,rgba(56,131,138,.018) 24%,transparent 50%)!important;box-shadow:none}
         .admin-action-card:before{display:none!important}
         .admin-action-card.needs-action{border-right-color:#c58a27}
         .admin-action-card.all-clear{border-right-color:#23946e}
         .admin-action-card.unknown{border-right-color:var(--admin-accent)}
-        .admin-action-card:hover{transform:translateY(-2px);background-color:var(--admin-inner)!important;background-image:linear-gradient(270deg,rgba(56,131,138,.09) 0%,rgba(56,131,138,.025) 26%,transparent 52%)!important;box-shadow:0 5px 14px rgba(0,0,0,.08)}
-        .admin-action-icon{width:37px;height:37px;border-radius:10px;background:var(--admin-inner)!important}
-        .admin-action-status{font-size:9px;padding:5px 8px}
-        .admin-action-copy{gap:4px}
-        .admin-action-copy strong{font-size:12px;line-height:1.7}
-        .admin-action-copy small{font-size:10px;line-height:1.7}
-        .admin-action-card-bottom{padding-top:9px}
-        .admin-action-card-bottom>strong{font-size:20px}
-        .admin-action-card-bottom>small{font-size:9px}
-        .admin-refresh-button{background:var(--admin-card)!important;background-image:none!important;box-shadow:none}
-        @media(max-width:1050px){.admin-overview-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-        @media(max-width:680px){.admin-dashboard-page{gap:19px}.admin-overview-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.admin-action-grid{grid-template-columns:1fr;gap:9px}.admin-overview-card{min-height:94px;padding:11px}.admin-overview-copy strong{font-size:21px}.admin-overview-copy small{font-size:9px}.admin-action-card{min-height:128px;padding:13px 14px;gap:9px}.admin-action-copy strong{font-size:11px}.admin-action-copy small{font-size:9px}}
+        .admin-action-card:hover{transform:translateY(-1px);background-color:var(--admin-inner)!important;background-image:linear-gradient(270deg,rgba(56,131,138,.08) 0%,rgba(56,131,138,.02) 26%,transparent 52%)!important;box-shadow:none}
+        .admin-action-card-top{gap:7px}
+        .admin-action-icon{width:30px;height:30px;min-width:30px;border-radius:8px;background:var(--admin-inner)!important}
+        .admin-action-status{font-size:8px;padding:4px 6px}
+        .admin-action-copy{gap:3px}
+        .admin-action-copy strong{font-size:11px;line-height:1.5}
+        .admin-action-copy small{font-size:9px;line-height:1.5}
+        .admin-action-card-bottom{padding-top:6px}
+        .admin-action-card-bottom>strong{font-size:17px}
+        .admin-action-card-bottom>small{font-size:8px}
+        .admin-action-arrow{width:13px;height:13px}
+        .admin-refresh-button{padding:8px 12px;font-size:10px;background:var(--admin-card)!important;background-image:none!important;box-shadow:none}
+        @media(max-width:1050px){.admin-overview-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.admin-overview-card{height:80px;min-height:80px}.admin-action-card{height:auto;min-height:118px}}
+        @media(max-width:680px){.admin-dashboard-page{gap:17px}.admin-overview-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.admin-action-grid{grid-template-columns:1fr;gap:8px}.admin-overview-card{height:76px;min-height:76px;padding:9px}.admin-overview-copy strong{font-size:19px}.admin-action-card{height:auto;min-height:112px;padding:11px 12px;gap:8px}.admin-action-copy strong{font-size:11px}.admin-action-copy small{font-size:9px}}
 
 
       `}</style>
