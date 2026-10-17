@@ -298,42 +298,46 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         @media(max-width:600px){.admin-welcome{padding:18px;align-items:flex-start}.admin-welcome h1{font-size:20px}.admin-welcome-actions{gap:8px}.admin-welcome-mark{display:none}.admin-refresh-button{font-size:9px;padding:8px}.admin-stat-grid,.admin-followup-grid{grid-template-columns:1fr}.admin-quick-grid{grid-template-columns:1fr}.admin-panel-card{padding:14px}.admin-transaction-row{flex-wrap:wrap}.admin-transaction-amount{margin-right:40px}.admin-audit-row{align-items:flex-start;flex-wrap:wrap}.admin-audit-row time{margin-right:40px}}
         @media(prefers-reduced-motion:reduce){.admin-dashboard-page *{transition:none!important;animation:none!important}}
 
-        /* Dashboard redesign: stronger hierarchy, more breathing room, clear operational focus. */
+        /* Flat editorial dashboard: solid surfaces, crisp borders, deliberate asymmetry. */
         .admin-dashboard-page{max-width:1320px;gap:30px;padding-bottom:16px}
         .admin-dashboard-controls{padding:0 0 3px}
-        .admin-refresh-button{border-radius:12px;padding:10px 15px;font-size:11px;box-shadow:0 5px 14px rgba(56,131,138,.09)}
+        .admin-refresh-button{border-radius:9px;padding:10px 15px;font-size:11px;box-shadow:none;background:var(--admin-card)}
         .admin-overview-section,.admin-actions-section{gap:18px}
         .admin-section-heading{align-items:center;padding:0 4px 13px;border-bottom:1px solid var(--admin-border);position:relative}
-        .admin-section-heading:after{content:'';position:absolute;bottom:-1px;right:4px;width:54px;height:2px;background:var(--admin-accent);border-radius:2px}
+        .admin-section-heading:after{content:'';position:absolute;bottom:-1px;right:4px;width:54px;height:2px;background:var(--admin-accent)}
         .admin-section-heading>div{gap:4px}
         .admin-section-heading>div>span{font-size:10px;letter-spacing:.15px}
         .admin-section-heading h2{font-size:19px;letter-spacing:-.4px}
         .admin-section-heading>small{font-size:10px}
-        .admin-overview-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-        .admin-overview-card{min-height:132px;padding:22px;gap:15px;border-radius:20px;background:var(--admin-card);box-shadow:0 5px 18px rgba(22,49,54,.045)}
-        .admin-overview-card:after{width:175px;height:175px;left:-76px;bottom:-112px}
-        .admin-overview-card:hover{transform:translateY(-3px);box-shadow:0 13px 26px rgba(30,75,80,.10)}
-        .admin-overview-icon{width:47px;height:47px;border-radius:15px}
+        .admin-overview-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+        .admin-overview-card{min-height:126px;padding:21px;gap:15px;border-radius:12px;background:var(--admin-card);box-shadow:none;border-top:2px solid var(--admin-accent)}
+        .admin-overview-card:after{display:none}
+        .admin-overview-card:hover{transform:translateY(-2px);box-shadow:none;border-color:var(--admin-accent)}
+        .admin-overview-icon{width:44px;height:44px;border-radius:10px;background:var(--admin-inner);border:1px solid var(--admin-border)}
         .admin-overview-copy{gap:6px}
         .admin-overview-copy small{font-size:11px}
         .admin-overview-copy strong{font-size:28px}
         .admin-overview-copy span{font-size:10px}
-        .admin-action-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-        .admin-action-card{min-height:190px;gap:17px;padding:22px 23px;border-radius:20px;background:var(--admin-card);box-shadow:0 5px 18px rgba(22,49,54,.045)}
-        .admin-action-card:before{width:185px;height:185px;left:-82px;top:-110px}
-        .admin-action-card:hover{transform:translateY(-3px);box-shadow:0 13px 26px rgba(30,75,80,.10)}
-        .admin-action-icon{width:46px;height:46px;border-radius:15px}
-        .admin-action-status{font-size:10px;padding:7px 10px;border-radius:9px}
+        .admin-action-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:12px}
+        .admin-action-card{min-height:176px;gap:15px;padding:19px 21px;border-radius:12px;background:var(--admin-card);box-shadow:none;border-right:3px solid var(--admin-border)}
+        .admin-action-card:before{display:none}
+        .admin-action-card.needs-action{border-right-color:#c58a27}
+        .admin-action-card.all-clear{border-right-color:#23946e}
+        .admin-action-card.unknown{border-right-color:var(--admin-border)}
+        .admin-action-card:hover{transform:translateY(-2px);box-shadow:none;border-top-color:var(--admin-accent)}
+        .admin-action-icon{width:42px;height:42px;border-radius:10px;background:var(--admin-inner);border:1px solid var(--admin-border)}
+        .admin-action-status{font-size:10px;padding:6px 9px;border-radius:6px}
         .admin-action-copy{gap:7px}
         .admin-action-copy strong{font-size:13px;line-height:1.8}
         .admin-action-copy small{font-size:11px;line-height:1.9}
-        .admin-action-card-bottom{padding-top:15px}
+        .admin-action-card-bottom{padding-top:13px;border-top:1px solid var(--admin-border)}
         .admin-action-card-bottom>strong{font-size:23px}
         .admin-action-card-bottom>small{font-size:10px}
         .admin-action-arrow{margin-right:auto}
-        .admin-no-actions{min-height:190px;border-radius:18px}
-        @media(max-width:1050px){.admin-overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-        @media(max-width:680px){.admin-dashboard-page{gap:23px}.admin-overview-grid,.admin-action-grid{grid-template-columns:1fr;gap:11px}.admin-section-heading{align-items:flex-start;gap:7px}.admin-section-heading h2{font-size:17px}.admin-section-heading>small{text-align:right}.admin-overview-card{min-height:104px;padding:16px;border-radius:16px}.admin-overview-icon{width:39px;height:39px}.admin-overview-copy strong{font-size:24px}.admin-action-card{min-height:158px;padding:16px;border-radius:16px;gap:12px}.admin-action-icon{width:38px;height:38px}.admin-action-copy strong{font-size:12px}.admin-action-copy small{font-size:10px}}
+        .admin-no-actions{min-height:180px;border-radius:12px;background:var(--admin-card)}
+        @media(max-width:1050px){.admin-overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-action-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+        @media(max-width:680px){.admin-dashboard-page{gap:23px}.admin-overview-grid,.admin-action-grid{grid-template-columns:1fr;gap:10px}.admin-section-heading{align-items:flex-start;gap:7px}.admin-section-heading h2{font-size:17px}.admin-section-heading>small{text-align:right}.admin-overview-card{min-height:100px;padding:15px;border-radius:10px}.admin-overview-icon{width:38px;height:38px}.admin-overview-copy strong{font-size:24px}.admin-action-card{min-height:150px;padding:15px;border-radius:10px;gap:12px}.admin-action-icon{width:36px;height:36px}.admin-action-copy strong{font-size:12px}.admin-action-copy small{font-size:10px}}
+
 
       `}</style>
     </div>
