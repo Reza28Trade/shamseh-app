@@ -2407,3 +2407,132 @@
     min-width: 560px;
   }
 }
+
+
+/* Audit logs: bring inline-styled cards onto the shared admin spacing scale. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-logs-page {
+  max-width: 1240px;
+  gap: 16px !important;
+  color: var(--admin-text);
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-logs-page > section {
+  min-width: 0;
+  padding: 18px 20px !important;
+  border-color: var(--admin-border) !important;
+  border-radius: 16px !important;
+  background: var(--admin-card) !important;
+  color: var(--admin-text) !important;
+  box-shadow: var(--admin-shadow) !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-logs-page > section:first-child {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(112deg, var(--admin-card), var(--admin-inner)) !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-logs-page > section:first-child h2 {
+  font-size: 20px !important;
+  line-height: 1.6;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-logs-page article {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  border-color: var(--admin-border) !important;
+  border-radius: 12px !important;
+  background: var(--admin-control) !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-logs-page pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-logs-page time {
+  white-space: normal !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-logs-page button {
+  min-height: 36px;
+  white-space: normal;
+}
+@media (max-width: 760px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-logs-page > section {
+    padding: 14px !important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-logs-page > section:first-child > div {
+    align-items: stretch !important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-logs-page > section:first-child button {
+    align-self: flex-start;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-logs-page article > div:first-child {
+    gap: 8px !important;
+  }
+}
+@media (max-width: 420px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-logs-page > section {
+    padding: 11px !important;
+    border-radius: 12px !important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-logs-page > section:first-child h2 {
+    font-size: 17px !important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-logs-page article {
+    padding: 12px !important;
+  }
+}
+
+/* Counseling: normalize inline card spacing without changing any counseling workflow. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page {
+  max-width: 1240px;
+  gap: 16px !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head {
+  min-height: 82px;
+  padding: 18px 20px;
+  border: 1px solid var(--admin-border);
+  border-radius: 16px;
+  background: linear-gradient(112deg, var(--admin-card), var(--admin-inner));
+  box-shadow: var(--admin-shadow);
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head h2 {
+  font-size: 20px !important;
+  line-height: 1.6;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-stats-grid > div,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > section {
+  min-width: 0;
+  border: 1px solid var(--admin-border) !important;
+  border-radius: 16px !important;
+  background: var(--admin-card) !important;
+  color: var(--admin-text) !important;
+  box-shadow: var(--admin-shadow) !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > section {
+  padding: 18px !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page input,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page select {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 760px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head {
+    min-height: 0;
+    padding: 15px !important;
+    align-items: stretch !important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > section {
+    padding: 14px !important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-list {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+@media (max-width: 420px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > section {
+    padding: 11px !important;
+    border-radius: 12px !important;
+  }
+}
