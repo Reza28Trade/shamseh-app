@@ -2085,3 +2085,161 @@
     flex:1 1 calc(50% - 8px);
   }
 }
+
+
+/* Shared admin section sizing and responsive safeguards.
+   The approved dashboard remains the visual reference; these rules only
+   normalize legacy management screens and prevent content from overflowing. */
+.admin-shell .admin-page-content,
+.admin-shell .admin-page-content > * {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.admin-shell .admin-page-content > .admin-legacy-page {
+  max-width: 1480px;
+  margin-inline: auto;
+  gap: 16px;
+  font-size: 12px;
+}
+
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  div, section, article, form, header, main, aside, fieldset
+) {
+  min-width: 0;
+}
+
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  h1, h2, h3, h4, p, label, td, th, strong
+) {
+  overflow-wrap: anywhere;
+}
+
+.admin-shell .admin-page-content .admin-legacy-page :is(input, select, textarea) {
+  min-width: 0;
+  max-width: 100%;
+  font: inherit;
+}
+
+.admin-shell .admin-page-content .admin-legacy-page :is(button, a) {
+  max-width: 100%;
+}
+
+.admin-shell .admin-page-content .admin-legacy-page img,
+.admin-shell .admin-page-content .admin-legacy-page svg {
+  max-width: 100%;
+}
+
+.admin-shell .admin-page-content .admin-legacy-page table {
+  max-width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .admin-shell .admin-main {
+    min-width: 0;
+  }
+
+  .admin-shell .admin-page-content {
+    min-width: 0;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page {
+    gap: 14px;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .students-main-grid, .admin-counseling-conversations-grid, .expanded-grid
+  ) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .admin-shell .admin-page-content .admin-legacy-page {
+    gap: 12px;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .students-stats, .offline-stats, .messages-stats, .counseling-stats-grid,
+    .mock-exam-stats
+  ) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .course-toolbar, .students-head-actions, .offline-page-head,
+    .messages-page-head, .notifications-page-head, .section-title
+  ) {
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .course-toolbar, .picker-filters, .offline-filter-group
+  ) > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page th,
+  .admin-shell .admin-page-content .admin-legacy-page td {
+    white-space: normal;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .messages-table-wrap, .student-table-wrap, .table-wrap
+  ) {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-shell .admin-page-content > section {
+    gap: 12px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-shell .admin-main {
+    padding-inline: 10px;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page {
+    gap: 10px;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .students-stats, .offline-stats, .messages-stats, .counseling-stats-grid,
+    .mock-exam-stats, .accounts-fields, .accounts-permissions
+  ) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .students-page-head, .offline-page-head, .messages-page-head,
+    .notifications-page-head, .course-section-head
+  ) {
+    align-items: stretch;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .course-card-actions, .course-actions, .mini-actions, .offline-review-actions
+  ) {
+    flex-wrap: wrap;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .course-card-actions, .course-actions, .mini-actions, .offline-review-actions
+  ) > button {
+    flex: 1 1 130px;
+  }
+}
