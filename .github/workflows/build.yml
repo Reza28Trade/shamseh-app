@@ -5,7 +5,6 @@ on:
     branches:
       - feature/final-product-schema
       - integration/product-schema-public-finance
-      - fix/sidebar-reference-design-20261017
   push:
     branches:
       - integration/product-schema-public-finance
