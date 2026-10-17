@@ -118,48 +118,43 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
   const pendingCounselingRequests = data.counselingRequests?.filter(item => item.status === 'PENDING') ?? null;
   const openManagementTickets = data.managementTickets?.filter(item => item.status === 'OPEN') ?? null;
   const actionItems = [
-    ...(isAllowed('finance') && pendingRegistrations && pendingRegistrations.length > 0 ? [{
+    ...(isAllowed('finance') ? [{
       id: 'pending-registrations', label: 'ثبت‌نام‌های نیازمند بررسی', detail: 'بررسی اطلاعات ثبت‌نام و موارد نیازمند اصلاح',
-      count: pendingRegistrations.length, tab: 'registrations' as const, icon: FileCheck2,
+      count: pendingRegistrations?.length ?? null, status: pendingRegistrations ? (pendingRegistrations.length ? 'نیازمند اقدام مدیر' : 'اقدامی لازم نیست') : 'وضعیت دریافت نشد', tab: 'registrations' as const, icon: FileCheck2,
     }] : []),
-    ...(isAllowed('finance') && pendingPayments && pendingPayments.length > 0 ? [{
+    ...(isAllowed('finance') ? [{
       id: 'pending-payments', label: 'رسیدهای پرداخت در انتظار تأیید', detail: 'بررسی رسیدها و تعیین وضعیت پرداخت',
-      count: pendingPayments.length, tab: 'registrations' as const, icon: CreditCard,
+      count: pendingPayments?.length ?? null, status: pendingPayments ? (pendingPayments.length ? 'نیازمند اقدام مدیر' : 'اقدامی لازم نیست') : 'وضعیت دریافت نشد', tab: 'registrations' as const, icon: CreditCard,
     }] : []),
-    ...(isAllowed('finance') && openRefunds && openRefunds.length > 0 ? [{
+    ...(isAllowed('finance') ? [{
       id: 'open-refunds', label: 'درخواست‌های بازپرداخت', detail: 'بررسی درخواست‌های باز یا مبلغ رزروشده',
-      count: openRefunds.length, tab: 'registrations' as const, icon: Wallet,
+      count: openRefunds?.length ?? null, status: openRefunds ? (openRefunds.length ? 'نیازمند اقدام مدیر' : 'اقدامی لازم نیست') : 'وضعیت دریافت نشد', tab: 'registrations' as const, icon: Wallet,
     }] : []),
-    ...(admin?.role === 'super_admin' && openTickets && openTickets.length > 0 ? [{
+    ...(admin?.role === 'super_admin' ? [{
       id: 'open-tickets', label: 'تیکت‌های پشتیبانی باز', detail: 'بررسی پیام‌ها و پاسخ‌گویی به هنرجویان',
-      count: openTickets.length, tab: 'messages' as const, icon: MessageSquare,
+      count: openTickets?.length ?? null, status: openTickets ? (openTickets.length ? 'نیازمند اقدام مدیر' : 'اقدامی لازم نیست') : 'وضعیت دریافت نشد', tab: 'messages' as const, icon: MessageSquare,
     }] : []),
-    ...(isAllowed('offlineRequests') && pendingOfflineRequests && pendingOfflineRequests.length > 0 ? [{
+    ...(isAllowed('offlineRequests') ? [{
       id: 'offline-requests', label: 'درخواست‌های آفلاین در انتظار', detail: 'بررسی درخواست دسترسی به جلسات آفلاین',
-      count: pendingOfflineRequests.length, tab: 'offlineRequests' as const, icon: ClipboardList,
+      count: pendingOfflineRequests?.length ?? null, status: pendingOfflineRequests ? (pendingOfflineRequests.length ? 'نیازمند اقدام مدیر' : 'اقدامی لازم نیست') : 'وضعیت دریافت نشد', tab: 'offlineRequests' as const, icon: ClipboardList,
     }] : []),
-    ...(isAllowed('counseling') && pendingCounselingRequests && pendingCounselingRequests.length > 0 ? [{
+    ...(isAllowed('counseling') ? [{
       id: 'counseling-requests', label: 'درخواست‌های مشاوره در انتظار', detail: 'بررسی و تعیین تکلیف درخواست‌های مشاوره',
-      count: pendingCounselingRequests.length, tab: 'counseling' as const, icon: CalendarClock,
+      count: pendingCounselingRequests?.length ?? null, status: pendingCounselingRequests ? (pendingCounselingRequests.length ? 'نیازمند اقدام مدیر' : 'اقدامی لازم نیست') : 'وضعیت دریافت نشد', tab: 'counseling' as const, icon: CalendarClock,
     }] : []),
-    ...(admin?.role === 'super_admin' && openManagementTickets && openManagementTickets.length > 0 ? [{
+    ...(admin?.role === 'super_admin' ? [{
       id: 'management-tickets', label: 'انتقادات و پیشنهادات نیازمند پاسخ', detail: 'بررسی پیام‌های باز ارسال‌شده برای مدیریت',
-      count: openManagementTickets.length, tab: 'managementContact' as const, icon: MessageSquare,
+      count: openManagementTickets?.length ?? null, status: openManagementTickets ? (openManagementTickets.length ? 'نیازمند اقدام مدیر' : 'اقدامی لازم نیست') : 'وضعیت دریافت نشد', tab: 'managementContact' as const, icon: MessageSquare,
     }] : []),
   ];
 
   return (
     <div className="admin-dashboard-page">
-      <div className="admin-action-toolbar">
-        <div>
-          <span className="admin-action-eyebrow">مرکز مدیریت شمسه</span>
-          <h1>موارد نیازمند اقدام</h1>
-          <p>فقط مواردی نمایش داده می‌شوند که نیاز به بررسی یا پیگیری دارند.</p>
-          <span className="admin-dashboard-updated">
-            <Activity size={13} />
-            {lastUpdated ? 'آخرین بروزرسانی: ' + dateFa(lastUpdated) : loading ? 'در حال دریافت اطلاعات سامانه…' : 'زمان بروزرسانی ثبت نشده است'}
-          </span>
-        </div>
+      <div className="admin-dashboard-controls">
+        <span className="admin-dashboard-updated">
+          <Activity size={13} />
+          {lastUpdated ? 'آخرین بروزرسانی: ' + dateFa(lastUpdated) : loading ? 'در حال دریافت اطلاعات سامانه…' : 'زمان بروزرسانی ثبت نشده است'}
+        </span>
         <button className="admin-refresh-button" onClick={() => void loadDashboard()} disabled={loading}>
           <RefreshCw size={14} className={loading ? 'admin-spinning' : ''} />
           {loading ? 'در حال بروزرسانی' : 'بروزرسانی اطلاعات'}
@@ -169,38 +164,39 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
       {refreshError && <div className="admin-dashboard-notice" role="status">{refreshError}</div>}
 
       {loading && actionItems.length === 0 ? (
-        <div className="admin-no-actions"><RefreshCw size={20} className="admin-spinning" /><strong>در حال بررسی موارد نیازمند اقدام…</strong></div>
-      ) : actionItems.length > 0 ? (
-        <section className="admin-action-list" aria-label="موارد نیازمند اقدام">
+        <div className="admin-no-actions"><RefreshCw size={20} className="admin-spinning" /><strong>در حال دریافت وضعیت بخش‌های پنل…</strong></div>
+      ) : (
+        <section className="admin-action-grid" aria-label="وضعیت بخش‌های نیازمند پیگیری">
           {actionItems.map(item => {
             const Icon = item.icon;
+            const needsAction = item.count !== null && item.count > 0;
             return (
-              <button key={item.id} className="admin-action-item" onClick={() => onNavigate(item.tab)}>
-                <span className="admin-action-icon"><Icon size={19} /></span>
+              <button key={item.id} className={`admin-action-card ${needsAction ? 'needs-action' : item.count === null ? 'unknown' : 'all-clear'}`} onClick={() => onNavigate(item.tab)}>
+                <span className="admin-action-card-top">
+                  <span className="admin-action-icon"><Icon size={19} /></span>
+                  <span className={`admin-action-status ${needsAction ? 'pending' : item.count === null ? 'unknown' : 'clear'}`}>{item.status}</span>
+                </span>
                 <span className="admin-action-copy"><strong>{item.label}</strong><small>{item.detail}</small></span>
-                <span className="admin-action-count">{numberFa(item.count)} مورد</span>
-                <ArrowLeft size={16} className="admin-action-arrow" />
+                <span className="admin-action-card-bottom">
+                  <strong>{numberFa(item.count)}</strong>
+                  <small>{item.count === null ? 'مورد قابل بررسی نیست' : 'مورد'}</small>
+                  <ArrowLeft size={16} className="admin-action-arrow" />
+                </span>
               </button>
             );
           })}
         </section>
-      ) : !refreshError ? (
-        <div className="admin-no-actions">
-          <FileCheck2 size={23} />
-          <strong>در حال حاضر موردی برای اقدام وجود ندارد.</strong>
-          <span>برای مشاهده آخرین وضعیت، دکمهٔ «بروزرسانی اطلاعات» را بزنید.</span>
-        </div>
-      ) : null}
+      )}
 
       <style>{`
-        .admin-action-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 20px;border:1px solid var(--admin-border);border-radius:16px;background:var(--admin-card);box-shadow:var(--admin-shadow)}
-        .admin-action-toolbar h1{margin:4px 0 5px;font-size:20px;font-weight:900}
-        .admin-action-toolbar p{margin:0;color:var(--admin-sub);font-size:11px;line-height:1.8}
-        .admin-action-eyebrow{font-size:10px;color:var(--admin-accent);font-weight:900}
-        .admin-action-toolbar .admin-dashboard-updated{margin-top:9px}
-        .admin-action-list{display:flex;flex-direction:column;gap:9px}
-        .admin-action-item{display:flex;align-items:center;gap:13px;width:100%;min-width:0;padding:14px 16px;border:1px solid var(--admin-border);border-radius:14px;background:var(--admin-card);color:var(--admin-text);text-align:right;cursor:pointer;box-shadow:var(--admin-shadow);transition:border-color .18s,transform .18s}
-        .admin-action-item:hover{border-color:var(--admin-accent);transform:translateY(-1px)}
+        .admin-dashboard-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 2px 2px}
+        
+        
+        
+        
+        .admin-action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+        .admin-action-card{display:flex;flex-direction:column;align-items:stretch;gap:13px;width:100%;min-width:0;min-height:148px;padding:15px 16px;border:1px solid var(--admin-border);border-radius:15px;background:var(--admin-card);color:var(--admin-text);text-align:right;cursor:pointer;box-shadow:var(--admin-shadow);transition:border-color .18s,transform .18s}.admin-action-card.needs-action{border-right:3px solid #c58a27}.admin-action-card.all-clear{border-right:3px solid #23946e}.admin-action-card.unknown{border-right:3px solid var(--admin-sub)}.admin-action-card-top,.admin-action-card-bottom{display:flex;align-items:center;gap:9px}.admin-action-card-top{justify-content:space-between}.admin-action-card-bottom{padding-top:10px;border-top:1px solid var(--admin-border)}.admin-action-card-bottom>strong{font-size:19px;font-weight:900}.admin-action-card-bottom>small{font-size:9px;color:var(--admin-sub);flex:1}.admin-action-status{font-size:9px;font-weight:850;padding:5px 8px;border-radius:8px;white-space:nowrap}.admin-action-status.pending{background:rgba(197,138,39,.13);color:#c58a27}.admin-action-status.clear{background:rgba(35,148,110,.12);color:#23946e}.admin-action-status.unknown{background:var(--admin-inner);color:var(--admin-sub)}
+        .admin-action-card:hover{border-color:var(--admin-accent);transform:translateY(-1px)}
         .admin-action-icon{width:40px;height:40px;display:grid;place-items:center;flex:none;border-radius:12px;background:var(--admin-accent-soft);color:var(--admin-accent)}
         .admin-action-copy{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0}
         .admin-action-copy strong{font-size:12px;font-weight:900}
@@ -211,7 +207,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-no-actions>svg{color:var(--admin-accent)}
         .admin-no-actions strong{font-size:13px;color:var(--admin-text)}
         .admin-no-actions span{font-size:10px;line-height:1.8}
-        @media(max-width:600px){.admin-action-toolbar{align-items:flex-start;flex-direction:column;padding:16px}.admin-action-toolbar h1{font-size:18px}.admin-action-item{gap:9px;padding:11px}.admin-action-icon{width:34px;height:34px}.admin-action-copy strong{font-size:11px}.admin-action-count{font-size:9px;padding:5px 7px}}
+        @media(max-width:680px){.admin-action-grid{grid-template-columns:1fr}.admin-dashboard-controls{align-items:flex-start;flex-direction:column}.admin-action-card{min-height:130px;padding:13px}.admin-action-icon{width:34px;height:34px}.admin-action-copy strong{font-size:11px}}
         .admin-dashboard-page{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:16px;color:var(--admin-text);font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif}
         .admin-dashboard-page *{box-sizing:border-box}
         .admin-welcome{min-height:150px;border:1px solid var(--admin-border);background:linear-gradient(110deg,var(--admin-card),var(--admin-inner));border-radius:20px;padding:23px 25px;display:flex;align-items:center;justify-content:space-between;gap:18px;overflow:hidden;position:relative;box-shadow:var(--admin-shadow)}
