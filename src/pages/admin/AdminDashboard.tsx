@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import type { Admin } from '../../types';
 import {
-  ArrowLeft, CalendarClock, ClipboardList, Users, BookOpen, GraduationCap,
+  ArrowLeft, ClipboardList, Users, BookOpen, GraduationCap,
   CreditCard, FileCheck2, RefreshCw, Wallet, MessageSquare, ChartNoAxesCombined, ClipboardCheck,
 } from 'lucide-react';
 
@@ -108,7 +108,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
   const openRefunds = data.refunds?.filter(item => item.status === 'REQUESTED' || item.status === 'RESERVED') ?? null;
   const openTickets = data.tickets?.filter(item => item.status === 'OPEN') ?? null;
   const pendingOfflineRequests = data.offlineRequests?.filter(item => item.status === 'PENDING') ?? null;
-  const pendingCounselingRequests = data.counselingRequests?.filter(item => item.status === 'PENDING') ?? null;
   const openManagementTickets = data.managementTickets?.filter(item => item.status === 'OPEN') ?? null;
   const actionItems = [
     ...(isAllowed('finance') ? [{
