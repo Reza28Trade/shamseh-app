@@ -131,7 +131,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
         .admin-nav button:hover{background:var(--admin-card);color:var(--admin-text)}
         .admin-nav-icon{width:29px;height:29px;flex:0 0 29px;border-radius:9px;display:grid;place-items:center;color:inherit}
         .admin-nav-label{flex:1;text-align:right}
-        .admin-nav button.active{color:var(--admin-accent);font-weight:900;background:linear-gradient(270deg,var(--admin-accent-soft),transparent);border-color:transparent}
+        .admin-nav button.active{color:var(--admin-accent);font-weight:900;background:linear-gradient(90deg,var(--admin-accent-soft),transparent);border-color:transparent}
         .admin-nav button.active .admin-nav-icon{color:var(--admin-accent)}
         .admin-nav-indicator{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px;background:var(--admin-accent);box-shadow:0 0 12px var(--admin-accent-soft)}
         .admin-sidebar-footer{padding-top:12px;border-top:1px solid var(--admin-border);flex:none}
