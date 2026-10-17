@@ -321,6 +321,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-overview-copy strong{font-size:21px;line-height:1.15}
         .admin-overview-copy span{font-size:8px;line-height:1.35}
         .admin-overview-arrow{display:none}
+
+        /* Slightly larger typography and brighter neon accents, statistics section only. */
+        .admin-overview-card{border-top-width:3px}
+        .admin-overview-card:nth-child(1){border-top-color:#31e6dc}
+        .admin-overview-card:nth-child(2){border-top-color:#5aa8ff}
+        .admin-overview-card:nth-child(3){border-top-color:#ffc857}
+        .admin-overview-card:nth-child(4){border-top-color:#43f0a4}
+        .admin-overview-card:nth-child(5){border-top-color:#ff7d9d}
+        .admin-overview-icon{color:#37eee2}
+        .admin-overview-card:nth-child(2) .admin-overview-icon{color:#66adff}
+        .admin-overview-card:nth-child(3) .admin-overview-icon{color:#ffd166}
+        .admin-overview-card:nth-child(4) .admin-overview-icon{color:#43f0a4}
+        .admin-overview-card:nth-child(5) .admin-overview-icon{color:#ff8aa7}
+        .admin-overview-copy small{font-size:10px}
+        .admin-overview-copy strong{font-size:23px}
+        .admin-overview-copy span{font-size:9px}
         .admin-action-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:stretch}
         .admin-action-card{min-height:118px;height:118px;padding:11px 14px;gap:8px;border:1px solid var(--admin-border);border-right:2px solid var(--admin-accent);border-radius:10px;background-color:var(--admin-card)!important;background-image:linear-gradient(270deg,rgba(56,131,138,.06) 0%,rgba(56,131,138,.018) 24%,transparent 50%)!important;box-shadow:none}
         .admin-action-card:before{display:none!important}
