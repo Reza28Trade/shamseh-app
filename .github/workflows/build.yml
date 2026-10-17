@@ -3,6 +3,7 @@ name: Build
 on:
   pull_request:
     branches:
+      - admin-design-dashboard-vps-baseline
       - feature/final-product-schema
       - integration/product-schema-public-finance
   push:

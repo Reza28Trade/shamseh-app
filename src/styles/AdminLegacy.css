@@ -2085,3 +2085,513 @@
     flex:1 1 calc(50% - 8px);
   }
 }
+
+
+/* Shared admin section sizing and responsive safeguards.
+   The approved dashboard remains the visual reference; these rules only
+   normalize legacy management screens and prevent content from overflowing. */
+.admin-shell .admin-page-content {
+  min-width: 0;
+}
+
+.admin-shell .admin-page-content > section {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.admin-shell .admin-page-content > .admin-legacy-page {
+  max-width: 1480px;
+  margin-inline: auto;
+  gap: 16px;
+  font-size: 12px;
+}
+
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  div, section, article, form, header, main, aside, fieldset
+) {
+  min-width: 0;
+}
+
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  h1, h2, h3, h4, p, label, td, th, strong
+) {
+  overflow-wrap: anywhere;
+}
+
+.admin-shell .admin-page-content .admin-legacy-page :is(input, select, textarea) {
+  min-width: 0;
+  max-width: 100%;
+  font: inherit;
+}
+
+.admin-shell .admin-page-content .admin-legacy-page :is(button, a) {
+  max-width: 100%;
+}
+
+.admin-shell .admin-page-content .admin-legacy-page img,
+.admin-shell .admin-page-content .admin-legacy-page svg {
+  max-width: 100%;
+}
+
+.admin-shell .admin-page-content .admin-legacy-page table {
+  max-width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .admin-shell .admin-main {
+    min-width: 0;
+  }
+
+  .admin-shell .admin-page-content {
+    min-width: 0;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page {
+    gap: 14px;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .students-main-grid, .admin-counseling-conversations-grid, .expanded-grid
+  ) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .admin-shell .admin-page-content .admin-legacy-page {
+    gap: 12px;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .students-stats, .offline-stats, .messages-stats, .counseling-stats-grid,
+    .mock-exam-stats
+  ) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .course-toolbar, .students-head-actions, .offline-page-head,
+    .messages-page-head, .notifications-page-head, .section-title
+  ) {
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .course-toolbar, .picker-filters, .offline-filter-group
+  ) > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page th,
+  .admin-shell .admin-page-content .admin-legacy-page td {
+    white-space: normal;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .messages-table-wrap, .student-table-wrap, .table-wrap
+  ) {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-shell .admin-page-content > section {
+    gap: 12px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-shell .admin-main {
+    padding-inline: 10px;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page {
+    gap: 10px;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .students-stats, .offline-stats, .messages-stats, .counseling-stats-grid,
+    .mock-exam-stats, .accounts-fields, .accounts-permissions
+  ) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .students-page-head, .offline-page-head, .messages-page-head,
+    .notifications-page-head, .course-section-head
+  ) {
+    align-items: stretch;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .course-card-actions, .course-actions, .mini-actions, .offline-review-actions
+  ) {
+    flex-wrap: wrap;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .course-card-actions, .course-actions, .mini-actions, .offline-review-actions
+  ) > button {
+    flex: 1 1 130px;
+  }
+}
+
+
+/* Registration and finance: scoped responsive layout for dense financial records. */
+.admin-shell .admin-page-content .admin-registration-finance {
+  width: 100%;
+  min-width: 0;
+  max-width: 1480px;
+}
+
+.admin-shell .admin-page-content .admin-registration-finance > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.admin-shell .admin-page-content .admin-registration-finance > section {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.admin-shell .admin-page-content .admin-registration-finance table {
+  width: 100%;
+}
+
+.admin-shell .admin-page-content .admin-registration-finance td,
+.admin-shell .admin-page-content .admin-registration-finance th {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 760px) {
+  .admin-shell .admin-page-content .admin-registration-finance {
+    gap: 12px !important;
+  }
+
+  .admin-shell .admin-page-content .admin-registration-finance > section {
+    padding: 12px !important;
+  }
+
+  .admin-shell .admin-page-content .admin-registration-finance > div {
+    max-width: 100%;
+  }
+
+  .admin-shell .admin-page-content .admin-registration-finance input,
+  .admin-shell .admin-page-content .admin-registration-finance select,
+  .admin-shell .admin-page-content .admin-registration-finance textarea {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .admin-shell .admin-page-content .admin-registration-finance table {
+    min-width: 680px;
+  }
+}
+
+@media (max-width: 420px) {
+  .admin-shell .admin-page-content .admin-registration-finance > section {
+    padding: 10px !important;
+    border-radius: 12px !important;
+  }
+
+  .admin-shell .admin-page-content .admin-registration-finance article {
+    padding: 11px !important;
+  }
+
+  .admin-shell .admin-page-content .admin-registration-finance button {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
+
+
+/* Final module-specific responsive pass for dense admin workflows. */
+@media (max-width: 760px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-request-row,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-review,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-review-actions,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-item,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-selected-student,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-list-head,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-section-head,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-detail-head {
+    min-width: 0;
+    flex-wrap: wrap;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-request-main,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-review,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-list,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .admin-counseling-conversations-grid,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-list-card,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-ticket-section,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-detail-section {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .admin-counseling-conversations-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-list {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-table {
+    min-width: 600px;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-thread,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-reply-form {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-bubble {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-logs-page table {
+    min-width: 620px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-stats,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-stats,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-stats-grid,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stats {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-filters {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-request-row button,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-reply-actions button,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-item button {
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-table {
+    min-width: 560px;
+  }
+
+  .admin-shell .admin-page-content .admin-legacy-page.admin-logs-page table {
+    min-width: 560px;
+  }
+}
+
+
+/* Audit logs: bring inline-styled cards onto the shared admin spacing scale. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-logs-page {
+  max-width: 1240px;
+  gap: 16px !important;
+  color: var(--admin-text);
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-logs-page > section {
+  min-width: 0;
+  padding: 18px 20px !important;
+  border-color: var(--admin-border) !important;
+  border-radius: 16px !important;
+  background: var(--admin-card) !important;
+  color: var(--admin-text) !important;
+  box-shadow: var(--admin-shadow) !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-logs-page > section:first-child {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(112deg, var(--admin-card), var(--admin-inner)) !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-logs-page > section:first-child h2 {
+  font-size: 20px !important;
+  line-height: 1.6;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-logs-page article {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  border-color: var(--admin-border) !important;
+  border-radius: 12px !important;
+  background: var(--admin-control) !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-logs-page pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-logs-page time {
+  white-space: normal !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-logs-page button {
+  min-height: 36px;
+  white-space: normal;
+}
+@media (max-width: 760px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-logs-page > section {
+    padding: 14px !important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-logs-page > section:first-child > div {
+    align-items: stretch !important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-logs-page > section:first-child button {
+    align-self: flex-start;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-logs-page article > div:first-child {
+    gap: 8px !important;
+  }
+}
+@media (max-width: 420px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-logs-page > section {
+    padding: 11px !important;
+    border-radius: 12px !important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-logs-page > section:first-child h2 {
+    font-size: 17px !important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-logs-page article {
+    padding: 12px !important;
+  }
+}
+
+/* Counseling: normalize inline card spacing without changing any counseling workflow. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page {
+  max-width: 1240px;
+  gap: 16px !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head {
+  min-height: 82px;
+  padding: 18px 20px;
+  border: 1px solid var(--admin-border);
+  border-radius: 16px;
+  background: linear-gradient(112deg, var(--admin-card), var(--admin-inner));
+  box-shadow: var(--admin-shadow);
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head h2 {
+  font-size: 20px !important;
+  line-height: 1.6;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-stats-grid > div,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > section {
+  min-width: 0;
+  border: 1px solid var(--admin-border) !important;
+  border-radius: 16px !important;
+  background: var(--admin-card) !important;
+  color: var(--admin-text) !important;
+  box-shadow: var(--admin-shadow) !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > section {
+  padding: 18px !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page input,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page select {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 760px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head {
+    min-height: 0;
+    padding: 15px !important;
+    align-items: stretch !important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > section {
+    padding: 14px !important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-list {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+@media (max-width: 420px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > section {
+    padding: 11px !important;
+    border-radius: 12px !important;
+  }
+}
+
+/* Shared component contract: one typography, control, and table language across admin modules. */
+.admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) {
+  color: var(--admin-text);
+  font-family: Vazirmatn, IRANSansX, Tahoma, system-ui, sans-serif;
+  font-size: 12px;
+  line-height: 1.75;
+  min-width: 0;
+}
+.admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) :is(input, select, textarea) {
+  box-sizing: border-box;
+  max-width: 100%;
+  font-family: inherit;
+  font-size: 12px !important;
+  line-height: 1.5;
+  border-radius: 10px !important;
+}
+.admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) :is(button, input, select, textarea) {
+  font-family: inherit;
+}
+.admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) button {
+  line-height: 1.5;
+}
+.admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) :is(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid var(--admin-accent) !important;
+  outline-offset: 2px;
+}
+.admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) :is(th, td) {
+  border-color: var(--admin-border);
+  vertical-align: middle;
+}
+.admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) :is(img, svg, canvas, video) {
+  max-width: 100%;
+}
+.admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) :is(td, p, pre, code) {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 760px) {
+  .admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) {
+    gap: 14px;
+  }
+  .admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) :is(input, select, textarea) {
+    min-width: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) *,
+  .admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) *::before,
+  .admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
