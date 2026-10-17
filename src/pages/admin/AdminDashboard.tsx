@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import type { Admin } from '../../types';
 import {
-  Activity, ArrowLeft, Bell, BookOpen, CalendarClock, ClipboardList,
-  CreditCard, FileCheck2, RefreshCw, ShieldAlert, Users, Wallet, MessageSquare,
+  Activity, ArrowLeft, CalendarClock, ClipboardList,
+  CreditCard, FileCheck2, RefreshCw, Wallet, MessageSquare,
 } from 'lucide-react';
 
 type CourseRow = { id: string; title: string; professor?: string | null; status?: string | null; startDate?: string | null };
@@ -47,19 +47,12 @@ interface AdminDashboardProps {
 }
 
 const numberFa = (value: number | null) => value === null ? '—' : new Intl.NumberFormat('fa-IR').format(value);
-const moneyFa = (value: number) => new Intl.NumberFormat('fa-IR').format(value) + ' تومان';
 const dateFa = (value?: string | null) => {
   if (!value) return 'تاریخ ثبت نشده';
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat('fa-IR', { dateStyle: 'short', timeStyle: 'short' }).format(date);
 };
-const statusText = (status: string) => ({
-  PENDING_REVIEW: 'در انتظار بررسی', NEEDS_CORRECTION: 'نیازمند اصلاح', APPROVED: 'تأیید شده',
-  REJECTED: 'رد شده', PENDING: 'در انتظار بررسی', OPEN: 'باز', ANSWERED: 'پاسخ داده شده',
-  CLOSED: 'بسته شده', REQUESTED: 'درخواست جدید', RESERVED: 'مبلغ رزرو شده', PAID: 'پرداخت شده',
-}[status] || status);
-
-export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'مدیر سیستم', admin, onNavigate }) => {
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigate }) => {
   const [data, setData] = useState<DashboardData>(emptyData);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
@@ -117,7 +110,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
 
   useEffect(() => { void loadDashboard(); }, [loadDashboard]);
 
-  const activeCourses = useMemo(() => data.courses?.filter(course => String(course.status || '').toUpperCase() === 'ACTIVE') ?? null, [data.courses]);
   const pendingRegistrations = data.registrations?.filter(item => item.status === 'PENDING_REVIEW' || item.status === 'NEEDS_CORRECTION') ?? null;
   const pendingPayments = data.registrations?.flatMap(item => item.payments || []).filter(payment => payment.status === 'PENDING') ?? null;
   const openRefunds = data.refunds?.filter(item => item.status === 'REQUESTED' || item.status === 'RESERVED') ?? null;
@@ -125,50 +117,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
   const pendingOfflineRequests = data.offlineRequests?.filter(item => item.status === 'PENDING') ?? null;
   const pendingCounselingRequests = data.counselingRequests?.filter(item => item.status === 'PENDING') ?? null;
   const openManagementTickets = data.managementTickets?.filter(item => item.status === 'OPEN') ?? null;
-  const activeAdmins = data.admins?.filter(item => item.status === 'ACTIVE') ?? null;
-  const publicRules = data.publicContent?.filter(item => item.type === 'RULES' && item.published) ?? null;
-  const publishedAnalyses = data.publicContent?.filter(item => item.type === 'EXAM_ANALYSIS' && item.published) ?? null;
-  const upcomingExams = data.exams?.filter(exam => {
-    if (!exam.examDate || ['COMPLETED', 'CANCELLED'].includes(String(exam.status || '').toUpperCase())) return false;
-    const timestamp = new Date(exam.examDate).getTime();
-    return Number.isFinite(timestamp) && timestamp >= Date.now();
-  }) ?? null;
-
-  const transactions = useMemo(() => {
-    if (!data.registrations) return null;
-    return data.registrations.flatMap(registration => (registration.payments || []).map(payment => ({
-      id: payment.id,
-      student: registration.applicantFullName,
-      course: registration.courses?.map(course => course.courseTitleSnapshot).filter(Boolean).join('، ') || 'ثبت‌نام دوره',
-      amount: payment.approvedAmount ?? payment.claimedAmount ?? 0,
-      status: payment.status,
-      date: payment.paymentDate || payment.createdAt || registration.createdAt,
-      purpose: payment.purpose === 'INITIAL' ? 'پیش‌پرداخت ثبت‌نام' : 'پرداخت قسط',
-    }))).sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime()).slice(0, 5);
-  }, [data.registrations]);
-
-  const statCards = [
-    { label: 'دوره‌های فعال', value: activeCourses ? numberFa(activeCourses.length) : '—', note: activeCourses ? 'بر اساس فهرست دوره‌ها' : 'داده در دسترس نیست', icon: BookOpen, tab: 'courses' as const, permission: 'courses' },
-    { label: 'هنرجویان ثبت‌شده', value: data.students ? numberFa(data.students.length) : '—', note: data.students ? 'بر اساس فهرست هنرجویان' : 'داده در دسترس نیست', icon: Users, tab: 'students' as const, permission: 'students' },
-    { label: 'ثبت‌نام‌های نیازمند بررسی', value: pendingRegistrations ? numberFa(pendingRegistrations.length) : '—', note: pendingRegistrations ? 'در انتظار بررسی یا اصلاح' : 'داده در دسترس نیست', icon: FileCheck2, tab: 'registrations' as const, permission: 'finance' },
-    { label: 'رسیدهای پرداخت در انتظار', value: pendingPayments ? numberFa(pendingPayments.length) : '—', note: pendingPayments ? 'نیازمند بررسی مالی' : 'داده در دسترس نیست', icon: CreditCard, tab: 'registrations' as const, permission: 'finance' },
-  ].filter(item => isAllowed(item.permission));
-
-  const quickLinks = [
-    { label: 'مدیریت دوره‌ها', note: 'دوره‌ها و محتوای آموزشی', icon: BookOpen, tab: 'courses' as const, permission: 'courses' },
-    { label: 'مدیریت هنرجویان', note: 'حساب‌ها و وضعیت هنرجویان', icon: Users, tab: 'students' as const, permission: 'students' },
-    { label: 'درخواست‌های آفلاین', note: 'بررسی درخواست دسترسی به جلسات', icon: ClipboardList, tab: 'offlineRequests' as const, permission: 'offlineRequests' },
-    { label: 'آزمون‌های آزمایشی', note: 'زمان‌بندی و شرکت‌کنندگان', icon: ClipboardList, tab: 'mockExams' as const, permission: 'mockExams' },
-    { label: 'مشاوره و گفتگوها', note: 'مشاوران، درخواست‌ها و مکالمات', icon: CalendarClock, tab: 'counseling' as const, permission: 'counseling' },
-    { label: 'پیام‌ها و پرسش‌ها', note: 'پیگیری تیکت‌های هنرجویان', icon: MessageSquare, tab: 'messages' as const, permission: 'messages' },
-    { label: 'امور مالی و ثبت‌نام', note: 'شهریه، رسیدها و بازپرداخت', icon: Wallet, tab: 'registrations' as const, permission: 'finance' },
-    { label: 'قوانین و تحلیل کنکور', note: 'قوانین آموزشی و تحلیل‌های منتشرشده', icon: FileCheck2, tab: 'rules' as const, permission: 'rules' },
-    { label: 'ارسال اطلاعیه', note: 'اطلاع‌رسانی به هنرجویان', icon: Bell, tab: 'notifications' as const, permission: 'notifications' },
-    { label: 'گزارش‌های سیستمی', note: 'رویدادهای مدیریتی ثبت‌شده', icon: ShieldAlert, tab: 'logs' as const, permission: 'logs' },
-    { label: 'مدیریت مدیران و دسترسی‌ها', note: 'حساب‌های مدیریتی و سطح دسترسی', icon: Users, tab: 'admins' as const, permission: 'admins' },
-    { label: 'ارتباط مستقیم با مدیریت', note: 'درخواست‌ها و پیام‌های هنرجویان', icon: MessageSquare, tab: 'managementContact' as const, permission: 'managementContact' },
-  ].filter(item => item.tab === 'admins' || item.tab === 'managementContact' || item.tab === 'messages' ? admin?.role === 'super_admin' : isAllowed(item.permission));
-
   const actionItems = [
     ...(isAllowed('finance') && pendingRegistrations && pendingRegistrations.length > 0 ? [{
       id: 'pending-registrations', label: 'ثبت‌نام‌های نیازمند بررسی', detail: 'بررسی اطلاعات ثبت‌نام و موارد نیازمند اصلاح',
