@@ -306,15 +306,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-section-heading{padding-bottom:8px}
         .admin-section-heading h2{font-size:16px}
         .admin-section-heading>small{font-size:9px}
-        .admin-overview-grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;align-items:stretch}
-        .admin-overview-card{min-width:0;min-height:84px;height:84px;padding:10px 12px;gap:8px;flex-direction:row;align-items:center;justify-content:flex-start;border:1px solid var(--admin-border);border-right:2px solid var(--admin-accent);border-radius:10px;background-color:var(--admin-card)!important;background-image:linear-gradient(270deg,rgba(56,131,138,.07) 0%,rgba(56,131,138,.02) 26%,transparent 52%)!important;box-shadow:none}
+        .admin-overview-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:stretch}
+        .admin-overview-card{min-width:0;min-height:78px;height:78px;padding:10px 13px;gap:9px;flex-direction:row;align-items:center;justify-content:flex-start;border:1px solid var(--admin-border);border-right:2px solid var(--admin-accent);border-radius:9px;background-color:var(--admin-card)!important;background-image:linear-gradient(270deg,rgba(56,131,138,.07) 0%,rgba(56,131,138,.02) 26%,transparent 52%)!important;box-shadow:none}
         .admin-overview-card:after{display:none!important}
         .admin-overview-card:hover{transform:translateY(-1px);background-color:var(--admin-inner)!important;background-image:linear-gradient(270deg,rgba(56,131,138,.08) 0%,rgba(56,131,138,.02) 28%,transparent 55%)!important;box-shadow:none}
-        .admin-overview-icon{width:31px;height:31px;min-width:31px;border-radius:8px;background:var(--admin-inner)!important;border:1px solid var(--admin-border)}
+        .admin-overview-icon{width:30px;height:30px;min-width:30px;border-radius:8px;background:var(--admin-inner)!important;border:1px solid var(--admin-border)}
         .admin-overview-icon svg{width:15px;height:15px}
         .admin-overview-copy{gap:2px}
         .admin-overview-copy small{font-size:9px;line-height:1.45}
-        .admin-overview-copy strong{font-size:20px;line-height:1.15}
+        .admin-overview-copy strong{font-size:21px;line-height:1.15}
         .admin-overview-copy span{font-size:8px;line-height:1.35}
         .admin-overview-arrow{position:absolute;left:8px;top:9px;width:11px;height:11px}
         .admin-action-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:stretch}
@@ -335,7 +335,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-action-card-bottom>small{font-size:8px}
         .admin-action-arrow{width:13px;height:13px}
         .admin-refresh-button{padding:8px 12px;font-size:10px;background:var(--admin-card)!important;background-image:none!important;box-shadow:none}
-        @media(max-width:1050px){.admin-overview-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.admin-overview-card{height:80px;min-height:80px}.admin-action-card{height:auto;min-height:118px}}
+        @media(max-width:1050px){.admin-overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-overview-card{height:78px;min-height:78px}.admin-action-card{height:auto;min-height:118px}}
         @media(max-width:680px){.admin-dashboard-page{gap:17px}.admin-overview-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.admin-action-grid{grid-template-columns:1fr;gap:8px}.admin-overview-card{height:76px;min-height:76px;padding:9px}.admin-overview-copy strong{font-size:19px}.admin-action-card{height:auto;min-height:112px;padding:11px 12px;gap:8px}.admin-action-copy strong{font-size:11px}.admin-action-copy small{font-size:9px}}
 
 
