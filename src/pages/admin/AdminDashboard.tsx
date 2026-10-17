@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import type { Admin } from '../../types';
 import {
-  Activity, ArrowLeft, CalendarClock, ClipboardList,
+  ArrowLeft, CalendarClock, ClipboardList,
   CreditCard, FileCheck2, RefreshCw, Wallet, MessageSquare,
 } from 'lucide-react';
 
@@ -47,15 +47,9 @@ interface AdminDashboardProps {
 }
 
 const numberFa = (value: number | null) => value === null ? '—' : new Intl.NumberFormat('fa-IR').format(value);
-const dateFa = (value?: string | null) => {
-  if (!value) return 'تاریخ ثبت نشده';
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat('fa-IR', { dateStyle: 'short', timeStyle: 'short' }).format(date);
-};
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigate }) => {
   const [data, setData] = useState<DashboardData>(emptyData);
   const [loading, setLoading] = useState(true);
-  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const [refreshError, setRefreshError] = useState('');
 
   const isAllowed = useCallback((permission: string) => admin?.role === 'super_admin' || Boolean(admin?.permissions?.includes(permission)), [admin?.role, admin?.permissions]);
@@ -100,7 +94,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         loadList<AuditRow>('/api/admin/audit-logs', admin?.role === 'super_admin'),
       ]);
       setData({ courses, students, registrations, refunds, exams, tickets, counselors, conversations, offlineRequests, managementTickets, counselingRequests, admins, publicContent, logs });
-      setLastUpdated(new Date().toISOString());
     } catch {
       setRefreshError('بروزرسانی داشبورد کامل نشد. بخش‌هایی که داده معتبر دریافت نکرده‌اند با خط تیره مشخص می‌شوند.');
     } finally {
@@ -151,10 +144,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
   return (
     <div className="admin-dashboard-page">
       <div className="admin-dashboard-controls">
-        <span className="admin-dashboard-updated">
-          <Activity size={13} />
-          {lastUpdated ? 'آخرین بروزرسانی: ' + dateFa(lastUpdated) : loading ? 'در حال دریافت اطلاعات سامانه…' : 'زمان بروزرسانی ثبت نشده است'}
-        </span>
         <button className="admin-refresh-button" onClick={() => void loadDashboard()} disabled={loading}>
           <RefreshCw size={14} className={loading ? 'admin-spinning' : ''} />
           {loading ? 'در حال بروزرسانی' : 'بروزرسانی اطلاعات'}
