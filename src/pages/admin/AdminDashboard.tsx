@@ -350,6 +350,31 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'Ù…Ø
         .admin-audit-copy strong{font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
         .admin-audit-copy small{font-size:8px;color:var(--admin-sub)}
         .admin-audit-row time{font-size:8px;color:var(--admin-sub);white-space:nowrap}
+        /* Dashboard cards: remove the decorative colored strips along their top edges. */
+        .admin-dashboard-page .admin-stat,
+        .admin-dashboard-page .admin-followup-card,
+        .admin-dashboard-page .admin-panel-card,
+        .admin-dashboard-page .admin-quick-grid button,
+        .admin-dashboard-page .admin-course-list button,
+        .admin-dashboard-page .admin-module-status-list button{
+          border-top-color:var(--admin-border)!important;
+          background-image:none!important;
+        }
+        .admin-dashboard-page .admin-stat::before,
+        .admin-dashboard-page .admin-stat::after,
+        .admin-dashboard-page .admin-followup-card::before,
+        .admin-dashboard-page .admin-followup-card::after,
+        .admin-dashboard-page .admin-panel-card::before,
+        .admin-dashboard-page .admin-panel-card::after,
+        .admin-dashboard-page .admin-quick-grid button::before,
+        .admin-dashboard-page .admin-quick-grid button::after,
+        .admin-dashboard-page .admin-course-list button::before,
+        .admin-dashboard-page .admin-course-list button::after,
+        .admin-dashboard-page .admin-module-status-list button::before,
+        .admin-dashboard-page .admin-module-status-list button::after{
+          content:none!important;
+          display:none!important;
+        }
         @media(max-width:1100px){.admin-stat-grid,.admin-followup-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-dashboard-grid{grid-template-columns:1fr}}
         @media(max-width:600px){.admin-welcome{padding:18px;align-items:flex-start}.admin-welcome h1{font-size:20px}.admin-welcome-actions{gap:8px}.admin-welcome-mark{display:none}.admin-refresh-button{font-size:9px;padding:8px}.admin-stat-grid,.admin-followup-grid{grid-template-columns:1fr}.admin-quick-grid{grid-template-columns:1fr}.admin-panel-card{padding:14px}.admin-transaction-row{flex-wrap:wrap}.admin-transaction-amount{margin-right:40px}.admin-audit-row{align-items:flex-start;flex-wrap:wrap}.admin-audit-row time{margin-right:40px}}
         @media(prefers-reduced-motion:reduce){.admin-dashboard-page *{transition:none!important;animation:none!important}}
