@@ -299,35 +299,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         @media(prefers-reduced-motion:reduce){.admin-dashboard-page *{transition:none!important;animation:none!important}}
 
 
-        /* Compact dashboard density: reduce oversized cards and whitespace. */
-        .admin-dashboard-page{max-width:1240px;gap:20px}
-        .admin-overview-section,.admin-actions-section{gap:11px}
-        .admin-section-heading{padding-bottom:8px}
-        .admin-section-heading h2{font-size:16px}
-        .admin-section-heading>div>span{font-size:9px}
-        .admin-section-heading>small{font-size:9px}
-        .admin-overview-grid{gap:10px}
-        .admin-overview-card{min-height:88px;padding:12px 14px;gap:10px;border-radius:10px}
-        .admin-overview-icon{width:34px;height:34px;border-radius:8px}
-        .admin-overview-icon svg{width:16px;height:16px}
-        .admin-overview-copy{gap:3px}
-        .admin-overview-copy small{font-size:10px}
-        .admin-overview-copy strong{font-size:22px}
-        .admin-overview-copy span{font-size:9px}
-        .admin-overview-arrow{width:13px;height:13px}
-        .admin-action-grid{gap:10px}
-        .admin-action-card{min-height:128px;padding:13px 15px;gap:9px;border-radius:10px}
-        .admin-action-icon{width:33px;height:33px;border-radius:8px}
-        .admin-action-icon svg{width:16px;height:16px}
-        .admin-action-status{font-size:9px;padding:4px 7px}
-        .admin-action-copy{gap:3px}
-        .admin-action-copy strong{font-size:11px;line-height:1.6}
-        .admin-action-copy small{font-size:9px;line-height:1.6}
-        .admin-action-card-bottom{padding-top:8px}
-        .admin-action-card-bottom>strong{font-size:18px}
-        .admin-action-card-bottom>small{font-size:9px}
-        .admin-action-arrow{width:14px;height:14px}
-        @media(max-width:680px){.admin-dashboard-page{gap:17px}.admin-overview-grid,.admin-action-grid{gap:8px}.admin-overview-card{min-height:76px;padding:10px 12px}.admin-overview-copy strong{font-size:20px}.admin-action-card{min-height:116px;padding:12px;gap:8px}.admin-action-copy strong{font-size:11px}.admin-action-copy small{font-size:9px}}
+
+        /* Solid charcoal surfaces: no gradients on dashboard cards. */
+        .admin-dashboard-page{background:transparent}
+        .admin-overview-card,.admin-action-card,.admin-refresh-button{background:var(--admin-card)!important;background-image:none!important;box-shadow:none}
+        .admin-overview-card:before,.admin-overview-card:after,.admin-action-card:before,.admin-action-card:after{display:none!important}
+        .admin-overview-card{border:1px solid var(--admin-border);border-top:2px solid var(--admin-accent)}
+        .admin-action-card{border:1px solid var(--admin-border);border-right:3px solid var(--admin-border)}
+        .admin-action-card.needs-action{border-right-color:#c58a27}
+        .admin-action-card.all-clear{border-right-color:#23946e}
+        .admin-action-card.unknown{border-right-color:var(--admin-border)}
+        .admin-overview-icon,.admin-action-icon{background:var(--admin-inner)!important;background-image:none!important;border:1px solid var(--admin-border);color:var(--admin-accent)}
+        .admin-action-status.pending{background:rgba(197,138,39,.12)!important;color:#c58a27}
+        .admin-action-status.clear{background:rgba(35,148,110,.12)!important;color:#23946e}
+        .admin-action-status.unknown{background:var(--admin-inner)!important;color:var(--admin-sub)}
+        .admin-refresh-button{border:1px solid var(--admin-border);color:var(--admin-text)}
+        .admin-overview-card:hover,.admin-action-card:hover,.admin-refresh-button:hover{background:var(--admin-inner)!important;background-image:none!important;box-shadow:none}
 
 
       `}</style>
