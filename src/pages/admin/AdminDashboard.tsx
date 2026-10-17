@@ -361,6 +361,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-action-card{min-height:118px;height:118px;padding:11px 14px;gap:8px;border-radius:10px}
         @media(max-width:1050px){.admin-action-groups{grid-template-columns:1fr}.admin-action-group-support{grid-column:auto}}
         .admin-action-card{min-height:118px;height:118px;padding:11px 14px;gap:8px;border:1px solid var(--admin-border);border-right:2px solid var(--admin-accent);border-radius:10px;background-color:var(--admin-card)!important;background-image:linear-gradient(270deg,rgba(56,131,138,.06) 0%,rgba(56,131,138,.018) 24%,transparent 50%)!important;box-shadow:none}
+        .admin-action-card{border-right-width:1px}
+        .admin-action-card-bottom{padding-top:4px;min-height:22px;align-items:center}
+        .admin-action-card-bottom>strong,.admin-action-card-bottom>small,.admin-action-arrow{transform:translateY(-3px)}
+        .admin-action-arrow{align-self:center;margin-top:-2px}
+
         .admin-action-card:before{display:none!important}
         .admin-action-card.needs-action{border-right-color:#c58a27}
         .admin-action-card.all-clear{border-right-color:#23946e}
