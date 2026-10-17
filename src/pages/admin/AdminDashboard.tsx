@@ -16,7 +16,6 @@ type CounselorRow = { id: string; displayName?: string; isActive?: boolean; user
 type ConversationRow = { id: string; updatedAt?: string; student?: { fullName?: string }; counselor?: { displayName?: string }; _count?: { messages?: number } };
 type OfflineRequestRow = { id: string; status: string; createdAt?: string; student?: { fullName?: string }; course?: { title?: string } };
 type ManagementTicketRow = { id: string; subject?: string; status: string; updatedAt?: string; student?: { fullName?: string } };
-type CounselingRequestRow = { id: string; status: string; createdAt?: string; slot?: { startAt?: string } };
 type AdminAccountRow = { id: string; username: string; status: string; permissions?: string[]; lastLoginAt?: string | null };
 type PublicContentRow = { id: string; type: 'RULES' | 'EXAM_ANALYSIS'; title?: string; examYear?: string | null; published: boolean; updatedAt?: string };
 type AuditRow = { id: string; action: string; entityType?: string; performedBy?: string; timestamp?: string; details?: unknown };
@@ -32,12 +31,11 @@ type DashboardData = {
   conversations: ConversationRow[] | null;
   offlineRequests: OfflineRequestRow[] | null;
   managementTickets: ManagementTicketRow[] | null;
-  counselingRequests: CounselingRequestRow[] | null;
   admins: AdminAccountRow[] | null;
   publicContent: PublicContentRow[] | null;
   logs: AuditRow[] | null;
 };
-const emptyData: DashboardData = { courses: null, students: null, registrations: null, refunds: null, exams: null, tickets: null, counselors: null, conversations: null, offlineRequests: null, managementTickets: null, counselingRequests: null, admins: null, publicContent: null, logs: null };
+const emptyData: DashboardData = { courses: null, students: null, registrations: null, refunds: null, exams: null, tickets: null, counselors: null, conversations: null, offlineRequests: null, managementTickets: null,  admins: null, publicContent: null, logs: null };
 type DashboardTab = 'dashboard' | 'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams' | 'counseling' | 'finance' | 'registrations' | 'managementContact';
 
 interface AdminDashboardProps {
@@ -77,7 +75,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
     setLoading(true);
     setRefreshError('');
     try {
-      const [courses, students, registrations, refunds, exams, tickets, counselors, conversations, offlineRequests, managementTickets, counselingRequests, admins, publicContent, logs] = await Promise.all([
+      const [courses, students, registrations, refunds, exams, tickets, counselors, conversations, offlineRequests, managementTickets, admins, publicContent, logs] = await Promise.all([
         loadList<CourseRow>('/api/courses', isAllowed('courses')),
         loadList<StudentRow>('/api/admin/students', isAllowed('students')),
         loadList<RegistrationRow>('/api/admin/registrations?status=ALL', isAllowed('finance')),
@@ -88,12 +86,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         loadList<ConversationRow>('/api/counseling/conversations', isAllowed('counseling')),
         loadList<OfflineRequestRow>('/api/admin/offline-requests', isAllowed('offlineRequests')),
         loadList<ManagementTicketRow>('/api/admin/management-contact/tickets', admin?.role === 'super_admin'),
-        loadList<CounselingRequestRow>('/api/admin/counseling/requests', isAllowed('counseling')),
         loadList<AdminAccountRow>('/api/auth/admin/admins', admin?.role === 'super_admin'),
         loadList<PublicContentRow>('/api/admin/public-content', isAllowed('rules')),
         loadList<AuditRow>('/api/admin/audit-logs', admin?.role === 'super_admin'),
       ]);
-      setData({ courses, students, registrations, refunds, exams, tickets, counselors, conversations, offlineRequests, managementTickets, counselingRequests, admins, publicContent, logs });
+      setData({ courses, students, registrations, refunds, exams, tickets, counselors, conversations, offlineRequests, managementTickets, admins, publicContent, logs });
     } catch {
       setRefreshError('بروزرسانی داشبورد کامل نشد. بخش‌هایی که داده معتبر دریافت نکرده‌اند با خط تیره مشخص می‌شوند.');
     } finally {
