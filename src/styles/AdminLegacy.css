@@ -2574,7 +2574,7 @@
 .admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) :is(img, svg, canvas, video) {
   max-width: 100%;
 }
-.admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) :is(p, strong, span, label, small, time, code) {
+.admin-shell .admin-page-content :is(.admin-legacy-page, .admin-registration-finance) :is(td, p, pre, code) {
   overflow-wrap: anywhere;
 }
 @media (max-width: 760px) {
