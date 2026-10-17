@@ -2245,3 +2245,71 @@
     flex: 1 1 130px;
   }
 }
+
+
+/* Registration and finance: scoped responsive layout for dense financial records. */
+.admin-shell .admin-page-content .admin-registration-finance {
+  width: 100%;
+  min-width: 0;
+  max-width: 1480px;
+}
+
+.admin-shell .admin-page-content .admin-registration-finance > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.admin-shell .admin-page-content .admin-registration-finance > section {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.admin-shell .admin-page-content .admin-registration-finance table {
+  width: 100%;
+}
+
+.admin-shell .admin-page-content .admin-registration-finance td,
+.admin-shell .admin-page-content .admin-registration-finance th {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 760px) {
+  .admin-shell .admin-page-content .admin-registration-finance {
+    gap: 12px !important;
+  }
+
+  .admin-shell .admin-page-content .admin-registration-finance > section {
+    padding: 12px !important;
+  }
+
+  .admin-shell .admin-page-content .admin-registration-finance > div {
+    max-width: 100%;
+  }
+
+  .admin-shell .admin-page-content .admin-registration-finance input,
+  .admin-shell .admin-page-content .admin-registration-finance select,
+  .admin-shell .admin-page-content .admin-registration-finance textarea {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .admin-shell .admin-page-content .admin-registration-finance table {
+    min-width: 680px;
+  }
+}
+
+@media (max-width: 420px) {
+  .admin-shell .admin-page-content .admin-registration-finance > section {
+    padding: 10px !important;
+    border-radius: 12px !important;
+  }
+
+  .admin-shell .admin-page-content .admin-registration-finance article {
+    padding: 11px !important;
+  }
+
+  .admin-shell .admin-page-content .admin-registration-finance button {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
