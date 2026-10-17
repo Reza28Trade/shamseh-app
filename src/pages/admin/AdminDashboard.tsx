@@ -108,27 +108,27 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
   const openManagementTickets = data.managementTickets?.filter(item => item.status === 'OPEN') ?? null;
   const actionItems = [
     ...(isAllowed('finance') ? [{
-      id: 'pending-registrations', label: 'ثبت‌نام‌های نیازمند بررسی', detail: 'بررسی اطلاعات ثبت‌نام و موارد نیازمند اصلاح',
+      id: 'pending-registrations', category: 'finance', label: 'ثبت‌نام‌های نیازمند بررسی', detail: 'بررسی اطلاعات ثبت‌نام و موارد نیازمند اصلاح',
       count: pendingRegistrations?.length ?? null, status: pendingRegistrations ? (pendingRegistrations.length ? 'نیازمند اقدام مدیر' : 'اقدامی لازم نیست') : 'وضعیت دریافت نشد', tab: 'registrations' as const, icon: FileCheck2,
     }] : []),
     ...(isAllowed('finance') ? [{
-      id: 'pending-payments', label: 'رسیدهای پرداخت در انتظار تأیید', detail: 'بررسی رسیدها و تعیین وضعیت پرداخت',
+      id: 'pending-payments', category: 'finance', label: 'رسیدهای پرداخت در انتظار تأیید', detail: 'بررسی رسیدها و تعیین وضعیت پرداخت',
       count: pendingPayments?.length ?? null, status: pendingPayments ? (pendingPayments.length ? 'نیازمند اقدام مدیر' : 'اقدامی لازم نیست') : 'وضعیت دریافت نشد', tab: 'registrations' as const, icon: CreditCard,
     }] : []),
     ...(isAllowed('finance') ? [{
-      id: 'open-refunds', label: 'درخواست‌های بازپرداخت', detail: 'بررسی درخواست‌های باز یا مبلغ رزروشده',
+      id: 'open-refunds', category: 'finance', label: 'درخواست‌های بازپرداخت', detail: 'بررسی درخواست‌های باز یا مبلغ رزروشده',
       count: openRefunds?.length ?? null, status: openRefunds ? (openRefunds.length ? 'نیازمند اقدام مدیر' : 'اقدامی لازم نیست') : 'وضعیت دریافت نشد', tab: 'registrations' as const, icon: Wallet,
     }] : []),
     ...(admin?.role === 'super_admin' ? [{
-      id: 'open-tickets', label: 'تیکت‌های پشتیبانی باز', detail: 'بررسی پیام‌ها و پاسخ‌گویی به هنرجویان',
+      id: 'open-tickets', category: 'support', label: 'تیکت‌های پشتیبانی باز', detail: 'بررسی پیام‌ها و پاسخ‌گویی به هنرجویان',
       count: openTickets?.length ?? null, status: openTickets ? (openTickets.length ? 'نیازمند اقدام مدیر' : 'اقدامی لازم نیست') : 'وضعیت دریافت نشد', tab: 'messages' as const, icon: MessageSquare,
     }] : []),
     ...(isAllowed('offlineRequests') ? [{
-      id: 'offline-requests', label: 'درخواست‌های آفلاین در انتظار', detail: 'بررسی درخواست دسترسی به جلسات آفلاین',
+      id: 'offline-requests', category: 'academic', label: 'درخواست‌های آفلاین در انتظار', detail: 'بررسی درخواست دسترسی به جلسات آفلاین',
       count: pendingOfflineRequests?.length ?? null, status: pendingOfflineRequests ? (pendingOfflineRequests.length ? 'نیازمند اقدام مدیر' : 'اقدامی لازم نیست') : 'وضعیت دریافت نشد', tab: 'offlineRequests' as const, icon: ClipboardList,
     }] : []),
     ...(admin?.role === 'super_admin' ? [{
-      id: 'management-tickets', label: 'انتقادات و پیشنهادات نیازمند پاسخ', detail: 'بررسی پیام‌های باز ارسال‌شده برای مدیریت',
+      id: 'management-tickets', category: 'support', label: 'انتقادات و پیشنهادات نیازمند پاسخ', detail: 'بررسی پیام‌های باز ارسال‌شده برای مدیریت',
       count: openManagementTickets?.length ?? null, status: openManagementTickets ? (openManagementTickets.length ? 'نیازمند اقدام مدیر' : 'اقدامی لازم نیست') : 'وضعیت دریافت نشد', tab: 'managementContact' as const, icon: MessageSquare,
     }] : []),
   ];
@@ -170,8 +170,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
       {loading && actionItems.length === 0 ? (
         <div className="admin-no-actions"><RefreshCw size={20} className="admin-spinning" /><strong>در حال دریافت وضعیت بخش‌های پنل…</strong></div>
       ) : (
-        <section className="admin-action-grid" aria-label="وضعیت بخش‌های نیازمند پیگیری">
-          {actionItems.map(item => {
+        <div className="admin-action-groups">
+          {([
+            { id: 'finance', title: 'امور مالی', note: 'ثبت‌نام، رسید پرداخت و بازپرداخت', items: actionItems.filter(item => item.category === 'finance') },
+            { id: 'academic', title: 'امور آموزشی', note: 'درخواست‌های مربوط به دوره و جلسات', items: actionItems.filter(item => item.category === 'academic') },
+            { id: 'support', title: 'پشتیبانی و تیکت‌ها', note: 'پیام‌ها و موارد نیازمند پاسخ', items: actionItems.filter(item => item.category === 'support') },
+          ]).filter(group => group.items.length > 0).map(group => (
+            <section key={group.id} className={`admin-action-group admin-action-group-${group.id}`} aria-label={group.title}>
+              <div className="admin-action-group-heading"><strong>{group.title}</strong><span>{group.note}</span></div>
+              <div className="admin-action-grid">
+          {group.items.map(item => {
             const Icon = item.icon;
             const needsAction = item.count !== null && item.count > 0;
             return (
@@ -189,7 +197,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
               </button>
             );
           })}
-        </section>
+              </div>
+            </section>
+          ))}
+        </div>
       )}
       </section>
 
@@ -337,7 +348,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-overview-copy small{font-size:10px}
         .admin-overview-copy strong{font-size:23px}
         .admin-overview-copy span{font-size:9px}
-        .admin-action-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:stretch}
+.admin-action-groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+        .admin-action-group{min-width:0;padding:14px;border:1px solid var(--admin-border);border-radius:12px;background:var(--admin-card)}
+        .admin-action-group-finance{border-top:2px solid #31e6dc}
+        .admin-action-group-academic{border-top:2px solid #5aa8ff}
+        .admin-action-group-support{border-top:2px solid #ff7d9d;grid-column:1/-1}
+        .admin-action-group-heading{display:flex;flex-direction:column;gap:4px;margin-bottom:11px}
+        .admin-action-group-heading strong{font-size:12px;font-weight:900;color:var(--admin-text)}
+        .admin-action-group-heading span{font-size:9px;color:var(--admin-sub);line-height:1.7}
+        .admin-action-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;align-items:stretch}
+        .admin-action-group-support .admin-action-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+        .admin-action-card{min-height:118px;height:118px;padding:11px 14px;gap:8px;border-radius:10px}
+        @media(max-width:1050px){.admin-action-groups{grid-template-columns:1fr}.admin-action-group-support{grid-column:auto}}
         .admin-action-card{min-height:118px;height:118px;padding:11px 14px;gap:8px;border:1px solid var(--admin-border);border-right:2px solid var(--admin-accent);border-radius:10px;background-color:var(--admin-card)!important;background-image:linear-gradient(270deg,rgba(56,131,138,.06) 0%,rgba(56,131,138,.018) 24%,transparent 50%)!important;box-shadow:none}
         .admin-action-card:before{display:none!important}
         .admin-action-card.needs-action{border-right-color:#c58a27}
