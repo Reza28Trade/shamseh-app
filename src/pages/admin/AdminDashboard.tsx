@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import type { Admin } from '../../types';
 import {
-  ArrowLeft, CalendarClock, ClipboardList,
-  CreditCard, FileCheck2, RefreshCw, Wallet, MessageSquare,
+  ArrowLeft, CalendarClock, ClipboardList, Users, BookOpen, GraduationCap,
+  CreditCard, FileCheck2, RefreshCw, Wallet, MessageSquare, ChartNoAxesCombined, ClipboardCheck,
 } from 'lucide-react';
 
 type CourseRow = { id: string; title: string; professor?: string | null; status?: string | null; startDate?: string | null };
@@ -141,6 +141,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
     }] : []),
   ];
 
+  const overviewStats = [
+    ...(isAllowed('students') ? [{ id: 'students', label: 'هنرجویان', value: data.students?.filter(item => !item.isArchived).length ?? null, note: 'هنرجوی فعال', tab: 'students' as const, icon: Users }] : []),
+    ...(isAllowed('courses') ? [{ id: 'courses', label: 'دوره‌ها', value: data.courses?.length ?? null, note: 'دوره ثبت‌شده', tab: 'courses' as const, icon: BookOpen }] : []),
+    ...(isAllowed('finance') ? [{ id: 'registrations', label: 'کل ثبت‌نام‌ها', value: data.registrations?.length ?? null, note: 'پرونده ثبت‌نام', tab: 'registrations' as const, icon: ClipboardCheck }] : []),
+    ...(isAllowed('mockExams') ? [{ id: 'exams', label: 'آزمون‌ها', value: data.exams?.length ?? null, note: 'آزمون ثبت‌شده', tab: 'mockExams' as const, icon: GraduationCap }] : []),
+    ...(isAllowed('counseling') ? [{ id: 'counselors', label: 'مشاوران فعال', value: data.counselors?.filter(item => item.isActive).length ?? null, note: 'مشاور فعال', tab: 'counseling' as const, icon: MessageSquare }] : []),
+    ...(admin?.role === 'super_admin' ? [{ id: 'admins', label: 'حساب‌های مدیریت', value: data.admins?.length ?? null, note: 'حساب ثبت‌شده', tab: 'admins' as const, icon: ChartNoAxesCombined }] : []),
+  ];
+
   return (
     <div className="admin-dashboard-page">
       <div className="admin-dashboard-controls">
@@ -152,6 +161,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
 
       {refreshError && <div className="admin-dashboard-notice" role="status">{refreshError}</div>}
 
+      <section className="admin-overview-section" aria-label="آمار کلی پنل">
+        <div className="admin-section-heading"><div><span>نمای کلی</span><h2>آمار سامانه</h2></div><small>خلاصه‌ای از وضعیت فعلی بخش‌های پنل</small></div>
+        <div className="admin-overview-grid">
+          {overviewStats.map(stat => { const Icon = stat.icon; return (
+            <button key={stat.id} className="admin-overview-card" onClick={() => onNavigate(stat.tab)}>
+              <span className="admin-overview-icon"><Icon size={18} /></span>
+              <span className="admin-overview-copy"><small>{stat.label}</small><strong>{loading && stat.value === null ? '…' : numberFa(stat.value)}</strong><span>{stat.note}</span></span>
+              <ArrowLeft size={15} className="admin-overview-arrow" />
+            </button>
+          ); })}
+        </div>
+      </section>
+
+      <section className="admin-actions-section" aria-label="وضعیت بخش‌های نیازمند پیگیری">
+        <div className="admin-section-heading"><div><span>پیگیری روزانه</span><h2>وضعیت اقدام مدیر</h2></div><small>هر بخش وضعیت مستقل خودش را دارد</small></div>
       {loading && actionItems.length === 0 ? (
         <div className="admin-no-actions"><RefreshCw size={20} className="admin-spinning" /><strong>در حال دریافت وضعیت بخش‌های پنل…</strong></div>
       ) : (
@@ -176,6 +200,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
           })}
         </section>
       )}
+      </section>
 
       <style>{`
         .admin-dashboard-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 2px 2px}
@@ -183,7 +208,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         
         
         
-        .admin-action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+        .admin-overview-section,.admin-actions-section{display:flex;flex-direction:column;gap:11px}.admin-section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:0 2px}.admin-section-heading>div{display:flex;flex-direction:column;gap:4px}.admin-section-heading>div>span{font-size:9px;font-weight:900;color:var(--admin-accent)}.admin-section-heading h2{margin:0;font-size:16px;font-weight:900;color:var(--admin-text)}.admin-section-heading>small{font-size:9px;color:var(--admin-sub);text-align:left}.admin-overview-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.admin-overview-card{display:flex;align-items:center;gap:11px;min-width:0;padding:14px;border:1px solid var(--admin-border);border-radius:14px;background:var(--admin-card);color:var(--admin-text);text-align:right;cursor:pointer;box-shadow:var(--admin-shadow);transition:transform .18s,border-color .18s}.admin-overview-card:hover{border-color:var(--admin-accent);transform:translateY(-1px)}.admin-overview-icon{width:39px;height:39px;display:grid;place-items:center;flex:none;border-radius:12px;background:var(--admin-accent-soft);color:var(--admin-accent)}.admin-overview-copy{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}.admin-overview-copy small{font-size:10px;font-weight:800;color:var(--admin-sub)}.admin-overview-copy strong{font-size:21px;line-height:1.2;font-weight:900}.admin-overview-copy span{font-size:9px;color:var(--admin-sub)}.admin-overview-arrow{color:var(--admin-sub);flex:none}.admin-action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
         .admin-action-card{display:flex;flex-direction:column;align-items:stretch;gap:13px;width:100%;min-width:0;min-height:148px;padding:15px 16px;border:1px solid var(--admin-border);border-radius:15px;background:var(--admin-card);color:var(--admin-text);text-align:right;cursor:pointer;box-shadow:var(--admin-shadow);transition:border-color .18s,transform .18s}.admin-action-card.needs-action{border-right:3px solid #c58a27}.admin-action-card.all-clear{border-right:3px solid #23946e}.admin-action-card.unknown{border-right:3px solid var(--admin-sub)}.admin-action-card-top,.admin-action-card-bottom{display:flex;align-items:center;gap:9px}.admin-action-card-top{justify-content:space-between}.admin-action-card-bottom{padding-top:10px;border-top:1px solid var(--admin-border)}.admin-action-card-bottom>strong{font-size:19px;font-weight:900}.admin-action-card-bottom>small{font-size:9px;color:var(--admin-sub);flex:1}.admin-action-status{font-size:9px;font-weight:850;padding:5px 8px;border-radius:8px;white-space:nowrap}.admin-action-status.pending{background:rgba(197,138,39,.13);color:#c58a27}.admin-action-status.clear{background:rgba(35,148,110,.12);color:#23946e}.admin-action-status.unknown{background:var(--admin-inner);color:var(--admin-sub)}
         .admin-action-card:hover{border-color:var(--admin-accent);transform:translateY(-1px)}
         .admin-action-icon{width:40px;height:40px;display:grid;place-items:center;flex:none;border-radius:12px;background:var(--admin-accent-soft);color:var(--admin-accent)}
@@ -196,7 +221,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-no-actions>svg{color:var(--admin-accent)}
         .admin-no-actions strong{font-size:13px;color:var(--admin-text)}
         .admin-no-actions span{font-size:10px;line-height:1.8}
-        @media(max-width:680px){.admin-action-grid{grid-template-columns:1fr}.admin-dashboard-controls{align-items:flex-start;flex-direction:column}.admin-action-card{min-height:130px;padding:13px}.admin-action-icon{width:34px;height:34px}.admin-action-copy strong{font-size:11px}}
+        @media(max-width:950px){.admin-overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:680px){.admin-overview-grid,.admin-action-grid{grid-template-columns:1fr}.admin-dashboard-controls{align-items:flex-start;flex-direction:column}.admin-section-heading{align-items:flex-start;flex-direction:column;gap:4px}.admin-action-card{min-height:130px;padding:13px}.admin-action-icon{width:34px;height:34px}.admin-action-copy strong{font-size:11px}.admin-overview-card{padding:12px}}
         .admin-dashboard-page{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:16px;color:var(--admin-text);font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif}
         .admin-dashboard-page *{box-sizing:border-box}
         .admin-welcome{min-height:150px;border:1px solid var(--admin-border);background:linear-gradient(110deg,var(--admin-card),var(--admin-inner));border-radius:20px;padding:23px 25px;display:flex;align-items:center;justify-content:space-between;gap:18px;overflow:hidden;position:relative;box-shadow:var(--admin-shadow)}
