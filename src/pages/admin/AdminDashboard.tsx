@@ -138,21 +138,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
 
   return (
     <div className="admin-dashboard-page">
-      <section className="admin-welcome">
-        <div className="admin-welcome-copy">
-          <div className="admin-eyebrow"><span /> مرکز مدیریت شمسه</div>
-          <h1>خوش آمدید، {adminName}</h1>
-          <p>خلاصه‌ای از وضعیت واقعی بخش‌های سامانه و مواردی که نیازمند پیگیری هستند.</p>
-          <div className="admin-dashboard-updated">
-            <Activity size={13} />
-            <span>{lastUpdated ? 'آخرین بروزرسانی: ' + dateFa(lastUpdated) : loading ? 'در حال دریافت اطلاعات سامانه…' : 'زمان بروزرسانی ثبت نشده است'}</span>
-          </div>
-        </div>
-        <div className="admin-welcome-actions">
-          <div className="admin-welcome-mark"><Activity size={28} /></div>
-          <button className="admin-refresh-button" onClick={() => void loadDashboard()} disabled={loading}><RefreshCw size={14} className={loading ? 'admin-spinning' : ''} />{loading ? 'در حال بروزرسانی' : 'بروزرسانی اطلاعات'}</button>
-        </div>
-      </section>
+      <div className="admin-dashboard-tools">
+        <span className="admin-dashboard-updated"><Activity size={13} /><span>{lastUpdated ? 'آخرین بروزرسانی: ' + dateFa(lastUpdated) : loading ? 'در حال دریافت اطلاعات سامانه…' : 'زمان بروزرسانی ثبت نشده است'}</span></span>
+        <button className="admin-refresh-button" onClick={() => void loadDashboard()} disabled={loading}><RefreshCw size={14} className={loading ? 'admin-spinning' : ''} />{loading ? 'در حال بروزرسانی' : 'بروزرسانی اطلاعات'}</button>
+      </div>
 
       {refreshError && <div className="admin-dashboard-notice" role="status">{refreshError}</div>}
 
@@ -232,17 +221,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
       <style>{`
         .admin-dashboard-page{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:16px;color:var(--admin-text);font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif}
         .admin-dashboard-page *{box-sizing:border-box}
-        .admin-welcome{min-height:150px;border:1px solid var(--admin-border);background:linear-gradient(110deg,var(--admin-card),var(--admin-inner));border-radius:20px;padding:23px 25px;display:flex;align-items:center;justify-content:space-between;gap:18px;overflow:hidden;position:relative;box-shadow:var(--admin-shadow)}
-        .admin-welcome:after{content:"";position:absolute;width:280px;height:280px;border:1px solid var(--admin-accent-soft);border-radius:50%;left:-100px;bottom:-180px;pointer-events:none}
-        .admin-welcome-copy{min-width:0;position:relative;z-index:1}
-        .admin-eyebrow{color:var(--admin-accent);font-size:10px;font-weight:900;display:flex;align-items:center;gap:7px;margin-bottom:8px}
-        .admin-eyebrow span{width:7px;height:7px;border-radius:50%;background:var(--admin-accent);box-shadow:0 0 0 4px var(--admin-accent-soft)}
-        .admin-welcome h1{font-size:23px;margin:0 0 7px;font-weight:900;letter-spacing:-.3px}
-        .admin-welcome p{margin:0;color:var(--admin-sub);font-size:11px;line-height:1.9}
-        .admin-dashboard-updated{display:flex;align-items:center;gap:6px;margin-top:12px;font-size:9px;color:var(--admin-sub)}
-        .admin-dashboard-updated svg{color:var(--admin-accent)}
-        .admin-welcome-actions{display:flex;flex-direction:column;align-items:center;gap:10px;z-index:1;flex:none}
-        .admin-welcome-mark{width:58px;height:58px;border-radius:16px;display:grid;place-items:center;color:var(--admin-accent);background:var(--admin-accent-soft);border:1px solid var(--admin-brand-border)}
+        .admin-dashboard-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:30px}
+        .admin-dashboard-updated{display:flex;align-items:center;gap:6px;font-size:9px;color:var(--admin-sub)}
+        .admin-dashboard-updated svg{color:var(--admin-accent);flex:none}
         .admin-refresh-button{display:flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--admin-brand-border);border-radius:10px;padding:8px 10px;background:var(--admin-accent-soft);color:var(--admin-text);font-size:10px;font-weight:850;white-space:nowrap;cursor:pointer}
         .admin-refresh-button:disabled{opacity:.6;cursor:wait}
         .admin-spinning{animation:admin-spin 1s linear infinite}
@@ -309,7 +290,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'م�
         .admin-audit-copy small{font-size:8px;color:var(--admin-sub)}
         .admin-audit-row time{font-size:8px;color:var(--admin-sub);white-space:nowrap}
         @media(max-width:1100px){.admin-stat-grid,.admin-followup-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-dashboard-grid{grid-template-columns:1fr}}
-        @media(max-width:600px){.admin-welcome{padding:18px;align-items:flex-start}.admin-welcome h1{font-size:20px}.admin-welcome-actions{gap:8px}.admin-welcome-mark{display:none}.admin-refresh-button{font-size:9px;padding:8px}.admin-stat-grid,.admin-followup-grid{grid-template-columns:1fr}.admin-quick-grid{grid-template-columns:1fr}.admin-panel-card{padding:14px}.admin-transaction-row{flex-wrap:wrap}.admin-transaction-amount{margin-right:40px}.admin-audit-row{align-items:flex-start;flex-wrap:wrap}.admin-audit-row time{margin-right:40px}}
+        @media(max-width:600px){.admin-dashboard-tools{align-items:flex-start;flex-wrap:wrap}.admin-refresh-button{font-size:9px;padding:8px}.admin-stat-grid,.admin-followup-grid{grid-template-columns:1fr}.admin-quick-grid{grid-template-columns:1fr}.admin-panel-card{padding:14px}.admin-transaction-row{flex-wrap:wrap}.admin-transaction-amount{margin-right:40px}.admin-audit-row{align-items:flex-start;flex-wrap:wrap}.admin-audit-row time{margin-right:40px}}
         @media(prefers-reduced-motion:reduce){.admin-dashboard-page *{transition:none!important;animation:none!important}}
       `}</style>
     </div>
