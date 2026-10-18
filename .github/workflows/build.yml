@@ -5,6 +5,7 @@ on:
     branches:
       - feature/final-product-schema
       - integration/product-schema-public-finance
+      - fix/system-audit-logs
   push:
     branches:
       - integration/product-schema-public-finance
