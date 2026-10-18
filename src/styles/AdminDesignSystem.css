@@ -710,3 +710,231 @@
     animation-duration: .01ms !important;
   }
 }
+
+
+/* Phase 3: consistent surfaces and controls for operational admin workspaces. */
+.admin-shell .admin-page-content .admin-messages-page,
+.admin-shell .admin-page-content .admin-offline-page,
+.admin-shell .admin-page-content .admin-mock-exams-page,
+.admin-shell .admin-page-content .admin-counseling-page,
+.admin-shell .admin-page-content .admin-public-content-page {
+  color:var(--admin-text);
+  font-size:12px;
+  line-height:1.8;
+}
+.admin-shell .admin-page-content :is(
+  .admin-messages-page .messages-stats,
+  .admin-offline-page .offline-stats,
+  .admin-mock-exams-page .mock-exam-stats,
+  .admin-counseling-page .counseling-stats-grid
+) {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,175px),1fr));
+  gap:12px!important;
+}
+.admin-shell .admin-page-content :is(
+  .admin-messages-page .messages-stat,
+  .admin-offline-page .offline-stat-card,
+  .admin-mock-exams-page .mock-exam-stat,
+  .admin-counseling-page .counseling-stats-grid > *
+) {
+  min-width:0;
+  padding:15px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:13px!important;
+  background:var(--admin-card)!important;
+  color:var(--admin-text)!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-page-content :is(
+  .messages-stat::before,.messages-stat::after,
+  .offline-stat-card::before,.offline-stat-card::after,
+  .mock-exam-stat::before,.mock-exam-stat::after
+) {
+  display:none!important;
+  content:none!important;
+}
+.admin-shell .admin-page-content :is(
+  .messages-stat-icon,.offline-stat-icon,.mock-exam-stat-icon
+) {
+  border-radius:10px!important;
+  background:var(--admin-accent-soft)!important;
+  color:var(--admin-accent)!important;
+}
+.admin-shell .admin-page-content :is(
+  .messages-stat strong,.offline-stat-copy strong,.mock-exam-stat strong,
+  .counseling-stats-grid strong
+) {
+  color:var(--admin-text)!important;
+  font-size:clamp(16px,1.5vw,22px)!important;
+  font-weight:850!important;
+  font-variant-numeric:tabular-nums;
+}
+.admin-shell .admin-page-content :is(
+  .messages-ticket-section,.offline-list-card,.mock-exam-list-card,
+  .admin-counseling-page .counseling-account-section,
+  .admin-counseling-page .counseling-conversation-section
+) {
+  min-width:0;
+  padding:17px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:14px!important;
+  background:var(--admin-card)!important;
+  color:var(--admin-text)!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-page-content :is(
+  .messages-section-head,.offline-list-head,.mock-exam-list-head,
+  .admin-counseling-page .counseling-account-section > h3,
+  .admin-counseling-page .counseling-conversation-section > h3
+) {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:10px;
+  padding-bottom:11px;
+  border-bottom:1px solid var(--admin-border);
+}
+.admin-shell .admin-page-content :is(
+  .messages-table-wrap,.mock-exam-scroll-list,.offline-list-card
+) {
+  min-width:0;
+  max-width:100%;
+  overflow-x:auto;
+  scrollbar-width:thin;
+  scrollbar-color:var(--admin-border) transparent;
+}
+.admin-shell .admin-page-content :is(
+  .messages-table,.messages-table-wrap table,.mock-exam-scroll-list table
+) {
+  width:100%;
+  min-width:640px;
+  border-collapse:separate;
+  border-spacing:0;
+}
+.admin-shell .admin-page-content :is(
+  .messages-table th,.messages-table-wrap th,.mock-exam-scroll-list th
+) {
+  background:var(--admin-inner)!important;
+  color:var(--admin-sub)!important;
+  border-bottom:1px solid var(--admin-border)!important;
+  font-size:10px!important;
+  font-weight:850!important;
+  white-space:nowrap;
+}
+.admin-shell .admin-page-content :is(
+  .messages-table td,.messages-table-wrap td,.mock-exam-scroll-list td
+) {
+  border-bottom:1px solid var(--admin-border)!important;
+  font-size:11px;
+  vertical-align:middle;
+}
+.admin-shell .admin-page-content :is(
+  .messages-table tbody tr:hover,.mock-exam-scroll-list tbody tr:hover
+) {
+  background:var(--admin-accent-soft)!important;
+}
+.admin-shell .admin-page-content :is(
+  .messages-refresh,.offline-refresh,.messages-filter-group button,
+  .offline-filter-group button,.mock-exam-filters button,
+  .notifications-submit,.admin-mock-exams-page button,
+  .admin-counseling-page button
+) {
+  font-family:inherit;
+  border-radius:9px;
+  font-size:11px;
+}
+.admin-shell .admin-page-content :is(
+  .messages-refresh,.offline-refresh,.notifications-submit
+) {
+  min-height:36px;
+}
+.admin-shell .admin-page-content :is(
+  .messages-filter-group,.offline-filter-group,.mock-exam-filters
+) {
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.admin-shell .admin-page-content :is(
+  .messages-filter-group button,.offline-filter-group button,.mock-exam-filters button
+) {
+  min-height:34px;
+  padding:7px 11px;
+  border:1px solid var(--admin-border);
+  background:var(--admin-inner);
+  color:var(--admin-sub);
+}
+.admin-shell .admin-page-content :is(
+  .messages-filter-group button.active,.offline-filter-group button.active,
+  .mock-exam-filters button.active
+) {
+  background:var(--admin-accent-soft)!important;
+  color:var(--admin-accent)!important;
+  border-color:var(--admin-brand-border)!important;
+}
+.admin-shell .admin-page-content .admin-notifications-page .notifications-form-card {
+  padding:18px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:14px!important;
+  background:var(--admin-card)!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-page-content .admin-notifications-page .notifications-form {
+  gap:16px;
+}
+.admin-shell .admin-page-content .admin-notifications-page .notifications-field label {
+  color:var(--admin-text);
+  font-size:11px;
+  font-weight:800;
+}
+.admin-shell .admin-page-content .admin-notifications-page :is(input,select,textarea) {
+  min-height:39px;
+  border:1px solid var(--admin-border);
+  border-radius:9px;
+  background:var(--admin-control);
+  color:var(--admin-text);
+  font:inherit;
+}
+.admin-shell .admin-page-content .admin-notifications-page textarea {
+  min-height:110px;
+}
+.admin-shell .admin-page-content :is(
+  .admin-messages-page,.admin-offline-page,.admin-mock-exams-page,
+  .admin-counseling-page,.admin-notifications-page,.admin-public-content-page
+) :is(button,input,select,textarea):focus-visible {
+  outline:2px solid var(--admin-accent)!important;
+  outline-offset:2px;
+}
+@media(max-width:760px) {
+  .admin-shell .admin-page-content :is(
+    .messages-ticket-section,.offline-list-card,.mock-exam-list-card,
+    .admin-counseling-page .counseling-account-section,
+    .admin-counseling-page .counseling-conversation-section,
+    .admin-notifications-page .notifications-form-card
+  ) {
+    padding:12px!important;
+  }
+  .admin-shell .admin-page-content :is(
+    .admin-messages-page .messages-stats,
+    .admin-offline-page .offline-stats,
+    .admin-mock-exams-page .mock-exam-stats,
+    .admin-counseling-page .counseling-stats-grid
+  ) {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .admin-shell .admin-page-content .admin-counseling-page .admin-counseling-conversations-grid {
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+}
+@media(max-width:440px) {
+  .admin-shell .admin-page-content :is(
+    .admin-messages-page .messages-stats,
+    .admin-offline-page .offline-stats,
+    .admin-mock-exams-page .mock-exam-stats,
+    .admin-counseling-page .counseling-stats-grid
+  ) {
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+}
