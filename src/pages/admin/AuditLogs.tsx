@@ -198,7 +198,7 @@ export const AuditLogs: React.FC = () => {
         ) : !error && filteredLogs.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '28px 12px', color: 'var(--admin-sub, #667675)' }}>موردی با این عبارت یا فیلتر پیدا نشد.</div>
         ) : (
-          <div style={{ maxWidth: '100%', overflowX: 'auto', overflowY: 'auto', maxHeight: 760, border: '1px solid var(--admin-border, #d8e3e0)', borderRadius: 10 }}>
+          <div style={{ maxWidth: '100%', overflowX: 'auto', overflowY: 'auto', maxHeight: 590, border: '1px solid var(--admin-border, #d8e3e0)', borderRadius: 10 }}>
             <table style={{ width: '100%', minWidth: 760, borderCollapse: 'separate', borderSpacing: 0, fontSize: 12.5, textAlign: 'right' }}>
               <thead style={{ position: 'sticky', top: 0, zIndex: 2 }}>
                 <tr style={{ background: 'var(--admin-inner, #e7efed)' }}>
@@ -243,7 +243,7 @@ export const AuditLogs: React.FC = () => {
         )}
         {!loading && !error && filteredLogs.length > 0 && (
           <p style={{ margin: '10px 2px 0', fontSize: 11.5, color: 'var(--admin-sub, #667675)' }}>
-            حداکثر ۲۰۰ رویداد اخیر نمایش داده می‌شود؛ جدول پس از حدود ۲۰ ردیف اسکرول می‌شود.
+            حداکثر ۲۰۰ رویداد اخیر نمایش داده می‌شود؛ جدول پس از نمایش حداکثر ۱۰ ردیف اسکرول می‌شود.
           </p>
         )}
       </section>
