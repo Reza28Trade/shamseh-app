@@ -1244,9 +1244,8 @@
 
 
 /* Shamseh Admin Design Reference
-   Single source of truth for shared admin visual tokens.
-   Page-specific files should consume these variables instead of redefining palette,
-   typography, borders, radii, shadows or control dimensions. */
+   Shared design tokens are the source of truth. Theme-dependent surfaces map to
+   the existing shell variables, so dark/light mode remains controlled by AdminLayout. */
 :root {
   --shamseh-almond: #EEE5DA;
   --shamseh-charcoal: #262424;
@@ -1254,18 +1253,6 @@
   --shamseh-teal: #008080;
   --shamseh-burgundy: #7A2038;
   --shamseh-gold: #C4984C;
-}
-.admin-shell {
-  --shamseh-surface-page: #f6f4f0;
-  --shamseh-surface-card: #ffffff;
-  --shamseh-surface-inner: #f8f6f3;
-  --shamseh-surface-control: #ffffff;
-  --shamseh-text-primary: #262424;
-  --shamseh-text-secondary: #716b65;
-  --shamseh-border-default: #e5ded5;
-  --shamseh-accent-primary: #008080;
-  --shamseh-accent-soft: rgba(72,209,204,.14);
-  --shamseh-accent-border: rgba(0,128,128,.35);
   --shamseh-radius-sm: 9px;
   --shamseh-radius-md: 12px;
   --shamseh-radius-lg: 14px;
@@ -1277,11 +1264,29 @@
   --shamseh-control-height: 38px;
   --shamseh-font-size: 12px;
 }
+.admin-shell {
+  --shamseh-surface-page: var(--admin-bg);
+  --shamseh-surface-card: var(--admin-card);
+  --shamseh-surface-inner: var(--admin-inner);
+  --shamseh-surface-control: var(--admin-control);
+  --shamseh-text-primary: var(--admin-text);
+  --shamseh-text-secondary: var(--admin-sub);
+  --shamseh-border-default: var(--admin-border);
+  --shamseh-accent-primary: var(--admin-accent);
+  --shamseh-accent-soft: var(--admin-accent-soft);
+  --shamseh-accent-border: var(--admin-brand-border);
+}
 .admin-shell .admin-page-content .admin-legacy-page {
   font-size: var(--shamseh-font-size);
+  color: var(--shamseh-text-primary);
 }
 .admin-shell .admin-page-content .admin-legacy-page :is(input,select,textarea) {
   min-height: var(--shamseh-control-height);
+  border-radius: var(--shamseh-radius-sm);
 }
-
-
+.admin-shell .admin-page-content .admin-legacy-page :is(button,.course-btn,.primary-action,.secondary-action) {
+  border-radius: var(--shamseh-radius-sm) !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(th,td) {
+  border-color: var(--shamseh-border-default);
+}
