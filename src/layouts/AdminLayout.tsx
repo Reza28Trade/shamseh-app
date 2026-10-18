@@ -48,19 +48,19 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
   });
   const activeItem = menuItems.find((item) => item.id === activeTab || (activeTab === 'finance' && item.id === 'registrations')) ?? menuItems[0];
   const vars = {
-    '--admin-bg': isDark ? '#262424' : '#EEE5DA',
+    '--admin-bg': isDark ? 'var(--shamseh-charcoal)' : 'var(--shamseh-almond)',
     '--admin-card': isDark ? '#1D1B1B' : '#F7F1E8',
     '--admin-inner': isDark ? '#302D2D' : '#E5D9CB',
-    '--admin-text': isDark ? '#EEE5DA' : '#262424',
+    '--admin-text': isDark ? 'var(--shamseh-almond)' : 'var(--shamseh-charcoal)',
     '--admin-sub': isDark ? '#B9B0A6' : '#655D55',
     '--admin-border': isDark ? 'rgba(238,229,218,.13)' : 'rgba(38,36,36,.14)',
-    '--admin-accent': isDark ? '#48D1CC' : '#008080',
+    '--admin-accent': isDark ? 'var(--shamseh-turquoise)' : 'var(--shamseh-teal)',
     '--admin-accent-soft': isDark ? 'rgba(72,209,204,.13)' : 'rgba(0,128,128,.10)',
     '--admin-brand-soft': isDark ? 'rgba(0,128,128,.18)' : 'rgba(0,128,128,.08)',
     '--admin-brand-border': isDark ? 'rgba(72,209,204,.30)' : 'rgba(0,128,128,.25)',
     '--admin-control': isDark ? '#211F1F' : '#F7F1E8',
-    '--admin-gold': '#C4984C',
-    '--admin-burgundy': '#7A2038',
+    '--admin-gold': 'var(--shamseh-gold)',
+    '--admin-burgundy': 'var(--shamseh-burgundy)',
     '--admin-shadow': isDark ? '0 16px 38px rgba(0,0,0,.22)' : '0 10px 28px rgba(38,36,36,.07)',
   } as React.CSSProperties;
 
