@@ -104,9 +104,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
           <button className="admin-mobile-menu" onClick={() => setIsSidebarOpen(!isSidebarOpen)} aria-label={isSidebarOpen ? 'بستن منو' : 'باز کردن منو'}>{isSidebarOpen ? <X size={19} /> : <Menu size={19} />}</button>
           <img src="/logo.png" alt="" /><strong>آکادمی شمسه</strong><span>{admin?.fullName || 'مدیر سیستم'}</span>
         </header>
-        <div className={'admin-page-heading ' + (activeTab === 'dashboard' ? 'is-dashboard' : '')}>
-          <div><span className="admin-page-eyebrow">مرکز مدیریت شمسه</span><h1>{activeItem.label}</h1></div>
-        </div>
         <div className="admin-page-content">{children}</div>
       </main>
       <style>{`
