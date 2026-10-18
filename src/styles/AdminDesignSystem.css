@@ -938,3 +938,159 @@
     grid-template-columns:minmax(0,1fr)!important;
   }
 }
+
+
+/* Phase 4: finish the shared system for public content, notifications and audit history.
+   Presentation-only overrides: preserve all handlers, forms, permissions and data flows. */
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  .admin-public-content-page,
+  .admin-notifications-page,
+  .admin-logs-page
+) {
+  color:var(--admin-text);
+  font-size:12px;
+  line-height:1.8;
+}
+.admin-shell .admin-page-content .admin-public-content-page > header {
+  display:none!important;
+}
+.admin-shell .admin-page-content .admin-public-content-page > div:has(> button),
+.admin-shell .admin-page-content .admin-public-content-page form,
+.admin-shell .admin-page-content .admin-public-content-page > div[style*="overflow"] {
+  border-color:var(--admin-border)!important;
+  border-radius:14px!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-page-content .admin-public-content-page form {
+  background:var(--admin-card)!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-page-content .admin-public-content-page label {
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-page-content .admin-public-content-page input,
+.admin-shell .admin-page-content .admin-public-content-page select,
+.admin-shell .admin-page-content .admin-public-content-page textarea {
+  min-width:0;
+  max-width:100%;
+  border:1px solid var(--admin-border)!important;
+  border-radius:9px!important;
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+  font:inherit;
+}
+.admin-shell .admin-page-content .admin-public-content-page input:focus,
+.admin-shell .admin-page-content .admin-public-content-page select:focus,
+.admin-shell .admin-page-content .admin-public-content-page textarea:focus {
+  border-color:var(--admin-accent)!important;
+  box-shadow:0 0 0 3px var(--admin-accent-soft)!important;
+  outline:none;
+}
+.admin-shell .admin-page-content .admin-public-content-page button {
+  transition:background .15s ease,border-color .15s ease,transform .15s ease;
+}
+.admin-shell .admin-page-content .admin-public-content-page button:focus-visible,
+.admin-shell .admin-page-content .admin-notifications-page button:focus-visible,
+.admin-shell .admin-page-content .admin-logs-page button:focus-visible,
+.admin-shell .admin-page-content .admin-public-content-page a:focus-visible {
+  outline:2px solid var(--admin-accent)!important;
+  outline-offset:2px;
+}
+.admin-shell .admin-page-content .admin-notifications-page .notifications-form-card {
+  padding:clamp(14px,2vw,22px)!important;
+}
+.admin-shell .admin-page-content .admin-notifications-page .notifications-field {
+  min-width:0;
+}
+.admin-shell .admin-page-content .admin-notifications-page :is(input,select,textarea) {
+  width:100%;
+  min-width:0;
+  min-height:39px;
+  border:1px solid var(--admin-border)!important;
+  border-radius:9px!important;
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+  font:inherit;
+}
+.admin-shell .admin-page-content .admin-notifications-page textarea {
+  resize:vertical;
+}
+.admin-shell .admin-page-content .admin-notifications-page :is(input,select,textarea):focus {
+  outline:none;
+  border-color:var(--admin-accent)!important;
+  box-shadow:0 0 0 3px var(--admin-accent-soft);
+}
+.admin-shell .admin-page-content .admin-notifications-page .notifications-target {
+  min-width:0;
+  border:1px solid var(--admin-border)!important;
+  border-radius:10px!important;
+  background:var(--admin-inner)!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-page-content .admin-notifications-page .notifications-target.is-active {
+  border-color:var(--admin-brand-border)!important;
+  background:var(--admin-accent-soft)!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-page-content .admin-logs-page > section:not([role="alert"]) {
+  border-color:var(--admin-border)!important;
+  border-radius:14px!important;
+  background:var(--admin-card)!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-page-content .admin-logs-page > section:first-child {
+  padding:16px!important;
+}
+.admin-shell .admin-page-content .admin-logs-page h2 {
+  font-size:16px!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-page-content .admin-logs-page table {
+  border-collapse:separate;
+  border-spacing:0;
+}
+.admin-shell .admin-page-content .admin-logs-page :is(th,td) {
+  border-bottom:1px solid var(--admin-border)!important;
+  font-size:11px;
+}
+.admin-shell .admin-page-content .admin-logs-page th {
+  background:var(--admin-inner)!important;
+  color:var(--admin-sub)!important;
+  font-weight:850;
+  white-space:nowrap;
+}
+.admin-shell .admin-page-content .admin-logs-page tbody tr:hover {
+  background:var(--admin-accent-soft)!important;
+}
+.admin-shell .admin-page-content .admin-logs-page input,
+.admin-shell .admin-page-content .admin-logs-page select {
+  min-height:38px;
+  border:1px solid var(--admin-border)!important;
+  border-radius:9px!important;
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+  font:inherit;
+}
+.admin-shell .admin-page-content .admin-logs-page input:focus,
+.admin-shell .admin-page-content .admin-logs-page select:focus {
+  outline:none;
+  border-color:var(--admin-accent)!important;
+  box-shadow:0 0 0 3px var(--admin-accent-soft);
+}
+.admin-shell .admin-page-content .admin-logs-page [role="alert"] {
+  border-radius:11px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(button,a) {
+  -webkit-tap-highlight-color:transparent;
+}
+@media(max-width:640px) {
+  .admin-shell .admin-page-content .admin-public-content-page,
+  .admin-shell .admin-page-content .admin-notifications-page,
+  .admin-shell .admin-page-content .admin-logs-page {
+    gap:12px!important;
+  }
+  .admin-shell .admin-page-content .admin-notifications-page .notifications-form-card,
+  .admin-shell .admin-page-content .admin-logs-page > section:not([role="alert"]) {
+    padding:12px!important;
+  }
+}
