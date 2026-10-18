@@ -413,3 +413,77 @@
   outline:2px solid #398a90;
   outline-offset:2px;
 }
+
+/* Approved Shamseh palette + Orbit-inspired shell treatment (phase 1: admin). */
+.admin-shell.admin-theme-dark .admin-sidebar{
+  background:#171616!important;
+  border-left-color:rgba(238,229,218,.10)!important;
+}
+.admin-shell.admin-theme-dark .admin-sidebar-profile{
+  background:#202020!important;
+  border-color:rgba(238,229,218,.10)!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-theme-dark .admin-nav button{
+  border-radius:11px;
+}
+.admin-shell.admin-theme-dark .admin-nav button.active{
+  background:#303030!important;
+  color:#EEE5DA!important;
+  border-color:rgba(238,229,218,.06)!important;
+}
+.admin-shell.admin-theme-dark .admin-nav button.active .admin-nav-icon{
+  color:#48D1CC!important;
+}
+.admin-shell.admin-theme-dark .admin-nav-indicator{
+  width:3px;
+  background:#48D1CC!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-page-content .admin-dashboard-page .admin-welcome{
+  border-radius:17px!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-theme-dark .admin-page-content .admin-dashboard-page :is(.admin-welcome,.admin-followup-card,.admin-panel-card,.admin-stat){
+  background:#1D1B1B!important;
+  border-color:rgba(238,229,218,.13)!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-theme-dark .admin-page-content .admin-dashboard-page .admin-stat{
+  background:linear-gradient(145deg,#242222,#1D1B1B)!important;
+}
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat{
+  border-radius:14px!important;
+  padding:16px!important;
+}
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat:hover{
+  border-color:var(--admin-brand-border)!important;
+  transform:translateY(-1px);
+}
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat-icon{
+  border-radius:11px!important;
+}
+.admin-shell .admin-page-content .admin-dashboard-page :is(.admin-panel-card,.admin-followup-card){
+  border-radius:15px!important;
+}
+.admin-shell .admin-page-content .admin-dashboard-page .admin-panel-heading{
+  border-bottom-color:var(--admin-border)!important;
+}
+.admin-shell .admin-page-content .admin-dashboard-page .admin-followup-icon.amber{
+  color:var(--admin-gold)!important;
+  background:rgba(196,152,76,.13)!important;
+}
+.admin-shell .admin-page-content .admin-dashboard-page .admin-dashboard-notice{
+  border-color:rgba(196,152,76,.35)!important;
+  background:rgba(196,152,76,.09)!important;
+}
+.admin-shell .admin-page-content .admin-dashboard-page .admin-transaction-amount{
+  color:var(--admin-text);
+}
+.admin-shell .admin-page-content .admin-dashboard-page :is(.admin-stat-grid,.admin-followup-grid,.admin-dashboard-grid){
+  gap:12px;
+}
+@media(max-width:900px){
+  .admin-shell .admin-sidebar{border-left:1px solid var(--admin-border)}
+}
+
