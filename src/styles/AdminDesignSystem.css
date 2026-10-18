@@ -487,3 +487,32 @@
   .admin-shell .admin-sidebar{border-left:1px solid var(--admin-border)}
 }
 
+/* Remove page-level hero/header bands across admin sections.
+   Keep action controls and all section/card headings intact. */
+.admin-shell .admin-page-content :is(
+  .students-page-head,
+  .counseling-page-head,
+  .messages-page-head,
+  .notifications-page-head,
+  .offline-page-head,
+  .admin-page-heading,
+  .admin-page-head,
+  .page-header
+) {
+  display: none !important;
+}
+.admin-shell .admin-page-content .course-toolbar {
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+.admin-shell .admin-page-content .course-toolbar > div:first-child {
+  display: none !important;
+}
+.admin-shell .admin-page-content .course-toolbar-actions {
+  justify-content: flex-start;
+  margin-bottom: 2px;
+}
