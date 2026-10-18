@@ -140,7 +140,7 @@ export function ManageRegistrations(){
       detail:item.transferReference?'شناسه انتقال: '+item.transferReference+' · '+item.reason:item.reason,
     })),
   ].sort((a,b)=>new Date(b.date).getTime()-new Date(a.date).getTime());
-  return <section style={{display:'grid',gap:16,color:'var(--admin-text)'}}>
+  return <section className="admin-finance-registration-page" style={{display:'grid',gap:16,color:'var(--admin-text)'}}>
     <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(155px,1fr))',gap:10}}>
       {[
         {label:'ثبت‌نام تأییدشده',value:new Intl.NumberFormat('fa-IR').format(approvedRegistrations.length),tone:'var(--admin-text)'},
