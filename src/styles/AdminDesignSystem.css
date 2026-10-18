@@ -1094,3 +1094,150 @@
     padding:12px!important;
   }
 }
+
+
+/* Phase 5: enforce shared reference styling across legacy admin pages.
+   Scoped to the admin content area; no data, handlers, permissions or workflows changed. */
+.admin-shell .admin-page-content .admin-legacy-page {
+  --panel-gap: 14px;
+  color: var(--admin-text);
+  font-family: Vazirmatn, IRANSansX, Tahoma, system-ui, sans-serif;
+  font-size: 12px;
+  line-height: 1.8;
+  min-width: 0;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(h1,h2,h3,h4) {
+  color: var(--admin-text);
+  line-height: 1.6;
+  letter-spacing: 0;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(h1,h2) {
+  font-size: 17px;
+  font-weight: 850;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(h3,h4) {
+  font-size: 13px;
+  font-weight: 800;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(p,small,.muted,.subtitle) {
+  line-height: 1.85;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  .mock-exam-dashboard > div,
+  .mock-exam-list-card,
+  .counseling-account-section,
+  .counseling-conversation-section,
+  .messages-ticket-section,
+  .messages-detail-section,
+  .offline-list-card,
+  .accounts-card,
+  .accounts-create-card,
+  .notifications-form-card,
+  .admin-public-content-page form,
+  .admin-logs-page > section
+) {
+  border: 1px solid var(--admin-border) !important;
+  border-radius: 14px !important;
+  background: var(--admin-card) !important;
+  box-shadow: none !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  .mock-exam-dashboard > div,
+  .mock-exam-list-card,
+  .counseling-account-section,
+  .counseling-conversation-section,
+  .messages-ticket-section,
+  .messages-detail-section,
+  .offline-list-card,
+  .accounts-card,
+  .accounts-create-card,
+  .notifications-form-card
+) {
+  min-width: 0;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  .mock-exam-stat,.offline-stat-card,.messages-stat,.admin-stat,
+  .counseling-stats-grid > *
+) {
+  border: 1px solid var(--admin-border) !important;
+  border-top: 1px solid var(--admin-border) !important;
+  border-radius: 12px !important;
+  background: var(--admin-card) !important;
+  box-shadow: none !important;
+  min-width: 0;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  .mock-exam-stat,.offline-stat-card,.messages-stat,.admin-stat
+)::before,
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  .mock-exam-stat,.offline-stat-card,.messages-stat,.admin-stat
+)::after {
+  box-shadow: none !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(input,select,textarea) {
+  min-width: 0;
+  max-width: 100%;
+  border-radius: 9px !important;
+  border-color: var(--admin-border) !important;
+  font: inherit;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(button,.course-btn,.primary-action,.secondary-action) {
+  min-height: 35px;
+  border-radius: 9px !important;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 750;
+  box-shadow: none;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(table) {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(th) {
+  background: var(--admin-inner) !important;
+  color: var(--admin-sub) !important;
+  border-bottom: 1px solid var(--admin-border) !important;
+  font-size: 10px !important;
+  font-weight: 850;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(td) {
+  border-bottom: 1px solid var(--admin-border);
+  font-size: 11px;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(tbody tr:hover) {
+  background: var(--admin-accent-soft);
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(button,input,select,textarea,a):focus-visible {
+  outline: 2px solid var(--admin-accent) !important;
+  outline-offset: 2px;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  .mock-exam-dashboard,.mock-exam-list-card,.mock-exam-scroll-list,
+  .messages-table-wrap,.offline-request-list,.counseling-account-list
+) {
+  min-width: 0;
+  max-width: 100%;
+}
+@media(max-width:760px) {
+  .admin-shell .admin-page-content .admin-legacy-page {
+    gap: 12px !important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .mock-exam-dashboard > div,
+    .mock-exam-list-card,
+    .counseling-account-section,
+    .counseling-conversation-section,
+    .messages-ticket-section,
+    .messages-detail-section,
+    .offline-list-card,
+    .accounts-card,
+    .accounts-create-card,
+    .notifications-form-card
+  ) {
+    padding: 13px !important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page :is(.mock-exam-scroll-list,.messages-table-wrap) {
+    overflow-x: auto;
+  }
+}
