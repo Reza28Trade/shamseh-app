@@ -344,3 +344,72 @@
     transition-duration:.01ms!important;
   }
 }
+
+
+/* Dashboard uses a distinct live-data layout but the same surfaces and type scale. */
+.admin-shell .admin-page-content .admin-dashboard-page{
+  width:100%;
+  max-width:1240px;
+  margin-inline:auto;
+  gap:16px;
+  font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif;
+}
+.admin-shell .admin-page-content .admin-dashboard-page :is(
+  .admin-followup-card,.admin-panel-card,.admin-stat
+){
+  border:1px solid var(--admin-border)!important;
+  border-top:1px solid var(--admin-border)!important;
+  border-radius:15px!important;
+  background:var(--admin-card)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat{
+  min-width:0;
+  overflow:hidden;
+  box-shadow:none!important;
+}
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat::before,
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat::after{
+  display:none!important;
+  content:none!important;
+}
+.admin-shell .admin-page-content .admin-dashboard-page :is(.admin-stat-grid,.admin-followup-grid,.admin-dashboard-grid){
+  min-width:0;
+  gap:12px;
+}
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat-copy{
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+.admin-shell .admin-page-content .admin-dashboard-page .admin-panel-heading{
+  border-bottom:1px solid var(--admin-border)!important;
+  padding-bottom:12px;
+}
+.admin-shell .admin-page-content .admin-dashboard-page :is(.admin-transaction-row,.admin-audit-row){
+  border-color:var(--admin-border)!important;
+}
+.admin-shell .admin-page-content .admin-dashboard-page :is(.admin-stat-copy strong,.admin-stat-copy b){
+  font-size:clamp(16px,1.6vw,22px)!important;
+  line-height:1.5;
+}
+@media(max-width:760px){
+  .admin-shell .admin-page-content .admin-dashboard-page :is(.admin-stat-grid,.admin-followup-grid){
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .admin-shell .admin-page-content .admin-dashboard-page .admin-welcome{
+    padding:17px!important;
+    border-radius:15px!important;
+  }
+}
+@media(max-width:440px){
+  .admin-shell .admin-page-content .admin-dashboard-page :is(.admin-stat-grid,.admin-followup-grid){
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+}
+
+/* Keep keyboard focus visible on independently themed counselor/student pages. */
+.counselor-workspace :is(button,input,textarea,select):focus-visible,
+.student-dashboard :is(button,input,textarea,select):focus-visible{
+  outline:2px solid #398a90;
+  outline-offset:2px;
+}
