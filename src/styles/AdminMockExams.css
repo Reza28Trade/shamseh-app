@@ -324,3 +324,21 @@
 @media(max-width:760px){
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > form{padding:14px!important}
 }
+
+
+/* Shared reference: remove the legacy page-level hero while retaining its refresh action. */
+.admin-shell .admin-page-content .admin-mock-exams-page > div:first-child {
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  justify-content: flex-end !important;
+  min-height: 0;
+}
+.admin-shell .admin-page-content .admin-mock-exams-page > div:first-child > div:first-child {
+  display: none !important;
+}
+.admin-shell .admin-page-content .admin-mock-exams-page > div:first-child > button {
+  margin-inline-start: auto;
+}
