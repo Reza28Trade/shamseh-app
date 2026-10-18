@@ -1,0 +1,167 @@
+/* Shared admin design system.
+ * Phase 1: establish common visual rules for Student Management and Course Management.
+ * Keep page-specific content/layout in each page stylesheet; share visual tokens and surfaces here.
+ */
+.admin-shell .admin-page-content .admin-legacy-page{
+  --admin-page-gap:16px;
+  --admin-surface-radius:15px;
+  --admin-control-radius:9px;
+  --admin-control-height:36px;
+  --admin-section-title-size:14px;
+  --admin-page-title-size:19px;
+  width:100%;
+  max-width:1240px;
+  margin-inline:auto;
+  gap:var(--admin-page-gap);
+  font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(input,select,textarea){
+  min-width:0;
+  border-radius:var(--admin-control-radius);
+  font:inherit;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(button,.course-btn,.primary-action,.secondary-action){
+  min-height:var(--admin-control-height);
+  border-radius:var(--admin-control-radius)!important;
+  font-family:inherit;
+  font-size:11px;
+  font-weight:750;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible){
+  outline:2px solid var(--admin-accent);
+  outline-offset:2px;
+}
+
+/* A single shared page-heading pattern; no colored top strips. */
+.admin-shell .admin-page-content .admin-legacy-page :is(.students-page-head,.course-toolbar){
+  min-height:76px;
+  padding:17px 19px!important;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  border:1px solid var(--admin-border)!important;
+  border-top:1px solid var(--admin-border)!important;
+  border-radius:var(--admin-surface-radius)!important;
+  background:linear-gradient(120deg,var(--admin-accent-soft),var(--admin-card) 78%)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page .students-page-head:before{display:none!important;content:none!important}
+.admin-shell .admin-page-content .admin-legacy-page .students-page-head h2,
+.admin-shell .admin-page-content .admin-legacy-page .course-title{
+  margin:0;
+  font-size:var(--admin-page-title-size)!important;
+  line-height:1.5;
+  font-weight:850!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(.students-page-head p,.course-subtitle){
+  margin:4px 0 0;
+  color:var(--admin-sub)!important;
+  font-size:11px!important;
+  line-height:1.8;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(.students-page-head h2 svg,.course-title svg){color:var(--admin-accent)!important}
+.admin-shell .admin-page-content .admin-legacy-page :is(.students-head-actions,.course-toolbar-actions){gap:7px}
+
+/* Shared cards and section surfaces. */
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  .students-stats,.student-chart-card,.student-form-card,.student-import-card,.student-list-card,
+  .course-stat,.course-form,.course-list
+){
+  border:1px solid var(--admin-border)!important;
+  border-radius:var(--admin-surface-radius)!important;
+  background:var(--admin-card)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(.student-chart-card,.student-form-card,.student-import-card,.student-list-card,.course-form,.course-list){
+  padding:17px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(.section-title h3,.course-section-head h3){
+  font-size:var(--admin-section-title-size)!important;
+  font-weight:850!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(.section-title svg,.course-section-head svg){color:var(--admin-accent)!important}
+
+/* Stat cards share a restrained, neutral surface rather than decorative color bars. */
+.admin-shell .admin-page-content .admin-legacy-page :is(.student-stat,.course-stat){
+  border-color:var(--admin-border)!important;
+  border-top:1px solid var(--admin-border)!important;
+  background:var(--admin-card)!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page .course-stat:before{display:none!important;content:none!important}
+.admin-shell .admin-page-content .admin-legacy-page .course-stat :is(.course-stat-label,.course-stat-value){font-family:inherit}
+.admin-shell .admin-page-content .admin-legacy-page .course-stat .course-stat-value,
+.admin-shell .admin-page-content .admin-legacy-page .student-stat strong{
+  font-size:21px!important;
+  font-weight:850!important;
+  color:var(--admin-text)!important;
+}
+
+/* Tables use the same readable header, row separators and compact spacing. */
+.admin-shell .admin-page-content .admin-legacy-page :is(.student-table-wrap,.course-list-grid){
+  border-radius:11px;
+  scrollbar-width:thin;
+  scrollbar-color:var(--admin-border) transparent;
+}
+.admin-shell .admin-page-content .admin-legacy-page .student-table-wrap{
+  height:auto!important;
+  max-height:510px!important;
+  overflow:auto!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page .student-table-wrap table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+}
+.admin-shell .admin-page-content .admin-legacy-page .student-table-wrap thead{
+  position:sticky;
+  top:0;
+  z-index:2;
+}
+.admin-shell .admin-page-content .admin-legacy-page .student-table-wrap th{
+  position:sticky;
+  top:0;
+  z-index:2;
+  padding:11px 10px!important;
+  background:var(--admin-inner)!important;
+  color:var(--admin-sub)!important;
+  border-bottom:1px solid var(--admin-border)!important;
+  font-size:10px!important;
+  font-weight:850!important;
+  white-space:nowrap;
+}
+.admin-shell .admin-page-content .admin-legacy-page .student-table-wrap td{
+  padding:10px!important;
+  border-bottom:1px solid var(--admin-border)!important;
+  font-size:11px!important;
+  vertical-align:middle;
+}
+.admin-shell .admin-page-content .admin-legacy-page .student-table-wrap tbody tr:hover td{
+  background:var(--admin-accent-soft)!important;
+}
+
+/* Responsive behavior is shared while each page retains its own content arrangement. */
+@media(max-width:700px){
+  .admin-shell .admin-page-content .admin-legacy-page :is(.students-page-head,.course-toolbar){
+    min-height:0;
+    padding:15px!important;
+    align-items:stretch;
+    flex-direction:column;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page :is(.students-head-actions,.course-toolbar-actions){
+    width:100%;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page :is(.students-head-actions button,.course-toolbar-actions button){
+    flex:1 1 auto;
+    justify-content:center;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page :is(.student-chart-card,.student-form-card,.student-import-card,.student-list-card,.course-form,.course-list){
+    padding:14px!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .admin-shell .admin-page-content .admin-legacy-page *{transition:none!important;scroll-behavior:auto!important}
+}
