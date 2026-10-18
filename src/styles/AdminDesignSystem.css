@@ -942,7 +942,7 @@
 
 /* Phase 4: finish the shared system for public content, notifications and audit history.
    Presentation-only overrides: preserve all handlers, forms, permissions and data flows. */
-.admin-shell .admin-page-content .admin-legacy-page :is(
+.admin-shell .admin-page-content :is(
   .admin-public-content-page,
   .admin-notifications-page,
   .admin-logs-page
