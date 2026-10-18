@@ -1290,3 +1290,133 @@
 .admin-shell .admin-page-content .admin-legacy-page :is(th,td) {
   border-color: var(--shamseh-border-default);
 }
+
+
+/* System Reports: consume the shared reference instead of page-local inline styling. */
+.admin-shell .admin-page-content .admin-logs-page {
+  gap: var(--shamseh-space-4) !important;
+  max-width: 1240px;
+  font-size: var(--shamseh-font-size) !important;
+  color: var(--shamseh-text-primary) !important;
+}
+.admin-shell .admin-page-content .admin-logs-page > section:first-child {
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.admin-shell .admin-page-content .admin-logs-page > section:first-child h2 {
+  margin: 0 0 var(--shamseh-space-1) !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  line-height: 1.6 !important;
+  color: var(--shamseh-text-primary) !important;
+}
+.admin-shell .admin-page-content .admin-logs-page > section:first-child h2 svg {
+  color: var(--shamseh-accent-primary) !important;
+}
+.admin-shell .admin-page-content .admin-logs-page > section:first-child p {
+  color: var(--shamseh-text-secondary) !important;
+  font-size: 11px !important;
+}
+.admin-shell .admin-page-content .admin-logs-page > section:first-child button {
+  min-height: var(--shamseh-control-height) !important;
+  padding: 0 var(--shamseh-space-3) !important;
+  border: 1px solid var(--shamseh-accent-border) !important;
+  border-radius: var(--shamseh-radius-sm) !important;
+  background: var(--shamseh-accent-soft) !important;
+  color: var(--shamseh-text-primary) !important;
+  font-size: 11px !important;
+  font-weight: 750 !important;
+}
+.admin-shell .admin-page-content .admin-logs-page > section:nth-child(2) {
+  border: 1px solid var(--shamseh-border-default) !important;
+  border-radius: var(--shamseh-radius-md) !important;
+  background: var(--shamseh-surface-card) !important;
+  color: var(--shamseh-text-primary) !important;
+  box-shadow: none !important;
+}
+.admin-shell .admin-page-content .admin-logs-page > section:nth-child(2)[role="alert"] {
+  border-color: color-mix(in srgb, var(--shamseh-burgundy) 42%, var(--shamseh-border-default)) !important;
+  background: color-mix(in srgb, var(--shamseh-burgundy) 9%, var(--shamseh-surface-card)) !important;
+  color: var(--shamseh-text-primary) !important;
+}
+.admin-shell .admin-page-content .admin-logs-page > section:nth-child(2)[role="alert"] svg {
+  color: var(--shamseh-burgundy) !important;
+}
+.admin-shell .admin-page-content .admin-logs-page > section:last-child {
+  padding: var(--shamseh-space-4) !important;
+  border: 1px solid var(--shamseh-border-default) !important;
+  border-radius: var(--shamseh-radius-md) !important;
+  background: var(--shamseh-surface-card) !important;
+  color: var(--shamseh-text-primary) !important;
+  box-shadow: none !important;
+}
+.admin-shell .admin-page-content .admin-logs-page :is(input, select) {
+  min-width: 0 !important;
+  min-height: var(--shamseh-control-height) !important;
+  padding-block: 0 !important;
+  border: 1px solid var(--shamseh-border-default) !important;
+  border-radius: var(--shamseh-radius-sm) !important;
+  background: var(--shamseh-surface-control) !important;
+  color: var(--shamseh-text-primary) !important;
+  font-family: inherit !important;
+  font-size: 11px !important;
+  box-shadow: none !important;
+}
+.admin-shell .admin-page-content .admin-logs-page :is(input,select)::placeholder {
+  color: var(--shamseh-text-secondary) !important;
+  opacity: 1;
+}
+.admin-shell .admin-page-content .admin-logs-page > section:last-child > div[style*="overflow-x: auto"] {
+  border: 1px solid var(--shamseh-border-default) !important;
+  border-radius: var(--shamseh-radius-sm) !important;
+}
+.admin-shell .admin-page-content .admin-logs-page table {
+  color: var(--shamseh-text-primary) !important;
+  font-size: 11px !important;
+}
+.admin-shell .admin-page-content .admin-logs-page thead tr {
+  background: var(--shamseh-surface-inner) !important;
+}
+.admin-shell .admin-page-content .admin-logs-page :is(th, td) {
+  border-color: var(--shamseh-border-default) !important;
+  color: var(--shamseh-text-primary);
+}
+.admin-shell .admin-page-content .admin-logs-page th {
+  padding: var(--shamseh-space-3) var(--shamseh-space-2) !important;
+  background: var(--shamseh-surface-inner) !important;
+  color: var(--shamseh-text-secondary) !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  white-space: nowrap;
+}
+.admin-shell .admin-page-content .admin-logs-page td {
+  padding: var(--shamseh-space-3) var(--shamseh-space-2) !important;
+  font-size: 11px !important;
+  line-height: 1.7;
+}
+.admin-shell .admin-page-content .admin-logs-page tbody tr:hover td {
+  background: var(--shamseh-accent-soft) !important;
+}
+.admin-shell .admin-page-content .admin-logs-page pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 700px) {
+  .admin-shell .admin-page-content .admin-logs-page > section:last-child {
+    padding: var(--shamseh-space-3) !important;
+  }
+  .admin-shell .admin-page-content .admin-logs-page > section:last-child > div:first-child {
+    align-items: stretch !important;
+  }
+  .admin-shell .admin-page-content .admin-logs-page > section:last-child > div:first-child > div:last-child {
+    flex-basis: 100% !important;
+    justify-content: stretch !important;
+  }
+  .admin-shell .admin-page-content .admin-logs-page select {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+}
