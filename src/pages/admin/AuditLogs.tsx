@@ -168,9 +168,10 @@ export const AuditLogs: React.FC = () => {
             <span>{loading ? 'در حال دریافت…' : `${filteredLogs.length.toLocaleString('fa-IR')} مورد از ${logs.length.toLocaleString('fa-IR')} رویداد`}</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', flex: '1 1 420px', justifyContent: 'flex-end' }}>
-            <label style={{ position: 'relative', display: 'flex', alignItems: 'center', flex: '1 1 240px', maxWidth: 360 }}>
+            <label className="audit-search-field">
               <Search size={16} style={{ position: 'absolute', right: 10, color: 'var(--admin-sub, #667675)', pointerEvents: 'none' }} />
               <input
+                className="audit-search-input"
                 type="search"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
