@@ -49,7 +49,7 @@ const statusText = (status: string) => ({
   CLOSED: 'بسته شده', REQUESTED: 'درخواست جدید', RESERVED: 'مبلغ رزرو شده', PAID: 'پرداخت شده',
 }[status] || status);
 
-export const AdminDashboard: React.FC<AdminDashboardProps> = ({ adminName = 'مدیر سیستم', admin, onNavigate }) => {
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigate }) => {
   const [data, setData] = useState<DashboardData>(emptyData);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
