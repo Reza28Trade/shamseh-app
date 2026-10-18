@@ -1256,32 +1256,32 @@
   --shamseh-gold: #C4984C;
 }
 .admin-shell {
-  --admin-page-bg: var(--admin-page-bg, #f6f4f0);
-  --admin-card: var(--admin-card, #ffffff);
-  --admin-inner: var(--admin-inner, #f8f6f3);
-  --admin-control: var(--admin-control, #ffffff);
-  --admin-text: var(--admin-text, #262424);
-  --admin-sub: var(--admin-sub, #716b65);
-  --admin-border: var(--admin-border, #e5ded5);
-  --admin-accent: var(--admin-accent, #008080);
-  --admin-accent-soft: var(--admin-accent-soft, rgba(72,209,204,.14));
-  --admin-brand-border: var(--admin-brand-border, rgba(0,128,128,.35));
-  --admin-radius-sm: 9px;
-  --admin-radius-md: 12px;
-  --admin-radius-lg: 14px;
-  --admin-space-1: 4px;
-  --admin-space-2: 8px;
-  --admin-space-3: 12px;
-  --admin-space-4: 16px;
-  --admin-space-5: 20px;
-  --admin-control-height: 38px;
-  --admin-font-size: 12px;
+  --shamseh-surface-page: #f6f4f0;
+  --shamseh-surface-card: #ffffff;
+  --shamseh-surface-inner: #f8f6f3;
+  --shamseh-surface-control: #ffffff;
+  --shamseh-text-primary: #262424;
+  --shamseh-text-secondary: #716b65;
+  --shamseh-border-default: #e5ded5;
+  --shamseh-accent-primary: #008080;
+  --shamseh-accent-soft: rgba(72,209,204,.14);
+  --shamseh-accent-border: rgba(0,128,128,.35);
+  --shamseh-radius-sm: 9px;
+  --shamseh-radius-md: 12px;
+  --shamseh-radius-lg: 14px;
+  --shamseh-space-1: 4px;
+  --shamseh-space-2: 8px;
+  --shamseh-space-3: 12px;
+  --shamseh-space-4: 16px;
+  --shamseh-space-5: 20px;
+  --shamseh-control-height: 38px;
+  --shamseh-font-size: 12px;
 }
 .admin-shell .admin-page-content .admin-legacy-page {
-  font-size: var(--admin-font-size);
+  font-size: var(--shamseh-font-size);
 }
 .admin-shell .admin-page-content .admin-legacy-page :is(input,select,textarea) {
-  min-height: var(--admin-control-height);
+  min-height: var(--shamseh-control-height);
 }
 
 
