@@ -1241,3 +1241,47 @@
     overflow-x: auto;
   }
 }
+
+
+/* Shamseh Admin Design Reference
+   Single source of truth for shared admin visual tokens.
+   Page-specific files should consume these variables instead of redefining palette,
+   typography, borders, radii, shadows or control dimensions. */
+:root {
+  --shamseh-almond: #EEE5DA;
+  --shamseh-charcoal: #262424;
+  --shamseh-turquoise: #48D1CC;
+  --shamseh-teal: #008080;
+  --shamseh-burgundy: #7A2038;
+  --shamseh-gold: #C4984C;
+}
+.admin-shell {
+  --admin-page-bg: var(--admin-page-bg, #f6f4f0);
+  --admin-card: var(--admin-card, #ffffff);
+  --admin-inner: var(--admin-inner, #f8f6f3);
+  --admin-control: var(--admin-control, #ffffff);
+  --admin-text: var(--admin-text, #262424);
+  --admin-sub: var(--admin-sub, #716b65);
+  --admin-border: var(--admin-border, #e5ded5);
+  --admin-accent: var(--admin-accent, #008080);
+  --admin-accent-soft: var(--admin-accent-soft, rgba(72,209,204,.14));
+  --admin-brand-border: var(--admin-brand-border, rgba(0,128,128,.35));
+  --admin-radius-sm: 9px;
+  --admin-radius-md: 12px;
+  --admin-radius-lg: 14px;
+  --admin-space-1: 4px;
+  --admin-space-2: 8px;
+  --admin-space-3: 12px;
+  --admin-space-4: 16px;
+  --admin-space-5: 20px;
+  --admin-control-height: 38px;
+  --admin-font-size: 12px;
+}
+.admin-shell .admin-page-content .admin-legacy-page {
+  font-size: var(--admin-font-size);
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(input,select,textarea) {
+  min-height: var(--admin-control-height);
+}
+
+
