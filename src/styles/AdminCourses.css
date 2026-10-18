@@ -379,11 +379,11 @@
 
 /* Match the approved Manage Students visual system across the full Course Management page. */
 .admin-shell .admin-page-content .admin-legacy-page.admin-courses-page{
-  --course-teal:var(--students-teal, #398A90);
-  --course-blue:var(--students-blue, #528bd8);
-  --course-gold:var(--students-gold, #d69b42);
-  --course-green:var(--students-green, #2e9b83);
-  --course-coral:var(--students-coral, #d87568);
+  --course-teal:var(--shamseh-teal);
+  --course-blue:var(--shamseh-turquoise);
+  --course-gold:var(--shamseh-gold);
+  --course-green:var(--shamseh-teal);
+  --course-coral:var(--shamseh-burgundy);
   gap:16px!important;
   color:var(--admin-text)!important;
 }
@@ -424,13 +424,13 @@
   color:var(--admin-accent)!important;
 }
 .admin-courses-page .course-btn.primary{
-  background:linear-gradient(105deg,#398A90,var(--course-teal))!important;
+  background:var(--course-teal)!important;
   color:#fff!important;border-color:var(--course-teal)!important;
   box-shadow:0 5px 14px color-mix(in srgb,var(--course-teal) 18%,transparent);
 }
 .admin-courses-page .course-btn.primary:hover{filter:brightness(1.05);color:#fff!important}
 .admin-courses-page .course-btn.blue{color:var(--course-blue)!important}
-.admin-courses-page .course-btn.danger{color:#c65353!important}
+.admin-courses-page .course-btn.danger{color:var(--shamseh-status-danger, #c65353)!important}
 .admin-courses-page .course-btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
 .admin-courses-page .course-message{border-radius:10px;font-size:11px}
 .admin-courses-page .course-stats{
