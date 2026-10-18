@@ -1589,3 +1589,20 @@
     min-height: 100%;
   }
 }
+
+
+/* Native select menus use the shared Shamseh palette where supported by the browser. */
+.admin-shell select,
+.admin-shell select option {
+  color: var(--admin-text) !important;
+  background-color: var(--admin-control) !important;
+}
+.admin-shell select option:checked,
+.admin-shell select option:hover {
+  color: var(--admin-text) !important;
+  background-color: var(--admin-accent-soft) !important;
+}
+.admin-shell select:focus-visible {
+  outline: 2px solid var(--admin-accent) !important;
+  outline-offset: 2px;
+}
