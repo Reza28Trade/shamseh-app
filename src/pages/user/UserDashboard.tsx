@@ -510,6 +510,30 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         @media(max-width:1020px){.student-dashboard-home-grid{grid-template-columns:1fr}.student-home-hero-content{max-width:72%}}
         @media(max-width:820px){.student-dashboard{padding:14px!important}.student-dashboard-layout{grid-template-columns:1fr}.student-dashboard-nav{position:static;flex-direction:row!important;overflow-x:auto;padding:6px!important}.student-dashboard-nav button{width:auto;min-width:max-content;justify-content:center}.student-sidebar-brand,.student-sidebar-spacer{display:none}.student-sidebar-logout{margin-top:0!important}}
         @media(max-width:620px){.student-dashboard-header{padding:12px 14px!important}.student-dashboard-stat-grid{grid-template-columns:1fr}.student-home-hero-content{max-width:100%}.student-home-hero-art{opacity:.35}.student-file-row{grid-template-columns:minmax(0,1fr) auto}.student-file-action{grid-column:2}}
+
+        /* Admin-shell alignment: fixed full-height right rail and consistent content gutter. */
+        .student-dashboard{padding:12px!important;background:var(--admin-bg,#262424)!important;color:var(--sd-text)!important}
+        .student-dashboard-shell{max-width:none!important;margin:0!important;padding-right:264px;box-sizing:border-box}
+        .student-dashboard-header{min-height:64px!important;padding:12px 16px!important;border-radius:12px!important;background:var(--sd-card)!important;border:1px solid var(--sd-border)!important;backdrop-filter:none!important}
+        .student-dashboard-layout{display:block!important}
+        .student-dashboard-nav{position:fixed!important;right:12px!important;top:12px!important;bottom:12px!important;width:236px!important;height:auto!important;max-height:none!important;overflow-y:auto!important;z-index:30!important;align-self:stretch!important;padding:12px!important;gap:5px!important;border-radius:12px!important;background:var(--sd-card)!important;border:1px solid var(--sd-border)!important;box-shadow:0 10px 28px rgba(0,0,0,.10)!important}
+        .student-sidebar-brand{padding:6px 4px 14px!important;margin-bottom:5px!important}
+        .student-dashboard-nav button{min-height:38px!important;padding:8px 10px!important;border-radius:8px!important;font-size:11px!important;font-weight:750!important}
+        .student-dashboard-main{min-width:0!important;max-width:none!important;margin:0!important;gap:12px!important}
+        .student-dashboard-main>div{border-radius:12px!important;padding:16px!important;box-shadow:0 8px 22px rgba(0,0,0,.06)!important}
+        .student-dashboard-main h2{font-size:16px!important}
+        @media(max-width:900px){
+          .student-dashboard{padding:10px!important}
+          .student-dashboard-shell{padding-right:0!important}
+          .student-dashboard-nav{position:relative!important;right:auto!important;top:auto!important;bottom:auto!important;width:100%!important;height:auto!important;max-height:none!important;overflow:visible!important;margin-bottom:12px!important}
+          .student-dashboard-layout{display:block!important}
+          .student-dashboard-header{margin-bottom:12px!important}
+        }
+        @media(max-width:620px){
+          .student-dashboard-nav{display:flex!important;flex-direction:row!important;overflow-x:auto!important;align-items:stretch!important}
+          .student-dashboard-nav button{width:auto!important;min-width:max-content!important}
+          .student-sidebar-brand,.student-sidebar-spacer{display:none!important}
+        }
       `}</style>
 
       <div className="student-dashboard-shell">
