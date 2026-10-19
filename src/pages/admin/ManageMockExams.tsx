@@ -620,45 +620,55 @@ export const ManageMockExams: React.FC = () => {
                         return levelMatches && searchMatches && (!showSelectedOnly || selected);
                       }).length} هنرجو در نتایج
                     </div>
-                    <div className="mock-participant-list">
-                      {students
-                        .filter(student => {
-                          const levelMatches = participantGroup === 'ALL' || student.academicLevel === participantGroup;
-                          const query = participantSearch.trim().toLocaleLowerCase();
-                          const searchMatches = !query || student.fullName.toLocaleLowerCase().includes(query) || student.nationalId.includes(query);
-                          const selected = exam.participants.some(item => item.student.id === student.id);
-                          return levelMatches && searchMatches && (!showSelectedOnly || selected);
-                        })
-                        .map(student => {
-                          const selected = exam.participants.some(item => item.student.id === student.id);
-                          return (
-                            <button
-                              key={student.id}
-                              type="button"
-                              className={selected ? 'mock-participant-option is-selected' : 'mock-participant-option'}
-                              aria-pressed={selected}
-                              onClick={() => void toggleParticipant(exam.id, student.id, selected)}
-                            >
-                              <span className="mock-participant-check">{selected && <Check size={14} />}</span>
-                              <span className="mock-participant-identity">
-                                <strong>{student.fullName}</strong>
-                                <small>{student.nationalId}</small>
-                              </span>
-                              <span className="mock-participant-level">
-                                {student.academicLevel === 'MASTER' ? 'ارشد' : student.academicLevel === 'DOCTORATE' ? 'دکتری' : 'نامشخص'}
-                              </span>
-                            </button>
-                          );
-                        })}
-                      {students.filter(student => {
-                        const levelMatches = participantGroup === 'ALL' || student.academicLevel === participantGroup;
-                        const query = participantSearch.trim().toLocaleLowerCase();
-                        const searchMatches = !query || student.fullName.toLocaleLowerCase().includes(query) || student.nationalId.includes(query);
-                        const selected = exam.participants.some(item => item.student.id === student.id);
-                        return levelMatches && searchMatches && (!showSelectedOnly || selected);
-                      }).length === 0 && (
-                        <div className="mock-participant-empty">هنرجویی با این مشخصات پیدا نشد.</div>
-                      )}
+                    <div className="mock-participant-table-wrap">
+                      <table className="mock-participant-table">
+                        <thead>
+                          <tr>
+                            <th>انتخاب</th>
+                            <th>نام و نام خانوادگی</th>
+                            <th>کد ملی</th>
+                            <th>مقطع</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {students
+                            .filter(student => {
+                              const levelMatches = participantGroup === 'ALL' || student.academicLevel === participantGroup;
+                              const query = participantSearch.trim().toLocaleLowerCase();
+                              const searchMatches = !query || student.fullName.toLocaleLowerCase().includes(query) || student.nationalId.includes(query);
+                              const selected = exam.participants.some(item => item.student.id === student.id);
+                              return levelMatches && searchMatches && (!showSelectedOnly || selected);
+                            })
+                            .map(student => {
+                              const selected = exam.participants.some(item => item.student.id === student.id);
+                              return (
+                                <tr key={student.id} className={selected ? 'is-selected' : ''}>
+                                  <td>
+                                    <button
+                                      type="button"
+                                      className={selected ? 'mock-participant-row-toggle is-selected' : 'mock-participant-row-toggle'}
+                                      aria-label={selected ? `حذف ${student.fullName} از آزمون` : `افزودن ${student.fullName} به آزمون`}
+                                      aria-pressed={selected}
+                                      onClick={() => void toggleParticipant(exam.id, student.id, selected)}
+                                    >
+                                      {selected && <Check size={14} />}
+                                    </button>
+                                  </td>
+                                  <td className="mock-participant-name">{student.fullName}</td>
+                                  <td dir="ltr">{student.nationalId}</td>
+                                  <td>
+                                    <span className="mock-participant-level">
+                                      {student.academicLevel === 'MASTER' ? 'ارشد' : student.academicLevel === 'DOCTORATE' ? 'دکتری' : 'نامشخص'}
+                                    </span>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          {getVisibleParticipantStudents(exam).length === 0 && (
+                            <tr><td colSpan={4} className="mock-participant-empty">هنرجویی با این مشخصات پیدا نشد.</td></tr>
+                          )}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 )}
