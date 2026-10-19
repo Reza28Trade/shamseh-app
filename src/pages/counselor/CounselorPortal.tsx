@@ -319,6 +319,13 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
           .counselor-workspace>aside,.counselor-chat-pane{min-height:calc(100vh - 90px)!important}
         }
 
+        /* Desktop width correction: retain the full-width statistics row and workspace. */
+        @media(min-width:761px){
+          main{width:100%!important;max-width:none!important;align-items:stretch!important}
+          .counselor-stats{width:100%!important;max-width:1500px!important;margin-left:auto!important;margin-right:auto!important;box-sizing:border-box!important}
+          .counselor-workspace{width:100%!important;max-width:1540px!important;margin-left:auto!important;margin-right:auto!important;box-sizing:border-box!important;align-self:stretch!important;grid-template-columns:minmax(0,1fr) 288px!important}
+        }
+
         /* Keep the conversation composer visible; scroll only inside the message history. */
         @media(min-width:761px){
           main{height:100vh!important;min-height:0!important;overflow:hidden!important;display:flex!important;flex-direction:column!important}
