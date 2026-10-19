@@ -161,7 +161,7 @@ ${value}`.trim();
     const questions = (structured?.questions || []).map((question) => ({ ...question, explanation: question.explanation ?? [question.topic, question.className, question.professor, question.source, question.page].filter(Boolean).join(' · ') }));
     setForm({
       title: item.title, subtitle: item.subtitle || '', content: structured?.narrative ?? item.content,
-      examYear: item.examYear || '', examLevel: item.examLevel || '',
+      examYear: item.examYear || '', examLevel: /دکتری|دکترا|doctorate/i.test(item.examLevel || '') ? 'دکتری' : /ارشد|کارشناسی ارشد|master/i.test(item.examLevel || '') ? 'کارشناسی ارشد' : '',
       resourceUrl: item.resourceUrl || '', published: item.published,
       sortOrder: String(item.sortOrder ?? 0),
       fieldCode: structured?.fieldCode || '',
@@ -226,10 +226,10 @@ ${value}`.trim();
   const buttonStyle: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7, border: `1px solid ${colors.border}`, borderRadius: 10, padding: '10px 13px', background: colors.bg, color: colors.text, fontSize: 12, fontWeight: 800, cursor: 'pointer' };
 
   return (
-    <div className="admin-public-content-page" style={{ color: colors.text, display: 'flex', flexDirection: 'column', gap: 14, width: '100%', maxWidth: 'none', minWidth: 0, margin: 0 }}>
+    <div className="admin-legacy-page admin-public-content-page" style={{ color: colors.text, display: 'flex', flexDirection: 'column', gap: 14, width: '100%', maxWidth: 'none', minWidth: 0, margin: 0 }}>
       <header style={{ padding: '15px 18px', borderRadius: 14, background: 'var(--admin-card)', border: `1px solid ${colors.border}` }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 5 }}><BookOpenText size={17} color={colors.accent} /><h2 style={{ fontSize: 15, margin: 0, fontWeight: 850 }}>مدیریت محتوای عمومی</h2></div>
-        <p style={{ color: colors.muted, fontSize: 11, lineHeight: 1.8, margin: 0 }}>قوانین و تحلیل کنکورهایی که در صفحه اصلی برای هنرجویان نمایش داده می‌شوند را از این بخش مدیریت کنید.</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 5 }}><BookOpenText size={17} color={colors.accent} /><h2 style={{ fontSize: 19, lineHeight: 1.5, margin: 0, fontWeight: 850 }}>مدیریت محتوای عمومی</h2></div>
+        <p style={{ color: colors.muted, fontSize: 12, lineHeight: 1.8, margin: 0 }}>قوانین و تحلیل کنکورهایی که در صفحه اصلی برای هنرجویان نمایش داده می‌شوند را از این بخش مدیریت کنید.</p>
       </header>
 
       <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
@@ -278,7 +278,7 @@ ${value}`.trim();
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: 12 }}>
               <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>عنوان *<input required value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} style={inputStyle} /></label>
               <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>سال کنکور<input value={form.examYear} onChange={(event) => setForm({ ...form, examYear: event.target.value })} style={inputStyle} placeholder="مثلاً ۱۴۰۵" /></label>
-              <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>مقطع<input value={form.examLevel} onChange={(event) => setForm({ ...form, examLevel: event.target.value })} style={inputStyle} placeholder="ارشد یا دکتری" /></label>
+              <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 12, fontWeight: 700 }}>مقطع *<select required value={form.examLevel} onChange={(event) => setForm({ ...form, examLevel: event.target.value })} style={inputStyle}><option value="">انتخاب مقطع</option><option value="کارشناسی ارشد">کارشناسی ارشد</option><option value="دکتری">دکتری</option></select></label>
             </div>
             <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>متن تحلیل (اختیاری در صورت ثبت اطلاعات ساختاریافته)<textarea rows={8} value={form.content} onChange={(event) => setForm({ ...form, content: event.target.value })} style={{ ...inputStyle, lineHeight: 2, resize: 'vertical' }} placeholder="توضیحات تکمیلی تحلیل را وارد کنید؛ اگر اطلاعات ساختاریافته ثبت می‌کنید، این بخش می‌تواند خالی بماند." /></label>
             <section style={{ border: '1px solid ' + colors.border, borderRadius: 14, padding: 15, display: 'flex', flexDirection: 'column', gap: 12, background: colors.alt }}>
