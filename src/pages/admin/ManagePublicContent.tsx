@@ -225,13 +225,13 @@ ${value}`.trim();
   const buttonStyle: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7, border: `1px solid ${colors.border}`, borderRadius: 10, padding: '10px 13px', background: colors.bg, color: colors.text, fontSize: 12, fontWeight: 800, cursor: 'pointer' };
 
   return (
-    <div className="admin-page-content admin-public-content-page" style={{ color: colors.text, display: 'flex', flexDirection: 'column', gap: 18, width: '100%', minWidth: 0 }}>
-      <header style={{ padding: '24px', borderRadius: 18, background: 'var(--admin-card)', border: `1px solid ${colors.border}` }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}><BookOpenText size={21} color={dark ? '#fda4af' : colors.accent} /><h2 style={{ fontSize: 19, margin: 0, fontWeight: 900 }}>مدیریت محتوای عمومی</h2></div>
-        <p style={{ color: colors.muted, fontSize: 12, lineHeight: 1.9, margin: 0 }}>قوانین و تحلیل کنکورهایی که در صفحه اصلی برای هنرجویان نمایش داده می‌شوند را از این بخش مدیریت کنید.</p>
+    <div className="admin-public-content-page" style={{ color: colors.text, display: 'flex', flexDirection: 'column', gap: 14, width: '100%', maxWidth: 'none', minWidth: 0, margin: 0 }}>
+      <header style={{ padding: '15px 18px', borderRadius: 14, background: 'var(--admin-card)', border: `1px solid ${colors.border}` }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 5 }}><BookOpenText size={17} color={dark ? '#fda4af' : colors.accent} /><h2 style={{ fontSize: 15, margin: 0, fontWeight: 850 }}>مدیریت محتوای عمومی</h2></div>
+        <p style={{ color: colors.muted, fontSize: 11, lineHeight: 1.8, margin: 0 }}>قوانین و تحلیل کنکورهایی که در صفحه اصلی برای هنرجویان نمایش داده می‌شوند را از این بخش مدیریت کنید.</p>
       </header>
 
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
         <button type="button" onClick={() => { setTab('rules'); setError(''); }} style={{ ...buttonStyle, background: tab === 'rules' ? colors.accent : colors.bg, color: tab === 'rules' ? '#fff' : colors.text }}><FileText size={15} /> قوانین و مقررات</button>
         <button type="button" onClick={() => { setTab('analysis'); setError(''); }} style={{ ...buttonStyle, background: tab === 'analysis' ? colors.accent : colors.bg, color: tab === 'analysis' ? '#fff' : colors.text }}><BookOpenText size={15} /> تحلیل کنکور سال‌های قبل</button>
       </div>
@@ -239,7 +239,7 @@ ${value}`.trim();
       {error && <div role="alert" style={{ padding: 12, borderRadius: 10, background: 'rgba(239,68,68,.1)', color: '#ef4444', fontSize: 12 }}>{error}</div>}
       {success && <div role="status" style={{ padding: 12, borderRadius: 10, background: 'rgba(16,185,129,.1)', color: '#10b981', fontSize: 12 }}>{success}</div>}
       {loading ? <div style={{ padding: 32, textAlign: 'center', color: colors.muted }}>در حال دریافت اطلاعات...</div> : tab === 'rules' ? (
-        <form onSubmit={saveRules} style={{ background: colors.bg, border: `1px solid ${colors.border}`, borderRadius: 18, padding: 'clamp(16px, 3vw, 26px)', display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <form onSubmit={saveRules} style={{ background: colors.bg, border: `1px solid ${colors.border}`, borderRadius: 18, padding: '18px', display: 'flex', flexDirection: 'column', gap: 14 }}>
           <label style={{ display: 'flex', flexDirection: 'column', gap: 7, fontSize: 12, fontWeight: 800 }}>عنوان صفحه قوانین
             <input required value={rulesTitle} onChange={(event) => setRulesTitle(event.target.value)} style={inputStyle} />
           </label>
@@ -272,7 +272,7 @@ ${value}`.trim();
             <button type="button" onClick={startCreate} style={{ ...buttonStyle, background: colors.accent, color: '#fff', borderColor: colors.accent }}><Plus size={15} /> افزودن تحلیل</button>
           </div>
 
-          {showForm && <form onSubmit={saveAnalysis} style={{ background: colors.bg, border: `1px solid ${colors.border}`, borderRadius: 18, padding: 'clamp(16px, 3vw, 24px)', display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {showForm && <form onSubmit={saveAnalysis} style={{ background: colors.bg, border: `1px solid ${colors.border}`, borderRadius: 18, padding: '18px', display: 'flex', flexDirection: 'column', gap: 12 }}>
             <h3 style={{ margin: 0, fontSize: 15 }}>{editingId ? 'ویرایش تحلیل' : 'ثبت تحلیل جدید'}</h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: 12 }}>
               <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>عنوان *<input required value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} style={inputStyle} /></label>
@@ -311,7 +311,7 @@ ${value}`.trim();
           </form>}
 
           {filteredAnalyses.length === 0 ? <div style={{ padding: 30, textAlign: 'center', background: colors.bg, border: `1px solid ${colors.border}`, borderRadius: 16, color: colors.muted }}>تحلیلی با این فیلترها پیدا نشد.</div> : filteredAnalyses.map((item) => (
-            <article key={item.id} style={{ padding: 18, borderRadius: 16, border: `1px solid ${colors.border}`, background: colors.bg, display: 'flex', gap: 14, justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+            <article key={item.id} style={{ padding: 14, borderRadius: 12, border: `1px solid ${colors.border}`, background: colors.bg, display: 'flex', gap: 14, justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap' }}>
               <div style={{ flex: '1 1 250px', minWidth: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 7 }}>
                   <strong style={{ fontSize: 14 }}>{item.title}</strong>
