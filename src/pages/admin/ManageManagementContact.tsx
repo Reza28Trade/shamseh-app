@@ -34,7 +34,7 @@ export const ManageManagementContact: React.FC = () => {
       if (!response.ok) throw new Error('دریافت انتقادات و پیشنهادات انجام نشد.');
       setTickets(await response.json());
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'دریافت تیکت‌های ارتباط با مدیریت انجام نشد.');
+      setError(err instanceof Error ? err.message : 'دریافت انتقادات و پیشنهادات انجام نشد.');
     } finally {
       setLoading(false);
     }
@@ -163,10 +163,10 @@ export const ManageManagementContact: React.FC = () => {
             })}
           </div>
           <form className="messages-reply-form" onSubmit={e => { e.preventDefault(); void handleReply(ticket.id); }}>
-            <label htmlFor={`reply-${ticket.id}`}>پاسخ مدیریت</label>
+            <label htmlFor={`reply-${ticket.id}`}>پاسخ</label>
             <textarea id={`reply-${ticket.id}`} value={replyText[ticket.id] || ''} onChange={e => setReplyText(current => ({ ...current, [ticket.id]: e.target.value }))} placeholder="پاسخ خود را اینجا بنویسید..." rows={3} />
             <div className="messages-reply-actions">
-              <button type="submit" className="messages-send" disabled={sendingTicketId === ticket.id || !replyText[ticket.id]?.trim()}><Send size={14} />{sendingTicketId === ticket.id ? 'در حال ارسال...' : 'ارسال پاسخ مدیریت'}</button>
+              <button type="submit" className="messages-send" disabled={sendingTicketId === ticket.id || !replyText[ticket.id]?.trim()}><Send size={14} />{sendingTicketId === ticket.id ? 'در حال ارسال...' : 'ارسال پاسخ'}</button>
               <button type="button" className="messages-cancel" onClick={() => setSelectedTicketId(null)}><X size={14} /> انصراف</button>
             </div>
           </form>
