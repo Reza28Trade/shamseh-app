@@ -1606,3 +1606,324 @@
   outline: 2px solid var(--admin-accent) !important;
   outline-offset: 2px;
 }
+
+
+/* Phase 2 — unify remaining admin sections with the approved compact Shamseh UI. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-offline-page,
+.admin-shell .admin-page-content .admin-legacy-page.admin-messages-page,
+.admin-shell .admin-page-content .admin-legacy-page.admin-accounts-page {
+  width:100%;
+  max-width:1240px;
+  margin-inline:auto;
+  gap:15px;
+  color:var(--admin-text);
+  font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif;
+}
+.admin-shell .admin-page-content .admin-offline-page .offline-page-head,
+.admin-shell .admin-page-content .admin-messages-page .messages-ticket-section,
+.admin-shell .admin-page-content .admin-messages-page .messages-detail-section,
+.admin-shell .admin-page-content .admin-accounts-page .accounts-card {
+  border:1px solid var(--admin-border)!important;
+  border-radius:15px!important;
+  background:var(--admin-card)!important;
+  box-shadow:var(--admin-shadow)!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-page-content .admin-offline-page .offline-page-head {
+  min-height:76px;
+  padding:16px 19px!important;
+  border-top:1px solid var(--admin-border)!important;
+  background:linear-gradient(120deg,var(--admin-accent-soft),var(--admin-card) 78%)!important;
+  gap:12px;
+}
+.admin-shell .admin-page-content .admin-offline-page .offline-eyebrow {
+  color:var(--admin-accent)!important;
+  font-size:10px!important;
+  font-weight:850!important;
+}
+.admin-shell .admin-page-content .admin-offline-page .offline-page-head h2 {
+  color:var(--admin-text)!important;
+  font-size:19px!important;
+  line-height:1.5;
+  font-weight:850!important;
+  margin:3px 0 0!important;
+}
+.admin-shell .admin-page-content .admin-offline-page .offline-page-head p {
+  color:var(--admin-sub)!important;
+  font-size:11px!important;
+  line-height:1.8;
+  margin:4px 0 0!important;
+}
+.admin-shell .admin-page-content .admin-offline-page .offline-stats,
+.admin-shell .admin-page-content .admin-messages-page .messages-stats {
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:10px!important;
+}
+.admin-shell .admin-page-content .admin-offline-page .offline-stat-card,
+.admin-shell .admin-page-content .admin-messages-page .messages-stat {
+  min-width:0;
+  min-height:86px!important;
+  padding:13px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:13px!important;
+  background:var(--admin-card)!important;
+  color:var(--admin-text)!important;
+  box-shadow:var(--admin-shadow)!important;
+  text-align:right;
+}
+.admin-shell .admin-page-content .admin-offline-page .offline-stat-card.is-active,
+.admin-shell .admin-page-content .admin-messages-page .messages-stat.is-active {
+  border-color:var(--admin-accent)!important;
+  background:var(--admin-accent-soft)!important;
+}
+.admin-shell .admin-page-content .admin-offline-page .offline-stat-copy strong,
+.admin-shell .admin-page-content .admin-messages-page .messages-stat-copy strong {
+  color:var(--admin-text)!important;
+  font-size:21px!important;
+  line-height:1.25;
+}
+.admin-shell .admin-page-content .admin-offline-page .offline-stat-copy small,
+.admin-shell .admin-page-content .admin-messages-page .messages-stat-copy small {
+  color:var(--admin-sub)!important;
+  font-size:10px!important;
+}
+.admin-shell .admin-page-content .admin-offline-page .offline-stat-icon,
+.admin-shell .admin-page-content .admin-messages-page .messages-stat-icon {
+  background:var(--admin-accent-soft)!important;
+  color:var(--admin-accent)!important;
+}
+.admin-shell .admin-page-content .admin-offline-page .offline-list-card {
+  padding:17px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:15px!important;
+  background:var(--admin-card)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-page-content .admin-offline-page .offline-list-head,
+.admin-shell .admin-page-content .admin-messages-page .messages-section-head {
+  gap:12px;
+  padding-bottom:12px;
+  border-bottom:1px solid var(--admin-border)!important;
+}
+.admin-shell .admin-page-content .admin-offline-page .offline-list-head h3,
+.admin-shell .admin-page-content .admin-messages-page .messages-section-head h3,
+.admin-shell .admin-page-content .admin-messages-page .messages-detail-head h3 {
+  color:var(--admin-text)!important;
+  font-size:14px!important;
+  font-weight:850!important;
+}
+.admin-shell .admin-page-content .admin-offline-page .offline-request-row {
+  padding:14px 0!important;
+  border-bottom:1px solid var(--admin-border)!important;
+}
+.admin-shell .admin-page-content .admin-offline-page .offline-student strong,
+.admin-shell .admin-page-content .admin-offline-page .offline-course strong {
+  color:var(--admin-text)!important;
+  font-size:12px!important;
+}
+.admin-shell .admin-page-content .admin-offline-page :is(.offline-student span,.offline-course span,.offline-date span) {
+  color:var(--admin-sub)!important;
+  font-size:10px!important;
+}
+.admin-shell .admin-page-content .admin-offline-page .offline-link-field,
+.admin-shell .admin-page-content .admin-messages-page .messages-table-filters,
+.admin-shell .admin-page-content .admin-messages-page .messages-search {
+  border-color:var(--admin-border)!important;
+  background:var(--admin-inner)!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-page-content .admin-offline-page .offline-link-field input,
+.admin-shell .admin-page-content .admin-messages-page .messages-search input,
+.admin-shell .admin-page-content .admin-messages-page .messages-reply-form textarea {
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+  border-color:var(--admin-border)!important;
+}
+.admin-shell .admin-page-content .admin-offline-page .offline-filter-group button,
+.admin-shell .admin-page-content .admin-messages-page .messages-pagination button,
+.admin-shell .admin-page-content .admin-messages-page .messages-refresh {
+  border:1px solid var(--admin-border)!important;
+  border-radius:9px!important;
+  background:var(--admin-inner)!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-page-content .admin-offline-page .offline-filter-group button.active {
+  border-color:var(--admin-accent)!important;
+  background:var(--admin-accent-soft)!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-page-content .admin-messages-page .messages-table-wrap {
+  border-color:var(--admin-border)!important;
+  border-radius:11px!important;
+}
+.admin-shell .admin-page-content .admin-messages-page .messages-table th {
+  background:var(--admin-inner)!important;
+  color:var(--admin-sub)!important;
+  font-size:10px!important;
+}
+.admin-shell .admin-page-content .admin-messages-page .messages-table td {
+  border-color:var(--admin-border)!important;
+  color:var(--admin-text)!important;
+  font-size:11px!important;
+}
+.admin-shell .admin-page-content .admin-messages-page .messages-table-row:hover,
+.admin-shell .admin-page-content .admin-messages-page .messages-table-row.is-selected {
+  background:var(--admin-accent-soft)!important;
+}
+.admin-shell .admin-page-content .admin-messages-page :is(.messages-table-subject,.messages-table-student,.messages-detail-head p,.messages-thread-head) {
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-page-content .admin-messages-page :is(.messages-table-id,.messages-table-date,.messages-filter-summary,.messages-pagination,.messages-detail-head p) {
+  color:var(--admin-sub)!important;
+}
+.admin-shell .admin-page-content .admin-messages-page .messages-detail-section,
+.admin-shell .admin-page-content .admin-messages-page .messages-reply-form {
+  padding:17px!important;
+}
+.admin-shell .admin-page-content .admin-accounts-page .accounts-card {
+  padding:18px!important;
+}
+.admin-shell .admin-page-content .admin-accounts-page .accounts-card-head h2 {
+  margin:4px 0 0!important;
+  color:var(--admin-text)!important;
+  font-size:16px!important;
+  font-weight:850!important;
+}
+.admin-shell .admin-page-content .admin-accounts-page .accounts-eyebrow {
+  color:var(--admin-accent)!important;
+  font-size:10px!important;
+  font-weight:850!important;
+}
+.admin-shell .admin-page-content .admin-accounts-page .accounts-description {
+  color:var(--admin-sub)!important;
+  font-size:11px!important;
+  line-height:1.8;
+}
+.admin-shell .admin-page-content .admin-accounts-page .accounts-fields {
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px!important;
+}
+.admin-shell .admin-page-content .admin-accounts-page .accounts-fields label,
+.admin-shell .admin-page-content .admin-accounts-page .accounts-permissions label {
+  color:var(--admin-text)!important;
+  font-size:11px!important;
+}
+.admin-shell .admin-page-content .admin-accounts-page .accounts-fields input {
+  min-height:38px;
+  border:1px solid var(--admin-border)!important;
+  border-radius:9px!important;
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+  padding:9px 11px!important;
+}
+.admin-shell .admin-page-content .admin-accounts-page .accounts-permissions {
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px 12px!important;
+  padding:13px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:11px!important;
+  background:var(--admin-inner)!important;
+}
+.admin-shell .admin-page-content .admin-accounts-page .accounts-permissions label {
+  min-width:0;
+  line-height:1.7;
+}
+.admin-shell .admin-page-content .admin-accounts-page .accounts-permissions input[type="checkbox"] {
+  accent-color:var(--admin-accent);
+  flex:none;
+}
+.admin-shell .admin-page-content .admin-accounts-page .accounts-admin-row {
+  padding:14px 0!important;
+  border-bottom:1px solid var(--admin-border)!important;
+}
+.admin-shell .admin-page-content .admin-accounts-page .accounts-admin-toolbar {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:8px!important;
+  margin-bottom:10px;
+}
+.admin-shell .admin-page-content .admin-accounts-page .accounts-admin-toolbar strong {
+  color:var(--admin-text)!important;
+  font-size:13px!important;
+  margin-inline-end:auto;
+}
+.admin-shell .admin-page-content .admin-accounts-page :is(.accounts-primary-action,.accounts-admin-toolbar button) {
+  min-height:34px!important;
+  padding:7px 11px!important;
+  border:1px solid var(--admin-brand-border)!important;
+  border-radius:9px!important;
+  background:var(--admin-accent-soft)!important;
+  color:var(--admin-text)!important;
+  font-size:10px!important;
+  font-weight:800!important;
+}
+.admin-shell .admin-page-content .admin-accounts-page .accounts-admin-toolbar button:hover,
+.admin-shell .admin-page-content .admin-accounts-page .accounts-primary-action:hover {
+  border-color:var(--admin-accent)!important;
+}
+.admin-shell .admin-page-content .admin-dashboard-page {
+  width:100%;
+  max-width:1240px;
+  gap:14px!important;
+}
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat-grid {
+  gap:10px!important;
+}
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat {
+  padding:13px!important;
+  border-radius:14px!important;
+}
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat-copy strong {
+  font-size:20px!important;
+}
+.admin-shell .admin-page-content .admin-dashboard-page .admin-panel-card {
+  padding:15px!important;
+  border-radius:15px!important;
+}
+.admin-shell .admin-page-content .admin-dashboard-page .admin-panel-heading h2 {
+  font-size:14px!important;
+}
+.admin-shell .admin-page-content .admin-dashboard-page .admin-followup-grid {
+  gap:8px!important;
+}
+@media (max-width: 900px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-stats,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-stats {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .admin-shell .admin-page-content .admin-accounts-page .accounts-fields {
+    grid-template-columns:1fr;
+  }
+  .admin-shell .admin-page-content .admin-accounts-page .accounts-permissions {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .admin-shell .admin-page-content .admin-dashboard-page .admin-stat-grid,
+  .admin-shell .admin-page-content .admin-dashboard-page .admin-followup-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .admin-shell .admin-page-content .admin-dashboard-page .admin-dashboard-grid {
+    grid-template-columns:1fr!important;
+  }
+}
+@media (max-width: 560px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head {
+    align-items:flex-start;
+    flex-direction:column;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-list-head,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-section-head {
+    align-items:flex-start;
+    flex-direction:column;
+  }
+  .admin-shell .admin-page-content .admin-accounts-page .accounts-permissions {
+    grid-template-columns:1fr;
+  }
+  .admin-shell .admin-page-content .admin-dashboard-page .admin-stat-grid,
+  .admin-shell .admin-page-content .admin-dashboard-page .admin-followup-grid {
+    grid-template-columns:1fr 1fr!important;
+  }
+}
