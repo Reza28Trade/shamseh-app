@@ -2960,3 +2960,196 @@
     grid-template-columns:minmax(0,1fr)!important;
   }
 }
+
+
+/* Counselor management: search alignment, compact student selection and pagination. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page {
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+  padding-inline:0!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > section {
+  margin-inline:0!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-search,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-search {
+  position:relative!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:40px!important;
+  box-sizing:border-box!important;
+  padding:0 12px!important;
+  margin:0 0 12px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:10px!important;
+  background:var(--admin-control)!important;
+  color:var(--admin-sub)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-search:focus-within,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-search:focus-within {
+  border-color:var(--admin-accent)!important;
+  box-shadow:0 0 0 3px var(--admin-accent-soft)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-search input,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-search input {
+  flex:1 1 auto!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:38px!important;
+  margin:0!important;
+  padding:7px 0!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+  font:inherit!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-tools {
+  display:grid!important;
+  grid-template-columns:minmax(220px,1fr) minmax(130px,.35fr) minmax(150px,.45fr)!important;
+  align-items:end!important;
+  gap:10px!important;
+  margin-bottom:10px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-tools .counseling-student-search {
+  margin:0!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-filter {
+  display:flex!important;
+  flex-direction:column!important;
+  gap:5px!important;
+  min-width:0!important;
+  color:var(--admin-sub)!important;
+  font-size:10px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-filter select,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-submit select {
+  width:100%!important;
+  min-width:0!important;
+  padding:8px 10px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-list-head,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-pagination,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-pagination {
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  flex-wrap:wrap!important;
+  gap:10px!important;
+  color:var(--admin-sub)!important;
+  font-size:10px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-list-head {
+  margin:10px 0!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-list {
+  display:flex!important;
+  flex-direction:column!important;
+  gap:6px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-row {
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  min-width:0!important;
+  padding:10px 12px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:9px!important;
+  background:var(--admin-inner)!important;
+  cursor:pointer!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-row:has(input:checked) {
+  border-color:var(--admin-accent)!important;
+  background:var(--admin-accent-soft)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-row input {
+  flex:0 0 auto!important;
+  width:16px!important;
+  min-height:16px!important;
+  height:16px!important;
+  margin:0!important;
+  accent-color:var(--admin-accent)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-copy {
+  display:flex!important;
+  flex:1 1 auto!important;
+  flex-direction:column!important;
+  gap:3px!important;
+  min-width:0!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-copy strong {
+  color:var(--admin-text)!important;
+  font-size:11px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-copy small {
+  color:var(--admin-sub)!important;
+  font-size:9px!important;
+  overflow-wrap:anywhere!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-status {
+  flex:0 0 auto!important;
+  color:var(--admin-sub)!important;
+  font-size:9px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-status.is-assigned {
+  color:var(--admin-accent)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-pagination,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-pagination {
+  margin-top:12px!important;
+  padding-top:12px!important;
+  border-top:1px solid var(--admin-border)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-pagination > div,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-pagination > div {
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-pagination button,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-pagination button {
+  min-height:30px!important;
+  padding:5px 9px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:8px!important;
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+  font-size:10px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-pagination button:disabled,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-pagination button:disabled {
+  opacity:.4!important;
+  cursor:not-allowed!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-submit {
+  display:grid!important;
+  grid-template-columns:minmax(220px,1fr) auto!important;
+  align-items:end!important;
+  gap:10px!important;
+  margin-top:14px!important;
+  padding-top:14px!important;
+  border-top:1px solid var(--admin-border)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-submit label {
+  display:block!important;
+  color:var(--admin-text)!important;
+}
+@media(max-width:760px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-tools {
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-submit {
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-row {
+    align-items:flex-start!important;
+    flex-wrap:wrap!important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-status {
+    margin-inline-start:26px!important;
+  }
+}
