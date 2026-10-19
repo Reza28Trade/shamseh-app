@@ -1074,3 +1074,42 @@
     min-width:145px;
   }
 }
+
+
+/* Participant changes are staged until Save; keep the save bar outside the scrolling table. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table .mock-participant-national-id {
+  text-align:right!important;
+  direction:ltr;
+  unicode-bidi:plaintext;
+  font-variant-numeric:tabular-nums;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-savebar {
+  display:flex;
+  justify-content:flex-start;
+  align-items:center;
+  gap:8px;
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px solid var(--admin-border);
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-savebar button {
+  min-height:36px!important;
+  padding:8px 15px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:9px!important;
+  font-size:11px!important;
+  font-weight:800!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-savebar .mock-participant-save {
+  border-color:var(--admin-accent)!important;
+  background:var(--admin-accent)!important;
+  color:#fff!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-savebar .mock-participant-cancel {
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-savebar button:disabled {
+  opacity:.6!important;
+  cursor:wait!important;
+}
