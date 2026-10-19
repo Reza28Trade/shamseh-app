@@ -31,7 +31,7 @@ export const ManageManagementContact: React.FC = () => {
     setError('');
     try {
       const response = await fetch('/api/admin/management-contact/tickets', { credentials: 'include' });
-      if (!response.ok) throw new Error('دریافت تیکت‌های ارتباط با مدیریت انجام نشد.');
+      if (!response.ok) throw new Error('دریافت انتقادات و پیشنهادات انجام نشد.');
       setTickets(await response.json());
     } catch (err) {
       setError(err instanceof Error ? err.message : 'دریافت تیکت‌های ارتباط با مدیریت انجام نشد.');
@@ -62,13 +62,13 @@ export const ManageManagementContact: React.FC = () => {
       });
       if (!response.ok) {
         const data = await response.json().catch(() => null);
-        throw new Error(data?.message || 'ارسال پاسخ مدیریت انجام نشد.');
+        throw new Error(data?.message || 'ارسال پاسخ انجام نشد.');
       }
       setReplyText(current => ({ ...current, [ticketId]: '' }));
       setSelectedTicketId(null);
       await loadTickets();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'ارسال پاسخ مدیریت انجام نشد.');
+      setError(err instanceof Error ? err.message : 'ارسال پاسخ انجام نشد.');
     } finally {
       setSendingTicketId(null);
     }
@@ -97,8 +97,8 @@ export const ManageManagementContact: React.FC = () => {
       <header className="messages-page-head">
         <div className="messages-page-title">
           <span className="messages-page-eyebrow"><MessagesSquare size={14} /> مرکز مدیریت شمسه</span>
-          <h2><MessageSquare size={21} /> انتقادات و پیشنهادات - ارتباط مستقیم با مدیریت</h2>
-          <p>پیگیری و پاسخ‌گویی مستقیم به درخواست‌های هنرجویان برای مدیریت مؤسسه</p>
+          <h2><MessageSquare size={21} /> انتقادات و پیشنهادات</h2>
+          <p>بررسی و پاسخ‌گویی به انتقادات و پیشنهادات ثبت‌شده توسط هنرجویان</p>
         </div>
         <button className="messages-refresh" onClick={() => void loadTickets()} disabled={loading}>
           <RefreshCw size={14} className={loading ? 'messages-spin' : ''} /> بروزرسانی
@@ -155,9 +155,9 @@ export const ManageManagementContact: React.FC = () => {
           <div className="messages-thread-head"><span>تاریخچه گفت‌وگو</span><span>{ticket.messages.length} پیام</span></div>
           <div className="messages-thread">
             {ticket.messages.map(message => {
-              const fromStudent = message.id === ticket.messages[0]?.id;
+              const fromStudent = message.senderUserId === ticket.studentId;
               return <div key={message.id} className={`messages-bubble ${fromStudent ? 'messages-bubble-student' : 'messages-bubble-support'}`}>
-                <div className="messages-bubble-meta"><strong>{fromStudent ? 'هنرجو' : 'مدیریت مؤسسه'}</strong><time>{new Date(message.createdAt).toLocaleString('fa-IR')}</time></div>
+                <div className="messages-bubble-meta"><strong>{fromStudent ? 'هنرجو' : 'پاسخ شمسه'}</strong><time>{new Date(message.createdAt).toLocaleString('fa-IR')}</time></div>
                 <p>{message.content}</p>
               </div>;
             })}
