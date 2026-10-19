@@ -639,11 +639,11 @@ export const ManageMockExams: React.FC = () => {
                               const levelMatches = participantGroup === 'ALL' || student.academicLevel === participantGroup;
                               const query = participantSearch.trim().toLocaleLowerCase();
                               const searchMatches = !query || student.fullName.toLocaleLowerCase().includes(query) || student.nationalId.includes(query);
-                              const selected = exam.participants.some(item => item.student.id === student.id);
+                              const selected = pendingParticipantIds.includes(student.id);
                               return levelMatches && searchMatches && (!showSelectedOnly || selected);
                             })
                             .map(student => {
-                              const selected = exam.participants.some(item => item.student.id === student.id);
+                              const selected = pendingParticipantIds.includes(student.id);
                               return (
                                 <tr key={student.id} className={selected ? 'is-selected' : ''}>
                                   <td>
