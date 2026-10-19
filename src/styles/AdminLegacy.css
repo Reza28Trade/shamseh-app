@@ -2085,3 +2085,75 @@
     flex:1 1 calc(50% - 8px);
   }
 }
+
+
+/* Final shared-style alignment for the notification composer. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page {
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  gap:16px!important;
+  font-size:12px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head {
+  min-height:76px!important;
+  padding:16px 18px!important;
+  background:var(--admin-card)!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:14px!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head:before {
+  display:none!important;
+  content:none!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page h2 {
+  font-size:18px!important;
+  line-height:1.5!important;
+  font-weight:850!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-eyebrow {
+  font-size:10px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-page-head p {
+  font-size:11px!important;
+  line-height:1.8!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-card {
+  padding:18px!important;
+  background:var(--admin-card)!important;
+  border:1px solid var(--admin-border)!important;
+  border-top:1px solid var(--admin-border)!important;
+  border-radius:14px!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field > label {
+  font-size:12px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target {
+  font-size:11px!important;
+  min-height:40px!important;
+  border-radius:9px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field :is(input,select,textarea) {
+  font-size:12px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-footer > span {
+  font-size:11px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback.is-success {
+  background:color-mix(in srgb,#16805d 10%,var(--admin-card))!important;
+  border-color:color-mix(in srgb,#16805d 24%,var(--admin-border))!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback.is-error {
+  background:color-mix(in srgb,var(--shamseh-burgundy) 10%,var(--admin-card))!important;
+  border-color:color-mix(in srgb,var(--shamseh-burgundy) 24%,var(--admin-border))!important;
+  color:var(--admin-text)!important;
+}
+@media(max-width:760px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-card {
+    padding:14px!important;
+  }
+}
