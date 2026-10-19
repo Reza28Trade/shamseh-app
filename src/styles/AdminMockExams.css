@@ -670,3 +670,75 @@
     max-height:360px!important;
   }
 }
+
+
+/* Ensure the four statistics render as distinct cards, with spacing from surrounding sections. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard:first-of-type {
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:visible!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard:first-of-type > .mock-exam-stats {
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:12px!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:visible!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard:first-of-type > .mock-exam-stats > .mock-exam-stat {
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  gap:6px!important;
+  min-width:0!important;
+  min-height:76px!important;
+  margin:0!important;
+  padding:14px 16px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:12px!important;
+  background:var(--admin-card)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard:first-of-type > .mock-exam-stats > .mock-exam-stat span {
+  margin:0!important;
+  font-size:11px!important;
+  color:var(--admin-sub)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard:first-of-type > .mock-exam-stats > .mock-exam-stat strong {
+  font-size:22px!important;
+  line-height:1.2!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard:first-of-type + form {
+  margin-top:0!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-filters {
+  margin:12px 0!important;
+  padding:10px 12px!important;
+  gap:10px!important;
+}
+@media(max-width:900px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard:first-of-type > .mock-exam-stats {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:600px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard:first-of-type > .mock-exam-stats {
+    gap:8px!important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard:first-of-type > .mock-exam-stats > .mock-exam-stat {
+    min-height:64px!important;
+    padding:10px 12px!important;
+  }
+}
