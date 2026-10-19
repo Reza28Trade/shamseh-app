@@ -1927,3 +1927,121 @@
     grid-template-columns:1fr 1fr!important;
   }
 }
+
+
+/* Final cascade normalization: these rules intentionally outrank older page-specific styles. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-toolbar,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .students-page-head {
+  min-height:76px!important;
+  padding:16px 18px!important;
+  border:1px solid var(--admin-border)!important;
+  border-top:1px solid var(--admin-border)!important;
+  border-radius:14px!important;
+  background:linear-gradient(120deg,var(--admin-accent-soft),var(--admin-card) 78%)!important;
+  box-shadow:var(--admin-shadow)!important;
+  overflow:visible!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head:before,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-toolbar:before,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .students-page-head:before {
+  display:none!important;
+  content:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-toolbar>div:first-child {
+  display:block!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-toolbar>div:first-child h2,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .students-page-head h2,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head h2 {
+  margin:0!important;
+  color:var(--admin-text)!important;
+  font-size:19px!important;
+  font-weight:850!important;
+  line-height:1.5!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-toolbar>div:first-child p,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .students-page-head p,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head p {
+  margin:4px 0 0!important;
+  color:var(--admin-sub)!important;
+  font-size:11px!important;
+  line-height:1.8!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-stat,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .student-stat,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-stat {
+  min-height:78px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:13px!important;
+  background:var(--admin-card)!important;
+  box-shadow:var(--admin-shadow)!important;
+  outline:0!important;
+  transform:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-stat:before,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .student-stat:before,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card:before,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-stat:before,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-stat:after,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .student-stat:after,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card:after,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-stat:after {
+  display:none!important;
+  content:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-stat:nth-child(n),
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .student-stat:nth-child(n) {
+  border-inline:1px solid var(--admin-border)!important;
+  background:var(--admin-card)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-list-card {
+  padding:0!important;
+  border:1px solid var(--admin-border)!important;
+  border-top:1px solid var(--admin-border)!important;
+  border-radius:14px!important;
+  background:var(--admin-card)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-stats {
+  padding:0!important;
+  gap:10px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-stat.is-active,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card.is-active {
+  border:1px solid var(--admin-accent)!important;
+  background:var(--admin-accent-soft)!important;
+  outline:0!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-accounts-page .accounts-card {
+  border:1px solid var(--admin-border)!important;
+  border-radius:14px!important;
+  background:var(--admin-card)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-accounts-page .accounts-permissions label {
+  border:1px solid var(--admin-border)!important;
+  border-radius:9px!important;
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-dashboard-page .admin-stat {
+  border:1px solid var(--admin-border)!important;
+  border-radius:13px!important;
+  background:var(--admin-card)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-dashboard-page .admin-stat:last-child {
+  border-inline:1px solid var(--admin-border)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-dashboard-page .admin-stat:hover {
+  background:var(--admin-accent-soft)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-dashboard-page .admin-panel-card {
+  border:1px solid var(--admin-border)!important;
+  border-radius:14px!important;
+  background:var(--admin-card)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
