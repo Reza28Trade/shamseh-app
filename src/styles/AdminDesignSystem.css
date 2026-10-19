@@ -2508,3 +2508,15 @@
     justify-content:center!important;
   }
 }
+
+
+/* Offline requests: this module has no page header and must follow the admin content edges. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page {
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page > .offline-page-head {
+  display:none!important;
+}
