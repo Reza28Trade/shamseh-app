@@ -301,6 +301,23 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
           .counselor-mobile-back{display:inline-flex!important;align-items:center;justify-content:center}
           header{height:66px!important;padding:0 12px!important}
         }
+
+        /* Admin-shell alignment: consistent surfaces, compact header and full-height conversation rail. */
+        main{font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif!important;background:${palette.bg}!important}
+        main>header{height:64px!important;padding:0 20px!important;background:${palette.card}!important;border-bottom:1px solid ${palette.border}!important;box-shadow:none!important}
+        .counselor-stats{padding:14px 20px 0!important;gap:10px!important}
+        .counselor-stats article{border-radius:12px!important;box-shadow:none!important;background:${palette.card}!important;padding:12px 14px!important}
+        .counselor-workspace{grid-template-columns: minmax(0,1fr) 288px!important;gap:12px!important;padding:14px 20px 20px!important;max-width:none!important;min-height:calc(100vh - 64px)!important}
+        .counselor-workspace>aside{grid-column:2;grid-row:1;border-radius:12px!important;min-height:calc(100vh - 178px)!important;background:${palette.card}!important;border:1px solid ${palette.border}!important}
+        .counselor-chat-pane{grid-column:1;grid-row:1;border-radius:12px!important;min-width:0!important;overflow:hidden!important;border:1px solid ${palette.border}!important}
+        .counselor-workspace h2{font-size:14px!important}
+        .counselor-scroll-area{scrollbar-width:thin}
+        @media(max-width:760px){
+          main>header{height:64px!important;padding:0 12px!important}
+          .counselor-stats{padding:10px 12px 0!important}
+          .counselor-workspace{display:block!important;padding:12px!important;min-height:calc(100vh - 64px)!important}
+          .counselor-workspace>aside,.counselor-chat-pane{min-height:calc(100vh - 90px)!important}
+        }
       `}</style>
     </main>
   );
