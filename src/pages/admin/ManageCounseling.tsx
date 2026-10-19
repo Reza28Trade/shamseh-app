@@ -61,6 +61,11 @@ export const ManageCounseling: React.FC = () => {
   const [counselorSearch, setCounselorSearch] = useState('');
   const [assignmentPage, setAssignmentPage] = useState(1);
   const [studentId, setStudentId] = useState('');
+  const [selectedStudentIds, setSelectedStudentIds] = useState<string[]>([]);
+  const [studentSearch, setStudentSearch] = useState('');
+  const [studentLevelFilter, setStudentLevelFilter] = useState('ALL');
+  const [studentAssignmentFilter, setStudentAssignmentFilter] = useState('ALL');
+  const [studentPage, setStudentPage] = useState(1);
   const [counselorId, setCounselorId] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -111,11 +116,27 @@ export const ManageCounseling: React.FC = () => {
   }, [conversations, search]);
   const selected = conversations.find(item => item.id === selectedConversation) ?? null;
   const filteredCounselors = counselors.filter(item => [item.displayName, item.user.username, item.bio || ''].some(value => value.toLocaleLowerCase().includes(counselorSearch.trim().toLocaleLowerCase())));
+  const activeStudentIds = useMemo(() => new Set(activeAssignments.map(item => item.studentId)), [activeAssignments]);
+  const filteredStudents = useMemo(() => {
+    const q = studentSearch.trim().toLocaleLowerCase();
+    return students.filter(student => {
+      const matchesSearch = !q || student.fullName.toLocaleLowerCase().includes(q) || student.nationalId.includes(q);
+      const matchesLevel = studentLevelFilter === 'ALL' || student.academicLevel === studentLevelFilter;
+      const assigned = activeStudentIds.has(student.id);
+      const matchesAssignment = studentAssignmentFilter === 'ALL' || (studentAssignmentFilter === 'ASSIGNED' ? assigned : !assigned);
+      return matchesSearch && matchesLevel && matchesAssignment;
+    });
+  }, [students, studentSearch, studentLevelFilter, studentAssignmentFilter, activeStudentIds]);
+  const studentPageSize = 10;
+  const studentPageCount = Math.max(1, Math.ceil(filteredStudents.length / studentPageSize));
+  const visibleStudents = filteredStudents.slice((studentPage - 1) * studentPageSize, studentPage * studentPageSize);
   const assignmentPageSize = 10;
   const assignmentPageCount = Math.max(1, Math.ceil(assignments.length / assignmentPageSize));
   const visibleAssignments = assignments.slice((assignmentPage - 1) * assignmentPageSize, assignmentPage * assignmentPageSize);
   useEffect(() => { setAssignmentPage(1); }, [assignments.length]);
   useEffect(() => { if (assignmentPage > assignmentPageCount) setAssignmentPage(assignmentPageCount); }, [assignmentPage, assignmentPageCount]);
+  useEffect(() => { setStudentPage(1); }, [studentSearch, studentLevelFilter, studentAssignmentFilter]);
+  useEffect(() => { if (studentPage > studentPageCount) setStudentPage(studentPageCount); }, [studentPage, studentPageCount]);
 
   async function createCounselor(event: FormEvent) {
     event.preventDefault();
@@ -152,20 +173,31 @@ export const ManageCounseling: React.FC = () => {
 
   async function assignStudent(event: FormEvent) {
     event.preventDefault();
-    if (!studentId || !counselorId) { setError('هنرجو و مشاور را انتخاب کنید.'); return; }
+    const targetIds = selectedStudentIds.length ? selectedStudentIds : (studentId ? [studentId] : []);
+    if (!targetIds.length || !counselorId) { setError('حداقل یک هنرجو و یک مشاور را انتخاب کنید.'); return; }
     setSaving(true); setError(''); setNotice('');
+    const completedIds: string[] = [];
     try {
-      const response = await fetch('/api/admin/counseling/assignments', {
-        method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ studentId, counselorId }),
-      });
-      const data = await response.json().catch(() => null);
-      if (!response.ok) throw new Error(data?.message || 'تخصیص یا انتقال هنرجو انجام نشد.');
-      setNotice('تخصیص مشاور ثبت شد. تاریخچه تخصیص قبلی حفظ شده است.');
-      setStudentId(''); setCounselorId('');
+      for (const targetStudentId of targetIds) {
+        const response = await fetch('/api/admin/counseling/assignments', {
+          method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ studentId: targetStudentId, counselorId }),
+        });
+        const data = await response.json().catch(() => null);
+        if (!response.ok) throw new Error(data?.message || 'تخصیص یا انتقال هنرجو انجام نشد.');
+        completedIds.push(targetStudentId);
+      }
+      setNotice(completedIds.length === 1 ? 'تخصیص مشاور ثبت شد. تاریخچه تخصیص قبلی حفظ شده است.' : 'تخصیص مشاور برای ' + completedIds.length + ' هنرجو ثبت شد؛ سوابق قبلی حفظ شده‌اند.');
+      setStudentId('');
+      setSelectedStudentIds([]);
+      setCounselorId('');
       await load();
-    } catch (e) { setError(e instanceof Error ? e.message : 'تخصیص هنرجو انجام نشد.'); }
-    finally { setSaving(false); }
+    } catch (e) {
+      setSelectedStudentIds(current => current.filter(id => !completedIds.includes(id)));
+      setStudentId(current => completedIds.includes(current) ? '' : current);
+      setError((e instanceof Error ? e.message : 'تخصیص هنرجو انجام نشد.') + (completedIds.length ? ' تعداد ' + completedIds.length + ' هنرجو با موفقیت ثبت شد؛ انتخاب‌های باقی‌مانده حفظ شده‌اند.' : ''));
+      if (completedIds.length) await load();
+    } finally { setSaving(false); }
   }
 
   async function openConversation(id: string) {
@@ -242,13 +274,31 @@ export const ManageCounseling: React.FC = () => {
         )}
       </section>
 
-      <section style={cardStyle}>
+      <section className="counseling-assignment-section" style={cardStyle}>
         <h3 style={{ margin: '0 0 6px', fontSize: 14, fontWeight: 900 }}>تخصیص یا انتقال هنرجو</h3>
-        <p style={{ margin: '0 0 14px', color: 'var(--admin-sub)', fontSize: 11 }}>با انتخاب مشاور جدید، تخصیص قبلی پایان می‌یابد و سوابق آن حفظ می‌شود.</p>
-        <form onSubmit={assignStudent} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 10, alignItems: 'end' }}>
-          <label style={{ fontSize: 11 }}>هنرجو<select required value={studentId} onChange={e => setStudentId(e.target.value)} style={{ ...inputStyle, display: 'block', marginTop: 6 }}><option value="">انتخاب هنرجو</option>{students.map(student => <option key={student.id} value={student.id}>{student.fullName} · {student.nationalId} · {levelLabel(student.academicLevel)}</option>)}</select></label>
-          <label style={{ fontSize: 11 }}>مشاور فعال<select required value={counselorId} onChange={e => setCounselorId(e.target.value)} style={{ ...inputStyle, display: 'block', marginTop: 6 }}><option value="">انتخاب مشاور</option>{counselors.filter(item => item.isActive).map(item => <option key={item.id} value={item.id}>{item.displayName}</option>)}</select></label>
-          <button disabled={saving || loading || !studentId || !counselorId} style={{ ...buttonStyle, minHeight: 39 }}><ArrowLeftRight size={14}/>{saving ? 'در حال ثبت…' : 'ثبت تخصیص / انتقال'}</button>
+        <p style={{ margin: '0 0 14px', color: 'var(--admin-sub)', fontSize: 11 }}>برای جلوگیری از فهرست طولانی، هر صفحه ۱۰ هنرجو دارد. جست‌وجو، فیلتر و انتخاب‌ها هنگام جابه‌جایی صفحه حفظ می‌شوند.</p>
+        <div className="counseling-student-tools">
+          <label className="counseling-student-search"><Search size={15}/><input type="search" value={studentSearch} onChange={e => setStudentSearch(e.target.value)} placeholder="جست‌وجوی نام یا کد ملی هنرجو" aria-label="جست‌وجوی هنرجو"/></label>
+          <label className="counseling-student-filter"><span>مقطع</span><select value={studentLevelFilter} onChange={e => setStudentLevelFilter(e.target.value)}><option value="ALL">همه مقاطع</option><option value="MASTER">ارشد</option><option value="DOCTORATE">دکتری</option></select></label>
+          <label className="counseling-student-filter"><span>وضعیت مشاور</span><select value={studentAssignmentFilter} onChange={e => setStudentAssignmentFilter(e.target.value)}><option value="ALL">همه هنرجوها</option><option value="UNASSIGNED">بدون مشاور</option><option value="ASSIGNED">دارای مشاور</option></select></label>
+        </div>
+        <div className="counseling-student-list-head"><span>نمایش {visibleStudents.length} از {filteredStudents.length} هنرجو</span><span>انتخاب‌شده: {selectedStudentIds.length}</span></div>
+        {loading ? <p style={{ color: 'var(--admin-sub)', fontSize: 12 }}>در حال دریافت فهرست هنرجوها…</p> : filteredStudents.length === 0 ? <p style={{ color: 'var(--admin-sub)', fontSize: 12 }}>هنرجویی مطابق جست‌وجو و فیلترها پیدا نشد.</p> : <div className="counseling-student-list">
+          {visibleStudents.map(student => {
+            const checked = selectedStudentIds.includes(student.id);
+            const assigned = activeStudentIds.has(student.id);
+            const assignedCounselor = activeAssignments.find(item => item.studentId === student.id)?.counselor.displayName;
+            return <label className="counseling-student-row" key={student.id}>
+              <input type="checkbox" checked={checked} onChange={event => setSelectedStudentIds(current => event.target.checked ? [...current.filter(id => id !== student.id), student.id] : current.filter(id => id !== student.id))}/>
+              <span className="counseling-student-copy"><strong>{student.fullName}</strong><small>کد ملی: {student.nationalId} · {levelLabel(student.academicLevel)}</small></span>
+              <span className={assigned ? 'counseling-assignment-status is-assigned' : 'counseling-assignment-status'}>{assigned ? 'دارای مشاور: ' + (assignedCounselor || 'تخصیص‌یافته') : 'بدون مشاور'}</span>
+            </label>;
+          })}
+        </div>}
+        <div className="counseling-student-pagination"><span>صفحه {studentPage} از {studentPageCount}</span><div><button type="button" disabled={studentPage <= 1} onClick={() => setStudentPage(page => Math.max(1, page - 1))}>صفحه قبل</button><button type="button" disabled={studentPage >= studentPageCount} onClick={() => setStudentPage(page => Math.min(studentPageCount, page + 1))}>صفحه بعد</button></div></div>
+        <form onSubmit={assignStudent} className="counseling-assignment-submit">
+          <label style={{ fontSize: 11 }}>مشاور فعال<select required value={counselorId} onChange={e => setCounselorId(e.target.value)}><option value="">انتخاب مشاور</option>{counselors.filter(item => item.isActive).map(item => <option key={item.id} value={item.id}>{item.displayName}</option>)}</select></label>
+          <button disabled={saving || loading || !selectedStudentIds.length || !counselorId} style={{ ...buttonStyle, minHeight: 39 }}><ArrowLeftRight size={14}/>{saving ? 'در حال ثبت…' : 'ثبت تخصیص برای ' + selectedStudentIds.length + ' هنرجو'}</button>
         </form>
       </section>
 
