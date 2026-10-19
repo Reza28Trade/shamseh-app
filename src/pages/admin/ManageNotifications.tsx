@@ -69,10 +69,16 @@ export const ManageNotifications: React.FC = () => {
 
     setSending(true); setMessage(null);
     try {
+      // The backend supports GLOBAL, COURSE and STUDENT targets only.
+      // For a mock exam, send a student-targeted notification to exactly its registered participants.
       const body = {
-        title: title.trim(), content: content.trim(), type, targetType,
+        title: title.trim(),
+        content: content.trim(),
+        type,
+        targetType: targetType === 'MOCK_EXAM' ? 'STUDENT' : targetType,
         ...(targetType === 'COURSE' ? { courseId } : {}),
         ...(targetType === 'STUDENT' ? { studentIds: [studentId] } : {}),
+        ...(targetType === 'MOCK_EXAM' ? { studentIds: mockExamStudentIds } : {}),
       };
       const res = await fetch('/api/admin/notifications', {
         method: 'POST', credentials: 'include',
