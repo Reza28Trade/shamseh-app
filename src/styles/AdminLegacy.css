@@ -2809,7 +2809,7 @@
   display:none!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid {
-  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
   gap:10px!important;
   margin:0!important;
   padding:0!important;
