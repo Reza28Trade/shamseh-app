@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { MessageSquare, Send, RefreshCw, X, Clock3, CheckCircle2, CircleDot, MessagesSquare } from 'lucide-react';
+import { MessageSquare, Send, RefreshCw, X, Clock3, CheckCircle2, CircleDot, MessagesSquare, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface SupportMessage {
   id: string;
@@ -24,7 +24,7 @@ export const ManageManagementContact: React.FC = () => {
   const [error, setError] = useState('');
   const [replyText, setReplyText] = useState<Record<string, string>>({});
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
-  const [sendingTicketId, setSendingTicketId] = useState<string | null>(null);
+  const [sendingTicketId, setSendingTicketId] = useState<string | null>(null);\n  const [statusFilter, setStatusFilter] = useState<'ALL' | SupportTicket['status']>('ALL');\n  const [searchTerm, setSearchTerm] = useState('');\n  const [currentPage, setCurrentPage] = useState(1);
 
   const loadTickets = async () => {
     setLoading(true);
@@ -48,6 +48,32 @@ export const ManageManagementContact: React.FC = () => {
     answered: tickets.filter(ticket => ticket.status === 'ANSWERED').length,
     closed: tickets.filter(ticket => ticket.status === 'CLOSED').length,
   }), [tickets]);
+
+  const filteredTickets = useMemo(() => {
+    const query = searchTerm.trim().toLocaleLowerCase();
+    return tickets.filter(ticket => {
+      const matchesStatus = statusFilter === 'ALL' || ticket.status === statusFilter;
+      const matchesSearch = !query || [
+        ticket.subject,
+        ticket.student.fullName,
+        ticket.student.nationalId,
+        ticket.id,
+      ].some(value => value.toLocaleLowerCase().includes(query));
+      return matchesStatus && matchesSearch;
+    });
+  }, [tickets, statusFilter, searchTerm]);
+
+  const pageSize = 10;
+  const pageCount = Math.max(1, Math.ceil(filteredTickets.length / pageSize));
+  const visibleTickets = filteredTickets.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [statusFilter, searchTerm]);
+
+  useEffect(() => {
+    if (currentPage > pageCount) setCurrentPage(pageCount);
+  }, [currentPage, pageCount]);
 
   const handleReply = async (ticketId: string) => {
     const content = replyText[ticketId]?.trim();
@@ -94,41 +120,45 @@ export const ManageManagementContact: React.FC = () => {
 
   return (
     <div className="admin-legacy-page admin-messages-page">
-      <header className="messages-page-head">
-        <div className="messages-page-title">
-          <span className="messages-page-eyebrow"><MessagesSquare size={14} /> مرکز مدیریت شمسه</span>
-          <h2><MessageSquare size={21} /> انتقادات و پیشنهادات</h2>
-          <p>بررسی و پاسخ‌گویی به انتقادات و پیشنهادات ثبت‌شده توسط هنرجویان</p>
-        </div>
-        <button className="messages-refresh" onClick={() => void loadTickets()} disabled={loading}>
-          <RefreshCw size={14} className={loading ? 'messages-spin' : ''} /> بروزرسانی
-        </button>
-      </header>
-
       {error && <div className="messages-error" role="alert">{error}</div>}
 
-      <section className="messages-stats" aria-label="خلاصه وضعیت تیکت‌ها">
-        <div className="messages-stat messages-stat-all"><span className="messages-stat-icon"><MessagesSquare size={17} /></span><span className="messages-stat-copy"><small>همه تیکت‌ها</small><strong>{counts.all}</strong></span></div>
-        <div className="messages-stat messages-stat-open"><span className="messages-stat-icon"><Clock3 size={17} /></span><span className="messages-stat-copy"><small>در انتظار پاسخ</small><strong>{counts.open}</strong></span></div>
-        <div className="messages-stat messages-stat-answered"><span className="messages-stat-icon"><CheckCircle2 size={17} /></span><span className="messages-stat-copy"><small>پاسخ داده شده</small><strong>{counts.answered}</strong></span></div>
-        <div className="messages-stat messages-stat-closed"><span className="messages-stat-icon"><CircleDot size={17} /></span><span className="messages-stat-copy"><small>بسته شده</small><strong>{counts.closed}</strong></span></div>
+      <section className="messages-stats" aria-label="فیلتر وضعیت تیکت‌ها">
+        <button type="button" aria-pressed={statusFilter === 'ALL'} className={`messages-stat messages-stat-all ${statusFilter === 'ALL' ? 'is-active' : ''}`} onClick={() => setStatusFilter('ALL')}><span className="messages-stat-icon"><MessagesSquare size={17} /></span><span className="messages-stat-copy"><small>همه تیکت‌ها</small><strong>{counts.all}</strong></span></button>
+        <button type="button" aria-pressed={statusFilter === 'OPEN'} className={`messages-stat messages-stat-open ${statusFilter === 'OPEN' ? 'is-active' : ''}`} onClick={() => setStatusFilter('OPEN')}><span className="messages-stat-icon"><Clock3 size={17} /></span><span className="messages-stat-copy"><small>در انتظار پاسخ</small><strong>{counts.open}</strong></span></button>
+        <button type="button" aria-pressed={statusFilter === 'ANSWERED'} className={`messages-stat messages-stat-answered ${statusFilter === 'ANSWERED' ? 'is-active' : ''}`} onClick={() => setStatusFilter('ANSWERED')}><span className="messages-stat-icon"><CheckCircle2 size={17} /></span><span className="messages-stat-copy"><small>پاسخ داده شده</small><strong>{counts.answered}</strong></span></button>
+        <button type="button" aria-pressed={statusFilter === 'CLOSED'} className={`messages-stat messages-stat-closed ${statusFilter === 'CLOSED' ? 'is-active' : ''}`} onClick={() => setStatusFilter('CLOSED')}><span className="messages-stat-icon"><CircleDot size={17} /></span><span className="messages-stat-copy"><small>بسته شده</small><strong>{counts.closed}</strong></span></button>
       </section>
 
       <section className="messages-ticket-section">
         <div className="messages-section-head">
           <div><h3>فهرست تیکت‌ها</h3><p>برای مشاهده جزئیات و پاسخ‌گویی، روی ردیف تیکت بزنید.</p></div>
-          <span className="messages-total">{tickets.length} مورد</span>
+          <div className="messages-table-tools">
+            <span className="messages-total">{filteredTickets.length} مورد</span>
+            <button className="messages-refresh" onClick={() => void loadTickets()} disabled={loading}>
+              <RefreshCw size={14} className={loading ? 'messages-spin' : ''} /> بروزرسانی
+            </button>
+          </div>
+        </div>
+        <div className="messages-table-filters">
+          <label className="messages-search">
+            <Search size={16} />
+            <input type="search" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="جست‌وجو بر اساس موضوع، نام هنرجو، کد ملی یا کد تیکت..." aria-label="جست‌وجوی تیکت‌ها" />
+          </label>
+          <span className="messages-filter-summary">{statusFilter === 'ALL' ? 'همه وضعیت‌ها' : statusLabel(statusFilter)} · صفحه {currentPage} از {pageCount}</span>
         </div>
         {loading ? (
           <div className="messages-empty"><span className="messages-loading-mark"><RefreshCw size={19} /></span><strong>در حال دریافت تیکت‌ها...</strong></div>
         ) : tickets.length === 0 ? (
           <div className="messages-empty"><span className="messages-empty-mark"><MessageSquare size={20} /></span><strong>هنوز تیکتی ثبت نشده است</strong><p>درخواست‌های هنرجویان پس از ثبت در این قسمت نمایش داده می‌شوند.</p></div>
+        ) : filteredTickets.length === 0 ? (
+          <div className="messages-empty"><span className="messages-empty-mark"><Search size={20} /></span><strong>تیکتی با این فیلتر پیدا نشد</strong><p>عبارت جست‌وجو را تغییر بده یا یکی از کارت‌های آماری را انتخاب کن.</p></div>
         ) : (
+          <>
           <div className="messages-table-wrap">
             <table className="messages-table">
               <thead><tr><th>موضوع تیکت</th><th>هنرجو</th><th>تعداد پیام</th><th>آخرین بروزرسانی</th><th>وضعیت</th><th>جزئیات</th></tr></thead>
               <tbody>
-                {tickets.map(ticket => (
+                {visibleTickets.map(ticket => (
                   <tr key={ticket.id} className={`messages-table-row messages-ticket-${ticket.status.toLowerCase()} ${selectedTicketId === ticket.id ? 'is-selected' : ''}`} onClick={() => setSelectedTicketId(current => current === ticket.id ? null : ticket.id)} tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedTicketId(current => current === ticket.id ? null : ticket.id); } }}>
                     <td><strong className="messages-table-subject">{ticket.subject}</strong><small className="messages-table-id">کد: {ticket.id.slice(0, 8)}</small></td>
                     <td><span className="messages-table-student">{ticket.student.fullName}</span><small className="messages-table-id">{ticket.student.nationalId}</small></td>
@@ -141,6 +171,15 @@ export const ManageManagementContact: React.FC = () => {
               </tbody>
             </table>
           </div>
+          <div className="messages-pagination">
+            <span>نمایش {(currentPage - 1) * pageSize + 1} تا {Math.min(currentPage * pageSize, filteredTickets.length)} از {filteredTickets.length} تیکت</span>
+            <div>
+              <button type="button" onClick={() => setCurrentPage(page => Math.max(1, page - 1))} disabled={currentPage <= 1}><ChevronRight size={15} /> قبلی</button>
+              <span>صفحه {currentPage} از {pageCount}</span>
+              <button type="button" onClick={() => setCurrentPage(page => Math.min(pageCount, page + 1))} disabled={currentPage >= pageCount}>بعدی <ChevronLeft size={15} /></button>
+            </div>
+          </div>
+          </>
         )}
       </section>
 
