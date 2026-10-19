@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { BookOpenText, FileText, Pencil, Plus, Save, Search, Trash2 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
-import '../../styles/AdminCourses.css';
+import '../../styles/AdminDesignSystem.css';
 
 type ContentRecord = {
   id: string;
@@ -27,7 +27,7 @@ type AnalysisForm = {
 const parseAnalysisContent = (content: string) => {
   try {
     const parsed = JSON.parse(content);
-    if (parsed && parsed.__shamsehExamAnalysis === 1) return parsed as { narrative?: string; fieldCode?: string; fieldName?: string; coveragePercent?: number | null; questions?: QuestionRow[] };
+    if (parsed && parsed.__shamsehExamAnalysis === 1) return parsed as { narrative?: string; fieldCode?: string; fieldName?: string; totalQuestions?: number; coveragePercent?: number | null; questions?: QuestionRow[] };
   } catch { /* legacy plain-text analysis */ }
   return null;
 };
@@ -166,7 +166,7 @@ ${value}`.trim();
       sortOrder: String(item.sortOrder ?? 0),
       fieldCode: structured?.fieldCode || '',
       fieldName: structured?.fieldName || '',
-      totalQuestions: String(Math.max(questions.length, 0)),
+      totalQuestions: String(Math.max(structured?.totalQuestions ?? questions.length, questions.length, 0)),
       questions,
     });
     setShowForm(true); setError(''); setSuccess('');
@@ -225,8 +225,8 @@ ${value}`.trim();
   const buttonStyle: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7, border: `1px solid ${colors.border}`, borderRadius: 10, padding: '10px 13px', background: colors.bg, color: colors.text, fontSize: 12, fontWeight: 800, cursor: 'pointer' };
 
   return (
-    <div className="admin-legacy-page admin-public-content-page" style={{ color: colors.text, display: 'flex', flexDirection: 'column', gap: 18, width: '100%', minWidth: 0 }}>
-      <header style={{ padding: '24px', borderRadius: 18, background: dark ? 'linear-gradient(120deg, rgba(22,140,145,.22), #111116)' : 'linear-gradient(120deg, #ffffff, #eaf7f7)', border: `1px solid ${colors.border}` }}>
+    <div className="admin-page-content admin-public-content-page" style={{ color: colors.text, display: 'flex', flexDirection: 'column', gap: 18, width: '100%', minWidth: 0 }}>
+      <header style={{ padding: '24px', borderRadius: 18, background: 'var(--admin-card)', border: `1px solid ${colors.border}` }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}><BookOpenText size={21} color={dark ? '#fda4af' : colors.accent} /><h2 style={{ fontSize: 19, margin: 0, fontWeight: 900 }}>مدیریت محتوای عمومی</h2></div>
         <p style={{ color: colors.muted, fontSize: 12, lineHeight: 1.9, margin: 0 }}>قوانین و تحلیل کنکورهایی که در صفحه اصلی برای هنرجویان نمایش داده می‌شوند را از این بخش مدیریت کنید.</p>
       </header>
@@ -295,14 +295,14 @@ ${value}`.trim();
                 <div style={{ padding: '8px 12px', borderRadius: 10, background: colors.bg, border: '1px solid ' + colors.border, fontSize: 12, fontWeight: 800 }}>درصد پوشش محاسبه‌شده: {calculateCoverage(form.questions, Number(form.totalQuestions) || 0) == null ? '—' : `${calculateCoverage(form.questions, Number(form.totalQuestions) || 0)}٪`}</div>
               </div>
               <div style={{ overflowX: 'auto', border: '1px solid ' + colors.border, borderRadius: 12, background: colors.bg }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 520, fontSize: 12 }}>
-                  <thead><tr style={{ background: colors.alt, textAlign: 'right' }}>{['شماره سؤال', 'وضعیت پوشش', 'مبحث / توضیح (اختیاری)'].map((label) => <th key={label} style={{ padding: '11px 12px', borderBottom: '1px solid ' + colors.border }}>{label}</th>)}</tr></thead>
+                <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 1120, fontSize: 12 }}>
+                  <thead><tr style={{ background: colors.alt, textAlign: 'right' }}>{['شماره سؤال', 'وضعیت پوشش', 'مبحث / توضیح', 'درس یا مبحث مرتبط', 'استاد / کلاس', 'منبع یا کتاب / آزمون', 'صفحه'].map((label) => <th key={label} style={{ padding: '11px 10px', borderBottom: '1px solid ' + colors.border, whiteSpace: 'nowrap' }}>{label}</th>)}</tr></thead>
                   <tbody>{form.questions.map((question, index) => <tr key={index}>
-                    <td style={{ padding: 8, borderBottom: '1px solid ' + colors.border, width: 110 }}><input aria-label={`شماره سؤال ${index + 1}`} value={question.questionNumber} onChange={(event) => setForm((current) => ({ ...current, questions: current.questions.map((row, rowIndex) => rowIndex === index ? { ...row, questionNumber: event.target.value } : row) }))} style={{ ...inputStyle, minWidth: 85 }} /></td>
-                    <td style={{ padding: 8, borderBottom: '1px solid ' + colors.border, width: 190 }}><select aria-label={`وضعیت پوشش سؤال ${index + 1}`} value={question.status} onChange={(event) => setForm((current) => ({ ...current, questions: current.questions.map((row, rowIndex) => rowIndex === index ? { ...row, status: event.target.value as QuestionRow['status'] } : row) }))} style={inputStyle}>{questionStatusOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></td>
-                    <td style={{ padding: 8, borderBottom: '1px solid ' + colors.border }}><input aria-label={`توضیح سؤال ${index + 1}`} value={question.topic} onChange={(event) => setForm((current) => ({ ...current, questions: current.questions.map((row, rowIndex) => rowIndex === index ? { ...row, topic: event.target.value } : row) }))} style={inputStyle} placeholder="مثلاً از مبحث مبانی هنر پوشش داده شد" /></td>
+                    <td style={{ padding: 7, borderBottom: '1px solid ' + colors.border, width: 100 }}><input aria-label={`شماره سؤال ${index + 1}`} value={question.questionNumber} onChange={(event) => setForm((current) => ({ ...current, questions: current.questions.map((row, rowIndex) => rowIndex === index ? { ...row, questionNumber: event.target.value } : row) }))} style={{ ...inputStyle, minWidth: 75 }} /></td>
+                    <td style={{ padding: 7, borderBottom: '1px solid ' + colors.border, width: 170 }}><select aria-label={`وضعیت پوشش سؤال ${index + 1}`} value={question.status} onChange={(event) => setForm((current) => ({ ...current, questions: current.questions.map((row, rowIndex) => rowIndex === index ? { ...row, status: event.target.value as QuestionRow['status'] } : row) }))} style={inputStyle}>{questionStatusOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></td>
+                    {(['topic','className','professor','source','page'] as const).map((field) => <td key={field} style={{ padding: 7, borderBottom: '1px solid ' + colors.border, minWidth: field==='source'?220:field==='topic'?200:field==='page'?75:150 }}><input aria-label={`سؤال ${index+1} · ${field}`} value={question[field]} onChange={(event) => setForm((current) => ({ ...current, questions: current.questions.map((row, rowIndex) => rowIndex === index ? { ...row, [field]: event.target.value } : row) }))} style={inputStyle} placeholder={{topic:'مبحث / نکته مرتبط',className:'درس یا کلاس',professor:'استاد یا مدرس',source:'نام کتاب، منبع یا آزمون',page:'شماره صفحه'}[field]} /></td>)}
                   </tr>)}
-                  {form.questions.length === 0 && <tr><td colSpan={3} style={{ padding: 18, textAlign: 'center', color: colors.muted }}>ابتدا تعداد کل سؤال‌ها را وارد کن تا ردیف‌ها ساخته شوند.</td></tr>}</tbody>
+                  {form.questions.length === 0 && <tr><td colSpan={7} style={{ padding: 18, textAlign: 'center', color: colors.muted }}>ابتدا تعداد کل سؤال‌ها را وارد کن تا ردیف‌ها ساخته شوند.</td></tr>}</tbody>
                 </table>
               </div>
             </section>
