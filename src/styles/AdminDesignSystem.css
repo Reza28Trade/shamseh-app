@@ -2739,3 +2739,251 @@
     min-width:0!important;
   }
 }
+
+
+/* Repair student-management surfaces: remove inherited wrapper card and restore full-width chart. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page {
+  display:flex!important;
+  flex-direction:column!important;
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page > .students-stats {
+  position:relative!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+  margin:0!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:var(--admin-surface-radius)!important;
+  background:var(--admin-card)!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page > .students-main-grid {
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  gap:14px!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  padding:0!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page > .students-main-grid > .student-chart-card,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page > .students-main-grid > .student-form-card {
+  width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+  margin:0!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:var(--admin-surface-radius)!important;
+  background:var(--admin-card)!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .student-term-chart-layout {
+  grid-template-columns:minmax(140px,.7fr) minmax(0,1.3fr)!important;
+  gap:20px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .student-term-donut {
+  width:min(100%,210px)!important;
+  aspect-ratio:1!important;
+  justify-self:center!important;
+}
+@media(max-width:620px) {
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .student-term-chart-layout {
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .student-term-donut {
+    width:150px!important;
+  }
+}
+
+/* Course management: align header, statistics, forms, lists and controls with the shared admin system. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page {
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  gap:14px!important;
+  color:var(--admin-text)!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page > .course-toolbar {
+  position:relative!important;
+  min-height:0!important;
+  padding:15px 18px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:var(--admin-surface-radius)!important;
+  background:var(--admin-card)!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page > .course-toolbar:before {
+  content:none!important;
+  display:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-title {
+  font-size:19px!important;
+  font-weight:800!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-subtitle {
+  color:var(--admin-sub)!important;
+  font-size:11px!important;
+  line-height:1.8!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-btn {
+  min-height:35px!important;
+  padding:7px 11px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:9px!important;
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+  font-family:inherit!important;
+  font-size:11px!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-btn.primary {
+  background:var(--admin-accent)!important;
+  border-color:var(--admin-accent)!important;
+  color:#fff!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page > .course-stats {
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:0!important;
+  width:100%!important;
+  min-height:0!important;
+  margin:0!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:var(--admin-surface-radius)!important;
+  background:var(--admin-card)!important;
+  box-shadow:none!important;
+  overflow:hidden!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page > .course-stats:before {
+  display:none!important;
+  content:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-stat {
+  min-width:0!important;
+  min-height:76px!important;
+  padding:13px 16px!important;
+  border:0!important;
+  border-left:1px solid var(--admin-border)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-stat:last-child {
+  border-left:0!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-stat-value {
+  color:var(--admin-text)!important;
+  font-size:21px!important;
+  font-weight:850!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-stat-bar {
+  display:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-form,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-list {
+  min-width:0!important;
+  padding:16px!important;
+  border:1px solid var(--admin-border)!important;
+  border-top:1px solid var(--admin-border)!important;
+  border-radius:var(--admin-surface-radius)!important;
+  background:var(--admin-card)!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-section-head {
+  padding-bottom:11px!important;
+  border-bottom:1px solid var(--admin-border)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-section-head h3 {
+  color:var(--admin-text)!important;
+  font-size:14px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-field label {
+  color:var(--admin-sub)!important;
+  font-size:11px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-field :is(input,select,textarea) {
+  min-height:36px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:9px!important;
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+  font-family:inherit!important;
+  font-size:11px!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-list-grid {
+  height:510px!important;
+  max-height:510px!important;
+  flex-basis:510px!important;
+  gap:7px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-card,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .expanded-panel {
+  border:1px solid var(--admin-border)!important;
+  border-radius:11px!important;
+  background:var(--admin-card)!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-expand {
+  background:var(--admin-inner)!important;
+  border-top:1px solid var(--admin-border)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-pill,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-status {
+  border-radius:8px!important;
+  font-size:10px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .modal {
+  border-radius:15px!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+@media(max-width:900px) {
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page > .course-stats {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-stat:nth-child(2) {
+    border-left:0!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-stat:nth-child(-n+2) {
+    border-bottom:1px solid var(--admin-border)!important;
+  }
+}
+@media(max-width:700px) {
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page > .course-toolbar {
+    align-items:stretch!important;
+    flex-direction:column!important;
+    padding:15px!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-toolbar-actions {
+    width:100%!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-toolbar-actions .course-btn {
+    flex:1 1 auto!important;
+    justify-content:center!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-form,
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-list {
+    padding:14px!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-list-grid {
+    height:min(510px,65vh)!important;
+    max-height:min(510px,65vh)!important;
+    flex-basis:min(510px,65vh)!important;
+  }
+}
