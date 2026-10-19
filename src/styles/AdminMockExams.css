@@ -610,3 +610,63 @@
   background:var(--admin-control)!important;
   color:var(--admin-text)!important;
 }
+
+
+/* Compact final pass: separated stat cards, no inert refresh control, tidy registered exams. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stats {
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:12px!important;
+  overflow:visible!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat {
+  min-height:68px!important;
+  padding:12px 14px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:12px!important;
+  background:var(--admin-card)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat:last-child {
+  border-left:1px solid var(--admin-border)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list {
+  height:auto!important;
+  max-height:420px!important;
+  min-height:0!important;
+  gap:8px!important;
+  padding:2px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list > div {
+  min-height:0!important;
+  padding:10px 12px!important;
+  gap:8px!important;
+  border-radius:10px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list > div > div:first-child {
+  gap:10px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list > div > div:first-child > div:first-child > div[style*="marginTop"] {
+  margin-top:5px!important;
+}
+@media(max-width:900px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stats {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:600px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stats {
+    gap:8px!important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat {
+    min-height:62px!important;
+    padding:10px!important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list {
+    max-height:360px!important;
+  }
+}
