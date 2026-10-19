@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { compareJalali, getTehranTodayJalali, jalaliMonthLength, jalaliToTehranDate, toGregorian } from '../../utils/jalali';
-import { CalendarDays, Download, ExternalLink, Link2, Pencil, Plus, RefreshCw, Users } from 'lucide-react';
+import { CalendarDays, Download, ExternalLink, Link2, Pencil, Plus, Users } from 'lucide-react';
 import '../../styles/AdminMockExams.css';
 
 type MockExamStatus = 'DRAFT' | 'SCHEDULED' | 'LINK_AVAILABLE' | 'LIVE' | 'COMPLETED' | 'CANCELLED';
@@ -296,29 +296,6 @@ export const ManageMockExams: React.FC = () => {
 
   return (
     <div className="admin-legacy-page admin-mock-exams-page" style={{ display: 'flex', flexDirection: 'column', gap: 24, width: '100%', direction: 'rtl' }}>
-      <div style={{
-        background: 'linear-gradient(135deg, rgba(109,0,26,.22), rgba(10,10,10,.85))',
-        border: '1px solid rgba(109,0,26,.4)',
-        padding: '24px 28px',
-        borderRadius: 20,
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        gap: 16,
-      }}>
-        <div>
-          <h2 style={{ color: '#fff', margin: '0 0 6px', fontSize: 20, display: 'flex', alignItems: 'center', gap: 9 }}>
-            مدیریت آزمون‌های آزمایشی
-          </h2>
-          <p style={{ color: '#94a3b8', margin: 0, fontSize: 12 }}>
-            Shamseh فقط اطلاعات آزمون، لینک و فهرست هنرجویان ثبت‌نام‌شده را مدیریت می‌کند.
-          </p>
-        </div>
-        <button onClick={() => void load()} style={secondaryButton}>
-          <RefreshCw size={15} /> به‌روزرسانی
-        </button>
-      </div>
-
       {error && <div style={errorBox}>{error}</div>}
 
       <div className="mock-exam-dashboard">
