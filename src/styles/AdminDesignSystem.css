@@ -2045,3 +2045,466 @@
   background:var(--admin-card)!important;
   box-shadow:var(--admin-shadow)!important;
 }
+
+
+/* Offline requests — page-specific final normalization. Keep all surfaces aligned to the shared admin system. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page {
+  width:100%!important;
+  max-width:1240px!important;
+  min-width:0!important;
+  margin-inline:auto!important;
+  padding:0!important;
+  gap:14px!important;
+  box-sizing:border-box!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page *,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page *::before,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page *::after {
+  box-sizing:border-box;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head {
+  width:100%!important;
+  min-width:0!important;
+  min-height:76px!important;
+  margin:0!important;
+  padding:16px 18px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:16px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:14px!important;
+  background:var(--admin-card)!important;
+  box-shadow:var(--admin-shadow)!important;
+  overflow:hidden!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head:before {
+  display:none!important;
+  content:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head > div:first-child {
+  display:block!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-eyebrow {
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  margin:0 0 3px!important;
+  color:var(--admin-accent)!important;
+  font-size:10px!important;
+  font-weight:800!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head h2 {
+  margin:0!important;
+  font-size:18px!important;
+  line-height:1.55!important;
+  font-weight:800!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head p {
+  margin:3px 0 0!important;
+  color:var(--admin-sub)!important;
+  font-size:11px!important;
+  line-height:1.8!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-refresh {
+  flex:0 0 auto!important;
+  align-self:center!important;
+  min-height:35px!important;
+  padding:8px 12px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:9px!important;
+  background:var(--admin-inner)!important;
+  color:var(--admin-text)!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-error {
+  width:100%!important;
+  margin:0!important;
+  padding:10px 12px!important;
+  border:1px solid color-mix(in srgb,#b94a48 25%,var(--admin-border))!important;
+  border-radius:10px!important;
+  background:color-mix(in srgb,#b94a48 7%,var(--admin-card))!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stats {
+  width:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:10px!important;
+  overflow:visible!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stats:before,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stats:after {
+  display:none!important;
+  content:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card {
+  position:relative!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:82px!important;
+  margin:0!important;
+  padding:12px 13px!important;
+  display:grid!important;
+  grid-template-columns:32px minmax(0,1fr) auto!important;
+  grid-template-rows:auto 4px!important;
+  align-items:center!important;
+  gap:8px 10px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:12px!important;
+  background:var(--admin-card)!important;
+  color:var(--admin-text)!important;
+  box-shadow:var(--admin-shadow)!important;
+  text-align:right!important;
+  transform:none!important;
+  outline:0!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card:before,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card:after {
+  display:none!important;
+  content:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card:hover {
+  border-color:var(--admin-accent)!important;
+  background:var(--admin-card)!important;
+  transform:translateY(-1px)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card.is-active {
+  border:1px solid var(--admin-accent)!important;
+  background:var(--admin-accent-soft)!important;
+  box-shadow:inset 0 0 0 1px var(--admin-accent-soft)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-icon {
+  grid-column:1!important;
+  grid-row:1!important;
+  width:32px!important;
+  height:32px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:9px!important;
+  background:var(--admin-inner)!important;
+  color:var(--admin-accent)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-copy {
+  grid-column:2!important;
+  grid-row:1!important;
+  min-width:0!important;
+  gap:3px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-copy strong {
+  font-size:19px!important;
+  line-height:1.25!important;
+  font-weight:850!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-copy small {
+  font-size:10px!important;
+  line-height:1.6!important;
+  white-space:normal!important;
+  color:var(--admin-sub)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-percent {
+  grid-column:3!important;
+  grid-row:1!important;
+  align-self:center!important;
+  color:var(--admin-sub)!important;
+  font-size:10px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-meter {
+  grid-column:2 / 4!important;
+  grid-row:2!important;
+  width:100%!important;
+  height:4px!important;
+  margin:0!important;
+  border-radius:99px!important;
+  background:var(--admin-inner)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-meter span {
+  height:100%!important;
+  border-radius:99px!important;
+  background:var(--admin-accent)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-list-card {
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:14px!important;
+  background:var(--admin-card)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-list-head {
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:14px 16px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  border:0!important;
+  border-bottom:1px solid var(--admin-border)!important;
+  border-radius:0!important;
+  background:var(--admin-card)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-list-head > div:first-child {
+  display:flex!important;
+  align-items:center!important;
+  gap:9px!important;
+  min-width:0!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-list-head h3 {
+  margin:0!important;
+  color:var(--admin-text)!important;
+  font-size:13px!important;
+  font-weight:850!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-list-head h3 svg {
+  color:var(--admin-accent)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-list-head > div:first-child span {
+  color:var(--admin-sub)!important;
+  font-size:10px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-filter-group {
+  min-width:0!important;
+  display:flex!important;
+  align-items:center!important;
+  flex-wrap:wrap!important;
+  gap:5px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-filter-group button {
+  min-height:30px!important;
+  padding:5px 10px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:8px!important;
+  background:var(--admin-inner)!important;
+  color:var(--admin-sub)!important;
+  box-shadow:none!important;
+  font-size:10px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-filter-group button.active {
+  border-color:var(--admin-accent)!important;
+  background:var(--admin-accent-soft)!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-request-list {
+  width:100%!important;
+  height:510px!important;
+  max-height:510px!important;
+  margin:0!important;
+  padding:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-request-row {
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:14px 16px!important;
+  border:0!important;
+  border-bottom:1px solid var(--admin-border)!important;
+  border-radius:0!important;
+  background:var(--admin-card)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-request-row:last-child {
+  border-bottom:0!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-request-row:hover {
+  background:var(--admin-card)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-request-main {
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1.15fr) minmax(0,1.45fr) minmax(90px,.6fr) minmax(115px,.75fr)!important;
+  align-items:center!important;
+  gap:12px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page :is(.offline-student,.offline-course,.offline-date) {
+  min-width:0!important;
+  margin:0!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page :is(.offline-student strong,.offline-course strong,.offline-date strong) {
+  display:block!important;
+  min-width:0!important;
+  color:var(--admin-text)!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  line-height:1.7!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-course strong {
+  color:var(--admin-accent)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page :is(.offline-student span,.offline-course span,.offline-date span) {
+  display:block!important;
+  min-width:0!important;
+  margin-top:2px!important;
+  color:var(--admin-sub)!important;
+  font-size:10px!important;
+  line-height:1.7!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-status {
+  justify-self:start!important;
+  max-width:100%!important;
+  width:max-content!important;
+  padding:6px 9px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:8px!important;
+  background:var(--admin-inner)!important;
+  color:var(--admin-text)!important;
+  font-size:10px!important;
+  line-height:1.5!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-approved-link {
+  max-width:100%!important;
+  margin-top:10px!important;
+  padding-top:9px!important;
+  border-top:1px solid var(--admin-border)!important;
+  color:var(--admin-accent)!important;
+  overflow-wrap:anywhere!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-review {
+  min-width:0!important;
+  margin-top:11px!important;
+  padding-top:11px!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:10px!important;
+  border-top:1px solid var(--admin-border)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-link-field {
+  min-width:0!important;
+  width:100%!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-link-field input {
+  width:100%!important;
+  min-width:0!important;
+  min-height:36px!important;
+  padding:8px 10px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:9px!important;
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+  font-size:11px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-review-actions {
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:7px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-review-actions button {
+  min-height:35px!important;
+  padding:7px 10px!important;
+  border-radius:9px!important;
+  font-size:10px!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-review-actions .approve {
+  border:1px solid var(--admin-accent)!important;
+  background:var(--admin-accent)!important;
+  color:#fff!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-review-actions .reject {
+  border:1px solid color-mix(in srgb,#a94442 30%,var(--admin-border))!important;
+  background:var(--admin-card)!important;
+  color:#a94442!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-empty {
+  padding:34px 16px!important;
+  color:var(--admin-sub)!important;
+  text-align:center!important;
+  font-size:11px!important;
+}
+@media(max-width:900px) {
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stats {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-request-main {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:620px) {
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head {
+    align-items:stretch!important;
+    flex-direction:column!important;
+    padding:14px!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-refresh {
+    align-self:flex-start!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stats {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card {
+    grid-template-columns:28px minmax(0,1fr)!important;
+    grid-template-rows:auto 4px!important;
+    min-height:76px!important;
+    padding:10px!important;
+    gap:7px!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-icon {
+    width:28px!important;
+    height:28px!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-percent {
+    display:none!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-meter {
+    grid-column:1 / -1!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-list-head {
+    align-items:stretch!important;
+    flex-direction:column!important;
+    padding:13px!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-filter-group {
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-filter-group button {
+    width:100%!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-request-list {
+    height:510px!important;
+    max-height:510px!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-request-row {
+    padding:13px!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-request-main {
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:9px!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-review {
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-review-actions {
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-review-actions button {
+    justify-content:center!important;
+  }
+}
