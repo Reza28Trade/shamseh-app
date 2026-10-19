@@ -94,9 +94,6 @@ export const ManageOfflineRequests: React.FC = () => {
           <h2>مدیریت درخواست‌های کلاس آفلاین</h2>
           <p>درخواست‌های دسترسی هنرجویان را بررسی و وضعیت آن‌ها را مدیریت کنید.</p>
         </div>
-        <button className="offline-refresh" onClick={() => void loadRequests()} disabled={loading}>
-          <RefreshCw size={14} /> بروزرسانی
-        </button>
       </div>
 
       {error && <div className="offline-error">{error}</div>}
@@ -136,6 +133,9 @@ export const ManageOfflineRequests: React.FC = () => {
             <button type="button" className={statusFilter === 'PENDING' ? 'active' : ''} onClick={() => setStatusFilter('PENDING')}>در انتظار</button>
             <button type="button" className={statusFilter === 'APPROVED' ? 'active' : ''} onClick={() => setStatusFilter('APPROVED')}>تأیید شده</button>
             <button type="button" className={statusFilter === 'REJECTED' ? 'active' : ''} onClick={() => setStatusFilter('REJECTED')}>رد شده</button>
+            <button className="offline-refresh" type="button" onClick={() => void loadRequests()} disabled={loading}>
+              <RefreshCw size={14} /> بروزرسانی
+            </button>
           </div>
         </div>
 
