@@ -971,3 +971,106 @@
   color:var(--admin-sub)!important;
   font-size:10px!important;
 }
+
+
+/* Dense participant table: show roughly ten rows and scroll within the picker. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table-wrap {
+  max-height:430px;
+  overflow:auto;
+  border:1px solid var(--admin-border);
+  border-radius:10px;
+  background:var(--admin-card);
+  scrollbar-width:thin;
+  scrollbar-color:var(--admin-border) transparent;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table {
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  table-layout:auto;
+  color:var(--admin-text);
+  font-size:11px;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table thead {
+  position:sticky;
+  top:0;
+  z-index:2;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table th {
+  padding:10px 12px;
+  background:var(--admin-inner);
+  color:var(--admin-sub)!important;
+  text-align:right;
+  white-space:nowrap;
+  font-weight:750;
+  border-bottom:1px solid var(--admin-border);
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table th:first-child,
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table td:first-child {
+  width:64px;
+  text-align:center;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table td {
+  height:35px;
+  padding:5px 12px;
+  border-bottom:1px solid var(--admin-border);
+  color:var(--admin-text)!important;
+  white-space:nowrap;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table tbody tr:last-child td {
+  border-bottom:0;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table tbody tr:hover td {
+  background:var(--admin-inner);
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table tbody tr.is-selected td {
+  background:var(--admin-accent-soft);
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table .mock-participant-name {
+  min-width:180px;
+  font-weight:700;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-row-toggle {
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:22px!important;
+  height:22px!important;
+  min-width:22px!important;
+  min-height:22px!important;
+  padding:0!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:6px!important;
+  background:var(--admin-card)!important;
+  color:var(--admin-accent)!important;
+  vertical-align:middle;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-row-toggle.is-selected {
+  border-color:var(--admin-accent)!important;
+  background:var(--admin-accent-soft)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table .mock-participant-level {
+  display:inline-block;
+  padding:3px 7px;
+  background:var(--admin-inner);
+  border-radius:6px;
+  color:var(--admin-sub)!important;
+  font-size:10px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table .mock-participant-empty {
+  padding:22px 12px;
+  text-align:center;
+  color:var(--admin-sub)!important;
+}
+@media(max-width:600px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table-wrap {
+    max-height:390px;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table th,
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table td {
+    padding:7px 8px;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table .mock-participant-name {
+    min-width:145px;
+  }
+}
