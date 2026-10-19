@@ -58,6 +58,8 @@ export const ManageCounseling: React.FC = () => {
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [search, setSearch] = useState('');
+  const [counselorSearch, setCounselorSearch] = useState('');
+  const [assignmentPage, setAssignmentPage] = useState(1);
   const [studentId, setStudentId] = useState('');
   const [counselorId, setCounselorId] = useState('');
   const [username, setUsername] = useState('');
@@ -108,6 +110,12 @@ export const ManageCounseling: React.FC = () => {
     );
   }, [conversations, search]);
   const selected = conversations.find(item => item.id === selectedConversation) ?? null;
+  const filteredCounselors = counselors.filter(item => [item.displayName, item.user.username, item.bio || ''].some(value => value.toLocaleLowerCase().includes(counselorSearch.trim().toLocaleLowerCase())));
+  const assignmentPageSize = 10;
+  const assignmentPageCount = Math.max(1, Math.ceil(assignments.length / assignmentPageSize));
+  const visibleAssignments = assignments.slice((assignmentPage - 1) * assignmentPageSize, assignmentPage * assignmentPageSize);
+  useEffect(() => { setAssignmentPage(1); }, [assignments.length]);
+  useEffect(() => { if (assignmentPage > assignmentPageCount) setAssignmentPage(assignmentPageCount); }, [assignmentPage, assignmentPageCount]);
 
   async function createCounselor(event: FormEvent) {
     event.preventDefault();
@@ -218,8 +226,9 @@ export const ManageCounseling: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'end' }}><button disabled={saving} style={buttonStyle}>{saving ? 'در حال ثبت…' : 'ساخت حساب مشاور'}</button></div>
         </form>}
         {loading ? <p style={{ color: 'var(--admin-sub)', fontSize: 12 }}>در حال دریافت اطلاعات…</p> : counselors.length === 0 ? <p style={{ color: 'var(--admin-sub)', fontSize: 12 }}>هنوز حساب مشاوری تعریف نشده است.</p> : (
+          <label className="counseling-account-search"><Search size={15}/><input type="search" value={counselorSearch} onChange={e => setCounselorSearch(e.target.value)} placeholder="جست‌وجوی نام مشاور یا نام کاربری" aria-label="جست‌وجوی مشاوران"/></label>
           <div className="counseling-account-list" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 10 }}>
-            {counselors.map(counselor => <div className="counseling-account-item" key={counselor.id} style={{ border: '1px solid var(--admin-border)', borderRadius: 12, padding: 13, background: 'var(--admin-inner)' }}>
+            {filteredCounselors.map(counselor => <div className="counseling-account-item" key={counselor.id} style={{ border: '1px solid var(--admin-border)', borderRadius: 12, padding: 13, background: 'var(--admin-inner)' }}>
               <div style={{ display: 'flex', alignItems: 'start', justifyContent: 'space-between', gap: 8 }}>
                 <div><strong style={{ fontSize: 13 }}>{counselor.displayName}</strong><div style={{ color: 'var(--admin-sub)', fontSize: 10, marginTop: 5 }}>نام کاربری: {counselor.user.username}</div></div>
                 <span style={{ color: counselor.isActive ? '#16805d' : '#b54708', background: counselor.isActive ? 'rgba(22,128,93,.1)' : 'rgba(181,71,8,.1)', borderRadius: 7, padding: '4px 7px', fontSize: 9, fontWeight: 800 }}>{counselor.isActive ? 'فعال' : 'غیرفعال'}</span>
@@ -244,7 +253,7 @@ export const ManageCounseling: React.FC = () => {
       <section className="counseling-conversation-section" style={cardStyle}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 14 }}>
           <div><h3 style={{ margin: 0, fontSize: 14, fontWeight: 900 }}>نظارت بر گفت‌وگوها</h3><p style={{ margin: '5px 0 0', color: 'var(--admin-sub)', fontSize: 10 }}>ادمین می‌تواند تاریخچه را مشاهده کند؛ ارسال پیام از طرف ادمین غیرفعال است.</p></div>
-          <div style={{ position: 'relative', minWidth: 220, maxWidth: 340, flex: '1 1 240px' }}><Search size={14} style={{ position: 'absolute', right: 10, top: 12, color: 'var(--admin-sub)' }}/><input value={search} onChange={e => setSearch(e.target.value)} placeholder="جست‌وجوی هنرجو، مشاور یا پیام" style={{ ...inputStyle, paddingRight: 32 }}/></div>
+          <div style={{ position: 'relative', minWidth: 220, maxWidth: 340, flex: '1 1 240px' }}><Search size={14} style={{ position: 'absolute', right: 10, top: 12, color: 'var(--admin-sub)' }}/><input value={search} onChange={e => setSearch(e.target.value)} placeholder="جست‌وجوی هنرجو، مشاور یا پیام" style={{ ...inputStyle, paddingRight: 34, paddingLeft: 12 }}/></div>
         </div>
         {loading ? <p style={{ color: 'var(--admin-sub)', fontSize: 12 }}>در حال دریافت گفت‌وگوها…</p> : filteredConversations.length === 0 ? <p style={{ color: 'var(--admin-sub)', fontSize: 12 }}>گفت‌وگویی مطابق جست‌وجو پیدا نشد.</p> : (
           <div className="admin-counseling-conversations-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(240px, .85fr) minmax(0, 1.5fr)', gap: 12 }}>
@@ -270,7 +279,7 @@ export const ManageCounseling: React.FC = () => {
 
       <section style={cardStyle}>
         <h3 style={{ display: 'flex', alignItems: 'center', gap: 7, margin: '0 0 12px', fontSize: 14, fontWeight: 900 }}><ShieldCheck size={16} color="var(--admin-accent)"/> تاریخچه تخصیص‌ها</h3>
-        {assignments.length === 0 ? <p style={{ color: 'var(--admin-sub)', fontSize: 11 }}>هنوز تخصیصی ثبت نشده است.</p> : <div style={{ overflowX: 'auto' }}><table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}><thead><tr>{['هنرجو','مشاور','شروع مسئولیت','پایان مسئولیت','ثبت‌کننده'].map(label => <th key={label} style={{ textAlign: 'right', padding: '10px 8px', color: 'var(--admin-sub)', borderBottom: '1px solid var(--admin-border)', whiteSpace: 'nowrap' }}>{label}</th>)}</tr></thead><tbody>{assignments.map(item => <tr key={item.id}><td style={{ padding: '10px 8px', borderBottom: '1px solid var(--admin-border)' }}>{item.student.fullName}<div style={{ color: 'var(--admin-sub)', fontSize: 9 }}>{item.student.nationalId}</div></td><td style={{ padding: '10px 8px', borderBottom: '1px solid var(--admin-border)' }}>{item.counselor.displayName}</td><td style={{ padding: '10px 8px', borderBottom: '1px solid var(--admin-border)', whiteSpace: 'nowrap' }}>{dateLabel(item.startedAt)}</td><td style={{ padding: '10px 8px', borderBottom: '1px solid var(--admin-border)', whiteSpace: 'nowrap' }}>{item.endedAt ? dateLabel(item.endedAt) : <span style={{ color: '#16805d', fontWeight: 800 }}>فعال</span>}</td><td style={{ padding: '10px 8px', borderBottom: '1px solid var(--admin-border)' }}>{item.assignedBy.username}</td></tr>)}</tbody></table></div>}
+        {assignments.length === 0 ? <p style={{ color: 'var(--admin-sub)', fontSize: 11 }}>هنوز تخصیصی ثبت نشده است.</p> : <div style={{ overflowX: 'auto' }}><table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}><thead><tr>{['هنرجو','مشاور','شروع مسئولیت','پایان مسئولیت','ثبت‌کننده'].map(label => <th key={label} style={{ textAlign: 'right', padding: '10px 8px', color: 'var(--admin-sub)', borderBottom: '1px solid var(--admin-border)', whiteSpace: 'nowrap' }}>{label}</th>)}</tr></thead><tbody>{visibleAssignments.map(item => <tr key={item.id}><td style={{ padding: '10px 8px', borderBottom: '1px solid var(--admin-border)' }}>{item.student.fullName}<div style={{ color: 'var(--admin-sub)', fontSize: 9 }}>{item.student.nationalId}</div></td><td style={{ padding: '10px 8px', borderBottom: '1px solid var(--admin-border)' }}>{item.counselor.displayName}</td><td style={{ padding: '10px 8px', borderBottom: '1px solid var(--admin-border)', whiteSpace: 'nowrap' }}>{dateLabel(item.startedAt)}</td><td style={{ padding: '10px 8px', borderBottom: '1px solid var(--admin-border)', whiteSpace: 'nowrap' }}>{item.endedAt ? dateLabel(item.endedAt) : <span style={{ color: '#16805d', fontWeight: 800 }}>فعال</span>}</td><td style={{ padding: '10px 8px', borderBottom: '1px solid var(--admin-border)' }}>{item.assignedBy.username}</td></tr>)}</tbody></table></div>}
       </section>
     </div>
   );
