@@ -18,7 +18,7 @@ type ContentRecord = {
   updatedAt: string;
 };
 
-type QuestionRow = { questionNumber: string; topic: string; className: string; professor: string; source: string; page: string; status: 'COVERED' | 'PARTIAL' | 'NOT_COVERED' | 'UNKNOWN' };
+type QuestionRow = { questionNumber: string; explanation: string; topic?: string; className?: string; professor?: string; source?: string; page?: string; status: 'COVERED' | 'PARTIAL' | 'NOT_COVERED' | 'UNKNOWN' };
 type AnalysisForm = {
   title: string; subtitle: string; content: string; examYear: string;
   examLevel: string; resourceUrl: string; published: boolean; sortOrder: string;
@@ -158,7 +158,7 @@ ${value}`.trim();
   const startEdit = (item: ContentRecord) => {
     setEditingId(item.id);
     const structured = parseAnalysisContent(item.content);
-    const questions = structured?.questions || [];
+    const questions = (structured?.questions || []).map((question) => ({ ...question, explanation: question.explanation ?? [question.topic, question.className, question.professor, question.source, question.page].filter(Boolean).join(' · ') }));
     setForm({
       title: item.title, subtitle: item.subtitle || '', content: structured?.narrative ?? item.content,
       examYear: item.examYear || '', examLevel: item.examLevel || '',
@@ -180,7 +180,7 @@ ${value}`.trim();
     if (totalQuestions < 0 || !Number.isInteger(totalQuestions)) { setError('تعداد سؤال‌ها باید یک عدد صحیح و نامنفی باشد.'); return; }
     if (form.questions.length > totalQuestions) { setError('تعداد ردیف‌های سؤال از تعداد کل سؤال‌ها بیشتر است.'); return; }
     setSaving(true); setError(''); setSuccess('');
-    const questions = form.questions;
+    const questions = form.questions.map((question) => ({ questionNumber: question.questionNumber, status: question.status, explanation: question.explanation ?? [question.topic, question.className, question.professor, question.source, question.page].filter(Boolean).join(' · ') }));
     const coverage = calculateCoverage(questions, totalQuestions);
     const content = structured ? JSON.stringify({
       __shamsehExamAnalysis: 1,
@@ -192,10 +192,11 @@ ${value}`.trim();
       questions,
     }) : form.content;
     const payload = {
-      title: form.title.trim(), subtitle: form.subtitle.trim() || undefined,
+      title: form.title.trim(),
       content, examYear: form.examYear.trim() || undefined,
-      examLevel: form.examLevel.trim() || undefined, resourceUrl: form.resourceUrl.trim() || undefined,
-      published: form.published, sortOrder: Math.max(0, Number(form.sortOrder) || 0),
+      examLevel: form.examLevel.trim() || undefined,
+      published: form.published,
+      ...(editingId ? {} : { sortOrder: 0 }),
     };
     try {
       const response = await fetch(editingId ? `/api/admin/public-content/analyses/${editingId}` : '/api/admin/public-content/analyses', {
@@ -278,9 +279,6 @@ ${value}`.trim();
               <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>عنوان *<input required value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} style={inputStyle} /></label>
               <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>سال کنکور<input value={form.examYear} onChange={(event) => setForm({ ...form, examYear: event.target.value })} style={inputStyle} placeholder="مثلاً ۱۴۰۵" /></label>
               <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>مقطع<input value={form.examLevel} onChange={(event) => setForm({ ...form, examLevel: event.target.value })} style={inputStyle} placeholder="ارشد یا دکتری" /></label>
-              <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>زیرعنوان<input value={form.subtitle} onChange={(event) => setForm({ ...form, subtitle: event.target.value })} style={inputStyle} /></label>
-              <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>لینک منبع یا فایل<input value={form.resourceUrl} onChange={(event) => setForm({ ...form, resourceUrl: event.target.value })} style={inputStyle} placeholder="https://..." /></label>
-              <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>ترتیب نمایش<input type="number" min="0" value={form.sortOrder} onChange={(event) => setForm({ ...form, sortOrder: event.target.value })} style={inputStyle} /></label>
             </div>
             <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>متن تحلیل (اختیاری در صورت ثبت اطلاعات ساختاریافته)<textarea rows={8} value={form.content} onChange={(event) => setForm({ ...form, content: event.target.value })} style={{ ...inputStyle, lineHeight: 2, resize: 'vertical' }} placeholder="توضیحات تکمیلی تحلیل را وارد کنید؛ اگر اطلاعات ساختاریافته ثبت می‌کنید، این بخش می‌تواند خالی بماند." /></label>
             <section style={{ border: '1px solid ' + colors.border, borderRadius: 14, padding: 15, display: 'flex', flexDirection: 'column', gap: 12, background: colors.alt }}>
@@ -288,21 +286,21 @@ ${value}`.trim();
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: 12 }}>
                 <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>کدرشته<input value={form.fieldCode} onChange={(event) => setForm({ ...form, fieldCode: event.target.value })} style={inputStyle} placeholder="مثلاً ۱۳۵۹" /></label>
                 <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>نام رشته<input value={form.fieldName} onChange={(event) => setForm({ ...form, fieldName: event.target.value })} style={inputStyle} placeholder="مثلاً پژوهش هنر" /></label>
-                <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>تعداد کل سؤال‌های این کدرشته<input type="number" min="0" step="1" value={form.totalQuestions} onChange={(event) => { const raw = event.target.value; const total = Math.max(0, Math.floor(Number(raw) || 0)); setForm((current) => ({ ...current, totalQuestions: raw, questions: current.questions.slice(0, total).concat(Array.from({ length: Math.max(0, total - current.questions.length) }, (_, index) => ({ questionNumber: String(current.questions.length + index + 1), topic: '', className: '', professor: '', source: '', page: '', status: 'UNKNOWN' as const }))) })); }} style={{ ...inputStyle, direction: 'ltr', textAlign: 'left' }} placeholder="60" /></label>
+                <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>تعداد کل سؤال‌های این کدرشته<input type="number" min="0" step="1" value={form.totalQuestions} onChange={(event) => { const raw = event.target.value; const total = Math.max(0, Math.floor(Number(raw) || 0)); setForm((current) => ({ ...current, totalQuestions: raw, questions: current.questions.slice(0, total).concat(Array.from({ length: Math.max(0, total - current.questions.length) }, (_, index) => ({ questionNumber: String(current.questions.length + index + 1), explanation: '', status: 'UNKNOWN' as const }))) })); }} style={{ ...inputStyle, direction: 'ltr', textAlign: 'left' }} placeholder="60" /></label>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' }}>
                 <div><strong style={{ fontSize: 12 }}>جدول وضعیت پوشش سؤال‌ها</strong><p style={{ color: colors.muted, fontSize: 11, margin: '4px 0 0' }}>برای هر سؤال فقط وضعیت پوشش را انتخاب کن؛ درصد پوشش خودکار محاسبه می‌شود.</p></div>
                 <div style={{ padding: '8px 12px', borderRadius: 10, background: colors.bg, border: '1px solid ' + colors.border, fontSize: 12, fontWeight: 800 }}>درصد پوشش محاسبه‌شده: {calculateCoverage(form.questions, Number(form.totalQuestions) || 0) == null ? '—' : `${calculateCoverage(form.questions, Number(form.totalQuestions) || 0)}٪`}</div>
               </div>
               <div style={{ overflowX: 'auto', border: '1px solid ' + colors.border, borderRadius: 12, background: colors.bg }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 1120, fontSize: 12 }}>
-                  <thead><tr style={{ background: colors.alt, textAlign: 'right' }}>{['شماره سؤال', 'وضعیت پوشش', 'مبحث / توضیح', 'درس یا مبحث مرتبط', 'استاد / کلاس', 'منبع یا کتاب / آزمون', 'صفحه'].map((label) => <th key={label} style={{ padding: '11px 10px', borderBottom: '1px solid ' + colors.border, whiteSpace: 'nowrap' }}>{label}</th>)}</tr></thead>
+                <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 620, fontSize: 12 }}>
+                  <thead><tr style={{ background: colors.alt, textAlign: 'right' }}>{['شماره سؤال', 'وضعیت پوشش', 'توضیحات'].map((label) => <th key={label} style={{ padding: '11px 10px', borderBottom: '1px solid ' + colors.border, whiteSpace: 'nowrap' }}>{label}</th>)}</tr></thead>
                   <tbody>{form.questions.map((question, index) => <tr key={index}>
                     <td style={{ padding: 7, borderBottom: '1px solid ' + colors.border, width: 100 }}><input aria-label={`شماره سؤال ${index + 1}`} value={question.questionNumber} onChange={(event) => setForm((current) => ({ ...current, questions: current.questions.map((row, rowIndex) => rowIndex === index ? { ...row, questionNumber: event.target.value } : row) }))} style={{ ...inputStyle, minWidth: 75 }} /></td>
                     <td style={{ padding: 7, borderBottom: '1px solid ' + colors.border, width: 170 }}><select aria-label={`وضعیت پوشش سؤال ${index + 1}`} value={question.status} onChange={(event) => setForm((current) => ({ ...current, questions: current.questions.map((row, rowIndex) => rowIndex === index ? { ...row, status: event.target.value as QuestionRow['status'] } : row) }))} style={inputStyle}>{questionStatusOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></td>
-                    {(['topic','className','professor','source','page'] as const).map((field) => <td key={field} style={{ padding: 7, borderBottom: '1px solid ' + colors.border, minWidth: field==='source'?220:field==='topic'?200:field==='page'?75:150 }}><input aria-label={`سؤال ${index+1} · ${field}`} value={question[field]} onChange={(event) => setForm((current) => ({ ...current, questions: current.questions.map((row, rowIndex) => rowIndex === index ? { ...row, [field]: event.target.value } : row) }))} style={inputStyle} placeholder={{topic:'مبحث / نکته مرتبط',className:'درس یا کلاس',professor:'استاد یا مدرس',source:'نام کتاب، منبع یا آزمون',page:'شماره صفحه'}[field]} /></td>)}
+                    <td style={{ padding: 7, borderBottom: '1px solid ' + colors.border, minWidth: 360 }}><textarea aria-label={`توضیحات سؤال ${index+1}`} value={question.explanation ?? ''} onChange={(event) => setForm((current) => ({ ...current, questions: current.questions.map((row, rowIndex) => rowIndex === index ? { ...row, explanation: event.target.value } : row) }))} rows={2} style={{ ...inputStyle, minWidth: 340, lineHeight: 1.8, resize: 'vertical' }} placeholder="هر توضیح لازم: مبحث، منبع، کتاب، استاد، صفحه و نکته‌های مرتبط..." /></td>
                   </tr>)}
-                  {form.questions.length === 0 && <tr><td colSpan={7} style={{ padding: 18, textAlign: 'center', color: colors.muted }}>ابتدا تعداد کل سؤال‌ها را وارد کن تا ردیف‌ها ساخته شوند.</td></tr>}</tbody>
+                  {form.questions.length === 0 && <tr><td colSpan={3} style={{ padding: 18, textAlign: 'center', color: colors.muted }}>ابتدا تعداد کل سؤال‌ها را وارد کن تا ردیف‌ها ساخته شوند.</td></tr>}</tbody>
                 </table>
               </div>
             </section>
