@@ -51,12 +51,12 @@ export const ManagePublicContent: React.FC = () => {
   const theme = useStore((state) => state.theme);
   const dark = theme === 'dark';
   const colors = {
-    bg: dark ? '#111116' : '#ffffff',
-    alt: dark ? '#191920' : '#f1f5f9',
-    text: dark ? '#f8fafc' : '#0f172a',
-    muted: dark ? '#94a3b8' : '#64748b',
-    border: dark ? 'rgba(255,255,255,.1)' : '#e2e8f0',
-    accent: '#168C91',
+    bg: dark ? '#262424' : '#EEE5DA',
+    alt: dark ? '#302d2c' : '#f7f1e9',
+    text: dark ? '#EEE5DA' : '#262424',
+    muted: dark ? '#c9beb4' : '#6e6258',
+    border: dark ? 'rgba(238,229,218,.14)' : 'rgba(38,36,36,.14)',
+    accent: dark ? '#48D1CC' : '#008080',
   };
   const [tab, setTab] = useState<'rules' | 'analysis'>('rules');
   const [records, setRecords] = useState<ContentRecord[]>([]);
@@ -228,7 +228,7 @@ ${value}`.trim();
   return (
     <div className="admin-public-content-page" style={{ color: colors.text, display: 'flex', flexDirection: 'column', gap: 14, width: '100%', maxWidth: 'none', minWidth: 0, margin: 0 }}>
       <header style={{ padding: '15px 18px', borderRadius: 14, background: 'var(--admin-card)', border: `1px solid ${colors.border}` }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 5 }}><BookOpenText size={17} color={dark ? '#fda4af' : colors.accent} /><h2 style={{ fontSize: 15, margin: 0, fontWeight: 850 }}>مدیریت محتوای عمومی</h2></div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 5 }}><BookOpenText size={17} color={colors.accent} /><h2 style={{ fontSize: 15, margin: 0, fontWeight: 850 }}>مدیریت محتوای عمومی</h2></div>
         <p style={{ color: colors.muted, fontSize: 11, lineHeight: 1.8, margin: 0 }}>قوانین و تحلیل کنکورهایی که در صفحه اصلی برای هنرجویان نمایش داده می‌شوند را از این بخش مدیریت کنید.</p>
       </header>
 
@@ -237,7 +237,7 @@ ${value}`.trim();
         <button type="button" onClick={() => { setTab('analysis'); setError(''); }} style={{ ...buttonStyle, background: tab === 'analysis' ? colors.accent : colors.bg, color: tab === 'analysis' ? '#fff' : colors.text }}><BookOpenText size={15} /> تحلیل کنکور سال‌های قبل</button>
       </div>
 
-      {error && <div role="alert" style={{ padding: 12, borderRadius: 10, background: 'rgba(239,68,68,.1)', color: '#ef4444', fontSize: 12 }}>{error}</div>}
+      {error && <div role="alert" style={{ padding: 12, borderRadius: 10, background: dark ? 'rgba(122,32,56,.22)' : 'rgba(122,32,56,.10)', color: dark ? '#e6a7b5' : '#7A2038', fontSize: 12 }}>{error}</div>}
       {success && <div role="status" style={{ padding: 12, borderRadius: 10, background: 'rgba(16,185,129,.1)', color: '#10b981', fontSize: 12 }}>{success}</div>}
       {loading ? <div style={{ padding: 32, textAlign: 'center', color: colors.muted }}>در حال دریافت اطلاعات...</div> : tab === 'rules' ? (
         <form onSubmit={saveRules} style={{ background: colors.bg, border: `1px solid ${colors.border}`, borderRadius: 18, padding: '18px', display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -320,7 +320,7 @@ ${value}`.trim();
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
                 <button type="button" onClick={() => startEdit(item)} style={buttonStyle}><Pencil size={14} /> ویرایش</button>
-                <button type="button" onClick={() => void deleteAnalysis(item)} style={{ ...buttonStyle, color: '#ef4444' }}><Trash2 size={14} /> حذف</button>
+                <button type="button" onClick={() => void deleteAnalysis(item)} style={{ ...buttonStyle, color: dark ? '#e6a7b5' : '#7A2038' }}><Trash2 size={14} /> حذف</button>
               </div>
             </article>
           ))}
