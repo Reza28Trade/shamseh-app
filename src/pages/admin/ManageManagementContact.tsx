@@ -24,7 +24,10 @@ export const ManageManagementContact: React.FC = () => {
   const [error, setError] = useState('');
   const [replyText, setReplyText] = useState<Record<string, string>>({});
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
-  const [sendingTicketId, setSendingTicketId] = useState<string | null>(null);\n  const [statusFilter, setStatusFilter] = useState<'ALL' | SupportTicket['status']>('ALL');\n  const [searchTerm, setSearchTerm] = useState('');\n  const [currentPage, setCurrentPage] = useState(1);
+  const [sendingTicketId, setSendingTicketId] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<'ALL' | SupportTicket['status']>('ALL');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
 
   const loadTickets = async () => {
     setLoading(true);
