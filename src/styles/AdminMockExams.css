@@ -928,3 +928,46 @@
     align-self:flex-start;
   }
 }
+
+
+/* Bulk actions for large cohorts: select or clear all currently filtered results. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-bulk-actions {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:0 0 10px;
+  padding:10px;
+  border:1px solid var(--admin-border);
+  border-radius:10px;
+  background:var(--admin-inner);
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-bulk-actions button {
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px!important;
+  min-height:34px!important;
+  padding:7px 11px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:8px!important;
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+  font-size:11px!important;
+  font-weight:750!important;
+  cursor:pointer!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-bulk-actions button:first-child {
+  border-color:var(--admin-accent)!important;
+  background:var(--admin-accent-soft)!important;
+  color:var(--admin-accent)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-bulk-actions button:disabled {
+  opacity:.45!important;
+  cursor:not-allowed!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-bulk-actions span {
+  margin-inline-start:auto;
+  color:var(--admin-sub)!important;
+  font-size:10px!important;
+}
