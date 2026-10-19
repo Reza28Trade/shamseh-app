@@ -33,7 +33,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
     { id: 'mockExams', label: 'آزمون‌های آزمایشی', icon: ClipboardList },
     { id: 'counseling', label: 'مدیریت مشاوران و گفتگوها', icon: MessageSquare },
     { id: 'messages', label: 'پیام‌ها و پرسش‌ها', icon: MessageSquare },
-    { id: 'managementContact', label: 'انتقادات و پیشنهادات - ارتباط مستقیم با مدیریت', icon: ShieldCheck },
+    { id: 'managementContact', label: 'انتقادات و پیشنهادات', icon: MessageSquare },
     { id: 'notifications', label: 'ارسال اطلاعیه', icon: Bell },
     { id: 'rules', label: 'قوانین و تحلیل کنکور', icon: FileText },
     { id: 'registrations', label: 'مدیریت مالی، ثبت‌نام و بازپرداخت', icon: Wallet },
