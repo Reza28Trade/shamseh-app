@@ -520,3 +520,93 @@
     flex-direction:column!important;
   }
 }
+
+
+/* Final corrections based on the live review: align page edges, remove the refresh accent strip,
+   and make the Jalali calendar readable in both themes. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page {
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  box-sizing:border-box!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div:first-child:before,
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div:first-child:after {
+  display:none!important;
+  content:none!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div:first-child {
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div:first-child > button {
+  min-height:36px!important;
+  margin:0!important;
+  padding:8px 12px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:9px!important;
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div:first-child > button svg {
+  color:var(--admin-accent)!important;
+}
+/* Calendar overlay */
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] {
+  background:rgba(20,20,20,.48)!important;
+  backdrop-filter:blur(3px);
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div {
+  background:var(--admin-card)!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:15px!important;
+  color:var(--admin-text)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div strong,
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div span,
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div div {
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div div[style*="grid-template-columns"] > div {
+  color:var(--admin-sub)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div button {
+  min-width:0!important;
+  border:1px solid transparent!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:var(--admin-text)!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div button:disabled {
+  color:var(--admin-sub)!important;
+  opacity:.48!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div button[style*="rgba(56,189,248"] {
+  border-color:var(--admin-accent)!important;
+  background:var(--admin-accent-soft)!important;
+  color:var(--admin-accent)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div > div:last-child {
+  border-top-color:var(--admin-border)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div > div:last-child button {
+  border:1px solid var(--admin-accent)!important;
+  background:var(--admin-accent)!important;
+  color:#fff!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div > div:first-child button {
+  width:36px!important;
+  height:36px!important;
+  border:1px solid var(--admin-border)!important;
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+}
