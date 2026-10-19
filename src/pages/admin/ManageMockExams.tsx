@@ -330,7 +330,7 @@ export const ManageMockExams: React.FC = () => {
     }
   };
 
-  const getVisibleParticipantStudents = (exam: MockExam) => students.filter(student => {
+  const getVisibleParticipantStudents = () => students.filter(student => {
     const levelMatches = participantGroup === 'ALL' || student.academicLevel === participantGroup;
     const query = participantSearch.trim().toLocaleLowerCase();
     const searchMatches = !query || student.fullName.toLocaleLowerCase().includes(query) || student.nationalId.includes(query);
@@ -338,8 +338,8 @@ export const ManageMockExams: React.FC = () => {
     return levelMatches && searchMatches && (!showSelectedOnly || selected);
   });
 
-  const bulkSetParticipants = (exam: MockExam, shouldSelect: boolean) => {
-    const targets = getVisibleParticipantStudents(exam).map(student => student.id);
+  const bulkSetParticipants = (shouldSelect: boolean) => {
+    const targets = getVisibleParticipantStudents().map(student => student.id);
     if (!targets.length) return;
     setPendingParticipantIds(current => {
       if (shouldSelect) return [...new Set([...current, ...targets])];
@@ -581,14 +581,14 @@ export const ManageMockExams: React.FC = () => {
                       <button
                         type="button"
                         disabled={participantSaving || getVisibleParticipantStudents(exam).every(student => pendingParticipantIds.includes(student.id))}
-                        onClick={() => void bulkSetParticipants(exam, true)}
+                        onClick={() => void bulkSetParticipants(true)}
                       >
                         <Check size={15} /> انتخاب همهٔ نتایج
                       </button>
                       <button
                         type="button"
                         disabled={participantSaving || !getVisibleParticipantStudents(exam).some(student => pendingParticipantIds.includes(student.id))}
-                        onClick={() => void bulkSetParticipants(exam, false)}
+                        onClick={() => void bulkSetParticipants(false)}
                       >
                         پاک‌کردن انتخاب نتایج
                       </button>
