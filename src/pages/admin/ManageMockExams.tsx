@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { compareJalali, getTehranTodayJalali, jalaliMonthLength, jalaliToTehranDate, toGregorian } from '../../utils/jalali';
-import { CalendarDays, Download, ExternalLink, Link2, Pencil, Plus, Users } from 'lucide-react';
+import { CalendarDays, Check, Download, ExternalLink, Link2, Pencil, Plus, Search, Users } from 'lucide-react';
 import '../../styles/AdminMockExams.css';
 
 type MockExamStatus = 'DRAFT' | 'SCHEDULED' | 'LINK_AVAILABLE' | 'LIVE' | 'COMPLETED' | 'CANCELLED';
@@ -44,6 +44,8 @@ export const ManageMockExams: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [participantExamId, setParticipantExamId] = useState<string | null>(null);
   const [participantGroup, setParticipantGroup] = useState<'ALL' | 'MASTER' | 'DOCTORATE'>('ALL');
+  const [participantSearch, setParticipantSearch] = useState('');
+  const [showSelectedOnly, setShowSelectedOnly] = useState(false);
   const [levelFilter, setLevelFilter] = useState<'ALL' | 'MASTER' | 'DOCTORATE'>('ALL');
   const [yearFilter, setYearFilter] = useState('ALL');
   const [error, setError] = useState('');
@@ -481,6 +483,8 @@ export const ManageMockExams: React.FC = () => {
                         } else {
                           setParticipantExamId(exam.id);
                           setParticipantGroup(/دکتری|دکترا/i.test(exam.level) ? 'DOCTORATE' : /ارشد/i.test(exam.level) ? 'MASTER' : 'ALL');
+                          setParticipantSearch('');
+                          setShowSelectedOnly(false);
                         }
                       }} style={secondaryButton}>
                       <Users size={14} /> شرکت‌کنندگان
@@ -493,8 +497,8 @@ export const ManageMockExams: React.FC = () => {
                     <div style={{ color: '#cbd5e1', fontSize: 12, fontWeight: 800, marginBottom: 10 }}>
                       انتخاب هنرجویان ثبت‌نام‌شده در این آزمون
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap', marginBottom: 12 }}>
-                      <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
+                    <div className="mock-participant-toolbar">
+                      <div className="mock-participant-levels">
                         {([
                           ['ALL', 'همه'],
                           ['MASTER', 'ارشد'],
@@ -507,57 +511,87 @@ export const ManageMockExams: React.FC = () => {
                             <button
                               key={value}
                               type="button"
+                              className={participantGroup === value ? 'is-active' : ''}
                               onClick={() => setParticipantGroup(value)}
-                              style={{
-                                border: participantGroup === value ? '1px solid #6D001A' : '1px solid rgba(255,255,255,.08)',
-                                background: participantGroup === value ? 'rgba(109,0,26,.3)' : 'rgba(255,255,255,.04)',
-                                color: '#fff',
-                                padding: '7px 11px',
-                                borderRadius: 8,
-                                cursor: 'pointer',
-                                fontSize: 10,
-                                fontWeight: 800,
-                              }}
                             >
-                              {label} ({count})
+                              {label} <span>{count}</span>
                             </button>
                           );
                         })}
                       </div>
-                      <span style={{ color: '#34d399', fontSize: 11, fontWeight: 800 }}>
-                        {exam.participants.length} نفر انتخاب شده
-                      </span>
+                      <div className="mock-participant-summary">
+                        <strong>{exam.participants.length}</strong>
+                        <span>از {students.length} هنرجو انتخاب شده</span>
+                      </div>
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 8 }}>
+                    <div className="mock-participant-search-row">
+                      <label className="mock-participant-search">
+                        <Search size={16} />
+                        <input
+                          type="search"
+                          value={participantSearch}
+                          onChange={event => setParticipantSearch(event.target.value)}
+                          placeholder="جست‌وجوی نام، نام خانوادگی یا کد ملی..."
+                          aria-label="جست‌وجوی هنرجو"
+                        />
+                      </label>
+                      <button
+                        type="button"
+                        className={showSelectedOnly ? 'mock-participant-selected-toggle is-active' : 'mock-participant-selected-toggle'}
+                        onClick={() => setShowSelectedOnly(value => !value)}
+                      >
+                        <Check size={15} />
+                        فقط انتخاب‌شده‌ها
+                      </button>
+                    </div>
+                    <div className="mock-participant-results-count">
+                      {students.filter(student => {
+                        const levelMatches = participantGroup === 'ALL' || student.academicLevel === participantGroup;
+                        const query = participantSearch.trim().toLocaleLowerCase();
+                        const searchMatches = !query || student.fullName.toLocaleLowerCase().includes(query) || student.nationalId.includes(query);
+                        const selected = exam.participants.some(item => item.student.id === student.id);
+                        return levelMatches && searchMatches && (!showSelectedOnly || selected);
+                      }).length} هنرجو در نتایج
+                    </div>
+                    <div className="mock-participant-list">
                       {students
                         .filter(student => {
-                          if (participantGroup === 'ALL') return true;
-                          return student.academicLevel === participantGroup;
+                          const levelMatches = participantGroup === 'ALL' || student.academicLevel === participantGroup;
+                          const query = participantSearch.trim().toLocaleLowerCase();
+                          const searchMatches = !query || student.fullName.toLocaleLowerCase().includes(query) || student.nationalId.includes(query);
+                          const selected = exam.participants.some(item => item.student.id === student.id);
+                          return levelMatches && searchMatches && (!showSelectedOnly || selected);
                         })
-                        .map((student) => {
-                          const selected = exam.participants.some((item) => item.student.id === student.id);
+                        .map(student => {
+                          const selected = exam.participants.some(item => item.student.id === student.id);
                           return (
                             <button
                               key={student.id}
                               type="button"
+                              className={selected ? 'mock-participant-option is-selected' : 'mock-participant-option'}
+                              aria-pressed={selected}
                               onClick={() => void toggleParticipant(exam.id, student.id, selected)}
-                              style={{
-                                textAlign: 'right',
-                                padding: '10px 12px',
-                                borderRadius: 11,
-                                cursor: 'pointer',
-                                color: '#fff',
-                                background: selected ? 'rgba(109,0,26,.35)' : 'rgba(20,20,25,.8)',
-                                border: selected ? '1px solid #6D001A' : '1px solid rgba(255,255,255,.08)',
-                              }}
                             >
-                              <div>{student.fullName}</div>
-                              <div style={{ color: '#64748b', fontSize: 9, marginTop: 4 }}>
-                                {student.nationalId} · {student.academicLevel === 'MASTER' ? 'ارشد' : student.academicLevel === 'DOCTORATE' ? 'دکتری' : 'مقطع نامشخص'}
-                              </div>
+                              <span className="mock-participant-check">{selected && <Check size={14} />}</span>
+                              <span className="mock-participant-identity">
+                                <strong>{student.fullName}</strong>
+                                <small>{student.nationalId}</small>
+                              </span>
+                              <span className="mock-participant-level">
+                                {student.academicLevel === 'MASTER' ? 'ارشد' : student.academicLevel === 'DOCTORATE' ? 'دکتری' : 'نامشخص'}
+                              </span>
                             </button>
                           );
                         })}
+                      {students.filter(student => {
+                        const levelMatches = participantGroup === 'ALL' || student.academicLevel === participantGroup;
+                        const query = participantSearch.trim().toLocaleLowerCase();
+                        const searchMatches = !query || student.fullName.toLocaleLowerCase().includes(query) || student.nationalId.includes(query);
+                        const selected = exam.participants.some(item => item.student.id === student.id);
+                        return levelMatches && searchMatches && (!showSelectedOnly || selected);
+                      }).length === 0 && (
+                        <div className="mock-participant-empty">هنرجویی با این مشخصات پیدا نشد.</div>
+                      )}
                     </div>
                   </div>
                 )}
