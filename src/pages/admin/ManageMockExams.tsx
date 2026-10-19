@@ -580,14 +580,14 @@ export const ManageMockExams: React.FC = () => {
                     <div className="mock-participant-bulk-actions">
                       <button
                         type="button"
-                        disabled={participantSaving || getVisibleParticipantStudents(exam).every(student => pendingParticipantIds.includes(student.id))}
+                        disabled={participantSaving || getVisibleParticipantStudents().every(student => pendingParticipantIds.includes(student.id))}
                         onClick={() => void bulkSetParticipants(true)}
                       >
                         <Check size={15} /> انتخاب همهٔ نتایج
                       </button>
                       <button
                         type="button"
-                        disabled={participantSaving || !getVisibleParticipantStudents(exam).some(student => pendingParticipantIds.includes(student.id))}
+                        disabled={participantSaving || !getVisibleParticipantStudents().some(student => pendingParticipantIds.includes(student.id))}
                         onClick={() => void bulkSetParticipants(false)}
                       >
                         پاک‌کردن انتخاب نتایج
@@ -667,7 +667,7 @@ export const ManageMockExams: React.FC = () => {
                                 </tr>
                               );
                             })}
-                          {getVisibleParticipantStudents(exam).length === 0 && (
+                          {getVisibleParticipantStudents().length === 0 && (
                             <tr><td colSpan={4} className="mock-participant-empty">هنرجویی با این مشخصات پیدا نشد.</td></tr>
                           )}
                         </tbody>
