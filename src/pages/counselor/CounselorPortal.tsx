@@ -318,6 +318,23 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
           .counselor-workspace{display:block!important;padding:12px!important;min-height:calc(100vh - 64px)!important}
           .counselor-workspace>aside,.counselor-chat-pane{min-height:calc(100vh - 90px)!important}
         }
+
+        /* Keep the conversation composer visible; scroll only inside the message history. */
+        @media(min-width:761px){
+          main{height:100vh!important;min-height:0!important;overflow:hidden!important;display:flex!important;flex-direction:column!important}
+          .counselor-stats{flex:0 0 auto!important}
+          .counselor-workspace{flex:1 1 auto!important;height:0!important;min-height:0!important;overflow:hidden!important}
+          .counselor-workspace>aside,.counselor-chat-pane{height:100%!important;min-height:0!important;max-height:100%!important}
+          .counselor-chat-pane{display:flex!important;flex-direction:column!important}
+          .counselor-message-history{flex:1 1 0!important;min-height:0!important;max-height:none!important;overflow-y:auto!important;overscroll-behavior:contain}
+          .counselor-chat-pane form{flex:0 0 auto!important;position:relative!important;z-index:2!important;align-items:flex-end!important}
+          .counselor-chat-pane form button,.counselor-chat-pane form label{flex-shrink:0!important;visibility:visible!important;opacity:1!important}
+        }
+        @media(max-width:760px){
+          .counselor-chat-pane{height:calc(100dvh - 90px)!important;min-height:0!important;max-height:calc(100dvh - 90px)!important}
+          .counselor-message-history{flex:1 1 0!important;min-height:0!important;max-height:none!important;overflow-y:auto!important}
+          .counselor-chat-pane form{flex:0 0 auto!important;position:sticky!important;bottom:0!important;z-index:2!important}
+        }
       `}</style>
     </main>
   );
