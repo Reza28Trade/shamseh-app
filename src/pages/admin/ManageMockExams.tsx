@@ -48,8 +48,6 @@ export const ManageMockExams: React.FC = () => {
   const [pendingParticipantIds, setPendingParticipantIds] = useState<string[]>([]);
   const [participantSaving, setParticipantSaving] = useState(false);
   const [showSelectedOnly, setShowSelectedOnly] = useState(false);
-  const [bulkBusy, setBulkBusy] = useState(false);
-  const [bulkProgress, setBulkProgress] = useState({ done: 0, total: 0 });
   const [levelFilter, setLevelFilter] = useState<'ALL' | 'MASTER' | 'DOCTORATE'>('ALL');
   const [yearFilter, setYearFilter] = useState('ALL');
   const [error, setError] = useState('');
@@ -660,7 +658,7 @@ export const ManageMockExams: React.FC = () => {
                                     </button>
                                   </td>
                                   <td className="mock-participant-name">{student.fullName}</td>
-                                  <td dir="ltr">{student.nationalId}</td>
+                                  <td className="mock-participant-national-id" dir="ltr">{student.nationalId}</td>
                                   <td>
                                     <span className="mock-participant-level">
                                       {student.academicLevel === 'MASTER' ? 'ارشد' : student.academicLevel === 'DOCTORATE' ? 'دکتری' : 'نامشخص'}
@@ -674,6 +672,7 @@ export const ManageMockExams: React.FC = () => {
                           )}
                         </tbody>
                       </table>
+                    </div>
                     <div className="mock-participant-savebar">
                       <button type="button" className="mock-participant-cancel" disabled={participantSaving} onClick={() => {
                         setPendingParticipantIds(exam.participants.map(item => item.student.id));
@@ -682,7 +681,6 @@ export const ManageMockExams: React.FC = () => {
                       <button type="button" className="mock-participant-save" disabled={participantSaving} onClick={() => void saveParticipantChanges(exam)}>
                         {participantSaving ? 'در حال ذخیره...' : 'ذخیره تغییرات'}
                       </button>
-                    </div>
                     </div>
                   </div>
                 )}
