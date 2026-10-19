@@ -16,8 +16,8 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
     catch { return true; }
   });
   const palette = isDark
-    ? { bg: '#101416', card: '#191f21', inner: '#202729', text: '#f1f4f3', sub: '#a2aeae', border: '#303a3c', accent: '#398a90', accentSoft: 'rgba(57,138,144,.18)', accentBorder: 'rgba(112,185,181,.35)', danger: '#d4777d', ownBubble: '#246d72', chatBg: '#141a1c' }
-    : { bg: '#f1f6f5', card: '#ffffff', inner: '#e8f0ee', text: '#1c2928', sub: '#637471', border: '#d7e3df', accent: '#347f80', accentSoft: 'rgba(57,138,144,.12)', accentBorder: 'rgba(57,138,144,.28)', danger: '#bd5660', ownBubble: '#347f80', chatBg: '#f7faf9' };
+    ? { bg: '#262424', card: '#1D1B1B', inner: '#302D2D', text: '#EEE5DA', sub: '#B9B0A6', border: 'rgba(238,229,218,.13)', accent: '#48D1CC', accentSoft: 'rgba(72,209,204,.13)', accentBorder: 'rgba(72,209,204,.30)', danger: '#d4777d', ownBubble: '#246d72', chatBg: '#211F1F' }
+    : { bg: '#EEE5DA', card: '#F7F1E8', inner: '#E5D9CB', text: '#262424', sub: '#655D55', border: 'rgba(38,36,36,.14)', accent: '#008080', accentSoft: 'rgba(0,128,128,.10)', accentBorder: 'rgba(0,128,128,.25)', danger: '#7A2038', ownBubble: '#008080', chatBg: '#F7F1E8' };
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selected, setSelected] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -195,7 +195,7 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
 
   return (
     <main style={{ minHeight: '100vh', background: palette.bg, color: palette.text, direction: 'rtl', fontFamily: 'Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif', padding: 0 }}>
-      <header style={{ height: 76, position: 'sticky', top: 0, zIndex: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '0 28px', background: palette.card, borderBottom: `1px solid ${palette.border}`, boxShadow: '0 4px 18px rgba(0,0,0,.12)' }}>
+      <header style={{ height: 68, position: 'sticky', top: 0, zIndex: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '0 20px', background: palette.card, borderBottom: `1px solid ${palette.border}`, boxShadow: isDark ? '0 10px 28px rgba(0,0,0,.22)' : '0 10px 28px rgba(38,36,36,.07)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 13, minWidth: 0 }}>
           <img src="/logo.png" alt="لوگوی شمسه" style={{ width: 48, height: 48, objectFit: 'contain', borderRadius: 11 }} />
           <div><strong style={{ display: 'block', fontSize: 14, fontWeight: 900 }}>مرکز مشاوره شمسه</strong><span style={{ color: palette.sub, fontSize: 11 }}>پنل مشاوران</span></div>
@@ -208,7 +208,7 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
         </div>
       </header>
 
-      <section className="counselor-stats" aria-label="آمار مشاوره" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,minmax(0,1fr))', gap: 12, maxWidth: 1452, margin: '0 auto', padding: '18px 24px 0', boxSizing: 'border-box' }}>
+      <section className="counselor-stats" aria-label="آمار مشاوره" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,minmax(0,1fr))', gap: 12, maxWidth: 1500, margin: '0 auto', padding: '16px 20px 0', boxSizing: 'border-box' }}>
         {[
           { label: 'گفت‌وگوهای اختصاص‌یافته', value: conversations.length, icon: <Users size={18} />, color: '#4c9e9a' },
           { label: 'منتظر پاسخ مشاور', value: pendingReplies, icon: <Clock3 size={18} />, color: '#d6a34b' },
@@ -220,7 +220,7 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
         </article>)}
       </section>
 
-      <div className="counselor-workspace" style={{ display: 'grid', gridTemplateColumns: '320px minmax(0,1fr)', gap: 18, maxWidth: 1500, margin: '0 auto', padding: 24, minHeight: 'calc(100vh - 76px)', boxSizing: 'border-box' }}>
+      <div className="counselor-workspace" style={{ display: 'grid', gridTemplateColumns: '300px minmax(0,1fr)', gap: 16, maxWidth: 1540, margin: '0 auto', padding: 20, minHeight: 'calc(100vh - 68px)', boxSizing: 'border-box' }}>
         <aside style={{ minWidth: 0, background: palette.card, border: `1px solid ${palette.border}`, borderRadius: 17, overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: 600 }}>
           <div style={{ padding: 18, borderBottom: `1px solid ${palette.border}` }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 5 }}><MessageCircle size={18} color="#70b9b5" /><h2 style={{ fontSize: 15, margin: 0, fontWeight: 900 }}>گفت‌وگوها</h2><span style={{ marginRight: 'auto', padding: '3px 8px', borderRadius: 7, background: palette.accentSoft, color: '#70b9b5', fontSize: 10, fontWeight: 800 }}>{conversations.length}</span></div>
@@ -285,6 +285,9 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
         .counselor-scroll-area::-webkit-scrollbar-thumb{background:${palette.accent};border:2px solid ${palette.inner};border-radius:999px}
         .counselor-scroll-area::-webkit-scrollbar-thumb:hover{background:${isDark ? '#70b9b5' : '#286d70'}}
         @media(max-width:760px){
+          header{box-shadow:none!important}
+          .counselor-workspace{padding:12px!important}
+          
           .counselor-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;padding:12px 12px 0!important;gap:8px!important}
           .counselor-stats article{padding:10px!important;gap:8px!important}
           .counselor-stats article:last-child{grid-column:1/-1}
