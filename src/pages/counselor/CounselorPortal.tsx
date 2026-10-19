@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
-import { LogOut, MessageCircle, Search, Send, UserRound, ArrowRight, Circle, Mic, Square, Paperclip, Download, Sun, Moon, Clock3, MessagesSquare, Users, Check, CheckCheck } from 'lucide-react';
+import { LogOut, MessageCircle, Search, Send, UserRound, ArrowRight, Circle, Mic, Square, Paperclip, Download, Sun, Moon, Clock3, Check, CheckCheck } from 'lucide-react';
 
 type Conversation = {
   id: string;
@@ -45,7 +45,6 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
   const unreadConversations = currentUserId
     ? conversations.filter(c => c.messages?.[0] && c.messages[0].senderUserId !== currentUserId && !c.messages[0].readAt).length
     : 0;
-  const totalMessages = conversations.reduce((total, c) => total + (c._count?.messages || 0), 0);
   const filteredConversations = useMemo(() => conversations.filter(c => {
     const last = c.messages?.[0];
     const matchesSearch = c.student.fullName.toLocaleLowerCase('fa').includes(search.trim().toLocaleLowerCase('fa'));
@@ -208,21 +207,9 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
         </div>
       </header>
 
-      <section className="counselor-stats" aria-label="آمار مشاوره" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,minmax(0,1fr))', gap: 12, maxWidth: 1500, margin: '0 auto', padding: '16px 20px 0', boxSizing: 'border-box' }}>
-        {[
-          { label: 'گفت‌وگوهای اختصاص‌یافته', value: conversations.length, icon: <Users size={18} />, color: '#4c9e9a' },
-          { label: 'منتظر پاسخ مشاور', value: pendingReplies, icon: <Clock3 size={18} />, color: '#d6a34b' },
-          { label: 'گفت‌وگوهای خوانده‌نشده', value: unreadConversations, icon: <MessageCircle size={18} />, color: '#d4777d' },
-          { label: 'مجموع پیام‌ها', value: totalMessages, icon: <MessagesSquare size={18} />, color: '#6996d7' },
-        ].map(stat => <article key={stat.label} style={{ position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', gap: 13, minWidth: 0, padding: '14px 16px', borderRadius: 15, border: `1px solid ${palette.border}`, background: `linear-gradient(120deg,${palette.accentSoft},${palette.card} 78%)`, boxShadow: isDark ? '0 8px 20px rgba(0,0,0,.10)' : '0 8px 20px rgba(32,62,58,.05)' }}>
-          <span style={{ width: 42, height: 42, flex: '0 0 42px', display: 'grid', placeItems: 'center', borderRadius: 12, color: stat.color, background: `${stat.color}1c`, border: `1px solid ${stat.color}35` }}>{stat.icon}</span>
-          <span style={{ minWidth: 0 }}><small style={{ display: 'block', color: palette.sub, fontSize: 10, lineHeight: 1.8 }}>{stat.label}</small><strong style={{ display: 'block', marginTop: 2, color: stat.color, fontSize: 23, lineHeight: 1.2, fontWeight: 900, fontVariantNumeric: 'tabular-nums' }}>{stat.value}</strong></span>
-        </article>)}
-      </section>
-
-      <div className="counselor-workspace" style={{ display: 'grid', gridTemplateColumns: '300px minmax(0,1fr)', gap: 16, maxWidth: 1540, margin: '0 auto', padding: 20, minHeight: 'calc(100vh - 68px)', boxSizing: 'border-box' }}>
+      <div className="counselor-workspace" style={{ display: 'grid', gridTemplateColumns: '300px minmax(0,1fr)', gap: 16, maxWidth: 1540, margin: '0 auto', padding: 14, minHeight: 'calc(100vh - 68px)', boxSizing: 'border-box' }}>
         <aside style={{ minWidth: 0, background: palette.card, border: `1px solid ${palette.border}`, borderRadius: 17, overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: 600 }}>
-          <div style={{ padding: 18, borderBottom: `1px solid ${palette.border}` }}>
+          <div style={{ padding: 14, borderBottom: `1px solid ${palette.border}` }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 5 }}><MessageCircle size={18} color="#70b9b5" /><h2 style={{ fontSize: 15, margin: 0, fontWeight: 900 }}>گفت‌وگوها</h2><span style={{ marginRight: 'auto', padding: '3px 8px', borderRadius: 7, background: palette.accentSoft, color: '#70b9b5', fontSize: 10, fontWeight: 800 }}>{conversations.length}</span></div>
             <p style={{ color: palette.sub, fontSize: 11, lineHeight: 1.8, margin: '7px 0 14px' }}>پیام‌های هنرجویان اختصاص‌یافته به شما</p>
             <div style={{ position: 'relative' }}><Search size={15} color={palette.sub} style={{ position: 'absolute', right: 11, top: 12 }} /><input value={search} onChange={e => setSearch(e.target.value)} placeholder="جست‌وجوی نام هنرجو" aria-label="جست‌وجوی هنرجو" style={{ width: '100%', boxSizing: 'border-box', padding: '11px 34px 11px 10px', border: `1px solid ${palette.border}`, borderRadius: 10, background: palette.inner, color: palette.text, outline: 'none', font: 'inherit', fontSize: 11 }} /></div>
@@ -230,14 +217,13 @@ export function CounselorPortal({ onLogout }: { onLogout: () => void }) {
               {([{ id: 'all', label: 'همه', count: conversations.length }, { id: 'pending', label: 'منتظر پاسخ', count: pendingReplies }, { id: 'unread', label: 'خوانده‌نشده', count: unreadConversations }] as const).map(item => <button key={item.id} type="button" onClick={() => setConversationFilter(item.id)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, padding: '7px 3px', borderRadius: 7, border: `1px solid ${conversationFilter === item.id ? palette.accentBorder : 'transparent'}`, background: conversationFilter === item.id ? palette.accentSoft : 'transparent', color: conversationFilter === item.id ? (isDark ? '#a5ded8' : palette.accent) : palette.sub, cursor: 'pointer', font: 'inherit', fontSize: 9, fontWeight: 800 }}><span>{item.label}</span><strong style={{ fontSize: 11, fontVariantNumeric: 'tabular-nums' }}>{item.count}</strong></button>)}
             </div>
           </div>
-          <div className="counselor-scroll-area counselor-conversation-list" style={{ flex: 1, overflowY: 'auto', padding: 10 }}>
+          <div className="counselor-scroll-area counselor-conversation-list" style={{ flex: 1, overflowY: 'auto', padding: 7 }}>
             {loading ? <p style={{ color: palette.sub, padding: 12, fontSize: 12 }}>در حال دریافت گفت‌وگوها…</p> : filteredConversations.length === 0 ? <div style={{ padding: 20, textAlign: 'center', color: palette.sub, fontSize: 12, lineHeight: 2 }}>{search ? 'هنرجویی با این نام پیدا نشد.' : conversationFilter === 'unread' ? 'گفت‌وگوی خوانده‌نشده‌ای ندارید.' : conversationFilter === 'pending' ? 'گفت‌وگویی منتظر پاسخ نیست.' : 'هنرجویی به شما اختصاص داده نشده است.'}</div> : filteredConversations.map(c => {
               const chosen = c.id === selected;
               const last = c.messages[c.messages.length - 1];
-              return <button key={c.id} onClick={() => { setSelected(c.id); setSelectedFile(null); setMobileListOpen(false); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 11, textAlign: 'right', padding: 12, marginBottom: 6, borderRadius: 12, border: `1px solid ${chosen ? palette.accentBorder : 'transparent'}`, background: chosen ? palette.accentSoft : 'transparent', color: palette.text, cursor: 'pointer' }}>
-                <span style={{ width: 40, height: 40, flex: '0 0 40px', display: 'grid', placeItems: 'center', borderRadius: 13, background: chosen ? palette.accent : palette.inner, color: chosen ? '#fff' : '#70b9b5', fontSize: 15, fontWeight: 900 }}>{c.student.fullName.trim().slice(0,1) || 'ه'}</span>
-                <span style={{ flex: 1, minWidth: 0 }}><strong style={{ display: 'block', fontSize: 12, fontWeight: 850, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.student.fullName}</strong><small style={{ display: 'block', color: palette.sub, fontSize: 10, marginTop: 5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{last?.attachmentName || last?.content || (last ? 'پیام بدون متن' : 'گفت‌وگوی جدید')}</small>{currentUserId && last && last.senderUserId !== currentUserId && <small style={{ display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 6, padding: '3px 7px', borderRadius: 6, color: !last.readAt ? '#d4777d' : '#b98221', background: !last.readAt ? 'rgba(212,119,125,.13)' : 'rgba(214,163,75,.13)', fontSize: 9, fontWeight: 850 }}>{!last.readAt ? <><Circle size={7} fill="currentColor" /> خوانده‌نشده</> : <><Clock3 size={11} /> منتظر پاسخ شما</>}</small>}{last && <small style={{ display: 'block', marginTop: 5, color: palette.sub, fontSize: 9 }}>{new Date(last.createdAt).toLocaleString('fa-IR', { dateStyle: 'short', timeStyle: 'short' })}</small>}</span>
-                <span style={{ alignSelf: 'flex-start', whiteSpace: 'nowrap', fontSize: 9, color: palette.sub }}>{c._count.messages} پیام</span>
+              return <button key={c.id} onClick={() => { setSelected(c.id); setSelectedFile(null); setMobileListOpen(false); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, textAlign: 'right', padding: '9px 8px', marginBottom: 4, borderRadius: 10, border: `1px solid ${chosen ? palette.accentBorder : 'transparent'}`, background: chosen ? palette.accentSoft : 'transparent', color: palette.text, cursor: 'pointer' }}>
+                <span style={{ flex: 1, minWidth: 0 }}><strong style={{ display: 'block', fontSize: 11, fontWeight: 850, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.student.fullName}</strong><small style={{ display: 'block', color: palette.sub, fontSize: 9, marginTop: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{last?.attachmentName || last?.content || (last ? 'پیام بدون متن' : 'گفت‌وگوی جدید')}</small>{currentUserId && last && last.senderUserId !== currentUserId && <small style={{ display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 6, padding: '3px 7px', borderRadius: 6, color: !last.readAt ? '#d4777d' : '#b98221', background: !last.readAt ? 'rgba(212,119,125,.13)' : 'rgba(214,163,75,.13)', fontSize: 9, fontWeight: 850 }}>{!last.readAt ? <><Circle size={7} fill="currentColor" /> خوانده‌نشده</> : <><Clock3 size={11} /> منتظر پاسخ شما</>}</small>}{last && <small style={{ display: 'block', marginTop: 5, color: palette.sub, fontSize: 8 }}>{new Date(last.createdAt).toLocaleString('fa-IR', { dateStyle: 'short', timeStyle: 'short' })}</small>}</span>
+                <span style={{ alignSelf: 'flex-start', whiteSpace: 'nowrap', fontSize: 8, color: palette.sub }}>{c._count.messages} پیام</span>
               </button>;
             })}
           </div>
