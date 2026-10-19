@@ -46,6 +46,8 @@ export const ManageMockExams: React.FC = () => {
   const [participantGroup, setParticipantGroup] = useState<'ALL' | 'MASTER' | 'DOCTORATE'>('ALL');
   const [participantSearch, setParticipantSearch] = useState('');
   const [showSelectedOnly, setShowSelectedOnly] = useState(false);
+  const [bulkBusy, setBulkBusy] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState({ done: 0, total: 0 });
   const [levelFilter, setLevelFilter] = useState<'ALL' | 'MASTER' | 'DOCTORATE'>('ALL');
   const [yearFilter, setYearFilter] = useState('ALL');
   const [error, setError] = useState('');
@@ -296,6 +298,54 @@ export const ManageMockExams: React.FC = () => {
     }
   };
 
+  const getVisibleParticipantStudents = (exam: MockExam) => students.filter(student => {
+    const levelMatches = participantGroup === 'ALL' || student.academicLevel === participantGroup;
+    const query = participantSearch.trim().toLocaleLowerCase();
+    const searchMatches = !query || student.fullName.toLocaleLowerCase().includes(query) || student.nationalId.includes(query);
+    const selected = exam.participants.some(item => item.student.id === student.id);
+    return levelMatches && searchMatches && (!showSelectedOnly || selected);
+  });
+
+  const bulkSetParticipants = async (exam: MockExam, shouldSelect: boolean) => {
+    const targets = getVisibleParticipantStudents(exam).filter(student => {
+      const selected = exam.participants.some(item => item.student.id === student.id);
+      return shouldSelect ? !selected : selected;
+    });
+    if (!targets.length) return;
+    setBulkBusy(true);
+    setBulkProgress({ done: 0, total: targets.length });
+    setError('');
+    let done = 0;
+    const failures: string[] = [];
+    try {
+      // Small batches avoid overwhelming the API when a cohort contains hundreds of students.
+      for (let i = 0; i < targets.length; i += 8) {
+        const batch = targets.slice(i, i + 8);
+        const results = await Promise.all(batch.map(async student => {
+          try {
+            const response = await fetch(
+              `/api/admin/mock-exams/${exam.id}/participants/${student.id}`,
+              { method: shouldSelect ? 'POST' : 'DELETE', credentials: 'include' },
+            );
+            if (!response.ok) throw new Error('request failed');
+            return { id: student.id, ok: true };
+          } catch {
+            return { id: student.id, ok: false };
+          }
+        }));
+        failures.push(...results.filter(result => !result.ok).map(result => result.id));
+        done += batch.length;
+        setBulkProgress({ done, total: targets.length });
+      }
+      await load();
+      if (failures.length) {
+        setError(`عملیات گروهی کامل نشد؛ ${failures.length} هنرجو تغییر نکرد. دوباره تلاش کن.`);
+      }
+    } finally {
+      setBulkBusy(false);
+    }
+  };
+
   return (
     <div className="admin-legacy-page admin-mock-exams-page" style={{ display: 'flex', flexDirection: 'column', gap: 24, width: '100%', direction: 'rtl' }}>
       {error && <div style={errorBox}>{error}</div>}
@@ -523,6 +573,23 @@ export const ManageMockExams: React.FC = () => {
                         <strong>{exam.participants.length}</strong>
                         <span>از {students.length} هنرجو انتخاب شده</span>
                       </div>
+                    </div>
+                    <div className="mock-participant-bulk-actions">
+                      <button
+                        type="button"
+                        disabled={bulkBusy || getVisibleParticipantStudents(exam).every(student => exam.participants.some(item => item.student.id === student.id))}
+                        onClick={() => void bulkSetParticipants(exam, true)}
+                      >
+                        <Check size={15} /> انتخاب همهٔ نتایج
+                      </button>
+                      <button
+                        type="button"
+                        disabled={bulkBusy || !getVisibleParticipantStudents(exam).some(student => exam.participants.some(item => item.student.id === student.id))}
+                        onClick={() => void bulkSetParticipants(exam, false)}
+                      >
+                        پاک‌کردن انتخاب نتایج
+                      </button>
+                      {bulkBusy && <span>در حال انجام: {bulkProgress.done} از {bulkProgress.total}</span>}
                     </div>
                     <div className="mock-participant-search-row">
                       <label className="mock-participant-search">
