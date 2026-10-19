@@ -241,6 +241,7 @@ export const ManageCounseling: React.FC = () => {
         {[
           { label: 'مشاوران فعال', value: counselors.filter(item => item.isActive).length, icon: UserRound },
           { label: 'هنرجوهای دارای مشاور', value: new Set(activeAssignments.map(item => item.studentId)).size, icon: Users },
+          { label: 'هنرجوهای بدون مشاور', value: Math.max(0, students.length - new Set(activeAssignments.map(item => item.studentId)).size), icon: UserRound },
           { label: 'پرونده‌های گفتگو', value: conversations.length, icon: MessageSquare },
         ].map(item => { const Icon = item.icon; return <div key={item.label} style={{ ...cardStyle, display: 'flex', alignItems: 'center', gap: 12, padding: 15 }}><div style={{ width: 38, height: 38, display: 'grid', placeItems: 'center', borderRadius: 11, color: 'var(--admin-accent)', background: 'var(--admin-accent-soft)' }}><Icon size={18}/></div><div><div style={{ color: 'var(--admin-sub)', fontSize: 10 }}>{item.label}</div><strong style={{ display: 'block', marginTop: 4, fontSize: 20 }}>{item.value}</strong></div></div>; })}
       </div>
