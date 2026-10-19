@@ -102,7 +102,6 @@ export const ManageOfflineRequests: React.FC = () => {
         {statCards.map(card => {
           const Icon = card.icon;
           const active = statusFilter === card.key;
-          const percent = stats.total ? Math.round((card.value / stats.total) * 100) : 0;
           return (
             <button
               key={card.key}
@@ -115,8 +114,6 @@ export const ManageOfflineRequests: React.FC = () => {
                 <strong>{card.value}</strong>
                 <small>{card.label}</small>
               </span>
-              <span className="offline-stat-meter"><span style={{ width: `${percent}%` }} /></span>
-              <span className="offline-stat-percent">{percent}%</span>
             </button>
           );
         })}
