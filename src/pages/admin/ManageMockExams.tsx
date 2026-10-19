@@ -45,6 +45,8 @@ export const ManageMockExams: React.FC = () => {
   const [participantExamId, setParticipantExamId] = useState<string | null>(null);
   const [participantGroup, setParticipantGroup] = useState<'ALL' | 'MASTER' | 'DOCTORATE'>('ALL');
   const [participantSearch, setParticipantSearch] = useState('');
+  const [pendingParticipantIds, setPendingParticipantIds] = useState<string[]>([]);
+  const [participantSaving, setParticipantSaving] = useState(false);
   const [showSelectedOnly, setShowSelectedOnly] = useState(false);
   const [bulkBusy, setBulkBusy] = useState(false);
   const [bulkProgress, setBulkProgress] = useState({ done: 0, total: 0 });
@@ -279,22 +281,54 @@ export const ManageMockExams: React.FC = () => {
   const isPast = (jd: number) => compareJalali({ jy: calendarMonth.jy, jm: calendarMonth.jm, jd }, today) < 0;
   const isSelected = (jd: number) => selectedDate?.jy === calendarMonth.jy && selectedDate?.jm === calendarMonth.jm && selectedDate?.jd === jd;
 
-  const toggleParticipant = async (examId: string, studentId: string, selected: boolean) => {
+  const toggleParticipant = (studentId: string, selected: boolean) => {
+    setPendingParticipantIds(current =>
+      selected ? current.filter(id => id !== studentId) : current.includes(studentId) ? current : [...current, studentId],
+    );
+  };
+
+  const saveParticipantChanges = async (exam: MockExam) => {
+    const originalIds = new Set(exam.participants.map(item => item.student.id));
+    const pendingIds = new Set(pendingParticipantIds);
+    const additions = [...pendingIds].filter(id => !originalIds.has(id));
+    const removals = [...originalIds].filter(id => !pendingIds.has(id));
+    const changes = [
+      ...additions.map(id => ({ id, method: 'POST' as const })),
+      ...removals.map(id => ({ id, method: 'DELETE' as const })),
+    ];
+    if (!changes.length) {
+      setParticipantExamId(null);
+      return;
+    }
+    setParticipantSaving(true);
     setError('');
+    const failures: string[] = [];
     try {
-      const response = await fetch(
-        `/api/admin/mock-exams/${examId}/participants/${studentId}`,
-        {
-          method: selected ? 'DELETE' : 'POST',
-          credentials: 'include',
-        },
-      );
-      if (!response.ok) {
-        throw new Error('خطا در تغییر شرکت‌کننده');
+      for (let i = 0; i < changes.length; i += 8) {
+        const batch = changes.slice(i, i + 8);
+        const results = await Promise.all(batch.map(async change => {
+          try {
+            const response = await fetch(
+              `/api/admin/mock-exams/${exam.id}/participants/${change.id}`,
+              { method: change.method, credentials: 'include' },
+            );
+            if (!response.ok) throw new Error('request failed');
+            return { id: change.id, ok: true };
+          } catch {
+            return { id: change.id, ok: false };
+          }
+        }));
+        failures.push(...results.filter(result => !result.ok).map(result => result.id));
       }
       await load();
-    } catch {
-      setError('تغییر شرکت‌کننده انجام نشد.');
+      if (failures.length) {
+        setPendingParticipantIds([...pendingIds].filter(id => !failures.includes(id)));
+        setError(`ذخیره کامل نشد؛ تغییرات ${failures.length} هنرجو ثبت نشد. وضعیت را بررسی و دوباره ذخیره کن.`);
+      } else {
+        setParticipantExamId(null);
+      }
+    } finally {
+      setParticipantSaving(false);
     }
   };
 
@@ -302,48 +336,18 @@ export const ManageMockExams: React.FC = () => {
     const levelMatches = participantGroup === 'ALL' || student.academicLevel === participantGroup;
     const query = participantSearch.trim().toLocaleLowerCase();
     const searchMatches = !query || student.fullName.toLocaleLowerCase().includes(query) || student.nationalId.includes(query);
-    const selected = exam.participants.some(item => item.student.id === student.id);
+    const selected = pendingParticipantIds.includes(student.id);
     return levelMatches && searchMatches && (!showSelectedOnly || selected);
   });
 
-  const bulkSetParticipants = async (exam: MockExam, shouldSelect: boolean) => {
-    const targets = getVisibleParticipantStudents(exam).filter(student => {
-      const selected = exam.participants.some(item => item.student.id === student.id);
-      return shouldSelect ? !selected : selected;
-    });
+  const bulkSetParticipants = (exam: MockExam, shouldSelect: boolean) => {
+    const targets = getVisibleParticipantStudents(exam).map(student => student.id);
     if (!targets.length) return;
-    setBulkBusy(true);
-    setBulkProgress({ done: 0, total: targets.length });
-    setError('');
-    let done = 0;
-    const failures: string[] = [];
-    try {
-      // Small batches avoid overwhelming the API when a cohort contains hundreds of students.
-      for (let i = 0; i < targets.length; i += 8) {
-        const batch = targets.slice(i, i + 8);
-        const results = await Promise.all(batch.map(async student => {
-          try {
-            const response = await fetch(
-              `/api/admin/mock-exams/${exam.id}/participants/${student.id}`,
-              { method: shouldSelect ? 'POST' : 'DELETE', credentials: 'include' },
-            );
-            if (!response.ok) throw new Error('request failed');
-            return { id: student.id, ok: true };
-          } catch {
-            return { id: student.id, ok: false };
-          }
-        }));
-        failures.push(...results.filter(result => !result.ok).map(result => result.id));
-        done += batch.length;
-        setBulkProgress({ done, total: targets.length });
-      }
-      await load();
-      if (failures.length) {
-        setError(`عملیات گروهی کامل نشد؛ ${failures.length} هنرجو تغییر نکرد. دوباره تلاش کن.`);
-      }
-    } finally {
-      setBulkBusy(false);
-    }
+    setPendingParticipantIds(current => {
+      if (shouldSelect) return [...new Set([...current, ...targets])];
+      const targetSet = new Set(targets);
+      return current.filter(id => !targetSet.has(id));
+    });
   };
 
   return (
@@ -535,6 +539,7 @@ export const ManageMockExams: React.FC = () => {
                           setParticipantGroup(/دکتری|دکترا/i.test(exam.level) ? 'DOCTORATE' : /ارشد/i.test(exam.level) ? 'MASTER' : 'ALL');
                           setParticipantSearch('');
                           setShowSelectedOnly(false);
+                          setPendingParticipantIds(exam.participants.map(item => item.student.id));
                         }
                       }} style={secondaryButton}>
                       <Users size={14} /> شرکت‌کنندگان
@@ -577,19 +582,19 @@ export const ManageMockExams: React.FC = () => {
                     <div className="mock-participant-bulk-actions">
                       <button
                         type="button"
-                        disabled={bulkBusy || getVisibleParticipantStudents(exam).every(student => exam.participants.some(item => item.student.id === student.id))}
+                        disabled={participantSaving || getVisibleParticipantStudents(exam).every(student => pendingParticipantIds.includes(student.id))}
                         onClick={() => void bulkSetParticipants(exam, true)}
                       >
                         <Check size={15} /> انتخاب همهٔ نتایج
                       </button>
                       <button
                         type="button"
-                        disabled={bulkBusy || !getVisibleParticipantStudents(exam).some(student => exam.participants.some(item => item.student.id === student.id))}
+                        disabled={participantSaving || !getVisibleParticipantStudents(exam).some(student => pendingParticipantIds.includes(student.id))}
                         onClick={() => void bulkSetParticipants(exam, false)}
                       >
                         پاک‌کردن انتخاب نتایج
                       </button>
-                      {bulkBusy && <span>در حال انجام: {bulkProgress.done} از {bulkProgress.total}</span>}
+                      <span>تغییرات ذخیره‌نشده: {pendingParticipantIds.filter(id => !exam.participants.some(item => item.student.id === id)).length + exam.participants.filter(item => !pendingParticipantIds.includes(item.student.id)).length}</span>
                     </div>
                     <div className="mock-participant-search-row">
                       <label className="mock-participant-search">
@@ -649,7 +654,7 @@ export const ManageMockExams: React.FC = () => {
                                       className={selected ? 'mock-participant-row-toggle is-selected' : 'mock-participant-row-toggle'}
                                       aria-label={selected ? `حذف ${student.fullName} از آزمون` : `افزودن ${student.fullName} به آزمون`}
                                       aria-pressed={selected}
-                                      onClick={() => void toggleParticipant(exam.id, student.id, selected)}
+                                      onClick={() => toggleParticipant(student.id, selected)}
                                     >
                                       {selected && <Check size={14} />}
                                     </button>
@@ -669,6 +674,15 @@ export const ManageMockExams: React.FC = () => {
                           )}
                         </tbody>
                       </table>
+                    <div className="mock-participant-savebar">
+                      <button type="button" className="mock-participant-cancel" disabled={participantSaving} onClick={() => {
+                        setPendingParticipantIds(exam.participants.map(item => item.student.id));
+                        setParticipantExamId(null);
+                      }}>انصراف</button>
+                      <button type="button" className="mock-participant-save" disabled={participantSaving} onClick={() => void saveParticipantChanges(exam)}>
+                        {participantSaving ? 'در حال ذخیره...' : 'ذخیره تغییرات'}
+                      </button>
+                    </div>
                     </div>
                   </div>
                 )}
