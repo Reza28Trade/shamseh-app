@@ -648,7 +648,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                     <div key={course.id} style={{ backgroundColor: innerCardBg, border: `1px solid ${borderColor}`, borderRadius: '20px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                         <h3 style={{ fontSize: '15px', fontWeight: 900, color: textColor, margin: 0 }}>{course.title}</h3>
-                        <span style={{ fontSize: '10px', backgroundColor: 'rgba(109, 0, 26, 0.2)', color: '#ff3366', padding: '3px 8px', borderRadius: '6px', fontWeight: 800 }}>{course.level}</span>
+                        <span style={{ fontSize: '10px', backgroundColor: 'rgba(109, 0, 26, 0.2)', color: '#ff3366', padding: '3px 8px', borderRadius: '6px', fontWeight: 800 }}>{course.level === 'MASTER' || course.level === 'Master' ? 'ارشد' : course.level === 'DOCTORATE' || course.level === 'Doctorate' ? 'دکتری' : course.level}</span>
                       </div>
 
                       <p style={{ fontSize: '12px', color: subText, margin: 0 }}>استاد مدرس: <strong>{course.professor}</strong></p>
