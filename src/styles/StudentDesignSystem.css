@@ -1,0 +1,110 @@
+/* Student portal alignment with the approved Shamseh admin design system.
+   Scoped to the student dashboard; business logic and component structure remain unchanged. */
+.student-dashboard {
+  font-family: Vazirmatn, IRANSansX, Tahoma, system-ui, sans-serif !important;
+  background: var(--admin-bg) !important;
+  color: var(--admin-text) !important;
+}
+.student-dashboard,
+.student-dashboard * { box-sizing: border-box; }
+.student-dashboard .student-dashboard-shell {
+  max-width: 1480px !important;
+  margin: 0 auto !important;
+}
+.student-dashboard .student-dashboard-header {
+  background: var(--admin-card) !important;
+  border: 1px solid var(--admin-border) !important;
+  border-radius: 15px !important;
+  box-shadow: var(--admin-shadow) !important;
+  backdrop-filter: none !important;
+}
+.student-dashboard .student-dashboard-nav {
+  background: var(--admin-card) !important;
+  border: 1px solid var(--admin-border) !important;
+  border-radius: 15px !important;
+  box-shadow: var(--admin-shadow) !important;
+}
+.student-dashboard .student-dashboard-nav button {
+  min-height: 38px !important;
+  border-radius: 9px !important;
+  font-family: inherit !important;
+  font-size: 11px !important;
+  font-weight: 750 !important;
+  transition: background-color .16s ease, border-color .16s ease, color .16s ease !important;
+}
+.student-dashboard .student-dashboard-main {
+  gap: 14px !important;
+}
+.student-dashboard .student-dashboard-main > div {
+  background: var(--admin-card) !important;
+  background-image: none !important;
+  border: 1px solid var(--admin-border) !important;
+  border-top: 1px solid var(--admin-border) !important;
+  border-radius: 15px !important;
+  box-shadow: var(--admin-shadow) !important;
+  color: var(--admin-text) !important;
+  padding: 18px !important;
+}
+.student-dashboard .student-dashboard-main h1,
+.student-dashboard .student-dashboard-main h2,
+.student-dashboard .student-dashboard-main h3,
+.student-dashboard .student-dashboard-main h4 {
+  color: var(--admin-text) !important;
+  font-family: inherit !important;
+  letter-spacing: 0 !important;
+}
+.student-dashboard .student-dashboard-main h2 { font-size: 15px !important; line-height: 1.7 !important; }
+.student-dashboard .student-dashboard-main h3 { font-size: 13px !important; line-height: 1.7 !important; }
+.student-dashboard .student-dashboard-main button,
+.student-dashboard .student-dashboard-main input,
+.student-dashboard .student-dashboard-main select,
+.student-dashboard .student-dashboard-main textarea {
+  font-family: inherit !important;
+}
+.student-dashboard .student-dashboard-main button:not([aria-label]) {
+  border-radius: 9px;
+}
+.student-dashboard .student-dashboard-main input,
+.student-dashboard .student-dashboard-main select,
+.student-dashboard .student-dashboard-main textarea {
+  border-color: var(--admin-border) !important;
+}
+.student-dashboard .student-dashboard-main :is(.student-file-row, .student-file-action) {
+  border-color: var(--admin-border) !important;
+}
+.student-dashboard .student-dashboard-main .student-file-row {
+  background: var(--admin-inner) !important;
+  border-radius: 11px !important;
+}
+.student-dashboard .student-dashboard-main .student-file-action {
+  background: var(--admin-card) !important;
+  color: var(--admin-accent) !important;
+  border-radius: 9px !important;
+}
+.student-dashboard .student-dashboard-main a {
+  overflow-wrap: anywhere;
+}
+.student-dashboard :is(.student-home-panel, .student-home-stat, .student-home-exam-inner) {
+  border-color: var(--admin-border) !important;
+  box-shadow: none !important;
+}
+.student-dashboard .student-course-cover {
+  background: linear-gradient(135deg, var(--admin-accent-soft), var(--admin-inner)) !important;
+}
+.student-dashboard .student-sidebar-logo-copy div:first-child {
+  color: var(--admin-text) !important;
+}
+@media (max-width: 900px) {
+  .student-dashboard .student-dashboard-shell { padding-right: 0 !important; }
+  .student-dashboard .student-dashboard-nav {
+    background: var(--admin-card) !important;
+    border: 1px solid var(--admin-border) !important;
+  }
+}
+@media (max-width: 620px) {
+  .student-dashboard .student-dashboard-main > div { padding: 14px !important; }
+  .student-dashboard .student-dashboard-nav { border-radius: 12px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .student-dashboard * { transition: none !important; scroll-behavior: auto !important; }
+}
