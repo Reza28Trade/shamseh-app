@@ -5,6 +5,7 @@ import { FileViewer } from '../../components/FileViewer';
 import { StudentCounselingChat } from './StudentCounselingChat';
 import { StudentManagementContact } from './StudentManagementContact';
 import { StudentRegistrationFinance } from './StudentRegistrationFinance';
+import { StudentNextInstallmentSummary } from './StudentNextInstallmentSummary';
 import '../../styles/StudentDesignSystem.css';
 import { BookOpen, LogOut, Video, FileText, Send, Sun, Moon, CheckCircle, Bell, Volume2, Presentation, Link as LinkIcon, AlertCircle, CalendarClock, ClipboardList, ExternalLink, Home, Wallet, MessageSquareText } from 'lucide-react';
 
@@ -610,11 +611,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'10px'}}><div><div style={{color:accent,fontSize:'9px',fontWeight:900,marginBottom:'3px'}}>آخرین خبرها</div><h3 style={{color:textColor,fontSize:'17px',fontWeight:900,margin:0}}>آخرین اطلاعیه‌ها</h3></div><button type="button" onClick={handleOpenNotificationTab} style={{border:'none',background:'transparent',color:accent,fontSize:'10px',fontWeight:900,cursor:'pointer'}}>مشاهده همه</button></div>
                       {studentNotifications.length===0?<div style={{color:subText,fontSize:'11px',padding:'18px 4px',textAlign:'center'}}>اطلاعیه جدیدی ندارید.</div>:<div style={{display:'flex',flexDirection:'column',gap:'8px'}}>{studentNotifications.slice(0,3).map(n=><button key={n.id} type="button" onClick={handleOpenNotificationTab} style={{textAlign:'right',border:`1px solid ${borderColor}`,backgroundColor:innerCardBg,borderRadius:'11px',padding:'10px',cursor:'pointer'}}><div style={{color:textColor,fontSize:'10px',fontWeight:900}}>{n.title}</div><div style={{color:subText,fontSize:'8px',marginTop:'4px'}}>{new Date(n.createdAt).toLocaleDateString('fa-IR')}</div></button>)}</div>}
                     </div>
-                    <div style={{backgroundColor:cardBg,border:`1px solid ${borderColor}`,padding:'18px'}}>
-                      <div style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'10px'}}><CalendarClock size={16} color={accent}/><div><div style={{color:accent,fontSize:'9px',fontWeight:900}}>پشتیبانی و مشاوره</div><h3 style={{color:textColor,fontSize:'17px',fontWeight:900,margin:0}}>مشاوره</h3></div></div>
-                      <div style={{color:subText,fontSize:'10px',lineHeight:1.8}}>پیام‌های خود را برای مشاور ارسال کنید و پاسخ را در گفت‌وگوی آنلاین ببینید.</div>
-                      <button type="button" onClick={() => setActiveTab('counseling')} style={{marginTop:'10px',border:'none',background:'transparent',color:accent,padding:0,fontSize:'10px',fontWeight:900,cursor:'pointer'}}>ورود به مشاوره ←</button>
-                    </div>
+                    <StudentNextInstallmentSummary onOpenFinance={() => setActiveTab('finance')} />
                   </div>
                 </div>
 
