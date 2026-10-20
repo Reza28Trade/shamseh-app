@@ -556,14 +556,6 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
       `}</style>
 
       <div className="student-dashboard-shell">
-        <div className="student-dashboard-header" style={{background:isDark?'linear-gradient(135deg,rgba(43,53,54,.96),rgba(30,38,39,.94))':'linear-gradient(135deg,rgba(255,255,255,.97),rgba(239,247,246,.95))',border:`1px solid ${isDark?'rgba(78,145,151,.34)':'#d6e8e6'}`,display:'flex',justifyContent:'space-between',alignItems:'center',gap:'16px',backdropFilter:'blur(18px)'}}>
-          <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
-            <div style={{width:'42px',height:'42px',borderRadius:'13px',backgroundColor:accentSoft,display:'grid',placeItems:'center',flexShrink:0}}><ShamsehMark size={30}/></div>
-            <div><div style={{fontSize:'9px',fontWeight:900,color:accent,marginBottom:'2px'}}>سامانه آموزشی شمسه</div><h1 style={{fontSize:'18px',fontWeight:900,color:textColor,margin:0}}>پنل دانشجو</h1><p style={{fontSize:'10px',color:subText,margin:'3px 0 0'}}>خوش آمدید، <strong style={{color:accent}}>{student.fullName}</strong></p></div>
-          </div>
-          
-        </div>
-
         <div className="student-dashboard-layout">
           <div className="student-dashboard-nav">
             <div className="student-sidebar-brand"><div className="student-sidebar-logo"><div className="student-sidebar-logo-mark"><ShamsehMark size={46}/></div><div className="student-sidebar-logo-copy"><div>آکادمی شمسه</div><span>سامانه آموزشی دانشجو</span></div></div><button className="student-theme-toggle" onClick={toggleTheme} title={isDark ? 'فعال‌سازی تم روشن' : 'فعال‌سازی تم تیره'} aria-label="تغییر تم">{isDark ? <Sun size={17}/> : <Moon size={17}/>}</button></div>
