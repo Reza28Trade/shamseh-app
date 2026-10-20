@@ -582,7 +582,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                     <p style={{color:subText,fontSize:'11px',lineHeight:1.85,margin:0,maxWidth:'540px'}}>دوره‌ها، آزمون‌ها، اطلاعیه‌ها و فایل‌های آموزشی شما در یک نمای ساده و حرفه‌ای.</p>
                     <div style={{display:'flex',gap:'8px',marginTop:'14px',flexWrap:'wrap'}}><button type="button" onClick={() => setActiveTab('courses')} style={{border:'none',backgroundColor:accent,color:'#fff',borderRadius:'10px',padding:'9px 13px',fontSize:'10px',fontWeight:900,cursor:'pointer'}}>ادامه دوره‌های من</button><button type="button" onClick={() => setActiveTab('mockExams')} style={{border:`1px solid ${borderColor}`,backgroundColor:cardBg,color:textColor,borderRadius:'10px',padding:'8px 12px',fontSize:'10px',fontWeight:800,cursor:'pointer'}}>مشاهده آزمون‌ها</button></div>
                   </div>
-                  <div className="student-home-hero-art"><div style={{position:'absolute',left:'54px',top:'54px'}}><ShamsehMark size={108} opacity={.26}/></div></div>
+                  <div className="student-home-hero-art" aria-hidden="true"><picture className="student-home-cover-picture"><source media="(max-width: 620px)" srcSet="/images/student-journey-cover-mobile.svg"/><img src="/images/student-journey-cover-desktop.svg" alt="" loading="eager" decoding="async"/></picture></div>
                 </div>
 
                 <div className="student-dashboard-stat-grid">
