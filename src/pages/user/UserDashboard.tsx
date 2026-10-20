@@ -668,9 +668,9 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                         </button>
                       </div>
                       {expandedCourseId === course.id && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: `1px solid ${borderColor}`, paddingTop: '12px' }}>
 
                       <p style={{ fontSize: '12px', color: subText, margin: 0 }}>استاد مدرس: <strong>{course.professor}</strong></p>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: `1px solid ${borderColor}`, paddingTop: '12px' }}>
                                             {sessions.length > 0 && (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
                           <span style={{ fontSize: '11px', color: subText, fontWeight: 700 }}>
@@ -824,8 +824,8 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                                 </span>
                               </div>
                             ))}
-                          </div>
                         </div>
+                          </div>
                       )}
                       </div>
                     </div>
