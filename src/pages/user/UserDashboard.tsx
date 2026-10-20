@@ -503,6 +503,13 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         .student-home-hero{position:relative;overflow:hidden;min-height:184px}
         .student-home-hero-content{position:relative;z-index:2;max-width:68%}
         .student-home-hero-art{position:absolute;left:-20px;bottom:-52px;width:248px;height:248px;border-radius:50%;background:radial-gradient(circle at center,rgba(91,191,198,.18),transparent 64%);pointer-events:none}
+        .student-home-cover-picture{position:absolute;inset:0;display:block;width:100%;height:100%;overflow:hidden;border-radius:inherit}
+        .student-home-cover-picture img{display:block;width:100%;height:100%;object-fit:cover;object-position:center;opacity:.88}
+        .student-home-hero-art{left:0!important;right:0!important;top:0!important;bottom:0!important;width:100%!important;height:100%!important;border-radius:inherit!important;background:none!important;opacity:1!important;overflow:hidden!important}
+        .student-home-hero-art:before,.student-home-hero-art:after{display:none!important}
+        .student-home-hero-content{max-width:68%;}
+        @media(max-width:620px){.student-home-cover-picture img{object-position:center}.student-home-hero-content{max-width:100%!important;padding-inline:0}.student-home-hero-art{opacity:.5!important}}
+
         .student-home-hero-art:before,.student-home-hero-art:after{content:"";position:absolute;inset:24px;border:1px solid rgba(91,191,198,.16);border-radius:50%;transform:rotate(18deg)}
         .student-home-hero-art:after{inset:60px;transform:rotate(45deg);border-radius:22px}
         .student-home-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(56,131,138,.025) 58%,rgba(56,131,138,.07) 100%);pointer-events:none}
