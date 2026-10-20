@@ -5,6 +5,7 @@ import { FileViewer } from '../../components/FileViewer';
 import { StudentCounselingChat } from './StudentCounselingChat';
 import { StudentManagementContact } from './StudentManagementContact';
 import { StudentRegistrationFinance } from './StudentRegistrationFinance';
+import '../../styles/StudentDesignSystem.css';
 import { BookOpen, LogOut, Video, FileText, Send, Sun, Moon, CheckCircle, Bell, Volume2, Presentation, Link as LinkIcon, AlertCircle, CalendarClock, ClipboardList, ExternalLink, Home, Wallet, MessageSquareText } from 'lucide-react';
 
 interface BackendSession {
@@ -436,14 +437,15 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   };
 
   const isDark = theme === 'dark';
-  const bgColors = isDark ? '#1a1c1d' : '#f5f7f6';
-  const cardBg = isDark ? '#222526' : '#ffffff';
-  const textColor = isDark ? '#f1f5f4' : '#172022';
-  const subText = isDark ? '#aab5b4' : '#697675';
-  const borderColor = isDark ? '#343a3b' : '#e2e8e7';
-  const innerCardBg = isDark ? '#282c2d' : '#f8faf9';
-  const accent = isDark ? '#3b8faa' : '#3f8f8a';
-  const accentSoft = isDark ? 'rgba(56, 131, 138, 0.16)' : '#e8f2f2';
+  // Keep the student portal on the same palette as the approved admin design system.
+  const bgColors = isDark ? '#262424' : '#EEE5DA';
+  const cardBg = isDark ? '#1D1B1B' : '#F7F1E8';
+  const textColor = isDark ? '#EEE5DA' : '#262424';
+  const subText = isDark ? '#B9B0A6' : '#655D55';
+  const borderColor = isDark ? 'rgba(238,229,218,.13)' : 'rgba(38,36,36,.14)';
+  const innerCardBg = isDark ? '#302D2D' : '#E5D9CB';
+  const accent = isDark ? '#48D1CC' : '#008080';
+  const accentSoft = isDark ? 'rgba(72,209,204,.13)' : 'rgba(0,128,128,.10)';
 
   return (
     <div
@@ -461,7 +463,16 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         ['--sd-card' as any]:cardBg,
         ['--sd-border' as any]:borderColor,
         ['--sd-inner' as any]:innerCardBg,
-        ['--sd-accent-soft' as any]:accentSoft
+        ['--sd-accent-soft' as any]:accentSoft,
+        ['--admin-bg' as any]:bgColors,
+        ['--admin-card' as any]:cardBg,
+        ['--admin-inner' as any]:innerCardBg,
+        ['--admin-text' as any]:textColor,
+        ['--admin-sub' as any]:subText,
+        ['--admin-border' as any]:borderColor,
+        ['--admin-accent' as any]:accent,
+        ['--admin-accent-soft' as any]:accentSoft,
+        ['--admin-shadow' as any]:(isDark ? '0 16px 38px rgba(0,0,0,.22)' : '0 10px 28px rgba(38,36,36,.07)')
       }}
     >
       <style>{`
