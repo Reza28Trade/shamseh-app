@@ -450,6 +450,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   return (
     <div
       className="student-dashboard"
+      data-theme={isDark ? "dark" : "light"}
       style={{
         minHeight:'100vh',
         backgroundColor:bgColors,
@@ -553,20 +554,20 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
             <div style={{width:'42px',height:'42px',borderRadius:'13px',backgroundColor:accentSoft,display:'grid',placeItems:'center',flexShrink:0}}><ShamsehMark size={30}/></div>
             <div><div style={{fontSize:'9px',fontWeight:900,color:accent,marginBottom:'2px'}}>سامانه آموزشی شمسه</div><h1 style={{fontSize:'18px',fontWeight:900,color:textColor,margin:0}}>پنل دانشجو</h1><p style={{fontSize:'10px',color:subText,margin:'3px 0 0'}}>خوش آمدید، <strong style={{color:accent}}>{student.fullName}</strong></p></div>
           </div>
-          <button aria-label={isDark?'فعال‌کردن حالت روز':'فعال‌کردن حالت شب'} onClick={toggleTheme} style={{width:'40px',height:'40px',backgroundColor:isDark?'rgba(255,255,255,.05)':'#fff',border:`1px solid ${borderColor}`,color:textColor,borderRadius:'12px',cursor:'pointer',display:'grid',placeItems:'center',flexShrink:0}}>{isDark?<Sun size={17} color="#fbbf24"/>:<Moon size={17} color="#64748b"/>}</button>
+          
         </div>
 
         <div className="student-dashboard-layout">
           <div className="student-dashboard-nav">
-            <div className="student-sidebar-brand"><div className="student-sidebar-logo"><div style={{width:'42px',height:'42px',flexShrink:0}}><ShamsehMark size={42}/></div><div className="student-sidebar-logo-copy"><div style={{color:textColor,fontSize:'13px',fontWeight:900}}>شمسه</div><div style={{color:subText,fontSize:'8px',marginTop:'3px'}}>سامانه آموزشی دانشجو</div></div></div></div>
-            <button onClick={() => setActiveTab('home')} style={{border:`1px solid ${borderColor}`,backgroundColor:activeTab==='home'?accent:cardBg,color:activeTab==='home'?'#fff':textColor,display:'flex',alignItems:'center',gap:'7px'}}><Home size={14}/> نمای کلی</button>
-            <button onClick={() => setActiveTab('courses')} style={{border:`1px solid ${borderColor}`,backgroundColor:activeTab==='courses'?accent:cardBg,color:activeTab==='courses'?'#fff':textColor,display:'flex',alignItems:'center',gap:'7px'}}><BookOpen size={14}/> دوره‌های من</button>
-            <button onClick={() => setActiveTab('mockExams')} style={{border:`1px solid ${borderColor}`,backgroundColor:activeTab==='mockExams'?accent:cardBg,color:activeTab==='mockExams'?'#fff':textColor,display:'flex',alignItems:'center',gap:'7px'}}><ClipboardList size={14}/> آزمون‌های من</button>
-            <button onClick={handleOpenNotificationTab} style={{border:`1px solid ${borderColor}`,backgroundColor:activeTab==='notifications'?accent:cardBg,color:activeTab==='notifications'?'#fff':textColor,display:'flex',alignItems:'center',gap:'7px'}}><Bell size={14}/> اطلاعیه‌ها {unreadCount>0&&<span style={{marginRight:'auto',backgroundColor:'#ef5d68',color:'#fff',fontSize:'8px',padding:'2px 6px',borderRadius:'999px',fontWeight:900}}>{unreadCount}</span>}</button>
-            <button onClick={() => setActiveTab('finance')} style={{border:`1px solid ${borderColor}`,backgroundColor:activeTab==='finance'?accent:cardBg,color:activeTab==='finance'?'#fff':textColor,display:'flex',alignItems:'center',gap:'7px'}}><Wallet size={14}/> وضعیت مالی من</button>
-            <button onClick={() => setActiveTab('counseling')} style={{border:`1px solid ${borderColor}`,backgroundColor:activeTab==='counseling'?accent:cardBg,color:activeTab==='counseling'?'#fff':textColor,display:'flex',alignItems:'center',gap:'7px'}}><CalendarClock size={14}/> مشاوره</button>
-            <button onClick={() => setActiveTab('messages')} style={{border:`1px solid ${borderColor}`,backgroundColor:activeTab==='messages'?accent:cardBg,color:activeTab==='messages'?'#fff':textColor,display:'flex',alignItems:'center',gap:'7px'}}><Send size={14}/> پشتیبانی</button>
-            <button onClick={() => setActiveTab('managementContact')} style={{border:`1px solid ${borderColor}`,backgroundColor:activeTab==='managementContact'?accent:cardBg,color:activeTab==='managementContact'?'#fff':textColor,display:'flex',alignItems:'center',gap:'7px'}}><MessageSquareText size={14}/> ارتباط با مدیریت</button>
+            <div className="student-sidebar-brand"><div className="student-sidebar-logo"><div className="student-sidebar-logo-mark"><ShamsehMark size={46}/></div><div className="student-sidebar-logo-copy"><div>آکادمی شمسه</div><span>سامانه آموزشی دانشجو</span></div></div><button className="student-theme-toggle" onClick={toggleTheme} title={isDark ? 'فعال‌سازی تم روشن' : 'فعال‌سازی تم تیره'} aria-label="تغییر تم">{isDark ? <Sun size={17}/> : <Moon size={17}/>}</button></div>
+            <button className={activeTab==='home' ? 'active' : ''} aria-current={activeTab==='home' ? 'page' : undefined} onClick={() => setActiveTab('home')} style={{display:'flex',alignItems:'center',gap:'7px'}}><Home size={14}/> نمای کلی</button>
+            <button className={activeTab==='courses' ? 'active' : ''} aria-current={activeTab==='courses' ? 'page' : undefined} onClick={() => setActiveTab('courses')} style={{display:'flex',alignItems:'center',gap:'7px'}}><BookOpen size={14}/> دوره‌های من</button>
+            <button className={activeTab==='mockExams' ? 'active' : ''} aria-current={activeTab==='mockExams' ? 'page' : undefined} onClick={() => setActiveTab('mockExams')} style={{display:'flex',alignItems:'center',gap:'7px'}}><ClipboardList size={14}/> آزمون‌های من</button>
+            <button className={activeTab==='notifications' ? 'active' : ''} aria-current={activeTab==='notifications' ? 'page' : undefined} onClick={handleOpenNotificationTab} style={{display:'flex',alignItems:'center',gap:'7px'}}><Bell size={14}/> اطلاعیه‌ها {unreadCount>0&&<span style={{marginRight:'auto',backgroundColor:'#ef5d68',color:'#fff',fontSize:'8px',padding:'2px 6px',borderRadius:'999px',fontWeight:900}}>{unreadCount}</span>}</button>
+            <button className={activeTab==='finance' ? 'active' : ''} aria-current={activeTab==='finance' ? 'page' : undefined} onClick={() => setActiveTab('finance')} style={{display:'flex',alignItems:'center',gap:'7px'}}><Wallet size={14}/> وضعیت مالی من</button>
+            <button className={activeTab==='counseling' ? 'active' : ''} aria-current={activeTab==='counseling' ? 'page' : undefined} onClick={() => setActiveTab('counseling')} style={{display:'flex',alignItems:'center',gap:'7px'}}><CalendarClock size={14}/> مشاوره</button>
+            <button className={activeTab==='messages' ? 'active' : ''} aria-current={activeTab==='messages' ? 'page' : undefined} onClick={() => setActiveTab('messages')} style={{display:'flex',alignItems:'center',gap:'7px'}}><Send size={14}/> پشتیبانی</button>
+            <button className={activeTab==='managementContact' ? 'active' : ''} aria-current={activeTab==='managementContact' ? 'page' : undefined} onClick={() => setActiveTab('managementContact')} style={{display:'flex',alignItems:'center',gap:'7px'}}><MessageSquareText size={14}/> ارتباط با مدیریت</button>
             <div className="student-sidebar-spacer"/>
             <button className="student-sidebar-logout" onClick={onLogout} style={{display:'flex',alignItems:'center',gap:'7px',border:`1px solid ${isDark?'rgba(170,92,100,.45)':'#ead9d9'}`,color:isDark?'#dba2a7':'#b75d5d',background:isDark?'rgba(130,45,52,.08)':'#fffafa'}}><LogOut size={14}/> خروج از حساب</button>
           </div>
