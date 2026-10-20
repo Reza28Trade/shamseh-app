@@ -106,7 +106,6 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   const [editingOfflineRequestId, setEditingOfflineRequestId] = useState<string | null>(null);
   const [editingOfflineSessionId, setEditingOfflineSessionId] = useState<string>('');
   const [viewerFile, setViewerFile] = useState<BackendFile | null>(null);
-  const [expandedCourseId, setExpandedCourseId] = useState<string | null>(null);
   useEffect(() => {
     let cancelled = false;
 
@@ -646,29 +645,11 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                   const remainingOffline = Math.max(0, 3 - usedOffline);
 
                   return (
-                    <div key={course.id} style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '14px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px', minWidth: 0, boxShadow: '0 8px 22px rgba(0,0,0,.05)' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
-                        <div style={{ width: '48px', height: '48px', flexShrink: 0, display: 'grid', placeItems: 'center', borderRadius: '12px', background: accentSoft, color: accent }}>
-                          <BookOpen size={22} />
-                        </div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <h3 style={{ fontSize: '14px', fontWeight: 900, color: textColor, margin: '0 0 6px', lineHeight: 1.6 }}>{course.title}</h3>
-                          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
-                            <span style={{ fontSize: '10px', color: subText }}>{course.professor || 'مدرس مشخص نشده'}</span>
-                            {course.level && <span style={{ fontSize: '9px', backgroundColor: accentSoft, color: accent, padding: '3px 7px', borderRadius: '6px', fontWeight: 800 }}>{course.level}</span>}
-                          </div>
-                        </div>
+                    <div key={course.id} style={{ backgroundColor: innerCardBg, border: `1px solid ${borderColor}`, borderRadius: '20px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <h3 style={{ fontSize: '15px', fontWeight: 900, color: textColor, margin: 0 }}>{course.title}</h3>
+                        <span style={{ fontSize: '10px', backgroundColor: 'rgba(109, 0, 26, 0.2)', color: '#ff3366', padding: '3px 8px', borderRadius: '6px', fontWeight: 800 }}>{course.level}</span>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' }}>
-                        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', color: subText, fontSize: '10px' }}>
-                          <span>{sessions.length} جلسه</span><span>{files.length} فایل آموزشی</span>
-                        </div>
-                        <button type="button" aria-expanded={expandedCourseId === course.id} onClick={() => setExpandedCourseId(current => current === course.id ? null : course.id)} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '7px', border: `1px solid ${borderColor}`, background: expandedCourseId === course.id ? accentSoft : innerCardBg, color: expandedCourseId === course.id ? accent : textColor, borderRadius: '9px', padding: '8px 11px', fontSize: '10px', fontWeight: 850, cursor: 'pointer' }}>
-                          {expandedCourseId === course.id ? 'بستن جزئیات' : 'ورود به محتوای دوره'} <ExternalLink size={13} />
-                        </button>
-                      </div>
-                      {expandedCourseId === course.id && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: `1px solid ${borderColor}`, paddingTop: '12px' }}>
 
                       <p style={{ fontSize: '12px', color: subText, margin: 0 }}>استاد مدرس: <strong>{course.professor}</strong></p>
                                             {sessions.length > 0 && (
@@ -824,10 +805,8 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                                 </span>
                               </div>
                             ))}
-                        </div>
                           </div>
-                      )}
-                      </div>
+                        </div>
                       )}
                     </div>
                   );
