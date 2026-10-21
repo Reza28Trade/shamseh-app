@@ -25,8 +25,8 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const colors = isDark
-    ? { bg: '#101416', card: '#191f21', inner: '#202729', text: '#f1f4f3', sub: '#a2aeae', border: '#303a3c', accent: '#70b9b5', accentSolid: '#398a90', soft: 'rgba(57,138,144,.18)' }
-    : { bg: '#f0f5f4', card: '#ffffff', inner: '#e7efed', text: '#202a2a', sub: '#667675', border: '#d8e3e0', accent: '#398a90', accentSolid: '#398a90', soft: '#e0f0ee' };
+    ? { bg: '#262424', card: '#1D1B1B', inner: '#302D2D', text: '#EEE5DA', sub: '#B9B0A6', border: 'rgba(238,229,218,.12)', accent: '#48D1CC', accentSolid: '#008C88', soft: 'rgba(72,209,204,.12)' }
+    : { bg: '#EEE5DA', card: '#F7F1E8', inner: '#E5D9CB', text: '#262424', sub: '#655D55', border: 'rgba(38,36,36,.12)', accent: '#008080', accentSolid: '#008080', soft: 'rgba(0,128,128,.10)' };
 
   async function loadConversation() {
     const requestId = ++loadRequestId.current;
@@ -162,7 +162,7 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
   }
 
   return (
-    <section style={{ direction: 'rtl', color: colors.text, fontFamily: 'Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif', background: colors.card, border: `1px solid ${colors.border}`, borderRadius: 17, overflow: 'hidden', boxShadow: isDark ? '0 16px 38px rgba(0,0,0,.20)' : '0 12px 32px rgba(32,62,58,.07)' }}>
+    <section style={{ direction: 'rtl', color: colors.text, fontFamily: 'Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif', background: colors.card, border: `1px solid ${colors.border}`, borderRadius: 15, overflow: 'hidden', boxShadow: 'none' }}>
       <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', padding: '18px 20px', borderBottom: `1px solid ${colors.border}`, background: colors.card }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <span style={{ width: 43, height: 43, display: 'grid', placeItems: 'center', borderRadius: 13, background: colors.soft, color: colors.accent }}><MessageCircle size={21} /></span>
@@ -176,7 +176,7 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
         <div style={{ margin: 18, padding: '42px 20px', textAlign: 'center', borderRadius: 14, background: colors.inner, border: `1px dashed ${colors.border}` }}><MessageCircle size={34} color={colors.accent} style={{ marginBottom: 10 }} /><p style={{ margin: '0 0 7px', fontSize: 13, fontWeight: 850 }}>هنوز مشاوری برای شما تعیین نشده است.</p><p style={{ margin: 0, color: colors.sub, fontSize: 11, lineHeight: 1.9 }}>پس از تخصیص مشاور توسط مدیریت، امکان گفت‌وگوی آنلاین در همین بخش فعال می‌شود.</p></div>
       ) : (
         <div style={{ padding: 14 }}>
-          <div className="student-chat-scroll-area" aria-live="polite" style={{ minHeight: 300, maxHeight: 520, overflowY: 'auto', padding: 18, background: isDark ? '#141a1c' : '#f7faf9', border: `1px solid ${colors.border}`, borderRadius: '13px 13px 0 0' }}>
+          <div className="student-chat-scroll-area" aria-live="polite" style={{ minHeight: 300, maxHeight: 520, overflowY: 'auto', padding: 18, background: colors.bg, border: `1px solid ${colors.border}`, borderRadius: '13px 13px 0 0' }}>
             {messages.length === 0 ? <div style={{ textAlign: 'center', padding: '65px 18px', color: colors.sub }}><MessageCircle size={30} style={{ opacity: .6, marginBottom: 10 }} /><p style={{ margin: 0, fontSize: 12, fontWeight: 800 }}>گفت‌وگو را شروع کنید</p><p style={{ fontSize: 11, lineHeight: 1.8 }}>پیام شما مستقیماً برای مشاور اختصاص‌یافته ارسال می‌شود.</p></div> : messages.map(message => {
               const own = message.sender.role === 'COUNSELOR';
               return <div key={message.id} style={{ display: 'flex', direction: 'ltr', justifyContent: own ? 'flex-end' : 'flex-start', marginBottom: 12 }}>
