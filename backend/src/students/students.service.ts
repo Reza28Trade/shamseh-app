@@ -369,6 +369,13 @@ export class StudentsService {
     if (installmentTotal !== finalTuition) throw new ConflictException('مجموع مبالغ اقساط باید برابر شهریه نهایی باشد؛ پرداخت‌های قبلی به‌عنوان تخصیص روی همین اقساط اعمال می‌شوند.');
     const courses = await this.prisma.course.findMany({ where: { id: { in: courseIds } }, select: { id: true, title: true, price: true } });
     if (courses.length !== courseIds.length) throw new ConflictException('یکی از دوره‌های انتخاب‌شده پیدا نشد.');
+    const existingFinancialCourses = await this.prisma.registrationCourse.findMany({
+      where: { courseId: { in: courseIds }, registration: { studentId, status: 'APPROVED' } },
+      select: { courseTitleSnapshot: true },
+    });
+    if (existingFinancialCourses.length) {
+      throw new ConflictException('برای این هنرجو از قبل پرونده مالی تأییدشده برای این دوره‌ها وجود دارد: ' + existingFinancialCourses.map((course: any) => course.courseTitleSnapshot).join('، '));
+    }
     return this.prisma.$transaction(async tx => {
       const registration = await tx.registration.create({
         data: {
