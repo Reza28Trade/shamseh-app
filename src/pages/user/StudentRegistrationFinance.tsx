@@ -19,10 +19,10 @@ export function StudentRegistrationFinance(){
   const [loading,setLoading]=useState(false);
   const [error,setError]=useState('');
   const [notice,setNotice]=useState('');
-  const card:CSSProperties={background:dark?'#191f21':'#fff',border:'1px solid '+(dark?'#303a3c':'#d8e3e0'),borderRadius:14,padding:15,color:dark?'#f1f4f3':'#202a2a'};
-  const sub=dark?'#a2aeae':'#667675';
-  const field:React.CSSProperties={width:'100%',minWidth:0,boxSizing:'border-box',padding:'10px 11px',border:'1px solid '+(dark?'#303a3c':'#d8e3e0'),borderRadius:9,background:dark?'#171d1f':'#fbfdfc',color:dark?'#f1f4f3':'#202a2a',font:'inherit',fontSize:12};
-  const button:React.CSSProperties={border:0,borderRadius:9,padding:'10px 13px',background:'#398a90',color:'#fff',font:'inherit',fontSize:12,fontWeight:850,cursor:'pointer'};
+  const card:CSSProperties={background:dark?'#1D1B1B':'#F7F1E8',border:'1px solid '+(dark?'rgba(238,229,218,.13)':'rgba(38,36,36,.14)'),borderRadius:14,padding:16,color:dark?'#EEE5DA':'#262424',minWidth:0,boxShadow:'none'};
+  const sub=dark?'#B9B0A6':'#655D55';
+  const field:React.CSSProperties={width:'100%',minWidth:0,boxSizing:'border-box',padding:'11px 12px',border:'1px solid '+(dark?'rgba(238,229,218,.16)':'rgba(38,36,36,.16)'),borderRadius:10,background:dark?'#302D2D':'#E5D9CB',color:dark?'#EEE5DA':'#262424',font:'inherit',fontSize:12,outlineColor:dark?'#48D1CC':'#008080'};
+  const button:React.CSSProperties={border:0,borderRadius:10,padding:'11px 14px',background:dark?'#48D1CC':'#008080',color:dark?'#262424':'#fff',font:'inherit',fontSize:12,fontWeight:850,cursor:'pointer',minHeight:40};
   const load=useCallback(async()=>{
     setLoading(true);setError('');
     try{
@@ -63,7 +63,8 @@ export function StudentRegistrationFinance(){
       setRefundAmounts(prev=>({...prev,[registrationId]:''}));setRefundReasons(prev=>({...prev,[registrationId]:''}));await load();
     }catch(e){setError(e instanceof Error?e.message:'ثبت درخواست ناموفق بود.');}
   };
-  return <section style={{display:'grid',gap:14,marginTop:18}}>
+  return <section className="student-finance-section" style={{display:'grid',gap:16,marginTop:18,minWidth:0}}>
+    <style>{`.student-finance-section input,.student-finance-section textarea,.student-finance-section button{font-family:inherit}.student-finance-section button{transition:opacity .15s ease}.student-finance-section button:hover{opacity:.9}.student-finance-section .finance-summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}@media(max-width:640px){.student-finance-section{gap:12px!important}.student-finance-section article{padding:12px!important}.student-finance-section .finance-summary-grid{grid-template-columns:1fr}.student-finance-section form{grid-template-columns:minmax(0,1fr)!important}.student-finance-section input[type=file]{font-size:10px!important}.student-finance-section button{width:100%}}`}</style>
     <div style={card}>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:10,flexWrap:'wrap'}}><h3 style={{margin:0,fontSize:14}}>ثبت‌نام‌های تأییدشده و اقساط</h3><button style={button} onClick={()=>void load()}>به‌روزرسانی</button></div>
       <p style={{margin:'8px 0 0',fontSize:11,lineHeight:1.8,color:sub}}>پرداخت فقط بعد از تأیید مدیریت در محاسبه بدهی اعمال می‌شود. رسید را از بخش قسط مربوط ثبت کنید؛ پس از تأیید، مبلغ پرداختی ابتدا به قدیمی‌ترین بدهی تسویه‌نشده شما تخصیص می‌یابد. اگر رسید رد شود، علت آن نمایش داده می‌شود و می‌توانید رسید جدید ارسال کنید.</p>
@@ -74,12 +75,12 @@ export function StudentRegistrationFinance(){
     {!loading&&registrations.length===0&&<div style={{...card,textAlign:'center',fontSize:12,color:sub}}>ثبت‌نام تأییدشده‌ای برای نمایش اقساط وجود ندارد.</div>}
     {registrations.map(reg=><article key={reg.id} style={{...card,display:'grid',gap:12}}>
       <div style={{display:'flex',justifyContent:'space-between',gap:10,flexWrap:'wrap'}}><strong style={{fontSize:13}}>شهریه نهایی: {money(reg.finalTuition)}</strong><span style={{fontSize:11,color:sub}}>تخفیف: {money(reg.discountAmount)}</span></div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,150px),1fr))',gap:8}}>
-        <div style={{padding:11,borderRadius:10,background:dark?'#202729':'#eef5f2'}}><div style={{fontSize:10,color:sub,marginBottom:5}}>پرداخت تأییدشده</div><strong style={{fontSize:12,color:'#1d9a72'}}>{money(reg.paidTotal)}</strong></div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,180px),1fr))',gap:8}}>
+        <div style={{padding:11,borderRadius:10,background:dark?'#302D2D':'#E5D9CB'}}><div style={{fontSize:10,color:sub,marginBottom:5}}>پرداخت تأییدشده</div><strong style={{fontSize:12,color:'#1d9a72'}}>{money(reg.paidTotal)}</strong></div>
         <div style={{padding:11,borderRadius:10,background:dark?'#202729':'#eef5f2'}}><div style={{fontSize:10,color:sub,marginBottom:5}}>مانده شهریه</div><strong style={{fontSize:12,color:reg.balance>0?'#dc6863':'#1d9a72'}}>{money(reg.balance)}</strong></div>
       </div>
       <div style={{display:'flex',gap:7,flexWrap:'wrap'}}>{reg.courses.map(c=><span key={c.id} style={{fontSize:11,padding:'6px 8px',borderRadius:8,background:dark?'#202729':'#eef5f2'}}>{c.courseTitleSnapshot}</span>)}</div>
-      {reg.installments.length===0?<p style={{fontSize:12,color:'#1d9a72',margin:0}}>برای این ثبت‌نام قسط باقی نمانده است.</p>:reg.installments.map(inst=><div key={inst.id} style={{border:'1px solid '+(dark?'#303a3c':'#e1eae6'),borderRadius:12,padding:12,display:'grid',gap:9}}>
+      {reg.installments.length===0?<p style={{fontSize:12,color:'#1d9a72',margin:0}}>برای این ثبت‌نام قسط باقی نمانده است.</p>:reg.installments.map(inst=><div key={inst.id} style={{border:'1px solid '+(dark?'rgba(238,229,218,.13)':'rgba(38,36,36,.14)'),borderRadius:12,padding:12,display:'grid',gap:9}}>
         <div style={{display:'flex',justifyContent:'space-between',gap:10,flexWrap:'wrap'}}><strong style={{fontSize:12}}>قسط {new Intl.NumberFormat('fa-IR').format(inst.sequence)} · {money(inst.amount)}</strong><span style={{fontSize:11,color:inst.status==='PAID'?'#1d9a72':inst.status==='OVERDUE'?'#dc6863':sub}}>{statusText[inst.status]||inst.status}</span></div>
         <div style={{display:'flex',justifyContent:'space-between',gap:10,fontSize:11,color:sub}}><span>سررسید: {new Date(inst.dueDate).toLocaleDateString('fa-IR')}</span><span>مانده: {money(inst.balance)}</span></div>
         {inst.balance>0&&<form onSubmit={e=>void submitPayment(e,inst)} style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,180px),1fr))',gap:9}}>
@@ -89,7 +90,7 @@ export function StudentRegistrationFinance(){
           <button style={button} type="submit">ارسال رسید قسط</button>
         </form>}
       </div>)}
-      {reg.payments.length>0&&<div style={{borderTop:'1px solid '+(dark?'#303a3c':'#e1eae6'),paddingTop:10,display:'grid',gap:7}}><strong style={{fontSize:12}}>سوابق پرداخت و رسیدها</strong>{reg.payments.map(p=><div key={p.id} style={{display:'flex',justifyContent:'space-between',gap:10,flexWrap:'wrap',fontSize:11}}><span style={{color:sub}}>{new Date(p.paymentDate).toLocaleDateString('fa-IR')} · {statusText[p.purpose]||p.purpose} · {statusText[p.status]||p.status}{p.rejectionReason?' · علت رد: '+p.rejectionReason:''}</span><strong>{money(p.approvedAmount??p.claimedAmount)}</strong></div>)}</div>}
+      {reg.payments.length>0&&<div style={{borderTop:'1px solid '+(dark?'rgba(238,229,218,.13)':'rgba(38,36,36,.14)'),paddingTop:10,display:'grid',gap:7}}><strong style={{fontSize:12}}>سوابق پرداخت و رسیدها</strong>{reg.payments.map(p=><div key={p.id} style={{display:'flex',justifyContent:'space-between',gap:10,flexWrap:'wrap',fontSize:11}}><span style={{color:sub}}>{new Date(p.paymentDate).toLocaleDateString('fa-IR')} · {statusText[p.purpose]||p.purpose} · {statusText[p.status]||p.status}{p.rejectionReason?' · علت رد: '+p.rejectionReason:''}</span><strong>{money(p.approvedAmount??p.claimedAmount)}</strong></div>)}</div>}
       <form onSubmit={e=>void submitRefund(e,reg.id)} style={{borderTop:'1px solid '+(dark?'#303a3c':'#e1eae6'),paddingTop:12,display:'grid',gap:9}}>
         <strong style={{fontSize:12}}>درخواست بازپرداخت اضافه‌پرداخت</strong>
         <p style={{fontSize:11,color:sub,margin:0,lineHeight:1.8}}>مبلغ درخواست پس از بررسی کل بدهی‌های شما محاسبه می‌شود. با تأیید مدیریت، مبلغ فوراً رزرو می‌شود و پس از انتقال وجه وضعیت آن تکمیل خواهد شد.</p>
@@ -98,6 +99,6 @@ export function StudentRegistrationFinance(){
         <button style={button} type="submit">ثبت درخواست بازپرداخت</button>
       </form>
     </article>)}
-    <div style={card}><h3 style={{margin:'0 0 10px',fontSize:14}}>پیگیری بازپرداخت‌ها</h3>{refunds.length===0?<p style={{fontSize:11,color:sub,margin:0}}>درخواستی ثبت نشده است.</p>:refunds.map(r=><div key={r.id} style={{padding:'10px 0',borderBottom:'1px solid '+(dark?'#303a3c':'#e1eae6'),display:'flex',justifyContent:'space-between',gap:10,flexWrap:'wrap',fontSize:12}}><span>{money(r.amountRequested)} · {statusText[r.status]||r.status}{r.reviewNote?' · '+r.reviewNote:''}{r.transferReference?' · پیگیری انتقال: '+r.transferReference:''}</span><strong>{new Date(r.requestedAt).toLocaleDateString('fa-IR')}</strong></div>)}</div>
+    <div style={card}><h3 style={{margin:'0 0 10px',fontSize:14}}>پیگیری بازپرداخت‌ها</h3>{refunds.length===0?<p style={{fontSize:11,color:sub,margin:0}}>درخواستی ثبت نشده است.</p>:refunds.map(r=><div key={r.id} style={{padding:'10px 0',borderBottom:'1px solid '+(dark?'rgba(238,229,218,.13)':'rgba(38,36,36,.14)'),display:'flex',justifyContent:'space-between',gap:10,flexWrap:'wrap',fontSize:12}}><span>{money(r.amountRequested)} · {statusText[r.status]||r.status}{r.reviewNote?' · '+r.reviewNote:''}{r.transferReference?' · پیگیری انتقال: '+r.transferReference:''}</span><strong>{new Date(r.requestedAt).toLocaleDateString('fa-IR')}</strong></div>)}</div>
   </section>;
 }
