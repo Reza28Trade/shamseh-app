@@ -341,9 +341,12 @@ export class StudentsService {
     };
     const student = await this.prisma.student.findUnique({ where: { id: studentId } });
     if (!student) throw new NotFoundException('Student not found');
-    const courseIds = Array.isArray(body?.courseIds) ? [...new Set(body.courseIds.map((v: unknown) => String(v)))] : [];
-    const payments = Array.isArray(body?.payments) ? body.payments : [];
-    const installments = Array.isArray(body?.installments) ? body.installments : [];
+    if (!student.phone || !student.academicLevel) {
+      throw new ConflictException('برای ثبت پرونده مالی، شماره موبایل و مقطع تحصیلی هنرجو باید تکمیل باشد.');
+    }
+    const courseIds: string[] = Array.isArray(body?.courseIds) ? [...new Set<string>(body.courseIds.map((v: unknown) => String(v)))] : [];
+    const payments: any[] = Array.isArray(body?.payments) ? body.payments : [];
+    const installments: any[] = Array.isArray(body?.installments) ? body.installments : [];
     if (!courseIds.length) throw new ConflictException('حداقل یک دوره انتخاب کنید.');
     if (!installments.length) throw new ConflictException('حداقل یک قسط با تاریخ سررسید دستی لازم است.');
     const originalTuition = money(body.originalTuition, 'شهریه اولیه');
@@ -370,6 +373,7 @@ export class StudentsService {
     if (installmentTotal !== finalTuition) throw new ConflictException('مجموع مبالغ اقساط باید برابر شهریه نهایی باشد؛ پرداخت‌های قبلی به‌عنوان تخصیص روی همین اقساط اعمال می‌شوند.');
     const courses = await this.prisma.course.findMany({ where: { id: { in: courseIds } }, select: { id: true, title: true, price: true } });
     if (courses.length !== courseIds.length) throw new ConflictException('یکی از دوره‌های انتخاب‌شده پیدا نشد.');
+    if (courses.some((course) => course.price === null)) throw new ConflictException('برای همه دوره‌های انتخاب‌شده باید قیمت ثبت شده باشد.');
     const existingFinancialCourses = await this.prisma.registrationCourse.findMany({
       where: { courseId: { in: courseIds }, registration: { studentId, status: 'APPROVED' } },
       select: { courseTitleSnapshot: true },
@@ -388,7 +392,9 @@ export class StudentsService {
           reviewNote: 'پرونده مالی ثبت‌شده دستی توسط مدیریت',
           reviewedById: user.id, reviewedAt: new Date(), approvedAt: new Date(),
           courses: { create: courses.map(course => ({
-            courseId: course.id, courseTitleSnapshot: course.title, coursePriceSnapshot: course.price,
+            course: { connect: { id: course.id } },
+            courseTitleSnapshot: course.title,
+            coursePriceSnapshot: course.price!,
           })) },
           installments: { create: installmentRows.map(i => ({
             sequence: i.sequence, amount: i.amount, dueDate: i.dueDate,
