@@ -27,8 +27,6 @@ type ApiStudent = Student & {
 
 const levelLabel = (level?: string | null) => level === 'MASTER' ? 'ارشد' : level === 'DOCTORATE' ? 'دکتری' : 'نامشخص';
 const termLabel = (term?: string | null) => term || 'بدون ترم';
-const years = (courses: Course[]) => Array.from(new Set(courses.map(c => c.academicYear).filter((v): v is number => typeof v === 'number'))).sort((a,b) => b-a);
-
 // Convert Jalali dates to ISO Gregorian dates without relying on the browser's Gregorian date picker.
 const jalaliFormatter = new Intl.DateTimeFormat('en-US-u-ca-persian-nu-latn', { year: 'numeric', month: 'numeric', day: 'numeric', timeZone: 'UTC' });
 const jalaliParts = (date: Date) => {
