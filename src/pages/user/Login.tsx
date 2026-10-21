@@ -44,7 +44,7 @@ export const Login:React.FC<LoginProps>=({students,admins,onLoginSuccess,onAdmin
      <div className="sh-login-footer">آکادمی شمسه · ۱۴۰۵</div>
    </div>
    <div className="sh-login-content">
-     <div className="sh-login-top"><span>مرکز آموزشی شمسه</span>{viewState === 'welcome' && <button type="button" onClick={back}>بازگشت به صفحه اصلی</button>}</div>
+     <div className="sh-login-top"></div>
      {viewState==='welcome'&&<div className="sh-welcome"><div className="sh-kicker">ورود به سامانه</div><h2>از اینجا شروع کنید</h2><p>برای ادامه، بخش موردنظر خود را انتخاب کنید.</p><div className="sh-entry-list">
        <button className="sh-entry primary" onClick={()=>setViewState('studentLogin')}><span className="sh-entry-icon"><User size={18}/></span><span><strong>پنل هنرجویی</strong><small>دسترسی به دوره‌ها، آزمون‌ها و فایل‌های من</small></span><ArrowRight size={15}/></button>
        <button className="sh-entry" onClick={()=>setViewState('counselorLogin')}><span className="sh-entry-icon"><Shield size={18}/></span><span><strong>ورود مشاور</strong><small>ورود به پنل اختصاصی مشاوره</small></span><ArrowRight size={15}/></button>
