@@ -586,9 +586,8 @@ export class StudentsService {
     if (!student) throw new NotFoundException('هنرجو پیدا نشد.');
     if (!student.isArchived) throw new ConflictException('برای حذف دائمی، ابتدا هنرجو را بایگانی کنید.');
 
-    const [registration, payment, profileHistory, counselingAssignment, counselingConversation, counselingRequest, supportTicket, managementTicket, offlineRequest, notificationTarget, mockExamParticipant] = await Promise.all([
-      this.prisma.registration.findFirst({ where: { studentId }, select: { id: true } }),
-      this.prisma.payment.findFirst({ where: { studentId }, select: { id: true } }),
+    // Preserve non-financial activity that may still need to be referenced.
+    const [profileHistory, counselingAssignment, counselingConversation, counselingRequest, supportTicket, managementTicket, offlineRequest, notificationTarget, mockExamParticipant] = await Promise.all([
       this.prisma.studentProfileHistory.findFirst({ where: { studentId }, select: { id: true } }),
       this.prisma.counselingAssignment.findFirst({ where: { studentId }, select: { studentId: true } }),
       this.prisma.counselingConversation.findFirst({ where: { studentId }, select: { studentId: true } }),
@@ -599,11 +598,42 @@ export class StudentsService {
       this.prisma.notificationTargetStudent.findFirst({ where: { studentId }, select: { studentId: true } }),
       this.prisma.mockExamParticipant.findFirst({ where: { studentId }, select: { studentId: true } }),
     ]);
-    if ([registration, payment, profileHistory, counselingAssignment, counselingConversation, counselingRequest, supportTicket, managementTicket, offlineRequest, notificationTarget, mockExamParticipant].some(Boolean)) {
-      throw new ConflictException('این هنرجو سوابق مالی یا فعالیت مرتبط دارد؛ برای جلوگیری از حذف سوابق، حذف دائمی مجاز نیست.');
+    if ([profileHistory, counselingAssignment, counselingConversation, counselingRequest, supportTicket, managementTicket, offlineRequest, notificationTarget, mockExamParticipant].some(Boolean)) {
+      throw new ConflictException('این هنرجو سوابق مشاوره، پشتیبانی یا فعالیت دیگری دارد؛ برای حذف ایمن، ابتدا باید این سوابق تعیین تکلیف شوند.');
     }
 
     await this.prisma.$transaction(async tx => {
+      const registrations = await tx.registration.findMany({ where: { studentId }, select: { id: true } });
+      const registrationIds = registrations.map(item => item.id);
+      if (registrationIds.length) {
+        const [registrationPayments, installments] = await Promise.all([
+          tx.registrationPayment.findMany({ where: { registrationId: { in: registrationIds } }, select: { id: true } }),
+          tx.installment.findMany({ where: { registrationId: { in: registrationIds } }, select: { id: true } }),
+        ]);
+        const paymentIds = registrationPayments.map(item => item.id);
+        const installmentIds = installments.map(item => item.id);
+
+        if (paymentIds.length || installmentIds.length) {
+          await tx.paymentAllocation.deleteMany({
+            where: {
+              OR: [
+                ...(paymentIds.length ? [{ paymentId: { in: paymentIds } }] : []),
+                ...(installmentIds.length ? [{ installmentId: { in: installmentIds } }] : []),
+              ],
+            },
+          });
+        }
+        if (paymentIds.length) {
+          await tx.registrationPaymentReceipt.deleteMany({ where: { paymentId: { in: paymentIds } } });
+        }
+        await tx.refundRequest.deleteMany({ where: { OR: [{ studentId }, { registrationId: { in: registrationIds } }] } });
+        await tx.registrationReviewHistory.deleteMany({ where: { registrationId: { in: registrationIds } } });
+        await tx.registrationCourse.deleteMany({ where: { registrationId: { in: registrationIds } } });
+        await tx.registrationPayment.deleteMany({ where: { registrationId: { in: registrationIds } } });
+        await tx.installment.deleteMany({ where: { registrationId: { in: registrationIds } } });
+        await tx.registration.deleteMany({ where: { id: { in: registrationIds } } });
+      }
+      // Legacy payments are removed with the student; their receipts cascade with each payment.
       await tx.session.deleteMany({ where: { userId: student.userId } });
       await tx.enrollment.deleteMany({ where: { studentId } });
       await tx.student.delete({ where: { id: studentId } });
