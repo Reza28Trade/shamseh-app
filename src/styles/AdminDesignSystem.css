@@ -2879,15 +2879,17 @@
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page > .course-stats {
   display:grid!important;
   grid-template-columns:repeat(4,minmax(0,1fr))!important;
-  gap:0!important;
+  gap:11px!important;
   width:100%!important;
   min-height:0!important;
   margin:0!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:var(--admin-surface-radius)!important;
-  background:var(--admin-card)!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-color:transparent!important;
   box-shadow:none!important;
-  overflow:hidden!important;
+  overflow:visible!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page > .course-stats:before {
   display:none!important;
@@ -2897,11 +2899,10 @@
   min-width:0!important;
   min-height:76px!important;
   padding:13px 16px!important;
-  border:0!important;
-  border-left:1px solid var(--admin-border)!important;
-  border-radius:0!important;
-  background:transparent!important;
-  box-shadow:none!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:15px!important;
+  background:var(--admin-card)!important;
+  box-shadow:var(--admin-shadow)!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-stat:last-child {
   border-left:0!important;
