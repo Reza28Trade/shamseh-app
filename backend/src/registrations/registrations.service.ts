@@ -220,6 +220,29 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  async findPublicRegistrations(nationalId: string, phone: string) {
+    const normalizedNationalId = nationalId?.trim();
+    const normalizedPhone = phone?.trim();
+    if (!normalizedNationalId || !normalizedPhone) {
+      throw new BadRequestException('کد ملی و شماره موبایل الزامی است.');
+    }
+    const registrations = await this.prisma.registration.findMany({
+      where: { nationalId: normalizedNationalId, phone: normalizedPhone },
+      select: { id: true, status: true, createdAt: true, applicantFullName: true },
+      orderBy: { createdAt: 'desc' },
+      take: 20,
+    });
+    if (!registrations.length) {
+      throw new NotFoundException('درخواستی با این کد ملی و شماره موبایل پیدا نشد.');
+    }
+    return registrations.map((item) => ({
+      id: item.id,
+      status: item.status,
+      createdAt: item.createdAt,
+      applicantFullName: item.applicantFullName,
+    }));
+  }
+
   async getPublicRegistrationStatus(registrationId: string, nationalId: string, phone: string) {
     if (!nationalId?.trim() || !phone?.trim()) throw new BadRequestException('کد ملی و شماره موبایل الزامی است.');
     const registration = await this.prisma.registration.findFirst({
