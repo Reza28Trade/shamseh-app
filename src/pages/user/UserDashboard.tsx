@@ -624,7 +624,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         {activeTab === 'courses' && (
           <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, backdropFilter: 'blur(16px)', padding: '32px', borderRadius: '24px', boxShadow: '0 16px 40px rgba(0,0,0,0.1)' }}>
             <h2 style={{ fontSize: '16px', fontWeight: 800, color: textColor, margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <BookOpen size={18} color="#ff3366" /> دوره‌های آموزشی من ({enrolledCourses.length})
+              <BookOpen size={18} color={accent} /> دوره‌های آموزشی من ({enrolledCourses.length})
             </h2>
 
             {coursesLoading ? (
@@ -821,9 +821,9 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         )}
 
         {activeTab === 'mockExams' && (
-          <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, backdropFilter: 'blur(16px)', padding: '32px', borderRadius: '24px', boxShadow: '0 16px 40px rgba(0,0,0,0.1)' }}>
-            <h2 style={{ fontSize: '16px', fontWeight: 800, color: textColor, margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <ClipboardList size={18} color="#ff3366" /> آزمون‌های آزمایشی من
+          <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, padding: '22px', borderRadius: '16px', boxShadow: '0 8px 22px rgba(0,0,0,.05)', minWidth: 0 }}>
+            <h2 style={{ fontSize: '16px', fontWeight: 850, color: textColor, margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <ClipboardList size={18} color={accent} /> آزمون‌های آزمایشی من
             </h2>
             <p style={{ fontSize: '11px', color: subText, margin: '0 0 20px 0' }}>
               در این بخش فقط آزمون‌هایی نمایش داده می‌شوند که برای شما ثبت شده‌اند.
@@ -858,7 +858,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                     exam.status === 'COMPLETED' ? subText : '#fbbf24';
 
                   return (
-                    <div key={exam.id} style={{ backgroundColor: innerCardBg, border: `1px solid ${borderColor}`, borderRadius: '16px', padding: '18px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div key={exam.id} style={{ backgroundColor: innerCardBg, border: `1px solid ${borderColor}`, borderRadius: '14px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px', minWidth: 0, boxShadow: '0 4px 12px rgba(0,0,0,.04)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '10px' }}>
                         <div>
                           <h3 style={{ fontSize: '14px', fontWeight: 800, color: textColor, margin: 0 }}>{exam.title}</h3>
@@ -870,8 +870,8 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                         <span style={{ fontSize: '9px', fontWeight: 800, color: statusColor, whiteSpace: 'nowrap' }}>{statusLabel}</span>
                       </div>
 
-                      <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '10px', padding: '10px 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <CalendarClock size={15} color="#ff3366" />
+                      <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '10px', padding: '10px 12px', display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+                        <CalendarClock size={15} color={accent} />
                         <span style={{ fontSize: '10px', color: textColor, fontWeight: 700 }}>
                           {new Intl.DateTimeFormat('fa-IR', {
                             dateStyle: 'full',
@@ -960,7 +960,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
 
               <div style={{ marginTop: '18px' }}>
                 {selectedMockExam.examUrl && ['LINK_AVAILABLE', 'LIVE'].includes(selectedMockExam.status) ? (
-                  <a href={selectedMockExam.examUrl} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', width: '100%', boxSizing: 'border-box', alignItems: 'center', justifyContent: 'center', gap: '7px', padding: '12px', borderRadius: '10px', background: 'linear-gradient(135deg, #6D001A 0%, #a21c3a 100%)', color: '#fff', textDecoration: 'none', fontSize: '11px', fontWeight: 800 }}>
+                  <a href={selectedMockExam.examUrl} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', width: '100%', boxSizing: 'border-box', alignItems: 'center', justifyContent: 'center', gap: '7px', padding: '12px', borderRadius: '10px', background: accent, color: '#fff', textDecoration: 'none', fontSize: '11px', fontWeight: 800 }}>
                     <ExternalLink size={14} /> ورود به آزمون
                   </a>
                 ) : (
@@ -978,7 +978,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         {activeTab === 'notifications' && (
           <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, backdropFilter: 'blur(16px)', padding: '32px', borderRadius: '24px', boxShadow: '0 16px 40px rgba(0,0,0,0.1)' }}>
             <h2 style={{ fontSize: '16px', fontWeight: 800, color: textColor, margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Bell size={18} color="#ff3366" /> صندوق اطلاعیه‌ها و پیام‌های سیستمی
+              <Bell size={18} color={accent} /> صندوق اطلاعیه‌ها و پیام‌های سیستمی
             </h2>
 
             {notificationsLoading ? (
@@ -1014,7 +1014,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         {activeTab === 'messages' && (
           <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, backdropFilter: 'blur(16px)', padding: '32px', borderRadius: '24px', boxShadow: '0 16px 40px rgba(0,0,0,0.1)' }}>
             <h2 style={{ fontSize: '16px', fontWeight: 800, color: textColor, margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Send size={18} color="#ff3366" /> ارسال پیام یا سوال به پشتیبانی
+              <Send size={18} color={accent} /> ارسال پیام یا سوال به پشتیبانی
             </h2>
 
             {successMsg && (
