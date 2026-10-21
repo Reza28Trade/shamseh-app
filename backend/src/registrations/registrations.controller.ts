@@ -1,5 +1,5 @@
 import {
-  Body, Controller, Get, Param, Patch, Post, Query, Req, Res, UploadedFile,
+  Body, Controller, ForbiddenException, Get, Param, Patch, Post, Query, Req, Res, UploadedFile,
   UseGuards, UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -16,12 +16,16 @@ import { CreateRefundRequestDto } from './dto/create-refund-request.dto';
 import { MarkRefundPaidDto } from './dto/mark-refund-paid.dto';
 import { ReviewRefundRequestDto } from './dto/review-refund-request.dto';
 import { RegistrationsService } from './registrations.service';
+import { StudentAccessService } from '../auth/student-access.service';
 
 type AuthenticatedRequest = Request & { user: AuthenticatedUser };
 
 @Controller()
 export class RegistrationsController {
-  constructor(private readonly registrationsService: RegistrationsService) {}
+  constructor(
+    private readonly registrationsService: RegistrationsService,
+    private readonly studentAccessService: StudentAccessService,
+  ) {}
 
   @Get('public/registration/courses')
   listPublicCourses() {
@@ -90,6 +94,15 @@ export class RegistrationsController {
     @Body() dto: ReviewInstallmentPaymentDto,
   ) {
     return this.registrationsService.reviewInstallmentPayment(req.user, paymentId, dto);
+  }
+
+  @Get('student/finance-access')
+  @UseGuards(AuthGuard)
+  async getStudentFinanceAccess(@Req() req: AuthenticatedRequest) {
+    if (req.user.role !== 'STUDENT' || !req.user.studentId) {
+      throw new ForbiddenException('Student access required');
+    }
+    return this.studentAccessService.getFinanceRestriction(req.user.studentId);
   }
 
   @Get('student/registrations')
