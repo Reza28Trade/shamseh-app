@@ -116,7 +116,7 @@ export function RegistrationPage() {
       setStatusNationalId(toEnglishDigits(nationalId.trim()));
       setStatusPhone(toEnglishDigits(phone.trim()));
       await loadStatus(data.id, toEnglishDigits(nationalId.trim()), toEnglishDigits(phone.trim()));
-      setNotice('درخواست شما ثبت شد. شناسه ثبت‌نام را نگه دارید؛ حساب هنرجویی پس از تأیید مدیریت ساخته می‌شود.');
+      setNotice(data.existingStudent ? 'درخواست دوره جدید ثبت شد. حساب قبلی شما حفظ می‌شود و پس از بررسی مدیریت، وضعیت آن را از همین حساب پیگیری می‌کنید.' : 'درخواست شما ثبت شد. شناسه ثبت‌نام را نگه دارید؛ اطلاعات ورود پس از تأیید مدیریت ایجاد می‌شود.');
     } catch (e) { setError(e instanceof Error ? e.message : 'ثبت درخواست ناموفق بود.'); }
     finally { setLoading(false); }
   };
@@ -155,7 +155,7 @@ export function RegistrationPage() {
       <div className="reg-grid">
         <form className="reg-card" onSubmit={submit}>
           <h2>درخواست ثبت‌نام جدید</h2>
-          <p className="reg-muted">دوره‌ها را انتخاب کنید، اطلاعات را تکمیل کنید و تصویر رسید پیش‌پرداخت را بفرستید. ساخت حساب فقط پس از تأیید مدیریت انجام می‌شود.</p>
+          <p className="reg-muted">اگر قبلاً هنرجوی شمسه هستید، همین صفحه برای ثبت‌نام دوره جدید است؛ کد ملی و شماره موبایل ثبت‌شده در حساب قبلی را وارد کنید تا درخواست به همان حساب متصل شود. پرداخت‌ها و اقساط هر دوره جداگانه محاسبه می‌شوند.</p>
           <div className="reg-fields">
             <label className="reg-field">نام و نام خانوادگی<input required minLength={3} value={fullName} onChange={e=>setFullName(e.target.value)} autoComplete="name"/></label>
             <label className="reg-field">کد ملی<input required pattern="\d{10}" maxLength={10} value={nationalId} onChange={e=>setNationalId(toEnglishDigits(e.target.value))} inputMode="numeric"/></label>
