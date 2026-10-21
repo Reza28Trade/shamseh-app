@@ -446,7 +446,16 @@ export class StudentsService {
     };
     const registration = await this.prisma.registration.findFirst({
       where: { id: registrationId, studentId },
-      include: { installments: { include: { allocations: { include: { payment: { select: { status: true } } } } }, payments: true },
+      include: {
+        installments: {
+          include: {
+            allocations: {
+              include: { payment: { select: { status: true } } },
+            },
+          },
+        },
+        payments: true,
+      },
     });
     if (!registration) throw new NotFoundException('پرونده مالی پیدا نشد.');
     if (registration.status !== 'APPROVED') throw new ConflictException('فقط پرونده مالی تأییدشده قابل ویرایش است.');
