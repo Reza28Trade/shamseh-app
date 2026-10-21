@@ -407,7 +407,7 @@ export class StudentsService {
       for (const payment of paymentRows) {
         const record = await tx.registrationPayment.create({
           data: {
-            registrationId: registration.id, purpose: 'INITIAL', status: 'APPROVED',
+            registrationId: registration.id, purpose: 'INSTALLMENT', status: 'APPROVED',
             claimedAmount: payment.amount, approvedAmount: payment.amount,
             paymentDate: payment.paymentDate, method: payment.method, reference: payment.reference,
             reviewNote: 'پرداخت تاریخی واردشده توسط مدیریت', reviewedById: user.id, reviewedAt: new Date(),
