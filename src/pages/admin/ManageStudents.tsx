@@ -46,14 +46,14 @@ const jalaliToIso = (value: string) => {
   if (!match) return '';
   const wanted = { year: Number(match[1]), month: Number(match[2]), day: Number(match[3]) };
   if (wanted.month < 1 || wanted.month > 12 || wanted.day < 1 || wanted.day > 31) return '';
+  // A Jalali year starts around March 20/21 and spans into March of the next Gregorian year.
+  // Search the whole Jalali year; limiting this to a few days around Nowruz rejects most dates.
   const start = Date.UTC(wanted.year + 621, 2, 15);
-  for (let offset = 0; offset <= 30; offset++) {
-    for (const sign of [1, -1]) {
-      const date = new Date(start + sign * offset * 86400000);
-      const p = jalaliParts(date);
-      if (p.year === wanted.year && p.month === wanted.month && p.day === wanted.day) {
-        return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')}T12:00:00.000Z`;
-      }
+  for (let offset = 0; offset <= 370; offset++) {
+    const date = new Date(start + offset * 86400000);
+    const p = jalaliParts(date);
+    if (p.year === wanted.year && p.month === wanted.month && p.day === wanted.day) {
+      return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')}T12:00:00.000Z`;
     }
   }
   return '';
@@ -217,7 +217,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
 
   const saveManualFinance = async () => {
     if (!financeStudent) return;
-    if (!manualCourseIds.length || !manualOriginalTuition || !manualInstallments.length || manualInstallments.some(i => !i.amount || !jalaliToIso(i.dueDate)) || manualPayments.some(p => !p.amount || !p.paymentDate)) {
+    if (!manualCourseIds.length || !manualOriginalTuition || !manualInstallments.length || manualInstallments.some(i => !i.amount || !jalaliToIso(i.dueDate)) || manualPayments.some(p => !p.amount || !jalaliToIso(p.paymentDate))) {
       setFinanceError('دوره، شهریه، مبلغ و تاریخ سررسید تمام اقساط و مبلغ/تاریخ پرداخت‌های ثبت‌شده را کامل کنید.'); return;
     }
     setManualFinanceSaving(true); setFinanceError('');
@@ -246,7 +246,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
 
   const permanentlyDeleteArchivedStudent = async (student: ApiStudent) => {
     if (!student.isArchived) return;
-    if (!window.confirm(`هنرجوی «${student.fullName}» برای همیشه حذف شود؟ این کار فقط برای هنرجوی اشتباهیِ بدون سوابق مالی/فعالیت قابل انجام است و قابل بازگشت نیست.`)) return;
+    if (!window.confirm(`هنرجوی «${student.fullName}» برای همیشه حذف شود؟ با این کار اطلاعات و سوابق مالی مرتبط با این هنرجو نیز برای همیشه حذف می‌شود و قابل بازگشت نیست.`)) return;
     setError('');
     try {
       const response = await fetch(`/api/admin/students/${student.id}`, { method: 'DELETE', credentials: 'include' });
