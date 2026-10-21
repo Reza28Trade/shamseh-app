@@ -2755,14 +2755,33 @@
   box-shadow:none!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page > .students-stats {
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:11px!important;
   position:relative!important;
   width:100%!important;
   box-sizing:border-box!important;
   margin:0!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:var(--admin-surface-radius)!important;
-  background:var(--admin-card)!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-color:transparent!important;
   box-shadow:none!important;
+  overflow:visible!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page > .students-stats > .student-stat {
+  min-width:0!important;
+  margin:0!important;
+  padding:15px 18px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:15px!important;
+  background:var(--admin-card)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page > .students-stats > .student-stat:before {
+  display:none!important;
+  content:none!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page > .students-main-grid {
   display:grid!important;
