@@ -9,10 +9,14 @@ import { Request } from 'express';
 import { AUTH_COOKIE_NAME } from './auth.constants';
 import { AuthService } from './auth.service';
 import { AuthenticatedUser } from './auth.types';
+import { StudentAccessService } from './student-access.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly studentAccessService: StudentAccessService,
+  ) {}
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest<Request>();
@@ -29,6 +33,17 @@ export class AuthGuard implements CanActivate {
     }
 
     const path = (request.originalUrl || request.url).split('?')[0].replace(/^\/api\//, '/');
+    if (user.role === 'STUDENT' && user.studentId && !this.isFinanceAllowedPath(path)) {
+      const restriction = await this.studentAccessService.getFinanceRestriction(user.studentId);
+      if (restriction.restricted) {
+        throw new ForbiddenException({
+          code: 'STUDENT_FINANCE_RESTRICTED',
+          message: 'به دلیل گذشت بیش از ۱۰ روز از سررسید قسط پرداخت‌نشده، دسترسی شما به بخش‌های آموزشی موقتاً محدود شده است. برای رفع محدودیت، وضعیت مالی خود را بررسی و بدهی معوق را تسویه کنید.',
+          restrictedInstallments: restriction.restrictedInstallments,
+        });
+      }
+    }
+
     if (user.role === 'STAFF' && path.startsWith('/admin/') && path !== '/admin/account/password') {
       const permission = this.permissionForPath(path);
       if (!permission || !user.permissions.includes(permission)) {
@@ -38,6 +53,14 @@ export class AuthGuard implements CanActivate {
 
     (request as Request & { user: AuthenticatedUser }).user = user;
     return true;
+  }
+
+  private isFinanceAllowedPath(path: string): boolean {
+    return path === '/auth/me'
+      || path === '/student/finance-access'
+      || path === '/student/registrations'
+      || path === '/student/refunds'
+      || /^\\/student\\/installments\\/[^/]+\\/payments$/.test(path);
   }
 
   private permissionForPath(path: string): string | null {
