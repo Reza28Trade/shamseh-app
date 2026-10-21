@@ -33,7 +33,7 @@
 .admin-courses-page .course-actions{
   display:flex;
   flex-wrap:wrap;
-  gap:7px;
+  gap:12px;
   align-items:center;
 }
 .admin-courses-page .course-btn{
@@ -418,10 +418,16 @@
   box-shadow:none;
   transition:background .16s,border-color .16s,color .16s,transform .16s;
 }
-.admin-courses-page .course-btn:hover{
+.admin-courses-page .course-btn{
+  transition:background .16s ease,border-color .16s ease,color .16s ease,box-shadow .16s ease;
+}
+.admin-courses-page .course-btn:hover,
+.admin-courses-page .course-btn:focus-visible{
   background:var(--admin-accent-soft)!important;
   border-color:var(--admin-accent)!important;
   color:var(--admin-accent)!important;
+  box-shadow:0 0 0 1px var(--admin-accent)!important;
+  outline:none;
 }
 .admin-courses-page .course-btn.primary{
   background:var(--course-teal)!important;
