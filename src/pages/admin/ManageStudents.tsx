@@ -29,6 +29,39 @@ const levelLabel = (level?: string | null) => level === 'MASTER' ? 'ارشد' : 
 const termLabel = (term?: string | null) => term || 'بدون ترم';
 const years = (courses: Course[]) => Array.from(new Set(courses.map(c => c.academicYear).filter((v): v is number => typeof v === 'number'))).sort((a,b) => b-a);
 
+// Convert Jalali dates to ISO Gregorian dates without relying on the browser's Gregorian date picker.
+const jalaliFormatter = new Intl.DateTimeFormat('en-US-u-ca-persian-nu-latn', { year: 'numeric', month: 'numeric', day: 'numeric', timeZone: 'UTC' });
+const jalaliParts = (date: Date) => {
+  const parts = jalaliFormatter.formatToParts(date);
+  return { year: Number(parts.find(p => p.type === 'year')?.value), month: Number(parts.find(p => p.type === 'month')?.value), day: Number(parts.find(p => p.type === 'day')?.value) };
+};
+const isoToJalali = (iso?: string) => {
+  if (!iso) return '';
+  const match = iso.match(/^(\\d{4})-(\\d{2})-(\\d{2})/);
+  if (!match) return iso;
+  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
+  const p = jalaliParts(date);
+  return `${p.year}/${String(p.month).padStart(2, '0')}/${String(p.day).padStart(2, '0')}`;
+};
+const jalaliToIso = (value: string) => {
+  const match = value.trim().match(/^(\\d{4})[/-](\\d{1,2})[/-](\\d{1,2})$/);
+  if (!match) return '';
+  const wanted = { year: Number(match[1]), month: Number(match[2]), day: Number(match[3]) };
+  if (wanted.month < 1 || wanted.month > 12 || wanted.day < 1 || wanted.day > 31) return '';
+  const start = Date.UTC(wanted.year + 621, 2, 15);
+  for (let offset = 0; offset <= 30; offset++) {
+    for (const sign of [1, -1]) {
+      const date = new Date(start + sign * offset * 86400000);
+      const p = jalaliParts(date);
+      if (p.year === wanted.year && p.month === wanted.month && p.day === wanted.day) {
+        return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')}T12:00:00.000Z`;
+      }
+    }
+  }
+  return '';
+};
+const years = (courses: Course[]) => Array.from(new Set(courses.map(c => c.academicYear).filter((v): v is number => typeof v === 'number'))).sort((a,b) => b-a);
+
 export const ManageStudents: React.FC<ManageStudentsProps> = ({
   students: _students,
   courses: _courses,
@@ -185,7 +218,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
 
   const saveManualFinance = async () => {
     if (!financeStudent) return;
-    if (!manualCourseIds.length || !manualOriginalTuition || !manualInstallments.length || manualInstallments.some(i => !i.amount || !i.dueDate) || manualPayments.some(p => !p.amount || !p.paymentDate)) {
+    if (!manualCourseIds.length || !manualOriginalTuition || !manualInstallments.length || manualInstallments.some(i => !i.amount || !jalaliToIso(i.dueDate)) || manualPayments.some(p => !p.amount || !p.paymentDate)) {
       setFinanceError('دوره، شهریه، مبلغ و تاریخ سررسید تمام اقساط و مبلغ/تاریخ پرداخت‌های ثبت‌شده را کامل کنید.'); return;
     }
     setManualFinanceSaving(true); setFinanceError('');
@@ -195,8 +228,8 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
         body: JSON.stringify({
           courseIds: manualCourseIds, originalTuition: Number(manualOriginalTuition), discountAmount: Number(manualDiscount || 0),
           discountReason: manualDiscountReason,
-          payments: manualPayments.map(p=>({...p,amount:Number(p.amount)})),
-          installments: manualInstallments.map(i=>({...i,amount:Number(i.amount)})),
+          payments: manualPayments.map(p=>({...p,amount:Number(p.amount),paymentDate:jalaliToIso(p.paymentDate)})),
+          installments: manualInstallments.map(i=>({...i,amount:Number(i.amount),dueDate:jalaliToIso(i.dueDate)})),
         }),
       });
       const body = await response.json().catch(() => null);
@@ -458,7 +491,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
               <h4>پرداخت‌های قبلی ثبت‌شده</h4>
               {manualPayments.map((payment,index)=><div key={index} style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))',gap:8}}>
                 <input aria-label="مبلغ پرداخت قبلی" type="number" min="1" placeholder="مبلغ پرداخت (تومان)" value={payment.amount} onChange={e=>setManualPayments(rows=>rows.map((row,i)=>i===index?{...row,amount:e.target.value}:row))}/>
-                <input aria-label="تاریخ پرداخت قبلی" type="date" value={payment.paymentDate} onChange={e=>setManualPayments(rows=>rows.map((row,i)=>i===index?{...row,paymentDate:e.target.value}:row))}/>
+                <input aria-label="تاریخ پرداخت قبلی" type="text" inputMode="numeric" placeholder="۱۴۰۵/۰۷/۳۰" value={payment.paymentDate} onChange={e=>setManualPayments(rows=>rows.map((row,i)=>i===index?{...row,paymentDate:e.target.value.replace(/[۰-۹]/g,d=>String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))}:row))}/>
                 <select aria-label="روش پرداخت قبلی" value={payment.method} onChange={e=>setManualPayments(rows=>rows.map((row,i)=>i===index?{...row,method:e.target.value}:row))}><option value="BANK_TRANSFER">بانکی</option><option value="CASH">نقدی</option><option value="CARD">کارت‌خوان</option><option value="OTHER">سایر</option></select>
                 <input aria-label="شناسه پرداخت قبلی" placeholder="شماره پیگیری/توضیح" value={payment.reference} onChange={e=>setManualPayments(rows=>rows.map((row,i)=>i===index?{...row,reference:e.target.value}:row))}/>
                 <button type="button" className="secondary-action" onClick={()=>setManualPayments(rows=>rows.filter((_,i)=>i!==index))}>حذف پرداخت</button>
@@ -467,7 +500,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
               <h4>برنامه اقساط (جمع اقساط برابر شهریه نهایی باشد)</h4>
               {manualInstallments.map((installment,index)=><div key={index} style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(160px,1fr))',gap:8}}>
                 <input aria-label={'مبلغ قسط '+(index+1)} type="number" min="1" placeholder={'مبلغ قسط '+(index+1)+' (تومان)'} value={installment.amount} onChange={e=>setManualInstallments(rows=>rows.map((row,i)=>i===index?{...row,amount:e.target.value}:row))}/>
-                <label>سررسید قسط {index+1}<input aria-label={'سررسید قسط '+(index+1)} type="date" value={installment.dueDate} onChange={e=>setManualInstallments(rows=>rows.map((row,i)=>i===index?{...row,dueDate:e.target.value}:row))}/></label>
+                <label>سررسید قسط {index+1}<input aria-label={'سررسید قسط '+(index+1)} type="text" inputMode="numeric" placeholder="۱۴۰۵/۰۷/۳۰" value={installment.dueDate} onChange={e=>setManualInstallments(rows=>rows.map((row,i)=>i===index?{...row,dueDate:e.target.value.replace(/[۰-۹]/g,d=>String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))}:row))}/></label>
                 {manualInstallments.length>1 && <button type="button" className="secondary-action" onClick={()=>setManualInstallments(rows=>rows.filter((_,i)=>i!==index))}>حذف قسط</button>}
               </div>)}
               <button type="button" className="secondary-action" onClick={()=>setManualInstallments(rows=>[...rows,{amount:'',dueDate:''}])}>افزودن قسط با سررسید دستی</button>
