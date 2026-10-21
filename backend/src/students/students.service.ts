@@ -472,12 +472,17 @@ export class StudentsService {
       if (installmentAmount < paid) throw new ConflictException('مبلغ هیچ قسطی را نمی‌توان کمتر از مبلغ پرداخت‌شده آن کرد.');
       return { id: current.id, amount: installmentAmount, dueDate, paid };
     });
-    if (rows.reduce((sum, item) => sum + item.amount, 0) !== finalTuition) {
-      throw new ConflictException('جمع اقساط باید برابر شهریه نهایی باشد.');
-    }
     const paidTotal = registration.payments.filter((payment: any) => payment.status === 'APPROVED')
       .reduce((sum: number, payment: any) => sum + Number(payment.approvedAmount ?? payment.claimedAmount), 0);
     if (paidTotal > finalTuition) throw new ConflictException('شهریه نهایی نمی‌تواند از مجموع پرداخت‌های تأییدشده کمتر باشد.');
+    const hasExistingAllocations = registration.installments.some((item: any) =>
+      item.allocations.some((allocation: any) => allocation.payment.status === 'APPROVED'));
+    const expectedInstallmentTotal = hasExistingAllocations ? finalTuition : finalTuition - paidTotal;
+    if (rows.reduce((sum, item) => sum + item.amount, 0) !== expectedInstallmentTotal) {
+      throw new ConflictException(hasExistingAllocations
+        ? 'جمع اقساط باید برابر شهریه نهایی باشد؛ پرداخت‌ها روی همین اقساط تخصیص یافته‌اند.'
+        : 'جمع اقساط باید برابر مانده شهریه پس از کسر پرداخت‌های قبلی باشد.');
+    }
 
     await this.prisma.$transaction(async tx => {
       await tx.registration.update({
