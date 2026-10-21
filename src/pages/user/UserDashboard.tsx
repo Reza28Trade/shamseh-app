@@ -1051,8 +1051,10 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                           </span>
                         </div>
                       </div>
-                      <p style={{ fontSize: '12px', color: textColor, margin: 0, lineHeight: 1.8, overflowWrap: 'anywhere', whiteSpace: 'pre-wrap', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{n.content}</p>
-                      <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '4px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap', marginTop: '2px' }}>
+                        <span style={{ fontSize: '11px', color: subText, lineHeight: 1.7, overflowWrap: 'anywhere', flex: '1 1 180px' }}>
+                          برای مطالعه متن کامل، اطلاعیه را باز کنید.
+                        </span>
                         <button
                           type="button"
                           onClick={() => {
@@ -1060,7 +1062,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                             void markNotificationRead(n.id);
                           }}
                           disabled={markingNotificationIds.includes(n.id)}
-                          style={{ border: `1px solid ${accent}`, background: 'transparent', color: accent, borderRadius: '9px', padding: '8px 14px', fontSize: '11px', fontWeight: 800, cursor: markingNotificationIds.includes(n.id) ? 'wait' : 'pointer', opacity: markingNotificationIds.includes(n.id) ? 0.7 : 1 }}
+                          style={{ flexShrink: 0, border: `1px solid ${accent}`, background: 'transparent', color: accent, borderRadius: '9px', padding: '7px 12px', fontSize: '11px', fontWeight: 800, cursor: markingNotificationIds.includes(n.id) ? 'wait' : 'pointer', opacity: markingNotificationIds.includes(n.id) ? 0.7 : 1 }}
                         >
                           {markingNotificationIds.includes(n.id) ? 'در حال باز کردن...' : 'مشاهده اطلاعیه'}
                         </button>
