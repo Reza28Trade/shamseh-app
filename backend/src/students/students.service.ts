@@ -448,6 +448,73 @@ export class StudentsService {
     });
   }
 
+  async updateManualStudentFinance(user: AuthenticatedUser, studentId: string, registrationId: string, body: any) {
+    this.requireAdmin(user);
+    const amount = (value: unknown, label: string) => {
+      const parsed = Number(value);
+      if (!Number.isFinite(parsed) || !Number.isInteger(parsed) || parsed < 0) {
+        throw new ConflictException(label + ' باید عدد صحیح و نامنفی باشد.');
+      }
+      return parsed;
+    };
+    const registration = await this.prisma.registration.findFirst({
+      where: { id: registrationId, studentId },
+      include: { installments: { include: { allocations: { include: { payment: { select: { status: true } } } } }, payments: true },
+    });
+    if (!registration) throw new NotFoundException('پرونده مالی پیدا نشد.');
+    if (registration.status !== 'APPROVED') throw new ConflictException('فقط پرونده مالی تأییدشده قابل ویرایش است.');
+
+    const originalTuition = amount(body.originalTuition, 'شهریه اولیه');
+    const discountAmount = amount(body.discountAmount ?? 0, 'تخفیف');
+    if (originalTuition <= 0 || discountAmount > originalTuition) throw new ConflictException('مبلغ شهریه یا تخفیف معتبر نیست.');
+    const finalTuition = originalTuition - discountAmount;
+    const installments: any[] = Array.isArray(body.installments) ? body.installments : [];
+    if (!installments.length || installments.length !== registration.installments.length) {
+      throw new ConflictException('تعداد اقساط در ویرایش نباید تغییر کند.');
+    }
+    const currentById = new Map(registration.installments.map((item: any) => [item.id, item]));
+    const rows = installments.map((item: any) => {
+      const current: any = currentById.get(String(item.id));
+      const installmentAmount = amount(item.amount, 'مبلغ قسط');
+      const dueDate = new Date(item.dueDate);
+      if (!current || installmentAmount <= 0 || !item.dueDate || Number.isNaN(dueDate.getTime())) {
+        throw new ConflictException('اطلاعات یکی از اقساط معتبر نیست.');
+      }
+      const paid = current.allocations.filter((allocation: any) => allocation.payment.status === 'APPROVED')
+        .reduce((sum: number, allocation: any) => sum + Number(allocation.amount), 0);
+      if (installmentAmount < paid) throw new ConflictException('مبلغ هیچ قسطی را نمی‌توان کمتر از مبلغ پرداخت‌شده آن کرد.');
+      return { id: current.id, amount: installmentAmount, dueDate, paid };
+    });
+    if (rows.reduce((sum, item) => sum + item.amount, 0) !== finalTuition) {
+      throw new ConflictException('جمع اقساط باید برابر شهریه نهایی باشد.');
+    }
+    const paidTotal = registration.payments.filter((payment: any) => payment.status === 'APPROVED')
+      .reduce((sum: number, payment: any) => sum + Number(payment.approvedAmount ?? payment.claimedAmount), 0);
+    if (paidTotal > finalTuition) throw new ConflictException('شهریه نهایی نمی‌تواند از مجموع پرداخت‌های تأییدشده کمتر باشد.');
+
+    await this.prisma.$transaction(async tx => {
+      await tx.registration.update({
+        where: { id: registrationId },
+        data: {
+          originalTuition, discountAmount, finalTuition,
+          approvalMode: discountAmount > 0 ? 'DISCOUNT' : 'NORMAL',
+          discountReason: body.discountReason ? String(body.discountReason).slice(0, 2000) : null,
+          reviewNote: 'پرونده مالی توسط مدیریت ویرایش شد.',
+        },
+      });
+      for (const item of rows) {
+        await tx.installment.update({
+          where: { id: item.id },
+          data: { amount: item.amount, dueDate: item.dueDate, status: item.paid >= item.amount ? 'PAID' : item.paid > 0 ? 'PARTIALLY_PAID' : 'PENDING' },
+        });
+      }
+      await tx.registrationReviewHistory.create({
+        data: { registrationId, actorUserId: user.id, action: 'MANUAL_FINANCE_UPDATED', fromStatus: 'APPROVED', toStatus: 'APPROVED', note: 'ویرایش شهریه و اقساط پرونده مالی توسط مدیریت' },
+      });
+    });
+    return { success: true };
+  }
+
   async getStudentFinance(user: AuthenticatedUser, studentId: string) {
     this.requireAdmin(user);
     const student = await this.prisma.student.findUnique({
