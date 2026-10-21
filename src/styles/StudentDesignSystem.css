@@ -228,7 +228,7 @@
   border-color: var(--admin-border) !important;
 }
 .student-dashboard .student-dashboard-nav > button.active {
-  background: linear-gradient(90deg, transparent 0%, var(--admin-accent-soft) 100%) !important;
+  background: linear-gradient(to right, var(--admin-accent-soft) 0%, transparent 100%) !important;
   border-color: transparent !important;
   color: var(--admin-accent) !important;
   font-weight: 900 !important;
