@@ -38,6 +38,8 @@ export function RegistrationPage() {
   const [statusNationalId, setStatusNationalId] = useState('');
   const [statusPhone, setStatusPhone] = useState('');
   const [status, setStatus] = useState<RegistrationStatus | null>(null);
+  const [recoveredRegistrations, setRecoveredRegistrations] = useState<Array<{id:string;status:string;createdAt:string;applicantFullName:string}>>([]);
+  const [lookupLoading, setLookupLoading] = useState(false);
   const [correctionAmount, setCorrectionAmount] = useState('');
   const [correctionReceipt, setCorrectionReceipt] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -72,6 +74,27 @@ export function RegistrationPage() {
     setRegistrationId(id);
     setStatusNationalId(normalizedNationalId);
     setStatusPhone(normalizedPhone);
+  };
+
+  const findMyRegistrations = async (event: FormEvent) => {
+    event.preventDefault(); setLookupLoading(true); setError(''); setNotice(''); setRecoveredRegistrations([]);
+    try {
+      const data = await request('/api/public/registrations/lookup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nationalId: toEnglishDigits(statusNationalId.trim()),
+          phone: toEnglishDigits(statusPhone.trim()),
+        }),
+      });
+      setRecoveredRegistrations(data);
+      if (data.length === 1) {
+        setRegistrationId(data[0].id);
+        await loadStatus(data[0].id, statusNationalId, statusPhone);
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'بازیابی شناسه ثبت‌نام ناموفق بود.');
+    } finally { setLookupLoading(false); }
   };
 
   const submit = async (event: FormEvent) => {
@@ -119,7 +142,7 @@ export function RegistrationPage() {
     <style>{`
       .reg-page{min-height:100vh;background:#f5f6f5;color:#182022;font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif;padding:28px 16px 60px}
       .reg-wrap{max-width:1080px;margin:0 auto}.reg-header{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:24px}.reg-brand{display:flex;align-items:center;gap:12px}.reg-brand img{width:54px;height:54px;object-fit:contain}.reg-brand h1{font-size:21px;margin:0 0 4px;font-weight:900}.reg-brand p{margin:0;color:#71807f;font-size:12px}.reg-back{color:#38838a;text-decoration:none;font-size:12px;font-weight:800}
-      .reg-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(290px,.8fr);gap:18px;align-items:start}.reg-card{background:#fff;border:1px solid #dfe7e5;border-radius:18px;padding:22px;box-shadow:0 10px 28px rgba(24,32,34,.04);min-width:0}.reg-card h2{font-size:17px;margin:0 0 6px}.reg-muted{font-size:12px;color:#71807f;line-height:1.9;margin:0 0 18px}.reg-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.reg-field{display:grid;gap:6px;font-size:12px;font-weight:750}.reg-field input,.reg-field select{width:100%;min-width:0;box-sizing:border-box;border:1px solid #dfe7e5;border-radius:10px;padding:11px 12px;font:inherit;font-size:13px;color:#182022;background:#ffffff;outline-color:#38838a}.reg-course-list{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0 18px}.reg-course{display:flex;gap:10px;align-items:flex-start;padding:12px;border:1px solid #dfe7e5;border-radius:12px;cursor:pointer}.reg-course:has(input:checked){border-color:#38838a;background:#f0f8f7}.reg-course input{margin-top:4px;accent-color:#38838a}.reg-course strong{display:block;font-size:12px}.reg-course small{display:block;color:#71807f;font-size:11px;margin-top:5px}.reg-total{display:flex;justify-content:space-between;gap:12px;align-items:center;background:#f0f8f7;border-radius:12px;padding:13px 14px;margin:16px 0;font-size:12px}.reg-total strong{font-size:15px;color:#38838a}.reg-button{border:0;border-radius:10px;background:#38838a;color:#fff;font:inherit;font-weight:850;font-size:13px;padding:12px 16px;cursor:pointer;width:100%}.reg-button:disabled{opacity:.55;cursor:not-allowed}.reg-status-form{display:grid;gap:10px}.reg-notice{background:#eef7f4;border:1px solid #c8e0dc;color:#286e70;padding:12px;border-radius:10px;font-size:12px;line-height:1.8;margin-bottom:12px}.reg-error{background:#fff1f1;border:1px solid #f0d2d4;color:#b5414a;padding:12px;border-radius:10px;font-size:12px;line-height:1.8;margin-bottom:12px}.reg-status-pill{display:inline-block;border-radius:999px;background:#e5f1ef;color:#38838a;padding:6px 10px;font-size:11px;font-weight:850}.reg-status-line{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #edf1ef;font-size:12px}.reg-status-line:last-child{border-bottom:0}.reg-history{margin-top:14px;padding-top:12px;border-top:1px solid #dfe7e5}.reg-history h3{font-size:13px}.reg-small{font-size:11px;color:#71807f;line-height:1.8}.reg-mobile-actions{display:flex;gap:10px;flex-wrap:wrap}.reg-mobile-actions input{min-width:0;flex:1}.reg-mobile-actions .reg-button{width:auto;min-width:110px}
+      .reg-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(290px,.8fr);gap:18px;align-items:start}.reg-card{background:#fff;border:1px solid #dfe7e5;border-radius:18px;padding:22px;box-shadow:0 10px 28px rgba(24,32,34,.04);min-width:0}.reg-card h2{font-size:17px;margin:0 0 6px}.reg-muted{font-size:12px;color:#71807f;line-height:1.9;margin:0 0 18px}.reg-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.reg-field{display:grid;gap:6px;font-size:12px;font-weight:750}.reg-field input,.reg-field select{width:100%;min-width:0;box-sizing:border-box;border:1px solid #dfe7e5;border-radius:10px;padding:11px 12px;font:inherit;font-size:13px;color:#182022;background:#ffffff;outline-color:#38838a}.reg-course-list{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0 18px}.reg-course{display:flex;gap:10px;align-items:flex-start;padding:12px;border:1px solid #dfe7e5;border-radius:12px;cursor:pointer}.reg-course:has(input:checked){border-color:#38838a;background:#f0f8f7}.reg-course input{margin-top:4px;accent-color:#38838a}.reg-course strong{display:block;font-size:12px}.reg-course small{display:block;color:#71807f;font-size:11px;margin-top:5px}.reg-total{display:flex;justify-content:space-between;gap:12px;align-items:center;background:#f0f8f7;border-radius:12px;padding:13px 14px;margin:16px 0;font-size:12px}.reg-total strong{font-size:15px;color:#38838a}.reg-button{border:0;border-radius:10px;background:#38838a;color:#fff;font:inherit;font-weight:850;font-size:13px;padding:12px 16px;cursor:pointer;width:100%}.reg-button:disabled{opacity:.55;cursor:not-allowed}.reg-status-form{display:grid;gap:10px}.reg-notice{background:#eef7f4;border:1px solid #c8e0dc;color:#286e70;padding:12px;border-radius:10px;font-size:12px;line-height:1.8;margin-bottom:12px}.reg-error{background:#fff1f1;border:1px solid #f0d2d4;color:#b5414a;padding:12px;border-radius:10px;font-size:12px;line-height:1.8;margin-bottom:12px}.reg-status-pill{display:inline-block;border-radius:999px;background:#e5f1ef;color:#38838a;padding:6px 10px;font-size:11px;font-weight:850}.reg-status-line{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #edf1ef;font-size:12px}.reg-status-line:last-child{border-bottom:0}.reg-history{margin-top:14px;padding-top:12px;border-top:1px solid #dfe7e5}.reg-history h3{font-size:13px}.reg-small{font-size:11px;color:#71807f;line-height:1.8}.reg-recovery{margin-top:20px;padding-top:18px;border-top:1px solid #dfe7e5}.reg-recovery h3{font-size:13px;margin:0 0 7px}.reg-button-secondary{background:#182022}.reg-recovered-list{display:grid;gap:8px;margin-top:12px}.reg-recovered-list>strong{font-size:12px}.reg-recovered-item{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:right;padding:11px;border:1px solid #dfe7e5;background:#f7f9f8;border-radius:10px;color:#182022;cursor:pointer}.reg-recovered-item span{display:grid;gap:4px}.reg-recovered-item b{font-size:12px}.reg-recovered-item small{font-size:10px;color:#71807f}.reg-mobile-actions{display:flex;gap:10px;flex-wrap:wrap}.reg-mobile-actions input{min-width:0;flex:1}.reg-mobile-actions .reg-button{width:auto;min-width:110px}
       @media(max-width:760px){.reg-grid{grid-template-columns:1fr}.reg-fields,.reg-course-list{grid-template-columns:1fr}.reg-header{align-items:flex-start}.reg-brand h1{font-size:17px}.reg-card{padding:16px}.reg-page{padding:18px 12px 40px}}
     `}</style>
     <div className="reg-wrap">
@@ -157,6 +180,16 @@ export function RegistrationPage() {
             <label className="reg-field">شماره موبایل<input required value={statusPhone} onChange={e=>setStatusPhone(toEnglishDigits(e.target.value))} inputMode="tel"/></label>
             <button className="reg-button" disabled={loading} type="submit">بررسی وضعیت</button>
           </form>
+          <div className="reg-recovery">
+            <h3>شناسه ثبت‌نام را فراموش کرده‌اید؟</h3>
+            <p className="reg-small">بدون نیاز به شناسه، با همان کد ملی و شماره موبایلی که هنگام پیش‌ثبت‌نام وارد کردید، درخواست‌هایتان را پیدا کنید.</p>
+            <form className="reg-status-form" onSubmit={findMyRegistrations}>
+              <label className="reg-field">کد ملی<input required pattern="\\d{10}" maxLength={10} value={statusNationalId} onChange={e=>setStatusNationalId(toEnglishDigits(e.target.value))} inputMode="numeric"/></label>
+              <label className="reg-field">شماره موبایل<input required pattern="09\\d{9}" maxLength={11} value={statusPhone} onChange={e=>setStatusPhone(toEnglishDigits(e.target.value))} inputMode="tel"/></label>
+              <button className="reg-button reg-button-secondary" disabled={lookupLoading} type="submit">{lookupLoading?'در حال جست‌وجو…':'بازیابی درخواست‌های من'}</button>
+            </form>
+            {recoveredRegistrations.length > 0 && <div className="reg-recovered-list"><strong>درخواست‌های پیدا‌شده</strong>{recoveredRegistrations.map(item=><button type="button" className="reg-recovered-item" key={item.id} onClick={()=>{setRegistrationId(item.id);setLoading(true);void loadStatus(item.id,statusNationalId,statusPhone).catch(err=>setError(err instanceof Error?err.message:'دریافت وضعیت ناموفق بود.')).finally(()=>setLoading(false));}}><span><b>{item.applicantFullName}</b><small>{new Date(item.createdAt).toLocaleDateString('fa-IR')} · {statusLabel[item.status]||item.status}</small></span><small>مشاهده وضعیت ←</small></button>)}</div>}
+          </div>
           {status && <div className="reg-history">
             <span className="reg-status-pill">{statusLabel[status.status] || status.status}</span>
             <div className="reg-status-line"><span>نام متقاضی</span><strong>{status.applicantFullName}</strong></div>
