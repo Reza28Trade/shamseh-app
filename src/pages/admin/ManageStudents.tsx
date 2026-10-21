@@ -51,6 +51,15 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
   const [financeData, setFinanceData] = useState<any | null>(null);
   const [financeLoading, setFinanceLoading] = useState(false);
   const [financeError, setFinanceError] = useState('');
+  const [manualFinanceOpen, setManualFinanceOpen] = useState(false);
+  const [manualCourseIds, setManualCourseIds] = useState<string[]>([]);
+  const [manualOriginalTuition, setManualOriginalTuition] = useState('');
+  const [manualDiscount, setManualDiscount] = useState('0');
+  const [manualDiscountReason, setManualDiscountReason] = useState('');
+  const [manualPayments, setManualPayments] = useState<Array<{amount:string;paymentDate:string;method:string;reference:string}>>([]);
+  const [manualInstallments, setManualInstallments] = useState<Array<{amount:string;dueDate:string}>>([{amount:'',dueDate:''}]);
+  const [manualFinanceSaving, setManualFinanceSaving] = useState(false);
+
 
   const [studentLevelFilter, setStudentLevelFilter] = useState<'ALL' | 'MASTER' | 'DOCTORATE'>('ALL');
   const [yearFilter, setYearFilter] = useState<'ALL' | string>('ALL');
@@ -168,6 +177,33 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
     } catch (err) {
       setFinanceError(err instanceof Error ? err.message : 'دریافت پرونده مالی انجام نشد.');
     } finally { setFinanceLoading(false); }
+  };
+
+
+  const saveManualFinance = async () => {
+    if (!financeStudent) return;
+    if (!manualCourseIds.length || !manualOriginalTuition || !manualInstallments.length || manualInstallments.some(i => !i.amount || !i.dueDate) || manualPayments.some(p => !p.amount || !p.paymentDate)) {
+      setFinanceError('دوره، شهریه، مبلغ و تاریخ سررسید تمام اقساط و مبلغ/تاریخ پرداخت‌های ثبت‌شده را کامل کنید.'); return;
+    }
+    setManualFinanceSaving(true); setFinanceError('');
+    try {
+      const response = await fetch('/api/admin/students/' + financeStudent.id + '/finance', {
+        method: 'POST', credentials: 'include', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          courseIds: manualCourseIds, originalTuition: Number(manualOriginalTuition), discountAmount: Number(manualDiscount || 0),
+          discountReason: manualDiscountReason,
+          payments: manualPayments.map(p=>({...p,amount:Number(p.amount)})),
+          installments: manualInstallments.map(i=>({...i,amount:Number(i.amount)})),
+        }),
+      });
+      const body = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(Array.isArray(body?.message) ? body.message.join('، ') : body?.message || 'ثبت پرونده مالی انجام نشد.');
+      setManualFinanceOpen(false); setManualCourseIds([]); setManualOriginalTuition(''); setManualDiscount('0'); setManualDiscountReason('');
+      setManualPayments([]); setManualInstallments([{amount:'',dueDate:''}]);
+      await openStudentFinance(financeStudent);
+      await loadStudents();
+    } catch(err) { setFinanceError(err instanceof Error ? err.message : 'ثبت پرونده مالی انجام نشد.'); }
+    finally { setManualFinanceSaving(false); }
   };
 
   const changeStudentArchive = async (student: ApiStudent) => {
@@ -391,7 +427,34 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
       {financeStudent && <div className="student-detail-backdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget){setFinanceStudent(null);setFinanceData(null);}}}>
         <section className="student-detail-modal" role="dialog" aria-modal="true" aria-labelledby="student-finance-title">
           <header className="student-detail-header"><div><span className="student-detail-kicker">سوابق شهریه و پرداخت</span><h3 id="student-finance-title">{financeStudent.fullName}</h3><p>نمایش اطلاعات مالی ثبت‌شده در سامانه</p></div><button type="button" className="student-detail-close" onClick={()=>{setFinanceStudent(null);setFinanceData(null);}} aria-label="بستن پنجره"><X size={18}/></button></header>
-          {financeLoading ? <div className="students-empty">در حال دریافت پرونده مالی…</div> : financeError ? <div className="students-error">{financeError}</div> : financeData && <div className="student-detail-enrollments">
+          <div className="student-detail-enrollments">
+            <div className="student-detail-section-title"><h4>ثبت دستی پرونده مالی</h4><button type="button" className="secondary-action" onClick={()=>setManualFinanceOpen(v=>!v)}>{manualFinanceOpen?'بستن فرم':'ثبت پرونده جدید'}</button></div>
+            {manualFinanceOpen && <div className="detail-course-active" style={{marginBottom:12,display:'grid',gap:10}}>
+              <strong>دوره‌های مشمول این پرونده</strong>
+              <div style={{display:'grid',gap:6}}>{apiCourses.filter(course=>course.level===financeStudent.academicLevel).map(course=><label key={course.id} style={{display:'flex',gap:8,alignItems:'center'}}><input type="checkbox" checked={manualCourseIds.includes(course.id)} onChange={()=>setManualCourseIds(current=>current.includes(course.id)?current.filter(id=>id!==course.id):[...current,course.id])}/>{course.title} · {course.academicYear??'—'} · {termLabel(course.term)}</label>)}</div>
+              <label>شهریه اولیه (تومان)<input type="number" min="1" value={manualOriginalTuition} onChange={e=>setManualOriginalTuition(e.target.value)}/></label>
+              <label>تخفیف (تومان)<input type="number" min="0" value={manualDiscount} onChange={e=>setManualDiscount(e.target.value)}/></label>
+              <label>دلیل تخفیف (اختیاری)<input value={manualDiscountReason} onChange={e=>setManualDiscountReason(e.target.value)}/></label>
+              <h4>پرداخت‌های قبلی ثبت‌شده</h4>
+              {manualPayments.map((payment,index)=><div key={index} style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))',gap:8}}>
+                <input aria-label="مبلغ پرداخت قبلی" type="number" min="1" placeholder="مبلغ پرداخت (تومان)" value={payment.amount} onChange={e=>setManualPayments(rows=>rows.map((row,i)=>i===index?{...row,amount:e.target.value}:row))}/>
+                <input aria-label="تاریخ پرداخت قبلی" type="date" value={payment.paymentDate} onChange={e=>setManualPayments(rows=>rows.map((row,i)=>i===index?{...row,paymentDate:e.target.value}:row))}/>
+                <select aria-label="روش پرداخت قبلی" value={payment.method} onChange={e=>setManualPayments(rows=>rows.map((row,i)=>i===index?{...row,method:e.target.value}:row))}><option value="BANK_TRANSFER">بانکی</option><option value="CASH">نقدی</option><option value="CARD">کارت‌خوان</option><option value="OTHER">سایر</option></select>
+                <input aria-label="شناسه پرداخت قبلی" placeholder="شماره پیگیری/توضیح" value={payment.reference} onChange={e=>setManualPayments(rows=>rows.map((row,i)=>i===index?{...row,reference:e.target.value}:row))}/>
+                <button type="button" className="secondary-action" onClick={()=>setManualPayments(rows=>rows.filter((_,i)=>i!==index))}>حذف پرداخت</button>
+              </div>)}
+              <button type="button" className="secondary-action" onClick={()=>setManualPayments(rows=>[...rows,{amount:'',paymentDate:'',method:'BANK_TRANSFER',reference:''}])}>افزودن پرداخت قبلی</button>
+              <h4>برنامه اقساط (جمع اقساط برابر شهریه نهایی باشد)</h4>
+              {manualInstallments.map((installment,index)=><div key={index} style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(160px,1fr))',gap:8}}>
+                <input aria-label={'مبلغ قسط '+(index+1)} type="number" min="1" placeholder={'مبلغ قسط '+(index+1)+' (تومان)'} value={installment.amount} onChange={e=>setManualInstallments(rows=>rows.map((row,i)=>i===index?{...row,amount:e.target.value}:row))}/>
+                <label>سررسید قسط {index+1}<input aria-label={'سررسید قسط '+(index+1)} type="date" value={installment.dueDate} onChange={e=>setManualInstallments(rows=>rows.map((row,i)=>i===index?{...row,dueDate:e.target.value}:row))}/></label>
+                {manualInstallments.length>1 && <button type="button" className="secondary-action" onClick={()=>setManualInstallments(rows=>rows.filter((_,i)=>i!==index))}>حذف قسط</button>}
+              </div>)}
+              <button type="button" className="secondary-action" onClick={()=>setManualInstallments(rows=>[...rows,{amount:'',dueDate:''}])}>افزودن قسط با سررسید دستی</button>
+              <p>جمع پرداخت‌های قبلی: {manualPayments.reduce((sum,p)=>sum+(Number(p.amount)||0),0).toLocaleString('fa-IR')} تومان · شهریه نهایی: {Math.max(0,(Number(manualOriginalTuition)||0)-(Number(manualDiscount)||0)).toLocaleString('fa-IR')} تومان · جمع اقساط: {manualInstallments.reduce((sum,i)=>sum+(Number(i.amount)||0),0).toLocaleString('fa-IR')} تومان</p>
+              <button type="button" className="primary-action" disabled={manualFinanceSaving} onClick={()=>void saveManualFinance()}>{manualFinanceSaving?'در حال ثبت…':'ثبت پرونده مالی دستی'}</button>
+            </div>}
+          </div>{financeLoading ? <div className="students-empty">در حال دریافت پرونده مالی…</div> : financeError ? <div className="students-error">{financeError}</div> : financeData && <div className="student-detail-enrollments">
             {!financeData.registrations?.length && <div className="students-empty">برای این هنرجو هنوز پرونده مالی از مسیر ثبت‌نام ایجاد نشده است.</div>}
             {(financeData.registrations || []).map((registration:any)=><article key={registration.id} className="detail-course-active" style={{marginBottom:12}}>
               <div className="detail-course-top"><strong>{registration.courses?.map((course:any)=>course.courseTitleSnapshot).join('، ') || 'ثبت‌نام بدون عنوان دوره'}</strong><span className="detail-status-active">{registration.status==='APPROVED'?'تأییدشده':registration.status}</span></div>
