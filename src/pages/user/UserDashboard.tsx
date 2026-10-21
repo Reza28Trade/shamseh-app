@@ -89,6 +89,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   }>>([]);
   const [notificationsLoading, setNotificationsLoading] = useState(false);
   const [notificationsError, setNotificationsError] = useState('');
+  const [latestCounselorMessage, setLatestCounselorMessage] = useState<{ content: string; createdAt: string } | null>(null);
   const [markingNotificationIds, setMarkingNotificationIds] = useState<string[]>([]);
   const [selectedNotification, setSelectedNotification] = useState<{ id: string; title: string; content: string; type: string; createdAt: string; readAt: string | null } | null>(null);
   const [supportTickets, setSupportTickets] = useState<Array<{ id: string; subject: string; status: 'OPEN' | 'ANSWERED' | 'CLOSED'; createdAt: string; messages: Array<{ id: string; content: string; createdAt: string; senderUserId: string }> }>>([]);
@@ -320,6 +321,33 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
 
     void loadMockExams();
     return () => { cancelled = true; };
+  }, [activeTab, student.id]);
+
+  useEffect(() => {
+    if (activeTab !== 'home') return;
+    let cancelled = false;
+    const loadCounselorMessage = async () => {
+      try {
+        const conversationsResponse = await fetch('/api/counseling/conversations', { credentials: 'include' });
+        if (!conversationsResponse.ok) return;
+        const conversations = await conversationsResponse.json() as Array<{ id: string }>;
+        const allMessages = await Promise.all(conversations.map(async conversation => {
+          try {
+            const response = await fetch(`/api/counseling/conversations/${conversation.id}/messages`, { credentials: 'include' });
+            if (!response.ok) return [];
+            return await response.json() as Array<{ content: string; createdAt: string; sender?: { role?: string } }>;
+          } catch { return []; }
+        }));
+        const incoming = allMessages.flat().filter(message => message.sender?.role === 'COUNSELOR')
+          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0];
+        if (!cancelled) setLatestCounselorMessage(incoming ? { content: incoming.content, createdAt: incoming.createdAt } : null);
+      } catch {
+        if (!cancelled) setLatestCounselorMessage(null);
+      }
+    };
+    void loadCounselorMessage();
+    const interval = window.setInterval(() => { void loadCounselorMessage(); }, 60000);
+    return () => { cancelled = true; window.clearInterval(interval); };
   }, [activeTab, student.id]);
 
   useEffect(() => {
@@ -642,6 +670,20 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                       {studentNotifications.length===0?<div style={{color:subText,fontSize:'11px',padding:'18px 4px',textAlign:'center'}}>اطلاعیه جدیدی ندارید.</div>:<div style={{display:'flex',flexDirection:'column',gap:'8px'}}>{studentNotifications.slice(0,3).map(n=><button key={n.id} type="button" onClick={handleOpenNotificationTab} style={{textAlign:'right',border:`1px solid ${borderColor}`,backgroundColor:innerCardBg,borderRadius:'11px',padding:'10px',cursor:'pointer'}}><div style={{color:textColor,fontSize:'10px',fontWeight:900}}>{n.title}</div><div style={{color:subText,fontSize:'8px',marginTop:'4px'}}>{new Date(n.createdAt).toLocaleDateString('fa-IR')}</div></button>)}</div>}
                     </div>
                     <StudentNextInstallmentSummary onOpenFinance={() => setActiveTab('finance')} />
+                    <button type="button" onClick={() => setActiveTab('counseling')} style={{display:'flex',alignItems:'flex-start',gap:12,width:'100%',textAlign:'right',padding:'15px 16px',borderRadius:14,border:`1px solid ${latestCounselorMessage ? accent : borderColor}`,backgroundColor:cardBg,color:textColor,cursor:'pointer',fontFamily:'inherit',boxShadow:'none'}}>
+                      <span style={{width:38,height:38,flex:'0 0 38px',display:'grid',placeItems:'center',borderRadius:11,backgroundColor:accentSoft,color:accent}}><MessageSquareText size={18}/></span>
+                      <span style={{display:'block',minWidth:0,flex:1}}>
+                        <span style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,flexWrap:'wrap'}}>
+                          <strong style={{fontSize:13,fontWeight:900}}>پیام مشاور</strong>
+                          {latestCounselorMessage && <span style={{fontSize:9,fontWeight:900,padding:'4px 7px',borderRadius:20,backgroundColor:accentSoft,color:accent}}>پیام دریافت شد</span>}
+                        </span>
+                        <span style={{display:'block',fontSize:11,color:subText,lineHeight:1.8,marginTop:5}}>
+                          {latestCounselorMessage ? latestCounselorMessage.content : 'در حال حاضر پیام جدیدی از مشاور ندارید.'}
+                        </span>
+                        {latestCounselorMessage && <span style={{display:'block',fontSize:9,color:subText,marginTop:5}}>{new Date(latestCounselorMessage.createdAt).toLocaleString('fa-IR')}</span>}
+                        <span style={{display:'block',fontSize:10,fontWeight:900,color:accent,marginTop:8}}>ورود به گفت‌وگوی مشاوره ←</span>
+                      </span>
+                    </button>
                   </div>
                 </div>
 
