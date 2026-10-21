@@ -330,6 +330,37 @@ export class StudentsService {
     }
   }
 
+  async getStudentFinance(user: AuthenticatedUser, studentId: string) {
+    this.requireAdmin(user);
+    const student = await this.prisma.student.findUnique({
+      where: { id: studentId },
+      select: {
+        id: true, fullName: true, nationalId: true,
+        registrations: {
+          orderBy: { createdAt: 'desc' },
+          select: {
+            id: true, status: true, approvalMode: true, originalTuition: true,
+            discountAmount: true, finalTuition: true, createdAt: true,
+            courses: { select: { courseTitleSnapshot: true, coursePriceSnapshot: true } },
+            payments: {
+              orderBy: { paymentDate: 'desc' },
+              select: { id: true, purpose: true, status: true, claimedAmount: true, approvedAmount: true, paymentDate: true, method: true, trackingCode: true, reference: true },
+            },
+            installments: {
+              orderBy: [{ dueDate: 'asc' }, { sequence: 'asc' }],
+              select: {
+                id: true, sequence: true, amount: true, dueDate: true, status: true,
+                allocations: { select: { amount: true, payment: { select: { status: true } } } },
+              },
+            },
+          },
+        },
+      },
+    });
+    if (!student) throw new NotFoundException('Student not found');
+    return student;
+  }
+
   async deleteStudent(user: AuthenticatedUser, studentId: string) {
     this.requireAdmin(user);
     const student = await this.prisma.student.findUnique({
