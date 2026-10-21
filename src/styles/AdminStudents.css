@@ -1,14 +1,15 @@
 .admin-students-page{max-width:1240px!important;gap:16px!important}
-.students-page-head,.students-stats,.student-chart-card,.student-form-card,.student-import-card,.student-list-card{background:var(--admin-card);border:1px solid var(--admin-border);box-shadow:var(--admin-shadow);border-radius:16px}
+.students-page-head,.student-chart-card,.student-form-card,.student-import-card,.student-list-card{background:var(--admin-card);border:1px solid var(--admin-border);box-shadow:var(--admin-shadow);border-radius:16px}
+.students-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;background:transparent;border:0;box-shadow:none;border-radius:0;overflow:visible}
+.student-stat{min-width:0;padding:15px 18px;background:var(--admin-card);border:1px solid var(--admin-border);box-shadow:var(--admin-shadow);border-radius:15px}
+.student-stat:last-child{border-left:1px solid var(--admin-border)}
 .students-page-head{padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;background:linear-gradient(120deg,var(--admin-accent-soft),var(--admin-card) 78%)!important;border-top:3px solid var(--admin-accent)!important}
 .students-eyebrow{font-size:10px;letter-spacing:1.3px;color:var(--admin-accent);font-weight:800}
 .students-page-head h2{display:flex;align-items:center;gap:8px;margin:5px 0 4px;font-size:20px}
 .students-page-head p{margin:0;font-size:12px}
 .students-head-actions{display:flex;gap:8px;flex-wrap:wrap}
 .students-head-actions button,.secondary-action{display:inline-flex;align-items:center;gap:6px;padding:9px 12px;background:var(--admin-control);color:var(--admin-text);border:1px solid var(--admin-border);font-size:12px}
-.students-stats{display:grid;grid-template-columns:repeat(4,1fr);overflow:hidden}
-.student-stat{padding:15px 18px;border-left:1px solid var(--admin-border)}
-.student-stat:last-child{border-left:0}.student-stat span{display:block;font-size:11px;color:var(--admin-sub);margin-bottom:5px}.student-stat strong{font-size:23px;line-height:1;color:var(--admin-text)}
+.student-stat span{display:block;font-size:11px;color:var(--admin-sub);margin-bottom:5px}.student-stat strong{font-size:23px;line-height:1;color:var(--admin-text)}
 .students-main-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(360px,.85fr);gap:16px}
 .student-chart-card,.student-form-card,.student-import-card,.student-list-card{padding:18px}
 .section-title{display:flex;align-items:center;gap:7px}.section-title svg{color:var(--admin-accent)}.section-title h3{margin:0;font-size:15px}
