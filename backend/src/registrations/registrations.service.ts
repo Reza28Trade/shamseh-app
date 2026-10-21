@@ -504,6 +504,9 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       previouslyApprovedAmount: otherApproved,
       firstDueDate: dto.firstDueDate,
     });
+    if (plan.totalPaid > plan.finalTuition + 0.0001) {
+      throw new BadRequestException('مبلغ تأییدشده از شهریه این ثبت‌نام بیشتر می‌شود؛ پرداخت اضافه را به این پرونده نسبت ندهید.');
+    }
     if (dto.mockExamEligible && !dto.mockExamId?.trim()) {
       throw new BadRequestException('برای ثبت امتیاز آزمون رایگان، انتخاب آزمون الزامی است.');
     }
