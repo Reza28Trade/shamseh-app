@@ -162,8 +162,8 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
   }
 
   return (
-    <section style={{ direction: 'rtl', color: colors.text, fontFamily: 'Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif', background: colors.card, border: `1px solid ${colors.border}`, borderRadius: 15, overflow: 'hidden', boxShadow: 'none' }}>
-      <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', padding: '18px 20px', borderBottom: `1px solid ${colors.border}`, background: colors.card }}>
+    <section className="student-counseling-panel" style={{ direction: 'rtl', color: colors.text, fontFamily: 'Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif', background: colors.card, border: `1px solid ${colors.border}`, borderRadius: 15, overflow: 'hidden', boxShadow: 'none', display: 'flex', flexDirection: 'column', height: 'min(560px, calc(100vh - 190px))', minHeight: 390 }}>
+      <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', padding: '13px 16px', borderBottom: `1px solid ${colors.border}`, background: colors.card }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <span style={{ width: 43, height: 43, display: 'grid', placeItems: 'center', borderRadius: 13, background: colors.soft, color: colors.accent }}><MessageCircle size={21} /></span>
           <div><span style={{ display: 'block', color: colors.accent, fontSize: 10, fontWeight: 850, marginBottom: 4 }}>ارتباط مستقیم</span><h2 style={{ margin: 0, fontSize: 16, fontWeight: 900 }}>مشاوره من</h2><p style={{ margin: '5px 0 0', color: colors.sub, fontSize: 11 }}>گفت‌وگوی آنلاین با مشاور اختصاص‌یافته</p></div>
@@ -175,8 +175,8 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
       {loading ? <div style={{ textAlign: 'center', padding: 54, color: colors.sub, fontSize: 12 }}>در حال دریافت گفت‌وگو…</div> : !conversation ? (
         <div style={{ margin: 18, padding: '42px 20px', textAlign: 'center', borderRadius: 14, background: colors.inner, border: `1px dashed ${colors.border}` }}><MessageCircle size={34} color={colors.accent} style={{ marginBottom: 10 }} /><p style={{ margin: '0 0 7px', fontSize: 13, fontWeight: 850 }}>هنوز مشاوری برای شما تعیین نشده است.</p><p style={{ margin: 0, color: colors.sub, fontSize: 11, lineHeight: 1.9 }}>پس از تخصیص مشاور توسط مدیریت، امکان گفت‌وگوی آنلاین در همین بخش فعال می‌شود.</p></div>
       ) : (
-        <div style={{ padding: 14 }}>
-          <div className="student-chat-scroll-area" aria-live="polite" style={{ minHeight: 300, maxHeight: 520, overflowY: 'auto', padding: 18, background: colors.bg, border: `1px solid ${colors.border}`, borderRadius: '13px 13px 0 0' }}>
+        <div className="student-counseling-body" style={{ padding: 12, display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+          <div className="student-chat-scroll-area" aria-live="polite" style={{ flex: 1, minHeight: 0, maxHeight: 'none', overflowY: 'auto', padding: 14, background: colors.bg, border: `1px solid ${colors.border}`, borderRadius: '13px 13px 0 0' }}>
             {messages.length === 0 ? <div style={{ textAlign: 'center', padding: '65px 18px', color: colors.sub }}><MessageCircle size={30} style={{ opacity: .6, marginBottom: 10 }} /><p style={{ margin: 0, fontSize: 12, fontWeight: 800 }}>گفت‌وگو را شروع کنید</p><p style={{ fontSize: 11, lineHeight: 1.8 }}>پیام شما مستقیماً برای مشاور اختصاص‌یافته ارسال می‌شود.</p></div> : messages.map(message => {
               const own = message.sender.role === 'STUDENT';
               return <div key={message.id} style={{ display: 'flex', direction: 'ltr', justifyContent: own ? 'flex-end' : 'flex-start', marginBottom: 12 }}>
@@ -192,7 +192,7 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
           </div>
           {isRecording && <div style={{ padding: '7px 12px', color: '#d85b65', fontSize: 11 }}>در حال ضبط پیام صوتی… برای پایان ضبط، دکمه مربع را بزنید.</div>}
           {selectedFile && <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', border: `1px solid ${colors.border}`, borderBottom: 0, borderRadius: '10px 10px 0 0', background: colors.inner, color: colors.sub, fontSize: 10 }}><Paperclip size={14} /><span style={{ flex: 1, overflowWrap: 'anywhere' }}>{selectedFile.name}</span><button type="button" onClick={() => setSelectedFile(null)} style={{ border: 0, background: 'transparent', color: '#d4777d', cursor: 'pointer' }}>حذف پیوست</button></div>}
-          <form onSubmit={sendMessage} style={{ display: 'flex', alignItems: 'flex-end', gap: 10, padding: 12, background: colors.card, border: `1px solid ${colors.border}`, borderTop: 0, borderRadius: '0 0 13px 13px' }}>
+          <form className="student-chat-composer" onSubmit={sendMessage} style={{ display: 'flex', alignItems: 'flex-end', gap: 8, padding: 10, background: colors.card, border: `1px solid ${colors.border}`, borderTop: 0, borderRadius: '0 0 13px 13px' }}>
             <button type="button" title={isRecording ? 'پایان ضبط' : 'ضبط پیام صوتی'} disabled={sending || Boolean(selectedFile)} onClick={() => void toggleVoiceRecording()} style={{ display: 'grid', placeItems: 'center', flex: '0 0 40px', height: 44, border: `1px solid ${colors.border}`, borderRadius: 10, background: isRecording ? '#b43d48' : colors.inner, color: isRecording ? '#fff' : colors.accent, cursor: sending ? 'wait' : 'pointer' }}>{isRecording ? <Square size={15}/> : <Mic size={17}/>}</button>
             <label title="افزودن فایل (حداکثر ۱۰ مگابایت)" style={{ display: 'grid', placeItems: 'center', flex: '0 0 40px', height: 44, border: `1px solid ${colors.border}`, borderRadius: 10, background: colors.inner, color: colors.accent, cursor: sending ? 'wait' : 'pointer' }}><Paperclip size={17} /><input type="file" disabled={sending} accept=".pdf,.png,.jpg,.jpeg,.webp,.txt,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.mp3,.wav,.mp4,.webm" onChange={e => { setSelectedFile(e.target.files?.[0] || null); e.currentTarget.value = ''; }} style={{ display: 'none' }} /></label>
             <textarea value={draft} onChange={e => setDraft(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); if (draft.trim() || selectedFile) void sendMessage(e as unknown as FormEvent); } }} maxLength={5000} rows={2} disabled={sending} placeholder="برای ارسال Enter و برای خط جدید Shift+Enter" aria-label="متن پیام" style={{ flex: 1, minWidth: 0, resize: 'vertical', border: `1px solid ${colors.border}`, borderRadius: 10, padding: 11, background: colors.inner, color: colors.text, font: 'inherit', fontSize: 12, lineHeight: 1.8, outline: 'none' }} />
@@ -202,11 +202,13 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
         </div>
       )}
       <style>{`
-        .student-chat-scroll-area{scrollbar-width:thin;scrollbar-color:${colors.accentSolid} ${colors.inner};scrollbar-gutter:stable}
+        .student-counseling-panel{min-width:0}\n        .student-chat-composer textarea{min-height:44px;max-height:140px}\n        .student-chat-scroll-area{scrollbar-width:thin;scrollbar-color:${colors.accentSolid} ${colors.inner};scrollbar-gutter:stable}
         .student-chat-scroll-area::-webkit-scrollbar{width:7px;height:7px}
         .student-chat-scroll-area::-webkit-scrollbar-track{background:${colors.inner};border-radius:999px}
         .student-chat-scroll-area::-webkit-scrollbar-thumb{background:${colors.accentSolid};border:2px solid ${colors.inner};border-radius:999px}
         .student-chat-scroll-area::-webkit-scrollbar-thumb:hover{background:${isDark ? '#70b9b5' : '#286d70'}}
+        @media(max-width:640px){.student-counseling-panel{height:calc(100dvh - 170px)!important;min-height:360px!important}.student-counseling-body{padding:8px!important}.student-chat-scroll-area{padding:10px!important}.student-chat-composer{gap:6px!important;padding:8px!important}.student-chat-composer button[type=submit]{padding:0 10px!important}.student-chat-composer textarea{font-size:11px!important}}
+        @media(max-height:600px){.student-counseling-panel{height:calc(100vh - 150px);min-height:320px}}
       `}</style>
     </section>
   );
