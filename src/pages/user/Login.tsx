@@ -84,8 +84,7 @@ export const Login:React.FC<LoginProps>=({students,admins,onLoginSuccess,onAdmin
    <div className="sh-login-visual">
      <ShamsehParticleIntro/>
      <div className="sh-login-brand" onClick={()=>setViewState(viewState==='adminLogin'?'welcome':'adminLogin')}><img src="/logo.png" alt="لوگو آکادمی شمسه"/><span>سامانه آموزشی شمسه</span></div>
-     <div className="sh-login-copy"><span>ACADEMIC PLATFORM</span><h1>مسیر آموزش،<br/><em>منظم و متمرکز.</em></h1><p>دسترسی یکپارچه به دوره‌ها، آزمون‌ها، فایل‌های آموزشی و خدمات آموزشی شمسه.</p></div>
-     <div className="sh-login-footer">آکادمی شمسه · ۱۴۰۵</div>
+     <div className="sh-login-copy"><h1>مسیر آموزش،<br/><em>منظم و متمرکز.</em></h1><p>دوره‌ها، آزمون‌ها، فایل‌های آموزشی و خدمات آموزشی شمسه.</p></div>
    </div>
    <div className="sh-login-content">
      <div className="sh-login-top"></div>
