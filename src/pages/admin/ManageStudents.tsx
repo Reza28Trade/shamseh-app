@@ -168,6 +168,9 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
   };
 
   const openStudentFinance = async (student: ApiStudent) => {
+    setManualFinanceOpen(false); setManualCourseIds([]); setManualOriginalTuition('');
+    setManualDiscount('0'); setManualDiscountReason(''); setManualPayments([]);
+    setManualInstallments([{amount:'',dueDate:''}]);
     setFinanceStudent(student); setFinanceData(null); setFinanceError(''); setFinanceLoading(true);
     try {
       const response = await fetch(`/api/admin/students/${student.id}/finance`, { credentials: 'include' });
@@ -421,7 +424,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
               <div className="detail-course-meta"><span>مقطع دوره: {levelLabel(enrollment.course.level)}</span><span>سال تحصیلی: {enrollment.course.academicYear ?? '—'}</span><span>ترم: {termLabel(enrollment.course.term)}</span><span>تاریخ ثبت‌نام: {enrollment.enrolledAt ? new Date(enrollment.enrolledAt).toLocaleDateString('fa-IR') : '—'}</span></div>
             </article>)}</div> : <div className="students-empty">برای این هنرجو سابقه ثبت‌نامی وجود ندارد.</div>}
           </div>
-          <button type="button" className="secondary-action" onClick={()=>void openStudentFinance(selectedStudent)}><Wallet size={14}/> پرونده مالی</button><footer className="student-detail-footer"><button type="button" className="secondary-action" onClick={()=>setSelectedStudent(null)}>بستن</button><button type="button" className="secondary-action" onClick={()=>void changeStudentArchive(selectedStudent)}>{selectedStudent.isArchived?<CheckCircle2 size={14}/>:<Archive size={14}/>} {selectedStudent.isArchived?'بازگردانی به فهرست فعال':'بایگانی هنرجو'}</button><button type="button" className="primary-action" onClick={()=>{const student=selectedStudent;setSelectedStudent(null);handleEdit(student);}}><Pencil size={14}/> ویرایش اطلاعات هنرجو</button></footer>
+          <footer className="student-detail-footer"><button type="button" className="secondary-action" onClick={()=>void openStudentFinance(selectedStudent)}><Wallet size={14}/> پرونده مالی</button><button type="button" className="secondary-action" onClick={()=>setSelectedStudent(null)}>بستن</button><button type="button" className="secondary-action" onClick={()=>void changeStudentArchive(selectedStudent)}>{selectedStudent.isArchived?<CheckCircle2 size={14}/>:<Archive size={14}/>} {selectedStudent.isArchived?'بازگردانی به فهرست فعال':'بایگانی هنرجو'}</button><button type="button" className="primary-action" onClick={()=>{const student=selectedStudent;setSelectedStudent(null);handleEdit(student);}}><Pencil size={14}/> ویرایش اطلاعات هنرجو</button></footer>
         </section>
       </div>}
       {financeStudent && <div className="student-detail-backdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget){setFinanceStudent(null);setFinanceData(null);}}}>
@@ -466,7 +469,11 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
               <h4>پرداخت‌ها</h4>
               {registration.payments?.length ? registration.payments.map((payment:any)=><div key={payment.id} className="detail-course-meta"><span>{payment.purpose==='INITIAL'?'پرداخت اولیه':'پرداخت قسط'}</span><span>{Number(payment.approvedAmount ?? payment.claimedAmount).toLocaleString('fa-IR')} تومان</span><span>{payment.paymentDate ? new Date(payment.paymentDate).toLocaleDateString('fa-IR') : '—'}</span><span>{payment.status==='APPROVED'?'تأییدشده':payment.status==='PENDING'?'در انتظار تأیید':payment.status}</span></div>) : <p>پرداختی ثبت نشده است.</p>}
               <h4>اقساط و سررسیدها</h4>
-              {registration.installments?.length ? registration.installments.map((installment:any)=><div key={installment.id} className="detail-course-meta"><span>قسط {installment.sequence}</span><span>{Number(installment.amount).toLocaleString('fa-IR')} تومان</span><span>سررسید: {new Date(installment.dueDate).toLocaleDateString('fa-IR')}</span><span>{installment.status==='PAID'?'پرداخت‌شده':installment.status==='OVERDUE'?'معوق':installment.status==='PARTIALLY_PAID'?'پرداخت ناقص':'در انتظار پرداخت'}</span></div>) : <p>قسطی ثبت نشده است.</p>}
+              <div className="student-detail-facts">
+                <div><span>پرداخت تأییدشده</span><strong>{Number(registration.paidTotal || 0).toLocaleString('fa-IR')} تومان</strong></div>
+                <div><span>مانده بدهی</span><strong>{Number(registration.balance ?? registration.finalTuition).toLocaleString('fa-IR')} تومان</strong></div>
+              </div>
+              {registration.installments?.length ? registration.installments.map((installment:any)=><div key={installment.id} className="detail-course-meta"><span>قسط {installment.sequence}</span><span>مبلغ: {Number(installment.amount).toLocaleString('fa-IR')} تومان</span><span>پرداخت: {Number(installment.paid || 0).toLocaleString('fa-IR')} تومان</span><span>مانده: {Number(installment.balance ?? installment.amount).toLocaleString('fa-IR')} تومان</span><span>سررسید: {new Date(installment.dueDate).toLocaleDateString('fa-IR')}</span><span>{installment.status==='PAID'?'پرداخت‌شده':installment.status==='OVERDUE'?'معوق':installment.status==='PARTIALLY_PAID'?'پرداخت ناقص':'در انتظار پرداخت'}</span></div>) : <p>قسطی ثبت نشده است.</p>
             </article>)}
           </div>}
           <footer className="student-detail-footer"><button type="button" className="secondary-action" onClick={()=>{setFinanceStudent(null);setFinanceData(null);}}>بستن</button></footer>
