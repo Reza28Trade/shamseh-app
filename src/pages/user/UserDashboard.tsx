@@ -90,6 +90,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   const [notificationsLoading, setNotificationsLoading] = useState(false);
   const [notificationsError, setNotificationsError] = useState('');
   const [markingNotificationIds, setMarkingNotificationIds] = useState<string[]>([]);
+  const [selectedNotification, setSelectedNotification] = useState<{ id: string; title: string; content: string; type: string; createdAt: string; readAt: string | null } | null>(null);
   const [supportTickets, setSupportTickets] = useState<Array<{ id: string; subject: string; status: 'OPEN' | 'ANSWERED' | 'CLOSED'; createdAt: string; messages: Array<{ id: string; content: string; createdAt: string; senderUserId: string }> }>>([]);
   const [supportLoading, setSupportLoading] = useState(false);
   const [supportSubmitting, setSupportSubmitting] = useState(false);
@@ -1032,17 +1033,9 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                   return (
                     <div
                       key={n.id}
-                      onClick={() => { void markNotificationRead(n.id); }}
-                      onKeyDown={event => {
-                        if (event.key === 'Enter' || event.key === ' ') {
-                          event.preventDefault();
-                          void markNotificationRead(n.id);
-                        }
-                      }}
-                      role="button"
-                      tabIndex={0}
+
                       aria-label={`${n.title}، ${isUnread ? 'خوانده‌نشده؛ با باز کردن، خوانده‌شده ثبت می‌شود' : 'خوانده‌شده'}`}
-                      style={{ backgroundColor: innerCardBg, border: `1px solid ${isUnread ? accent : borderColor}`, padding: '16px', borderRadius: '14px', display: 'flex', flexDirection: 'column', gap: '8px', minWidth: 0, cursor: isUnread && !markingNotificationIds.includes(n.id) ? 'pointer' : 'default', transition: 'border-color .2s ease' }}
+                      style={{ backgroundColor: innerCardBg, border: `1px solid ${isUnread ? accent : borderColor}`, padding: '16px', borderRadius: '14px', display: 'flex', flexDirection: 'column', gap: '8px', minWidth: 0, transition: 'border-color .2s ease' }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px', flexWrap: 'wrap' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
@@ -1058,12 +1051,53 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                           </span>
                         </div>
                       </div>
-                      <p style={{ fontSize: '12px', color: textColor, margin: 0, lineHeight: 1.8, overflowWrap: 'anywhere', whiteSpace: 'pre-wrap' }}>{n.content}</p>
+                      <p style={{ fontSize: '12px', color: textColor, margin: 0, lineHeight: 1.8, overflowWrap: 'anywhere', whiteSpace: 'pre-wrap', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{n.content}</p>
+                      <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '4px' }}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedNotification(n);
+                            void markNotificationRead(n.id);
+                          }}
+                          disabled={markingNotificationIds.includes(n.id)}
+                          style={{ border: `1px solid ${accent}`, background: 'transparent', color: accent, borderRadius: '9px', padding: '8px 14px', fontSize: '11px', fontWeight: 800, cursor: markingNotificationIds.includes(n.id) ? 'wait' : 'pointer', opacity: markingNotificationIds.includes(n.id) ? 0.7 : 1 }}
+                        >
+                          {markingNotificationIds.includes(n.id) ? 'در حال باز کردن...' : 'مشاهده اطلاعیه'}
+                        </button>
+                      </div>
                     </div>
                   );
                 })}
               </div>
             )}
+          </div>
+        )}
+
+        {selectedNotification && (
+          <div
+            role="presentation"
+            onClick={() => setSelectedNotification(null)}
+            style={{ position: 'fixed', inset: 0, zIndex: 1400, background: 'rgba(0,0,0,.68)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '18px' }}
+          >
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="student-notification-dialog-title"
+              onClick={event => event.stopPropagation()}
+              style={{ width: 'min(560px, 100%)', maxHeight: 'min(80vh, 680px)', overflowY: 'auto', backgroundColor: cardBg, border: `1px solid ${borderColor}`, borderRadius: '16px', padding: '22px', boxSizing: 'border-box', direction: 'rtl', boxShadow: '0 20px 60px rgba(0,0,0,.35)' }}
+            >
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', marginBottom: '16px' }}>
+                <div style={{ minWidth: 0 }}>
+                  <h3 id="student-notification-dialog-title" style={{ margin: 0, fontSize: '15px', lineHeight: 1.8, color: textColor, overflowWrap: 'anywhere' }}>{selectedNotification.title}</h3>
+                  <span style={{ display: 'block', marginTop: '6px', color: subText, fontSize: '10px' }}>{new Date(selectedNotification.createdAt).toLocaleString('fa-IR')}</span>
+                </div>
+                <button type="button" onClick={() => setSelectedNotification(null)} aria-label="بستن اطلاعیه" style={{ flexShrink: 0, border: `1px solid ${borderColor}`, background: innerCardBg, color: textColor, borderRadius: '8px', width: '32px', height: '32px', cursor: 'pointer', fontSize: '18px' }}>×</button>
+              </div>
+              <p style={{ margin: 0, color: textColor, fontSize: '13px', lineHeight: 2, whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{selectedNotification.content}</p>
+              <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
+                <button type="button" onClick={() => setSelectedNotification(null)} style={{ border: 'none', background: accent, color: '#fff', borderRadius: '9px', padding: '9px 18px', fontSize: '12px', fontWeight: 800, cursor: 'pointer' }}>بستن</button>
+              </div>
+            </div>
           </div>
         )}
 
