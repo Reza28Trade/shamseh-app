@@ -37,6 +37,11 @@ export class StudentsController {
     return this.studentsService.listStudents(req.user);
   }
 
+  @Get('admin/students/:studentId/finance')
+  getStudentFinance(@Req() req: AuthenticatedRequest, @Param('studentId') studentId: string) {
+    return this.studentsService.getStudentFinance(req.user, studentId);
+  }
+
   @Post('admin/students')
   createStudent(@Req() req: AuthenticatedRequest, @Body() dto: CreateStudentDto) {
     return this.studentsService.createStudent(req.user, dto);
