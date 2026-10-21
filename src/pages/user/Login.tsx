@@ -1,10 +1,54 @@
-import React,{useState} from 'react';
+import React,{useEffect,useRef,useState} from 'react';
 import type { Student,Admin } from '../../types';
 import { User,Shield,Lock,ArrowRight,Send,Globe,Camera,Play,BookOpen,GraduationCap } from 'lucide-react';
 import { CourseCatalogPage, RulesPage, ExamAnalysisPage } from '../public/PublicPages';
 
 interface AuthUser{ id:string; username:string; role:'SUPER_ADMIN'|'STAFF'|'STUDENT'|'COUNSELOR'; studentId:string|null; student?:{fullName:string;nationalId:string}|null; }
 interface LoginProps{students:Student[];admins:Admin[];onLoginSuccess:(user:AuthUser)=>void;onAdminLoginSuccess:(user:AuthUser)=>void;rulesText?:string;}
+
+
+const ShamsehParticleIntro:React.FC=()=>{
+ const canvasRef=useRef<HTMLCanvasElement|null>(null);
+ const [reducedMotion,setReducedMotion]=useState(false);
+ useEffect(()=>{
+  const media=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const update=()=>setReducedMotion(media.matches);
+  update(); media.addEventListener?.('change',update);
+  return()=>media.removeEventListener?.('change',update);
+ },[]);
+ useEffect(()=>{
+  const canvas=canvasRef.current;
+  if(!canvas||reducedMotion)return;
+  const ctx=canvas.getContext('2d');
+  if(!ctx)return;
+  let frame=0,raf=0,width=0,height=0,dpr=1;
+  const particles=Array.from({length:72},(_,i)=>({seed:i/72,phase:Math.random()*Math.PI*2,size:Math.random()*1.7+.45,speed:.12+Math.random()*.22,orbit:.16+Math.random()*.28}));
+  const resize=()=>{const rect=canvas.getBoundingClientRect();width=rect.width;height=rect.height;dpr=Math.min(window.devicePixelRatio||1,1.6);canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);};
+  const draw=()=>{
+   frame=(frame+1)%840;
+   ctx!.clearRect(0,0,width,height);
+   const t=frame/840, cx=width*.5, cy=height*.53, rx=width*.38, ry=height*.29;
+   particles.forEach((p,i)=>{
+    const a=(t*p.speed* Math.PI*2*3)+(p.seed*Math.PI*2)+p.phase;
+    const x=cx+Math.cos(a)*rx*p.orbit*2.15;
+    const y=cy+Math.sin(a*1.27)*ry*p.orbit*2.15;
+    const alpha=.22+.55*(.5+.5*Math.sin(a*1.8));
+    ctx!.beginPath();ctx!.fillStyle='rgba(72,209,204,'+alpha+')';ctx!.shadowBlur=p.size*5;ctx!.shadowColor='#48d1cc';ctx!.arc(x,y,p.size,0,Math.PI*2);ctx!.fill();
+    if(i%9===0){
+     const tailA=a-.18;ctx!.beginPath();ctx!.strokeStyle='rgba(72,209,204,.16)';ctx!.lineWidth=.7;ctx!.moveTo(cx+Math.cos(tailA)*rx*p.orbit*2.15,cy+Math.sin(tailA*1.27)*ry*p.orbit*2.15);ctx!.lineTo(x,y);ctx!.stroke();
+    }
+   });
+   ctx!.shadowBlur=0;
+   raf=requestAnimationFrame(draw);
+  };
+  resize();const observer=new ResizeObserver(resize);observer.observe(canvas);raf=requestAnimationFrame(draw);
+  return()=>{cancelAnimationFrame(raf);observer.disconnect();};
+ },[reducedMotion]);
+ return <div className={'sh-particle-intro'+(reducedMotion?' reduced':'')} aria-hidden="true">
+  <canvas ref={canvasRef}/>
+  <div className="sh-emblem-window"><img src="/logo.png" alt="" /></div>
+ </div>;
+};
 
 export const Login:React.FC<LoginProps>=({students,admins,onLoginSuccess,onAdminLoginSuccess})=>{
  const [viewState,setViewState]=useState<'welcome'|'studentLogin'|'adminLogin'|'counselorLogin'|'courses'|'rules'|'analysis'|'information'>('welcome');
@@ -69,9 +113,9 @@ export const Login:React.FC<LoginProps>=({students,admins,onLoginSuccess,onAdmin
    </div>
    <style>{`
     .sh-login{min-height:100vh;display:grid;grid-template-columns:42% 58%;direction:ltr;background:#f5f6f5;color:#182022;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-    .sh-login-visual{background:#1a2021;color:#f4f7f6;position:relative;overflow:hidden;padding:38px;display:flex;flex-direction:column;direction:rtl;box-sizing:border-box}.sh-login-visual:after{content:"";position:absolute;width:520px;height:520px;border:1px solid rgba(91,191,198,.13);border-radius:50%;left:-240px;bottom:-230px}.sh-login-orbit{position:absolute;border:1px solid rgba(91,191,198,.10);border-radius:50%;pointer-events:none}.sh-login-orbit.one{width:330px;height:330px;right:-180px;top:-190px}.sh-login-orbit.two{width:180px;height:180px;right:-80px;top:-90px}
-    .sh-login-brand{display:flex;align-items:center;gap:11px;cursor:pointer;z-index:1}.sh-login-brand img{width:45px;height:45px;object-fit:contain}.sh-login-brand span{font-size:10px;color:#91b5b5;font-weight:800}
-    .sh-login-copy{margin:auto 0;max-width:430px;z-index:1}.sh-login-copy>span{font-size:9px;letter-spacing:2px;color:#5bbfc6;font-weight:900}.sh-login-copy h1{font-size:42px;line-height:1.2;margin:13px 0 14px;font-weight:900;letter-spacing:-1px}.sh-login-copy h1 em{color:#b9dfe0;font-style:normal}.sh-login-copy p{font-size:12px;color:#aab5b4;line-height:2;max-width:370px}.sh-login-footer{font-size:9px;color:#6f7b7b;z-index:1}
+    .sh-particle-intro{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1}.sh-particle-intro canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.85}.sh-emblem-window{position:absolute;left:50%;top:49%;width:min(54%,300px);height:min(36%,250px);transform:translate(-50%,-50%);overflow:hidden;opacity:0;animation:sh-emblem-cycle 8s ease-in-out infinite}.sh-emblem-window img{position:absolute;width:100%;height:auto;left:0;top:0;display:block;filter:drop-shadow(0 0 12px rgba(72,209,204,.22))}.sh-particle-intro.reduced .sh-emblem-window{opacity:.9;animation:none}.sh-particle-intro.reduced canvas{display:none}@keyframes sh-emblem-cycle{0%,35%{opacity:0;transform:translate(-50%,-46%) scale(.94)}48%,78%{opacity:.94;transform:translate(-50%,-50%) scale(1)}92%,100%{opacity:0;transform:translate(-50%,-53%) scale(1.02)}}\n    .sh-login-visual{background:#1a2021;color:#f4f7f6;position:relative;overflow:hidden;padding:38px;display:flex;flex-direction:column;direction:rtl;box-sizing:border-box}.sh-login-visual:after{content:"";position:absolute;width:520px;height:520px;border:1px solid rgba(91,191,198,.13);border-radius:50%;left:-240px;bottom:-230px}.sh-login-orbit{position:absolute;border:1px solid rgba(91,191,198,.10);border-radius:50%;pointer-events:none}.sh-login-orbit.one{width:330px;height:330px;right:-180px;top:-190px}.sh-login-orbit.two{width:180px;height:180px;right:-80px;top:-90px}
+    .sh-login-brand{display:flex;align-items:center;gap:11px;cursor:pointer;z-index:2}.sh-login-brand img{width:45px;height:45px;object-fit:contain}.sh-login-brand span{font-size:10px;color:#91b5b5;font-weight:800}
+    .sh-login-copy{margin:auto 0;max-width:430px;z-index:2}.sh-login-copy>span{font-size:9px;letter-spacing:2px;color:#5bbfc6;font-weight:900}.sh-login-copy h1{font-size:42px;line-height:1.2;margin:13px 0 14px;font-weight:900;letter-spacing:-1px}.sh-login-copy h1 em{color:#b9dfe0;font-style:normal}.sh-login-copy p{font-size:12px;color:#aab5b4;line-height:2;max-width:370px}.sh-login-footer{font-size:9px;color:#6f7b7b;z-index:2}
     .sh-login-content{direction:rtl;padding:30px 7vw;display:flex;flex-direction:column;min-width:0;box-sizing:border-box}.sh-login-top{display:flex;justify-content:space-between;align-items:center;color:#71807f;font-size:9px}.sh-login-top button{border:0;background:none;color:#38838a;font-size:9px;font-weight:800;cursor:pointer}.sh-welcome,.sh-form,.sh-info{width:min(100%,470px);margin:auto}.sh-kicker{font-size:9px;color:#38838a;font-weight:900;margin-bottom:7px}.sh-welcome h2,.sh-form h2,.sh-info h2{font-size:27px;margin:0 0 7px;font-weight:900;letter-spacing:-.5px}.sh-welcome p,.sh-form p,.sh-info p{font-size:11px;color:#71807f;line-height:1.9;margin:0 0 20px}.sh-entry-list{display:flex;flex-direction:column;gap:8px}.sh-entry{width:100%;border:1px solid #dfe7e5;background:#fff;color:#182022;border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px;text-align:right;cursor:pointer;transition:.18s;direction:rtl}.sh-entry:hover{transform:translateX(-3px);border-color:#a9cccc}.sh-entry.primary{background:#38838a;border-color:#38838a;color:#fff}.sh-preregister{text-decoration:none;background:#f0f8f7;border-color:#b8d8d5;color:#182022}.sh-preregister .sh-entry-icon{background:#dcefed;color:#168C91}.sh-entry-icon{width:35px;height:35px;border-radius:10px;background:rgba(56,131,138,.10);color:#38838a;display:grid;place-items:center;flex:none}.sh-entry.primary .sh-entry-icon{background:rgba(255,255,255,.14);color:#fff}.sh-entry>span:nth-child(2){flex:1;display:flex;flex-direction:column;gap:2px}.sh-entry strong{font-size:11px}.sh-entry small{font-size:8px;color:#758482}.sh-entry.primary small{color:#d7ecec}.sh-entry>svg{color:#758482}.sh-entry.primary>svg{color:#fff}
     .sh-form label{display:block;font-size:10px;font-weight:800;margin-bottom:12px}.sh-input{height:45px;margin-top:6px;border:1px solid #dfe7e5;background:#fff;border-radius:11px;display:flex;align-items:center;gap:8px;padding:0 12px;color:#778584}.sh-input input{width:100%;border:0;outline:0;background:transparent;font:inherit;font-size:11px;color:#182022}.sh-submit{width:100%;margin-top:5px;border:0;background:#182022;color:#fff;border-radius:11px;padding:12px;display:flex;justify-content:center;align-items:center;gap:7px;font-size:10px;font-weight:900;cursor:pointer}.sh-back{border:0;background:none;color:#38838a;font-size:9px;font-weight:800;display:flex;align-items:center;gap:4px;padding:0;margin-bottom:18px;cursor:pointer}.sh-error{padding:9px 10px;background:#fff1f1;color:#b5414a;border:1px solid #f0d2d4;border-radius:9px;font-size:9px;margin-bottom:12px}.sh-info p{white-space:pre-line}.sh-social{margin-top:auto;padding-top:25px;text-align:center}.sh-social>div{display:flex;justify-content:center;gap:7px}.sh-social a{width:31px;height:31px;border:1px solid #dfe7e5;background:#fff;border-radius:50%;display:grid;place-items:center;color:#637371}.sh-social small{display:block;color:#8a9694;font-size:8px;margin-top:9px}
     @media(max-width:850px){.sh-login{display:block}.sh-login-visual{min-height:330px;padding:24px}.sh-login-copy{margin:auto 0}.sh-login-copy h1{font-size:32px}.sh-login-content{min-height:calc(100vh - 330px);padding:24px}.sh-login-top{margin-bottom:8px}}
