@@ -293,6 +293,23 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
             const enrollment = await fetch(`/api/admin/students/${created.student.id}/enrollments/${courseId}`, { method: 'POST', credentials: 'include' });
             if (!enrollment.ok) throw new Error((await enrollment.json().catch(() => null))?.message || 'ثبت دوره انجام نشد.');
           }
+          const createdStudent: ApiStudent = {
+            id: created.student.id,
+            fullName,
+            nationalId,
+            phone,
+            academicLevel,
+            isArchived: false,
+            enrolledCourseIds: [...selectedCourses],
+            levels: [],
+            enrollments: [],
+          };
+          resetForm();
+          await loadStudents();
+          await openStudentFinance(createdStudent);
+          setManualCourseIds([...selectedCourses]);
+          setManualFinanceOpen(true);
+          return;
         }
         resetForm(); await loadStudents();
       } catch (err) { setError(err instanceof Error ? err.message : 'عملیات هنرجو انجام نشد.'); }
@@ -385,7 +402,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
               <div className="course-list">{pickerCourses.map(course=><button type="button" className={selectedCourses.includes(course.id) ? 'course-choice selected' : 'course-choice'} key={course.id} onClick={()=>handleCheckboxChange(course.id)}><span>{course.title}</span><small>{levelLabel(course.level)} · {course.academicYear ?? '—'} · {termLabel(course.term)}</small></button>)}</div>
               {!pickerCourses.length && <div className="empty-mini">دوره‌ای با این فیلتر پیدا نشد.</div>}
             </div>
-            <button className="primary-action" type="submit">{editingStudentId ? 'ذخیره تغییرات' : 'ثبت هنرجو'}</button>
+            <button className="primary-action" type="submit">{editingStudentId ? 'ذخیره تغییرات' : 'ثبت هنرجو و ورود به ثبت مالی'}</button>
             {editingStudentId && <button className="secondary-action" type="button" onClick={resetForm}><X size={14}/> انصراف</button>}
           </form>
         </section>
