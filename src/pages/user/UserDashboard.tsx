@@ -90,6 +90,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   const [notificationsLoading, setNotificationsLoading] = useState(false);
   const [notificationsError, setNotificationsError] = useState('');
   const [latestCounselorMessage, setLatestCounselorMessage] = useState<{ content: string; createdAt: string } | null>(null);
+  const [financeRestricted, setFinanceRestricted] = useState(false);
   const [markingNotificationIds, setMarkingNotificationIds] = useState<string[]>([]);
   const [selectedNotification, setSelectedNotification] = useState<{ id: string; title: string; content: string; type: string; createdAt: string; readAt: string | null } | null>(null);
   const [supportTickets, setSupportTickets] = useState<Array<{ id: string; subject: string; status: 'OPEN' | 'ANSWERED' | 'CLOSED'; createdAt: string; messages: Array<{ id: string; content: string; createdAt: string; senderUserId: string }> }>>([]);
@@ -110,6 +111,25 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   const [editingOfflineRequestId, setEditingOfflineRequestId] = useState<string | null>(null);
   const [editingOfflineSessionId, setEditingOfflineSessionId] = useState<string>('');
   const [viewerFile, setViewerFile] = useState<BackendFile | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    const loadFinanceRestriction = async () => {
+      try {
+        const response = await fetch('/api/student/finance-access', { credentials: 'include' });
+        if (!response.ok) throw new Error('دریافت وضعیت مالی انجام نشد.');
+        const data = await response.json() as { restricted?: boolean };
+        if (!cancelled) {
+          setFinanceRestricted(Boolean(data.restricted));
+          if (data.restricted) setActiveTab('finance');
+        }
+      } catch {
+        if (!cancelled) setFinanceRestricted(false);
+      }
+    };
+    void loadFinanceRestriction();
+    return () => { cancelled = true; };
+  }, [student.id]);
+
   useEffect(() => {
     let cancelled = false;
 
@@ -618,10 +638,12 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         <div className="student-dashboard-layout">
           <div className="student-dashboard-nav">
             <div className="student-sidebar-brand"><div className="student-sidebar-logo"><div className="student-sidebar-logo-mark"><ShamsehMark size={46}/></div><div className="student-sidebar-logo-copy"><div>آکادمی شمسه</div><span>سامانه آموزشی دانشجو</span></div></div><button className="student-theme-toggle" onClick={toggleTheme} title={isDark ? 'فعال‌سازی تم روشن' : 'فعال‌سازی تم تیره'} aria-label="تغییر تم">{isDark ? <Sun size={17}/> : <Moon size={17}/>}</button></div>
+            {!financeRestricted && <>
             <button className={activeTab==='home' ? 'active' : ''} aria-current={activeTab==='home' ? 'page' : undefined} onClick={() => setActiveTab('home')} style={{display:'flex',alignItems:'center',gap:'7px'}}><Home size={14}/> نمای کلی</button>
             <button className={activeTab==='courses' ? 'active' : ''} aria-current={activeTab==='courses' ? 'page' : undefined} onClick={() => setActiveTab('courses')} style={{display:'flex',alignItems:'center',gap:'7px'}}><BookOpen size={14}/> دوره‌های من</button>
             <button className={activeTab==='mockExams' ? 'active' : ''} aria-current={activeTab==='mockExams' ? 'page' : undefined} onClick={() => setActiveTab('mockExams')} style={{display:'flex',alignItems:'center',gap:'7px'}}><ClipboardList size={14}/> آزمون‌های من</button>
             <button className={activeTab==='notifications' ? 'active' : ''} aria-current={activeTab==='notifications' ? 'page' : undefined} onClick={handleOpenNotificationTab} style={{display:'flex',alignItems:'center',gap:'7px'}}><Bell size={14}/> اطلاعیه‌ها {unreadCount>0&&<span style={{marginRight:'auto',backgroundColor:'#ef5d68',color:'#fff',fontSize:'8px',padding:'2px 6px',borderRadius:'999px',fontWeight:900}}>{unreadCount}</span>}</button>
+            </>}
             <button className={activeTab==='finance' ? 'active' : ''} aria-current={activeTab==='finance' ? 'page' : undefined} onClick={() => setActiveTab('finance')} style={{display:'flex',alignItems:'center',gap:'7px'}}><Wallet size={14}/> وضعیت مالی من</button>
             <button className={activeTab==='counseling' ? 'active' : ''} aria-current={activeTab==='counseling' ? 'page' : undefined} onClick={() => setActiveTab('counseling')} style={{display:'flex',alignItems:'center',gap:'7px'}}><CalendarClock size={14}/> مشاوره</button>
             <button className={activeTab==='messages' ? 'active' : ''} aria-current={activeTab==='messages' ? 'page' : undefined} onClick={() => setActiveTab('messages')} style={{display:'flex',alignItems:'center',gap:'7px'}}><Send size={14}/> پشتیبانی</button>
@@ -631,7 +653,13 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
           </div>
 
           <div className="student-dashboard-main">
-            {activeTab === 'home' && (
+            {financeRestricted && (
+              <div role="alert" style={{ marginBottom: '14px', padding: '16px 18px', borderRadius: '14px', border: `1px solid ${accent}`, backgroundColor: isDark ? 'rgba(72,209,204,.08)' : 'rgba(0,128,128,.06)', color: textColor, direction: 'rtl' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '9px', fontWeight: 900, fontSize: '13px', marginBottom: '6px' }}><AlertCircle size={17} color={accent} /> دسترسی آموزشی موقتاً محدود شده است</div>
+                <p style={{ margin: 0, color: subText, fontSize: '11px', lineHeight: 1.9 }}>بیش از ۱۰ روز از سررسید یک قسط پرداخت‌نشده گذشته است. در حال حاضر فقط بخش وضعیت مالی در دسترس است. پس از تأیید پرداخت و تسویه تمام اقساط مشمول محدودیت، دسترسی شما به سایر بخش‌ها به‌صورت خودکار باز می‌شود.</p>
+              </div>
+            )}
+            {!financeRestricted && activeTab === 'home' && (
               <div className="student-home" style={{display:'flex',flexDirection:'column',gap:'12px'}}>
                 <div className="student-home-hero" style={{border:`1px solid ${borderColor}`,background:isDark?'linear-gradient(135deg,rgba(38,54,55,.98),rgba(29,47,48,.98))':'linear-gradient(135deg,rgba(255,255,255,.98),rgba(232,245,244,.96))',padding:'22px 24px',boxSizing:'border-box',boxShadow:isDark?'0 16px 36px rgba(0,0,0,.16)':'0 12px 28px rgba(35,90,90,.06)'}}>
                   <div className="student-home-hero-content">
