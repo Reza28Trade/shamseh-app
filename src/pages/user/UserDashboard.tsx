@@ -127,7 +127,8 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
       }
     };
     void loadFinanceRestriction();
-    return () => { cancelled = true; };
+    const interval = window.setInterval(() => { void loadFinanceRestriction(); }, 60000);
+    return () => { cancelled = true; window.clearInterval(interval); };
   }, [student.id]);
 
   useEffect(() => {
@@ -645,9 +646,11 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
             <button className={activeTab==='notifications' ? 'active' : ''} aria-current={activeTab==='notifications' ? 'page' : undefined} onClick={handleOpenNotificationTab} style={{display:'flex',alignItems:'center',gap:'7px'}}><Bell size={14}/> اطلاعیه‌ها {unreadCount>0&&<span style={{marginRight:'auto',backgroundColor:'#ef5d68',color:'#fff',fontSize:'8px',padding:'2px 6px',borderRadius:'999px',fontWeight:900}}>{unreadCount}</span>}</button>
             </>}
             <button className={activeTab==='finance' ? 'active' : ''} aria-current={activeTab==='finance' ? 'page' : undefined} onClick={() => setActiveTab('finance')} style={{display:'flex',alignItems:'center',gap:'7px'}}><Wallet size={14}/> وضعیت مالی من</button>
+            {!financeRestricted && <>
             <button className={activeTab==='counseling' ? 'active' : ''} aria-current={activeTab==='counseling' ? 'page' : undefined} onClick={() => setActiveTab('counseling')} style={{display:'flex',alignItems:'center',gap:'7px'}}><CalendarClock size={14}/> مشاوره</button>
             <button className={activeTab==='messages' ? 'active' : ''} aria-current={activeTab==='messages' ? 'page' : undefined} onClick={() => setActiveTab('messages')} style={{display:'flex',alignItems:'center',gap:'7px'}}><Send size={14}/> پشتیبانی</button>
             <button className={activeTab==='managementContact' ? 'active' : ''} aria-current={activeTab==='managementContact' ? 'page' : undefined} onClick={() => setActiveTab('managementContact')} style={{display:'flex',alignItems:'center',gap:'7px'}}><MessageSquareText size={14}/> ارتباط با مدیریت</button>
+            </>}
             <div className="student-sidebar-spacer"/>
             <button className="student-sidebar-logout" onClick={onLogout} style={{display:'flex',alignItems:'center',gap:'7px',border:`1px solid ${isDark?'rgba(170,92,100,.45)':'#ead9d9'}`,color:isDark?'#dba2a7':'#b75d5d',background:isDark?'rgba(130,45,52,.08)':'#fffafa'}}><LogOut size={14}/> خروج از حساب</button>
           </div>
