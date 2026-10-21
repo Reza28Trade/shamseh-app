@@ -68,12 +68,6 @@ export const StudentManagementContact: React.FC<Props> = ({ isDark }) => {
   const statusLabel = (status: TicketStatus) => status === 'ANSWERED' ? 'پاسخ داده شده' : status === 'CLOSED' ? 'بسته شده' : 'در انتظار پاسخ';
 
   return <section style={{ display: 'flex', flexDirection: 'column', gap: 18, color: text }}>
-    <header style={{ background: card, border: `1px solid ${border}`, borderRadius: 15, padding: '17px 18px', boxShadow: 'none' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: accent, fontSize: 11, fontWeight: 900, marginBottom: 8 }}><MessageSquareText size={17} /> ارتباط مستقل با مدیریت مؤسسه</div>
-      <h2 style={{ margin: '0 0 6px', fontSize: 15, lineHeight: 1.7, fontWeight: 850 }}>انتقادات و پیشنهادات؛ ارتباط مستقیم با مدیریت</h2>
-      <p style={{ margin: 0, color: sub, fontSize: 11, lineHeight: 1.9 }}>پیشنهاد، انتقاد یا درخواست خود را ثبت کنید؛ پاسخ مدیریت و تاریخچه در همین بخش می‌ماند.</p>
-    </header>
-
     <div style={{ background: card, border: `1px solid ${border}`, borderRadius: 15, padding: 18, boxShadow: 'none' }}>
       <h3 style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '0 0 18px', fontSize: 15, fontWeight: 900 }}><Send size={17} color={accent} /> ثبت تیکت جدید</h3>
       {success && <div role="status" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: 12, borderRadius: 11, marginBottom: 14, background: 'rgba(16,185,129,.10)', color: '#10b981', fontSize: 12, fontWeight: 800 }}><CheckCircle2 size={16} /> درخواست شما برای مدیریت ثبت شد.</div>}
