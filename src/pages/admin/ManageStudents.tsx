@@ -35,14 +35,14 @@ const jalaliParts = (date: Date) => {
 };
 const isoToJalali = (iso?: string) => {
   if (!iso) return '';
-  const match = iso.match(/^(\\d{4})-(\\d{2})-(\\d{2})/);
+  const match = iso.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (!match) return iso;
   const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
   const p = jalaliParts(date);
   return `${p.year}/${String(p.month).padStart(2, '0')}/${String(p.day).padStart(2, '0')}`;
 };
 const jalaliToIso = (value: string) => {
-  const match = value.trim().match(/^(\\d{4})[/-](\\d{1,2})[/-](\\d{1,2})$/);
+  const match = value.trim().match(/^(\d{4})[/-](\d{1,2})[/-](\d{1,2})$/);
   if (!match) return '';
   const wanted = { year: Number(match[1]), month: Number(match[2]), day: Number(match[3]) };
   if (wanted.month < 1 || wanted.month > 12 || wanted.day < 1 || wanted.day > 31) return '';
