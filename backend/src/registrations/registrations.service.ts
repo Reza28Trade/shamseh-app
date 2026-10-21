@@ -130,6 +130,15 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     if (existingStudent?.phone && existingStudent.phone !== phone) {
       throw new ConflictException('شماره موبایل این هنرجو فقط توسط مدیریت قابل تغییر است.');
     }
+    if (existingStudent) {
+      const existingEnrollments = await this.prisma.enrollment.findMany({
+        where: { studentId: existingStudent.id, courseId: { in: courseIds }, status: 'ACTIVE' },
+        select: { courseId: true },
+      });
+      if (existingEnrollments.length) {
+        throw new ConflictException('شما قبلاً در یکی از دوره‌های انتخاب‌شده ثبت‌نام فعال دارید. لطفاً فقط دوره جدید را انتخاب کنید.');
+      }
+    }
     const openRegistration = await this.prisma.registration.findFirst({
       where: { nationalId, status: { in: ['PENDING_REVIEW', 'NEEDS_CORRECTION'] } },
       select: { id: true },
@@ -201,7 +210,12 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         });
         return { ...created, paymentId: payment.id };
       });
-      return { ...registration, message: 'درخواست ثبت‌نام با موفقیت ثبت شد. اطلاعات ورود پس از تأیید مدیریت ایجاد می‌شود.' };
+      return {
+        ...registration,
+        message: existingStudent
+          ? 'درخواست دوره جدید ثبت شد و پس از بررسی مدیریت در همین حساب هنرجویی قابل پیگیری است.'
+          : 'درخواست ثبت‌نام با موفقیت ثبت شد. اطلاعات ورود پس از تأیید مدیریت ایجاد می‌شود.',
+      };
     } catch (error) {
       await unlink(join(RECEIPT_DIR, storageKey)).catch(() => undefined);
       if (typeof error === 'object' && error !== null && 'code' in error && error.code === 'P2002') {
