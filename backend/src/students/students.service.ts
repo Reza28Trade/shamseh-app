@@ -372,7 +372,8 @@ export class StudentsService {
     const paymentTotal = paymentRows.reduce((sum: number, p: any) => sum + p.amount, 0);
     const installmentTotal = installmentRows.reduce((sum: number, i: any) => sum + i.amount, 0);
     if (paymentTotal > finalTuition) throw new ConflictException('مجموع پرداخت‌ها از شهریه نهایی بیشتر است.');
-    if (installmentTotal !== finalTuition) throw new ConflictException('مجموع مبالغ اقساط باید برابر شهریه نهایی باشد؛ پرداخت‌های قبلی به‌عنوان تخصیص روی همین اقساط اعمال می‌شوند.');
+    const remainingBalance = finalTuition - paymentTotal;
+    if (installmentTotal !== remainingBalance) throw new ConflictException('جمع اقساط باید برابر مانده شهریه پس از کسر پرداخت‌های قبلی باشد. مانده قابل تقسیط: ' + remainingBalance.toLocaleString('fa-IR') + ' تومان.');
     const courses = await this.prisma.course.findMany({ where: { id: { in: courseIds } }, select: { id: true, title: true, price: true } });
     if (courses.length !== courseIds.length) throw new ConflictException('یکی از دوره‌های انتخاب‌شده پیدا نشد.');
     if (courses.some((course) => course.price === null)) throw new ConflictException('برای همه دوره‌های انتخاب‌شده باید قیمت ثبت شده باشد.');
@@ -414,31 +415,17 @@ export class StudentsService {
           update: { tuitionAmount: course.price },
         });
       }
-      let remainingByInstallment = createdInstallments.map((i: any) => Number(i.amount));
+      // Historical payments are recorded as already-paid amounts. Installments represent only the
+      // remaining balance, so allocating those payments to them would incorrectly erase the debt.
       for (const payment of paymentRows) {
-        const record = await tx.registrationPayment.create({
+        await tx.registrationPayment.create({
           data: {
             registrationId: registration.id, purpose: 'INSTALLMENT', status: 'APPROVED',
             claimedAmount: payment.amount, approvedAmount: payment.amount,
             paymentDate: payment.paymentDate, method: payment.method, reference: payment.reference,
-            reviewNote: 'پرداخت تاریخی واردشده توسط مدیریت', reviewedById: user.id, reviewedAt: new Date(),
+            reviewNote: 'پرداخت قبلی ثبت‌شده هنگام ایجاد پرونده مالی؛ از شهریه کسر شده است',
+            reviewedById: user.id, reviewedAt: new Date(),
           },
-        });
-        let remainingPayment = payment.amount;
-        for (let index = 0; index < createdInstallments.length && remainingPayment > 0; index++) {
-          const allocated = Math.min(remainingPayment, remainingByInstallment[index]);
-          if (allocated <= 0) continue;
-          await tx.paymentAllocation.create({ data: { paymentId: record.id, installmentId: createdInstallments[index].id, amount: allocated } });
-          remainingByInstallment[index] -= allocated;
-          remainingPayment -= allocated;
-        }
-      }
-      for (let index = 0; index < createdInstallments.length; index++) {
-        const original = Number(createdInstallments[index].amount);
-        const paid = original - remainingByInstallment[index];
-        await tx.installment.update({
-          where: { id: createdInstallments[index].id },
-          data: { status: paid >= original ? 'PAID' : paid > 0 ? 'PARTIALLY_PAID' : 'PENDING' },
         });
       }
       await tx.registrationReviewHistory.create({
