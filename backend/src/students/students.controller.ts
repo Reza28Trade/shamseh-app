@@ -42,6 +42,11 @@ export class StudentsController {
     return this.studentsService.createManualStudentFinance(req.user, studentId, body);
   }
 
+  @Patch('admin/students/:studentId/finance/:registrationId')
+  updateManualStudentFinance(@Req() req: AuthenticatedRequest, @Param('studentId') studentId: string, @Param('registrationId') registrationId: string, @Body() body: any) {
+    return this.studentsService.updateManualStudentFinance(req.user, studentId, registrationId, body);
+  }
+
   @Get('admin/students/:studentId/finance')
   getStudentFinance(@Req() req: AuthenticatedRequest, @Param('studentId') studentId: string) {
     return this.studentsService.getStudentFinance(req.user, studentId);
