@@ -344,6 +344,8 @@ export class StudentsService {
     if (!student.phone || !student.academicLevel) {
       throw new ConflictException('برای ثبت پرونده مالی، شماره موبایل و مقطع تحصیلی هنرجو باید تکمیل باشد.');
     }
+    const studentPhone: string = student.phone;
+    const studentAcademicLevel = student.academicLevel;
     const courseIds: string[] = Array.isArray(body?.courseIds) ? [...new Set<string>(body.courseIds.map((v: unknown) => String(v)))] : [];
     const payments: any[] = Array.isArray(body?.payments) ? body.payments : [];
     const installments: any[] = Array.isArray(body?.installments) ? body.installments : [];
@@ -384,8 +386,8 @@ export class StudentsService {
     return this.prisma.$transaction(async tx => {
       const registration = await tx.registration.create({
         data: {
-          applicantFullName: student.fullName, nationalId: student.nationalId, phone: student.phone,
-          academicLevel: student.academicLevel, fieldCode: 'MANUAL', studentId,
+          applicantFullName: student.fullName, nationalId: student.nationalId, phone: studentPhone,
+          academicLevel: studentAcademicLevel, fieldCode: 'MANUAL', studentId,
           status: 'APPROVED', approvalMode: discountAmount > 0 ? 'DISCOUNT' : 'NORMAL',
           originalTuition, discountAmount, finalTuition,
           discountReason: body.discountReason ? String(body.discountReason).slice(0, 2000) : null,
@@ -400,7 +402,10 @@ export class StudentsService {
             sequence: i.sequence, amount: i.amount, dueDate: i.dueDate,
           })) },
         },
-        include: { installments: { orderBy: { dueDate: 'asc' } } },
+      });
+      const createdInstallments = await tx.installment.findMany({
+        where: { registrationId: registration.id },
+        orderBy: { dueDate: 'asc' },
       });
       for (const course of courses) {
         await tx.enrollment.upsert({
@@ -409,7 +414,7 @@ export class StudentsService {
           update: { tuitionAmount: course.price },
         });
       }
-      let remainingByInstallment = registration.installments.map((i: any) => Number(i.amount));
+      let remainingByInstallment = createdInstallments.map((i: any) => Number(i.amount));
       for (const payment of paymentRows) {
         const record = await tx.registrationPayment.create({
           data: {
