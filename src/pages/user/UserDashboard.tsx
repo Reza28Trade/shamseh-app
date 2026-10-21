@@ -624,7 +624,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         {activeTab === 'courses' && (
           <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, backdropFilter: 'blur(16px)', padding: '32px', borderRadius: '24px', boxShadow: '0 16px 40px rgba(0,0,0,0.1)' }}>
             <h2 style={{ fontSize: '16px', fontWeight: 800, color: textColor, margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <BookOpen size={18} color={accent} /> دوره‌های آموزشی من ({enrolledCourses.length})
+              <BookOpen size={18} color="#ff3366" /> دوره‌های آموزشی من ({enrolledCourses.length})
             </h2>
 
             {coursesLoading ? (
@@ -978,7 +978,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         {activeTab === 'notifications' && (
           <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, backdropFilter: 'blur(16px)', padding: '32px', borderRadius: '24px', boxShadow: '0 16px 40px rgba(0,0,0,0.1)' }}>
             <h2 style={{ fontSize: '16px', fontWeight: 800, color: textColor, margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Bell size={18} color={accent} /> صندوق اطلاعیه‌ها و پیام‌های سیستمی
+              <Bell size={18} color="#ff3366" /> صندوق اطلاعیه‌ها و پیام‌های سیستمی
             </h2>
 
             {notificationsLoading ? (
