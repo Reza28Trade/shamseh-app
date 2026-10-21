@@ -16,12 +16,12 @@ export const StudentManagementContact: React.FC<Props> = ({ isDark }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
-  const card = isDark ? '#222526' : '#ffffff';
-  const inner = isDark ? '#282c2d' : '#f8faf9';
-  const text = isDark ? '#f1f5f4' : '#172022';
-  const sub = isDark ? '#aab5b4' : '#697675';
-  const border = isDark ? '#343a3b' : '#e2e8e7';
-  const accent = isDark ? '#70b9b5' : '#3f8f8a';
+  const card = isDark ? '#1D1B1B' : '#F7F1E8';
+  const inner = isDark ? '#302D2D' : '#E5D9CB';
+  const text = isDark ? '#EEE5DA' : '#262424';
+  const sub = isDark ? '#B9B0A6' : '#655D55';
+  const border = isDark ? 'rgba(238,229,218,.12)' : 'rgba(38,36,36,.12)';
+  const accent = isDark ? '#48D1CC' : '#008080';
 
   const loadTickets = async () => {
     setLoading(true);
@@ -68,13 +68,13 @@ export const StudentManagementContact: React.FC<Props> = ({ isDark }) => {
   const statusLabel = (status: TicketStatus) => status === 'ANSWERED' ? 'پاسخ داده شده' : status === 'CLOSED' ? 'بسته شده' : 'در انتظار پاسخ';
 
   return <section style={{ display: 'flex', flexDirection: 'column', gap: 18, color: text }}>
-    <header style={{ background: isDark ? 'linear-gradient(135deg,#253536,#202829)' : 'linear-gradient(135deg,#fff,#edf7f5)', border: `1px solid ${border}`, borderRadius: 18, padding: '22px 24px', boxShadow: '0 12px 28px rgba(35,90,90,.06)' }}>
+    <header style={{ background: card, border: `1px solid ${border}`, borderRadius: 15, padding: '17px 18px', boxShadow: 'none' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: accent, fontSize: 11, fontWeight: 900, marginBottom: 8 }}><MessageSquareText size={17} /> ارتباط مستقل با مدیریت مؤسسه</div>
-      <h2 style={{ margin: '0 0 8px', fontSize: 19, fontWeight: 900 }}>انتقادات و پیشنهادات - ارتباط مستقیم با مدیریت</h2>
-      <p style={{ margin: 0, color: sub, fontSize: 12, lineHeight: 1.9 }}>برای طرح پیشنهاد، انتقاد یا درخواست خود یک تیکت ثبت کنید. پاسخ مدیریت و تاریخچه هر درخواست در همین بخش نمایش داده می‌شود.</p>
+      <h2 style={{ margin: '0 0 6px', fontSize: 15, lineHeight: 1.7, fontWeight: 850 }}>انتقادات و پیشنهادات؛ ارتباط مستقیم با مدیریت</h2>
+      <p style={{ margin: 0, color: sub, fontSize: 11, lineHeight: 1.9 }}>پیشنهاد، انتقاد یا درخواست خود را ثبت کنید؛ پاسخ مدیریت و تاریخچه در همین بخش می‌ماند.</p>
     </header>
 
-    <div style={{ background: card, border: `1px solid ${border}`, borderRadius: 18, padding: 22, boxShadow: '0 12px 30px rgba(0,0,0,.06)' }}>
+    <div style={{ background: card, border: `1px solid ${border}`, borderRadius: 15, padding: 18, boxShadow: 'none' }}>
       <h3 style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '0 0 18px', fontSize: 15, fontWeight: 900 }}><Send size={17} color={accent} /> ثبت تیکت جدید</h3>
       {success && <div role="status" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: 12, borderRadius: 11, marginBottom: 14, background: 'rgba(16,185,129,.10)', color: '#10b981', fontSize: 12, fontWeight: 800 }}><CheckCircle2 size={16} /> درخواست شما برای مدیریت ثبت شد.</div>}
       {error && <div role="alert" style={{ padding: 12, borderRadius: 11, marginBottom: 14, background: 'rgba(239,68,68,.10)', color: '#f87171', fontSize: 12 }}>{error}</div>}
@@ -85,14 +85,14 @@ export const StudentManagementContact: React.FC<Props> = ({ isDark }) => {
         <label style={{ display: 'flex', flexDirection: 'column', gap: 7, fontSize: 12, color: sub, fontWeight: 800 }}>متن پیام
           <textarea value={content} onChange={e => setContent(e.target.value)} required rows={4} maxLength={10000} placeholder="متن درخواست خود را بنویسید..." style={{ width: '100%', boxSizing: 'border-box', resize: 'vertical', background: inner, border: `1px solid ${border}`, color: text, padding: '12px 14px', borderRadius: 11, font: 'inherit', outlineColor: accent, lineHeight: 1.9 }} />
         </label>
-        <button type="submit" disabled={submitting || !subject.trim() || !content.trim()} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: 13, border: 0, borderRadius: 11, color: '#fff', background: 'linear-gradient(135deg,#398a90,#286f75)', fontSize: 12, fontWeight: 900, cursor: submitting ? 'wait' : 'pointer', opacity: submitting ? .7 : 1 }}>
+        <button type="submit" disabled={submitting || !subject.trim() || !content.trim()} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: 13, border: 0, borderRadius: 11, color: '#fff', background: accent, fontSize: 12, fontWeight: 900, cursor: submitting ? 'wait' : 'pointer', opacity: submitting ? .7 : 1 }}>
           <Send size={15} /> {submitting ? 'در حال ثبت...' : 'ثبت و ارسال برای مدیریت'}
         </button>
       </form>
     </div>
 
-    <div style={{ background: card, border: `1px solid ${border}`, borderRadius: 18, padding: 22, boxShadow: '0 12px 30px rgba(0,0,0,.06)' }}>
-      <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 900 }}>تاریخچه درخواست‌ها</h3>
+    <div style={{ background: card, border: `1px solid ${border}`, borderRadius: 15, padding: 18, boxShadow: 'none' }}>
+      <h3 style={{ margin: '0 0 16px', fontSize: 13, fontWeight: 850 }}>تاریخچه درخواست‌ها</h3>
       {loading ? <p style={{ color: sub, fontSize: 12 }}>در حال دریافت تیکت‌ها...</p>
         : tickets.length === 0 ? <p style={{ color: sub, fontSize: 12 }}>هنوز درخواستی برای مدیریت ثبت نکرده‌اید.</p>
         : <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
