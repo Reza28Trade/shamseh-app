@@ -228,7 +228,7 @@
   border-color: var(--admin-border) !important;
 }
 .student-dashboard .student-dashboard-nav > button.active {
-  background: linear-gradient(270deg, var(--admin-accent-soft), transparent) !important;
+  background: linear-gradient(90deg, transparent 0%, var(--admin-accent-soft) 100%) !important;
   border-color: transparent !important;
   color: var(--admin-accent) !important;
   font-weight: 900 !important;
@@ -308,6 +308,11 @@
   overflow: hidden !important;
 }
 .student-dashboard .student-theme-toggle {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  place-items: center !important;
+  box-sizing: border-box !important;
   appearance: none !important;
   -webkit-appearance: none !important;
   flex: 0 0 38px !important;
@@ -348,10 +353,10 @@
   min-height: 40px !important;
   margin: 8px 0 0 !important;
   padding: 9px 11px !important;
-  border: 1px solid var(--admin-border) !important;
+  border: 1px solid var(--admin-brand-border) !important;
   border-radius: 11px !important;
-  background: transparent !important;
-  color: var(--admin-sub) !important;
+  background: var(--admin-accent) !important;
+  color: #ffffff !important;
   font-family: inherit !important;
   font-size: 11px !important;
   font-weight: 800 !important;
@@ -365,20 +370,29 @@
   flex: 0 0 auto !important;
   width: 15px !important;
   height: 15px !important;
-  color: var(--admin-sub) !important;
+  color: #ffffff !important;
 }
 .student-dashboard .student-dashboard-nav > button.student-sidebar-logout:hover {
-  background: var(--admin-inner) !important;
-  border-color: var(--admin-border) !important;
-  color: var(--admin-text) !important;
+  background: var(--admin-accent-hover, var(--admin-accent)) !important;
+  border-color: var(--admin-brand-border) !important;
+  color: #ffffff !important;
+  filter: brightness(1.06) !important;
 }
 .student-dashboard[data-theme="dark"] .student-dashboard-nav > button.student-sidebar-logout {
-  background: rgba(238, 229, 218, .025) !important;
-  border-color: rgba(238, 229, 218, .12) !important;
+  background: var(--admin-accent) !important;
+  border-color: var(--admin-brand-border) !important;
+  color: #262424 !important;
+}
+.student-dashboard[data-theme="dark"] .student-dashboard-nav > button.student-sidebar-logout > svg {
+  color: #262424 !important;
 }
 .student-dashboard[data-theme="light"] .student-dashboard-nav > button.student-sidebar-logout {
-  background: rgba(38, 36, 36, .025) !important;
-  border-color: rgba(38, 36, 36, .12) !important;
+  background: var(--admin-accent) !important;
+  border-color: var(--admin-brand-border) !important;
+  color: #ffffff !important;
+}
+.student-dashboard[data-theme="light"] .student-dashboard-nav > button.student-sidebar-logout > svg {
+  color: #ffffff !important;
 }
 
 
