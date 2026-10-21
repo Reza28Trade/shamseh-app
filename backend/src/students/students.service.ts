@@ -425,19 +425,19 @@ export class StudentsService {
           },
         });
         let remainingPayment = payment.amount;
-        for (let index = 0; index < registration.installments.length && remainingPayment > 0; index++) {
+        for (let index = 0; index < createdInstallments.length && remainingPayment > 0; index++) {
           const allocated = Math.min(remainingPayment, remainingByInstallment[index]);
           if (allocated <= 0) continue;
-          await tx.paymentAllocation.create({ data: { paymentId: record.id, installmentId: registration.installments[index].id, amount: allocated } });
+          await tx.paymentAllocation.create({ data: { paymentId: record.id, installmentId: createdInstallments[index].id, amount: allocated } });
           remainingByInstallment[index] -= allocated;
           remainingPayment -= allocated;
         }
       }
-      for (let index = 0; index < registration.installments.length; index++) {
-        const original = Number(registration.installments[index].amount);
+      for (let index = 0; index < createdInstallments.length; index++) {
+        const original = Number(createdInstallments[index].amount);
         const paid = original - remainingByInstallment[index];
         await tx.installment.update({
-          where: { id: registration.installments[index].id },
+          where: { id: createdInstallments[index].id },
           data: { status: paid >= original ? 'PAID' : paid > 0 ? 'PARTIALLY_PAID' : 'PENDING' },
         });
       }
@@ -479,7 +479,7 @@ export class StudentsService {
     return {
       ...student,
       registrations: student.registrations.map((registration: any) => {
-        const installments = registration.installments.map((installment: any) => {
+        const installments = createdInstallments.map((installment: any) => {
           const paid = installment.allocations
             .filter((allocation: any) => allocation.payment.status === 'APPROVED')
             .reduce((sum: number, allocation: any) => sum + Number(allocation.amount), 0);
