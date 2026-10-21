@@ -479,7 +479,7 @@ export class StudentsService {
     return {
       ...student,
       registrations: student.registrations.map((registration: any) => {
-        const installments = createdInstallments.map((installment: any) => {
+        const installments = registration.installments.map((installment: any) => {
           const paid = installment.allocations
             .filter((allocation: any) => allocation.payment.status === 'APPROVED')
             .reduce((sum: number, allocation: any) => sum + Number(allocation.amount), 0);
