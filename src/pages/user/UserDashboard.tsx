@@ -1143,7 +1143,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                   style={{ width: '100%', backgroundColor: innerCardBg, border: `1px solid ${borderColor}`, color: textColor, padding: '12px 16px', borderRadius: '12px', fontSize: '12px', outline: 'none', boxSizing: 'border-box', resize: 'vertical' }} 
                 />
               </div>
-              <button type="submit" disabled={supportSubmitting} style={{ padding: '14px', background: 'linear-gradient(135deg, #6D001A 0%, #a21c3a 100%)', color: '#fff', border: 'none', borderRadius: '14px', fontWeight: 800, fontSize: '13px', cursor: supportSubmitting ? 'wait' : 'pointer', opacity: supportSubmitting ? 0.7 : 1, boxShadow: '0 8px 20px rgba(109, 0, 26, 0.4)' }}>
+              <button type="submit" disabled={supportSubmitting} style={{ padding: '14px', background: accent, color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 800, fontSize: '12px', cursor: supportSubmitting ? 'wait' : 'pointer', opacity: supportSubmitting ? 0.7 : 1, boxShadow: 'none', transition: 'opacity .2s ease' }}>
                 {supportSubmitting ? 'در حال ثبت...' : 'ارسال پیام به پشتیبانی'}
               </button>
             </form>
