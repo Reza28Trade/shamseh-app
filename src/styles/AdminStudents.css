@@ -59,6 +59,37 @@
 .admin-students-page .students-page-head h2 svg,
 .admin-students-page .section-title svg{color:var(--students-teal)}
 .admin-students-page .students-stats{background:transparent}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .students-stats{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:11px!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+  overflow:visible!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-stat{
+  min-width:0!important;
+  margin:0!important;
+  padding:15px 18px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:15px!important;
+  box-shadow:var(--admin-shadow)!important;
+  background:var(--admin-card)!important;
+  position:relative!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-stat:before{display:none!important;content:none!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-stat strong{color:var(--admin-text)!important}
+@media(max-width:900px){
+ .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .students-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:620px){
+ .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .students-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+ .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-stat{padding:13px!important}
+}
+
 .admin-students-page .student-stat{position:relative;transition:background .18s ease;background:var(--admin-card)}
 .admin-students-page .student-stat strong{color:var(--admin-text)}
 .admin-students-page .student-chart-card,
