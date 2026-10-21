@@ -1612,10 +1612,15 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page,
 .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page,
 .admin-shell .admin-page-content .admin-legacy-page.admin-accounts-page {
-  width:100%;
-  max-width:1240px;
-  margin-inline:auto;
-  gap:15px;
+  display:flex!important;
+  flex-direction:column!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:1240px!important;
+  margin:0 auto!important;
+  padding:0!important;
+  gap:15px!important;
+  align-self:center!important;
   color:var(--admin-text);
   font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif;
 }
