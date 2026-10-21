@@ -162,7 +162,7 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
   }
 
   return (
-    <section className="student-counseling-panel" style={{ direction: 'rtl', color: colors.text, fontFamily: 'Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif', background: colors.card, border: `1px solid ${colors.border}`, borderRadius: 15, overflow: 'hidden', boxShadow: 'none', display: 'flex', flexDirection: 'column', height: 'calc(100vh - 220px)', minHeight: 420 }}>
+    <section className="student-counseling-panel" style={{ direction: 'rtl', color: colors.text, fontFamily: 'Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif', background: colors.card, border: `1px solid ${colors.border}`, borderRadius: 15, overflow: 'hidden', boxShadow: 'none', display: 'flex', flexDirection: 'column', height: 'calc(100vh - 70px)', minHeight: 420 }}>
       <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', padding: '13px 16px', borderBottom: `1px solid ${colors.border}`, background: colors.card }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <span style={{ width: 43, height: 43, display: 'grid', placeItems: 'center', borderRadius: 13, background: colors.soft, color: colors.accent }}><MessageCircle size={21} /></span>
@@ -207,8 +207,8 @@ export function StudentCounselingChat({ isDark }: { isDark: boolean }) {
         .student-chat-scroll-area::-webkit-scrollbar-track{background:${colors.inner};border-radius:999px}
         .student-chat-scroll-area::-webkit-scrollbar-thumb{background:${colors.accentSolid};border:2px solid ${colors.inner};border-radius:999px}
         .student-chat-scroll-area::-webkit-scrollbar-thumb:hover{background:${isDark ? '#70b9b5' : '#286d70'}}
-        @media(max-width:640px){.student-counseling-panel{height:calc(100dvh - 180px)!important;min-height:360px!important}.student-counseling-body{padding:8px!important}.student-chat-scroll-area{padding:10px!important}.student-chat-composer{gap:6px!important;padding:8px!important}.student-chat-composer button[type=submit]{padding:0 10px!important}.student-chat-composer textarea{font-size:11px!important}}
-        @media(max-height:600px){.student-counseling-panel{height:calc(100vh - 170px);min-height:320px}}
+        @media(max-width:640px){.student-counseling-panel{height:calc(100dvh - 100px)!important;min-height:360px!important}.student-counseling-body{padding:8px!important}.student-chat-scroll-area{padding:10px!important}.student-chat-composer{gap:6px!important;padding:8px!important}.student-chat-composer button[type=submit]{padding:0 10px!important}.student-chat-composer textarea{font-size:11px!important}}
+        @media(max-height:600px){.student-counseling-panel{height:calc(100vh - 90px);min-height:320px}}
       `}</style>
     </section>
   );
