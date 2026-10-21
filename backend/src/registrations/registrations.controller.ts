@@ -41,6 +41,11 @@ export class RegistrationsController {
     return this.registrationsService.createPublicRegistration(dto, file);
   }
 
+  @Post('public/registrations/lookup')
+  findPublicRegistrations(@Body('nationalId') nationalId: string, @Body('phone') phone: string) {
+    return this.registrationsService.findPublicRegistrations(nationalId, phone);
+  }
+
   @Post('public/registrations/:registrationId/status')
   getPublicRegistrationStatus(
     @Param('registrationId') registrationId: string,
