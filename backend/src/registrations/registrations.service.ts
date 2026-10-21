@@ -589,35 +589,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         }
       });
 
-      // Any amount above this registration's final tuition is applied to the student's oldest unpaid installments first.
-      const excess = Math.max(0, totalPaid - finalTuition);
-      if (excess > 0) {
-        const olderInstallments = await tx.installment.findMany({
-          where: {
-            registration: { studentId: student.id, status: 'APPROVED' },
-            registrationId: { not: registrationId },
-          },
-          include: { allocations: { select: { amount: true } } },
-          orderBy: [{ dueDate: 'asc' }, { createdAt: 'asc' }],
-        });
-        const allocationPlan = planOldestDebtAllocations(olderInstallments.map((item) => ({
-          id: item.id, dueDate: item.dueDate, sequence: item.sequence,
-          amount: Number(item.amount),
-          allocated: item.allocations.reduce((sum, allocation) => sum + Number(allocation.amount), 0),
-        })), excess);
-        const byId = new Map(olderInstallments.map((item) => [item.id, item]));
-        for (const allocation of allocationPlan) {
-          const item = byId.get(allocation.installmentId)!;
-          const alreadyAllocated = item.allocations.reduce((sum, current) => sum + Number(current.amount), 0);
-          await tx.paymentAllocation.create({ data: { paymentId: payment.id, installmentId: item.id, amount: allocation.amount } });
-          const paidAfter = alreadyAllocated + allocation.amount;
-          await tx.installment.update({
-            where: { id: item.id },
-            data: { status: paidAfter + 0.0001 >= Number(item.amount) ? 'PAID' : 'PARTIALLY_PAID' },
-          });
-        }
-      }
-
+      // Initial payments are scoped to this registration only; they must never settle older registrations.
       const remaining = plan.remaining;
       const installments = plan.installmentAmounts.length;
       if (installments > 0) {
