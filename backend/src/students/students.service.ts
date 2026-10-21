@@ -420,7 +420,7 @@ export class StudentsService {
       for (const payment of paymentRows) {
         await tx.registrationPayment.create({
           data: {
-            registrationId: registration.id, purpose: 'INSTALLMENT', status: 'APPROVED',
+            registrationId: registration.id, purpose: 'INITIAL', status: 'APPROVED',
             claimedAmount: payment.amount, approvedAmount: payment.amount,
             paymentDate: payment.paymentDate, method: payment.method, reference: payment.reference,
             reviewNote: 'پرداخت قبلی ثبت‌شده هنگام ایجاد پرونده مالی؛ از شهریه کسر شده است',
