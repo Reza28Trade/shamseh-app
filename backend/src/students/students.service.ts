@@ -357,12 +357,13 @@ export class StudentsService {
       const method = ['CASH', 'BANK_TRANSFER', 'CARD', 'OTHER'].includes(p.method) ? p.method : 'OTHER';
       return { amount, paymentDate, method, reference: p.reference ? String(p.reference).slice(0, 250) : null };
     });
-    const installmentRows = installments.map((i: any, index: number) => {
+    const installmentRows = installments.map((i: any) => {
       const amount = money(i.amount, 'مبلغ قسط');
       const dueDate = new Date(i.dueDate);
       if (amount <= 0 || !i.dueDate || Number.isNaN(dueDate.getTime())) throw new ConflictException('مبلغ و تاریخ سررسید هر قسط باید معتبر باشد.');
-      return { amount, dueDate, sequence: index + 1 };
-    }).sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
+      return { amount, dueDate };
+    }).sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime())
+      .map((installment, index) => ({ ...installment, sequence: index + 1 }));
     const paymentTotal = paymentRows.reduce((sum: number, p: any) => sum + p.amount, 0);
     const installmentTotal = installmentRows.reduce((sum: number, i: any) => sum + i.amount, 0);
     if (paymentTotal > finalTuition) throw new ConflictException('مجموع پرداخت‌ها از شهریه نهایی بیشتر است.');
@@ -399,7 +400,7 @@ export class StudentsService {
         await tx.enrollment.upsert({
           where: { studentId_courseId: { studentId, courseId: course.id } },
           create: { studentId, courseId: course.id, tuitionAmount: course.price },
-          update: { status: 'ACTIVE', tuitionAmount: course.price },
+          update: { tuitionAmount: course.price },
         });
       }
       let remainingByInstallment = registration.installments.map((i: any) => Number(i.amount));
@@ -464,7 +465,37 @@ export class StudentsService {
       },
     });
     if (!student) throw new NotFoundException('Student not found');
-    return student;
+    return {
+      ...student,
+      registrations: student.registrations.map((registration: any) => {
+        const installments = registration.installments.map((installment: any) => {
+          const paid = installment.allocations
+            .filter((allocation: any) => allocation.payment.status === 'APPROVED')
+            .reduce((sum: number, allocation: any) => sum + Number(allocation.amount), 0);
+          return {
+            id: installment.id, sequence: installment.sequence, amount: Number(installment.amount),
+            dueDate: installment.dueDate, status: installment.status,
+            paid: Math.min(Number(installment.amount), paid),
+            balance: Math.max(0, Number(installment.amount) - paid),
+          };
+        });
+        const paidTotal = installments.reduce((sum: number, installment: any) => sum + installment.paid, 0);
+        return {
+          ...registration,
+          originalTuition: Number(registration.originalTuition),
+          discountAmount: Number(registration.discountAmount),
+          finalTuition: Number(registration.finalTuition),
+          courses: registration.courses.map((course: any) => ({
+            ...course, coursePriceSnapshot: Number(course.coursePriceSnapshot),
+          })),
+          payments: registration.payments.map((payment: any) => ({
+            ...payment, claimedAmount: Number(payment.claimedAmount),
+            approvedAmount: payment.approvedAmount === null ? null : Number(payment.approvedAmount),
+          })),
+          installments, paidTotal, balance: Math.max(0, Number(registration.finalTuition) - paidTotal),
+        };
+      }),
+    };
   }
 
   async deleteStudent(user: AuthenticatedUser, studentId: string) {
