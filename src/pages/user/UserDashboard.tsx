@@ -88,6 +88,8 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
     readAt: string | null;
   }>>([]);
   const [notificationsLoading, setNotificationsLoading] = useState(false);
+  const [notificationsError, setNotificationsError] = useState('');
+  const [markingNotificationIds, setMarkingNotificationIds] = useState<string[]>([]);
   const [supportTickets, setSupportTickets] = useState<Array<{ id: string; subject: string; status: 'OPEN' | 'ANSWERED' | 'CLOSED'; createdAt: string; messages: Array<{ id: string; content: string; createdAt: string; senderUserId: string }> }>>([]);
   const [supportLoading, setSupportLoading] = useState(false);
   const [supportSubmitting, setSupportSubmitting] = useState(false);
@@ -111,6 +113,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
 
     const loadNotifications = async () => {
       setNotificationsLoading(true);
+      setNotificationsError('');
       try {
         const response = await fetch('/api/notifications', {
           credentials: 'include',
@@ -122,9 +125,9 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         if (!cancelled) {
           setStudentNotifications(data);
         }
-      } catch {
+      } catch (error) {
         if (!cancelled) {
-          setStudentNotifications([]);
+          setNotificationsError(error instanceof Error ? error.message : 'دریافت اطلاعیه‌ها انجام نشد.');
         }
       } finally {
         if (!cancelled) {
@@ -239,6 +242,32 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
   const studentOfflineRequests = offlineRequests;
 
   const unreadCount = studentNotifications.filter(n => !n.readAt).length;
+
+  const markNotificationRead = async (notificationId: string) => {
+    const notification = studentNotifications.find(item => item.id === notificationId);
+    if (!notification || notification.readAt || markingNotificationIds.includes(notificationId)) return;
+
+    setMarkingNotificationIds(current => [...current, notificationId]);
+    try {
+      const response = await fetch(`/api/notifications/${notificationId}/read`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.message || 'ثبت وضعیت خوانده‌شدن اطلاعیه انجام نشد.');
+      }
+      const data = await response.json();
+      setStudentNotifications(current => current.map(item =>
+        item.id === notificationId ? { ...item, readAt: data.readAt || new Date().toISOString() } : item,
+      ));
+      setNotificationsError('');
+    } catch (error) {
+      setNotificationsError(error instanceof Error ? error.message : 'ثبت وضعیت خوانده‌شدن اطلاعیه انجام نشد.');
+    } finally {
+      setMarkingNotificationIds(current => current.filter(id => id !== notificationId));
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -988,23 +1017,51 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
               <div style={{ textAlign: 'center', padding: '40px 0', color: subText, fontSize: '13px' }}>
                 در حال دریافت اطلاعیه‌ها...
               </div>
+            ) : notificationsError && studentNotifications.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '24px 16px', color: '#f87171', fontSize: '12px' }} role="alert">
+                {notificationsError}
+              </div>
             ) : studentNotifications.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '40px 0', color: subText, fontSize: '13px' }}>
                 در حال حاضر اطلاعیه‌ای برای شما ثبت نشده است.
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {studentNotifications.map(n => (
-                  <div key={n.id} style={{ backgroundColor: innerCardBg, border: `1px solid ${borderColor}`, padding: '16px', borderRadius: '14px', display: 'flex', flexDirection: 'column', gap: '8px', minWidth: 0 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px', flexWrap: 'wrap' }}>
-                      <h4 style={{ fontSize: '13px', fontWeight: 850, color: textColor, margin: 0, overflowWrap: 'anywhere' }}>{n.title}</h4>
-                      <span style={{ fontSize: '10px', color: subText, whiteSpace: 'nowrap' }}>
-                        {new Date(n.createdAt).toLocaleDateString('fa-IR')}
-                      </span>
+                {studentNotifications.map(n => {
+                  const isUnread = !n.readAt;
+                  return (
+                    <div
+                      key={n.id}
+                      onClick={() => { void markNotificationRead(n.id); }}
+                      onKeyDown={event => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
+                          void markNotificationRead(n.id);
+                        }
+                      }}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`${n.title}، ${isUnread ? 'خوانده‌نشده؛ با باز کردن، خوانده‌شده ثبت می‌شود' : 'خوانده‌شده'}`}
+                      style={{ backgroundColor: innerCardBg, border: `1px solid ${isUnread ? accent : borderColor}`, padding: '16px', borderRadius: '14px', display: 'flex', flexDirection: 'column', gap: '8px', minWidth: 0, cursor: isUnread && !markingNotificationIds.includes(n.id) ? 'pointer' : 'default', transition: 'border-color .2s ease' }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px', flexWrap: 'wrap' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+                          {isUnread && <span aria-hidden="true" style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: accent, flexShrink: 0 }} />}
+                          <h4 style={{ fontSize: '13px', fontWeight: 850, color: textColor, margin: 0, overflowWrap: 'anywhere' }}>{n.title}</h4>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                          <span style={{ fontSize: '10px', color: subText, whiteSpace: 'nowrap' }}>
+                            {new Date(n.createdAt).toLocaleDateString('fa-IR')}
+                          </span>
+                          <span style={{ fontSize: '10px', color: isUnread ? accent : subText, fontWeight: isUnread ? 800 : 500, whiteSpace: 'nowrap' }}>
+                            {markingNotificationIds.includes(n.id) ? 'در حال ثبت...' : isUnread ? 'خوانده‌نشده · برای خواندن باز کنید' : 'خوانده‌شده'}
+                          </span>
+                        </div>
+                      </div>
+                      <p style={{ fontSize: '12px', color: textColor, margin: 0, lineHeight: 1.8, overflowWrap: 'anywhere', whiteSpace: 'pre-wrap' }}>{n.content}</p>
                     </div>
-                    <p style={{ fontSize: '12px', color: textColor, margin: 0, lineHeight: 1.8, overflowWrap: 'anywhere', whiteSpace: 'pre-wrap' }}>{n.content}</p>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
