@@ -580,19 +580,35 @@ export class StudentsService {
     this.requireAdmin(user);
     const student = await this.prisma.student.findUnique({
       where: { id: studentId },
-      select: { id: true, userId: true },
+      select: { id: true, userId: true, isArchived: true },
     });
-    if (!student) throw new NotFoundException('Student not found');
+    if (!student) throw new NotFoundException('هنرجو پیدا نشد.');
+    if (!student.isArchived) throw new ConflictException('برای حذف دائمی، ابتدا هنرجو را بایگانی کنید.');
 
-    // Keep the student's financial, registration, counseling, and audit history.
-    // The legacy DELETE endpoint is now a soft-delete for backward compatibility.
-    await this.prisma.student.update({
-      where: { id: studentId },
-      data: { isArchived: true },
+    const [registration, payment, profileHistory, counselingAssignment, counselingConversation, counselingRequest, supportTicket, managementTicket, offlineRequest, notificationTarget, mockExamParticipant] = await Promise.all([
+      this.prisma.registration.findFirst({ where: { studentId }, select: { id: true } }),
+      this.prisma.payment.findFirst({ where: { studentId }, select: { id: true } }),
+      this.prisma.studentProfileHistory.findFirst({ where: { studentId }, select: { id: true } }),
+      this.prisma.counselingAssignment.findFirst({ where: { studentId }, select: { studentId: true } }),
+      this.prisma.counselingConversation.findFirst({ where: { studentId }, select: { studentId: true } }),
+      this.prisma.counselingRequest.findFirst({ where: { studentId }, select: { studentId: true } }),
+      this.prisma.supportTicket.findFirst({ where: { studentId }, select: { id: true } }),
+      this.prisma.managementContactTicket.findFirst({ where: { studentId }, select: { id: true } }),
+      this.prisma.offlineRequest.findFirst({ where: { studentId }, select: { id: true } }),
+      this.prisma.notificationTargetStudent.findFirst({ where: { studentId }, select: { studentId: true } }),
+      this.prisma.mockExamParticipant.findFirst({ where: { studentId }, select: { studentId: true } }),
+    ]);
+    if ([registration, payment, profileHistory, counselingAssignment, counselingConversation, counselingRequest, supportTicket, managementTicket, offlineRequest, notificationTarget, mockExamParticipant].some(Boolean)) {
+      throw new ConflictException('این هنرجو سوابق مالی یا فعالیت مرتبط دارد؛ برای جلوگیری از حذف سوابق، حذف دائمی مجاز نیست.');
+    }
+
+    await this.prisma.$transaction(async tx => {
+      await tx.session.deleteMany({ where: { userId: student.userId } });
+      await tx.enrollment.deleteMany({ where: { studentId } });
+      await tx.student.delete({ where: { id: studentId } });
+      await tx.user.delete({ where: { id: student.userId } });
     });
-    await this.prisma.session.deleteMany({ where: { userId: student.userId } });
-
-    return { success: true, isArchived: true };
+    return { success: true, deleted: true };
   }
 
   async resetPassword(user: AuthenticatedUser, studentId: string, dto: ResetStudentPasswordDto) {
