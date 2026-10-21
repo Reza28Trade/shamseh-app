@@ -330,6 +330,105 @@ export class StudentsService {
     }
   }
 
+  async createManualStudentFinance(user: AuthenticatedUser, studentId: string, body: any) {
+    this.requireAdmin(user);
+    const money = (value: unknown, label: string) => {
+      const amount = Number(value);
+      if (!Number.isFinite(amount) || amount < 0 || !Number.isInteger(amount)) {
+        throw new ConflictException(label + ' باید عدد صحیح و نامنفی باشد.');
+      }
+      return amount;
+    };
+    const student = await this.prisma.student.findUnique({ where: { id: studentId } });
+    if (!student) throw new NotFoundException('Student not found');
+    const courseIds = Array.isArray(body?.courseIds) ? [...new Set(body.courseIds.map((v: unknown) => String(v)))] : [];
+    const payments = Array.isArray(body?.payments) ? body.payments : [];
+    const installments = Array.isArray(body?.installments) ? body.installments : [];
+    if (!courseIds.length) throw new ConflictException('حداقل یک دوره انتخاب کنید.');
+    if (!installments.length) throw new ConflictException('حداقل یک قسط با تاریخ سررسید دستی لازم است.');
+    const originalTuition = money(body.originalTuition, 'شهریه اولیه');
+    const discountAmount = money(body.discountAmount ?? 0, 'تخفیف');
+    if (originalTuition <= 0 || discountAmount > originalTuition) throw new ConflictException('مبلغ شهریه یا تخفیف معتبر نیست.');
+    const finalTuition = originalTuition - discountAmount;
+    const paymentRows = payments.map((p: any) => {
+      const amount = money(p.amount, 'مبلغ پرداخت');
+      const paymentDate = new Date(p.paymentDate);
+      if (amount <= 0 || !p.paymentDate || Number.isNaN(paymentDate.getTime())) throw new ConflictException('مبلغ و تاریخ هر پرداخت باید معتبر باشد.');
+      const method = ['CASH', 'BANK_TRANSFER', 'CARD', 'OTHER'].includes(p.method) ? p.method : 'OTHER';
+      return { amount, paymentDate, method, reference: p.reference ? String(p.reference).slice(0, 250) : null };
+    });
+    const installmentRows = installments.map((i: any, index: number) => {
+      const amount = money(i.amount, 'مبلغ قسط');
+      const dueDate = new Date(i.dueDate);
+      if (amount <= 0 || !i.dueDate || Number.isNaN(dueDate.getTime())) throw new ConflictException('مبلغ و تاریخ سررسید هر قسط باید معتبر باشد.');
+      return { amount, dueDate, sequence: index + 1 };
+    }).sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
+    const paymentTotal = paymentRows.reduce((sum: number, p: any) => sum + p.amount, 0);
+    const installmentTotal = installmentRows.reduce((sum: number, i: any) => sum + i.amount, 0);
+    if (paymentTotal > finalTuition) throw new ConflictException('مجموع پرداخت‌ها از شهریه نهایی بیشتر است.');
+    if (installmentTotal !== finalTuition) throw new ConflictException('مجموع مبالغ اقساط باید برابر شهریه نهایی باشد؛ پرداخت‌های قبلی به‌عنوان تخصیص روی همین اقساط اعمال می‌شوند.');
+    const courses = await this.prisma.course.findMany({ where: { id: { in: courseIds } }, select: { id: true, title: true, price: true } });
+    if (courses.length !== courseIds.length) throw new ConflictException('یکی از دوره‌های انتخاب‌شده پیدا نشد.');
+    return this.prisma.$transaction(async tx => {
+      const registration = await tx.registration.create({
+        data: {
+          applicantFullName: student.fullName, nationalId: student.nationalId, phone: student.phone,
+          academicLevel: student.academicLevel, fieldCode: 'MANUAL', studentId,
+          status: 'APPROVED', approvalMode: discountAmount > 0 ? 'DISCOUNT' : 'NORMAL',
+          originalTuition, discountAmount, finalTuition,
+          discountReason: body.discountReason ? String(body.discountReason).slice(0, 2000) : null,
+          reviewNote: 'پرونده مالی ثبت‌شده دستی توسط مدیریت',
+          reviewedById: user.id, reviewedAt: new Date(), approvedAt: new Date(),
+          courses: { create: courses.map(course => ({
+            courseId: course.id, courseTitleSnapshot: course.title, coursePriceSnapshot: course.price,
+          })) },
+          installments: { create: installmentRows.map(i => ({
+            sequence: i.sequence, amount: i.amount, dueDate: i.dueDate,
+          })) },
+        },
+        include: { installments: { orderBy: { dueDate: 'asc' } } },
+      });
+      for (const course of courses) {
+        await tx.enrollment.upsert({
+          where: { studentId_courseId: { studentId, courseId: course.id } },
+          create: { studentId, courseId: course.id, tuitionAmount: course.price },
+          update: { status: 'ACTIVE', tuitionAmount: course.price },
+        });
+      }
+      let remainingByInstallment = registration.installments.map((i: any) => Number(i.amount));
+      for (const payment of paymentRows) {
+        const record = await tx.registrationPayment.create({
+          data: {
+            registrationId: registration.id, purpose: 'INITIAL', status: 'APPROVED',
+            claimedAmount: payment.amount, approvedAmount: payment.amount,
+            paymentDate: payment.paymentDate, method: payment.method, reference: payment.reference,
+            reviewNote: 'پرداخت تاریخی واردشده توسط مدیریت', reviewedById: user.id, reviewedAt: new Date(),
+          },
+        });
+        let remainingPayment = payment.amount;
+        for (let index = 0; index < registration.installments.length && remainingPayment > 0; index++) {
+          const allocated = Math.min(remainingPayment, remainingByInstallment[index]);
+          if (allocated <= 0) continue;
+          await tx.paymentAllocation.create({ data: { paymentId: record.id, installmentId: registration.installments[index].id, amount: allocated } });
+          remainingByInstallment[index] -= allocated;
+          remainingPayment -= allocated;
+        }
+      }
+      for (let index = 0; index < registration.installments.length; index++) {
+        const original = Number(registration.installments[index].amount);
+        const paid = original - remainingByInstallment[index];
+        await tx.installment.update({
+          where: { id: registration.installments[index].id },
+          data: { status: paid >= original ? 'PAID' : paid > 0 ? 'PARTIALLY_PAID' : 'PENDING' },
+        });
+      }
+      await tx.registrationReviewHistory.create({
+        data: { registrationId: registration.id, actorUserId: user.id, action: 'MANUAL_FINANCE_CREATED', toStatus: 'APPROVED', note: 'ثبت دستی پرونده مالی هنرجوی موجود' },
+      });
+      return { success: true, registrationId: registration.id };
+    });
+  }
+
   async getStudentFinance(user: AuthenticatedUser, studentId: string) {
     this.requireAdmin(user);
     const student = await this.prisma.student.findUnique({
