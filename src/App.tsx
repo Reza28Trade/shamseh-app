@@ -276,9 +276,6 @@ export function App() {
         onLoginSuccess={handleStudentLogin}
         onAdminLoginSuccess={handleAdminLoginSuccess}
       />
-      <a href="/register" style={{ position: 'fixed', right: 20, bottom: 18, zIndex: 1000, padding: '12px 18px', borderRadius: 12, background: '#398A90', color: '#fff', textDecoration: 'none', fontSize: 12, fontWeight: 850, boxShadow: '0 8px 24px rgba(0,0,0,.18)' }}>
-        ثبت‌نام دوره‌ها و ارسال رسید
-      </a>
     </>
   );
 }
