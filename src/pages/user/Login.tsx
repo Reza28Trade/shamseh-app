@@ -1,6 +1,6 @@
 import React,{useState} from 'react';
 import type { Student,Admin } from '../../types';
-import { User,Shield,Lock,ArrowRight,Send,Globe,Camera,Play,BookOpen,FileText,GraduationCap } from 'lucide-react';
+import { User,Shield,Lock,ArrowRight,Send,Globe,Camera,Play,BookOpen,GraduationCap } from 'lucide-react';
 import { CourseCatalogPage, RulesPage, ExamAnalysisPage } from '../public/PublicPages';
 
 interface AuthUser{ id:string; username:string; role:'SUPER_ADMIN'|'STAFF'|'STUDENT'|'COUNSELOR'; studentId:string|null; student?:{fullName:string;nationalId:string}|null; }
