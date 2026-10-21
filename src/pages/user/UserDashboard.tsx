@@ -729,6 +729,13 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
             <h2 style={{ fontSize: '16px', fontWeight: 800, color: textColor, margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <BookOpen size={18} color="#ff3366" /> دوره‌های آموزشی من ({enrolledCourses.length})
             </h2>
+            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:'14px',flexWrap:'wrap',marginBottom:'22px',padding:'16px',borderRadius:'14px',border:`1px solid ${borderColor}`,backgroundColor:innerCardBg}}>
+              <div style={{minWidth:0,flex:'1 1 240px'}}>
+                <div style={{fontSize:'13px',fontWeight:850,color:textColor,marginBottom:'5px'}}>می‌خواهید در دوره دیگری ثبت‌نام کنید؟</div>
+                <div style={{fontSize:'11px',lineHeight:1.9,color:subText}}>دوره جدید را انتخاب کنید و با همان حساب هنرجویی درخواست بفرستید. پرداخت و اقساط دوره جدید جداگانه ثبت می‌شوند.</div>
+              </div>
+              <button type="button" onClick={() => { window.location.href = '/register'; }} style={{border:0,borderRadius:'10px',padding:'11px 15px',backgroundColor:accent,color:'#fff',fontSize:'11px',fontWeight:900,cursor:'pointer',whiteSpace:'nowrap'}}>ثبت‌نام در دوره جدید</button>
+            </div>
 
             {coursesLoading ? (
               <div style={{ textAlign: 'center', padding: '40px 0', color: subText, fontSize: '13px' }}>
