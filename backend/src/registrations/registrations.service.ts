@@ -212,6 +212,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       });
       return {
         ...registration,
+        existingStudent: Boolean(existingStudent),
         message: existingStudent
           ? 'درخواست دوره جدید ثبت شد و پس از بررسی مدیریت در همین حساب هنرجویی قابل پیگیری است.'
           : 'درخواست ثبت‌نام با موفقیت ثبت شد. اطلاعات ورود پس از تأیید مدیریت ایجاد می‌شود.',
