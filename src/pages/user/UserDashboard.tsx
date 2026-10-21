@@ -976,10 +976,13 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         {activeTab === 'finance' && <StudentRegistrationFinance />}
 
         {activeTab === 'notifications' && (
-          <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, backdropFilter: 'blur(16px)', padding: '32px', borderRadius: '24px', boxShadow: '0 16px 40px rgba(0,0,0,0.1)' }}>
-            <h2 style={{ fontSize: '16px', fontWeight: 800, color: textColor, margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Bell size={18} color="#ff3366" /> صندوق اطلاعیه‌ها و پیام‌های سیستمی
+          <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, padding: '22px', borderRadius: '16px', boxShadow: '0 8px 22px rgba(0,0,0,.05)', minWidth: 0 }}>
+            <h2 style={{ fontSize: '16px', fontWeight: 850, color: textColor, margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Bell size={18} color={accent} /> صندوق اطلاعیه‌ها و پیام‌های سیستمی
             </h2>
+            <p style={{ fontSize: '11px', color: subText, margin: '0 0 20px 0' }}>
+              اطلاعیه‌های ارسال‌شده برای شما در این بخش نمایش داده می‌شوند.
+            </p>
 
             {notificationsLoading ? (
               <div style={{ textAlign: 'center', padding: '40px 0', color: subText, fontSize: '13px' }}>
@@ -987,19 +990,19 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
               </div>
             ) : studentNotifications.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '40px 0', color: subText, fontSize: '13px' }}>
-                هیچ اطلاعیه‌ای وجود ندارد.
+                در حال حاضر اطلاعیه‌ای برای شما ثبت نشده است.
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {studentNotifications.map(n => (
-                  <div key={n.id} style={{ backgroundColor: innerCardBg, border: `1px solid ${borderColor}`, padding: '16px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <h4 style={{ fontSize: '13px', fontWeight: 800, color: textColor, margin: 0 }}>{n.title}</h4>
-                      <span style={{ fontSize: '10px', color: subText }}>
+                  <div key={n.id} style={{ backgroundColor: innerCardBg, border: `1px solid ${borderColor}`, padding: '16px', borderRadius: '14px', display: 'flex', flexDirection: 'column', gap: '8px', minWidth: 0 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px', flexWrap: 'wrap' }}>
+                      <h4 style={{ fontSize: '13px', fontWeight: 850, color: textColor, margin: 0, overflowWrap: 'anywhere' }}>{n.title}</h4>
+                      <span style={{ fontSize: '10px', color: subText, whiteSpace: 'nowrap' }}>
                         {new Date(n.createdAt).toLocaleDateString('fa-IR')}
                       </span>
                     </div>
-                    <p style={{ fontSize: '12px', color: subText, margin: 0, lineHeight: 1.6 }}>{n.content}</p>
+                    <p style={{ fontSize: '12px', color: textColor, margin: 0, lineHeight: 1.8, overflowWrap: 'anywhere', whiteSpace: 'pre-wrap' }}>{n.content}</p>
                   </div>
                 ))}
               </div>
