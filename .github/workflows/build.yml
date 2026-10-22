@@ -10,6 +10,7 @@ on:
       - fix/student-panel-design-alignment-20261020
   push:
     branches:
+      - security/protect-course-content-free
       - integration/product-schema-public-finance
       - feature/counseling-ui-attachments
       - feat/shamseh-shared-panel-design-20261018
