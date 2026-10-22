@@ -19,6 +19,7 @@ const execFileAsync = promisify(execFile);
 @Injectable()
 export class CoursesService {
   private readonly hlsBuilds = new Map<string, Promise<void>>();
+  private activeHlsBuilds = 0;
 
   constructor(private readonly prisma: PrismaService) {}
 
@@ -613,36 +614,46 @@ export class CoursesService {
     if (!existsSync(ffmpegPath)) {
       throw new ServiceUnavailableException('پخش محافظت‌شدهٔ ویدئو هنوز روی این سرور آماده نشده است.');
     }
-
-    mkdirSync(cacheDirectory, { recursive: true, mode: 0o700 });
-    const keyPath = join(cacheDirectory, 'hls.key');
-    const keyInfoPath = join(cacheDirectory, 'keyinfo');
-    try {
-      writeFileSync(keyPath, randomBytes(16), { mode: 0o600 });
-      writeFileSync(keyInfoPath, `key.bin\n${keyPath}\n`, { mode: 0o600 });
-      await execFileAsync(ffmpegPath, [
-        '-hide_banner', '-loglevel', 'error', '-y',
-        '-i', sourcePath,
-        '-map', '0:v:0',
-        '-map', '0:a:0?',
-        '-vf', "scale=w='min(1280,iw)':h=-2",
-        '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '25',
-        '-c:a', 'aac', '-b:a', '96k', '-ac', '2',
-        '-f', 'hls', '-hls_time', '6', '-hls_playlist_type', 'vod',
-        '-hls_flags', 'independent_segments',
-        '-hls_key_info_file', keyInfoPath,
-        '-hls_segment_filename', join(cacheDirectory, 'segment-%05d.ts'),
-        playlistPath,
-      ], { timeout: 600000, maxBuffer: 2 * 1024 * 1024 });
-      if (existsSync(keyInfoPath)) unlinkSync(keyInfoPath);
-    } catch (error) {
-      rmSync(cacheDirectory, { recursive: true, force: true });
-      console.error('[ProtectedHLS] video conversion failed for file', fileId, error);
-      throw new ServiceUnavailableException('آماده‌سازی ویدئو ناموفق بود. لطفاً بعداً دوباره تلاش کنید.');
+    // The test VPS has limited memory/CPU. Do not allow simultaneous first-play
+    // transcodes of different videos to exhaust the server.
+    if (this.activeHlsBuilds >= 1) {
+      throw new ServiceUnavailableException('آماده‌سازی ویدئوی دیگری در حال انجام است؛ کمی بعد دوباره تلاش کنید.');
     }
-    if (!existsSync(playlistPath)) {
-      rmSync(cacheDirectory, { recursive: true, force: true });
-      throw new ServiceUnavailableException('فایل پخش ویدئو ساخته نشد.');
+
+    this.activeHlsBuilds += 1;
+    try {
+      mkdirSync(cacheDirectory, { recursive: true, mode: 0o700 });
+      const keyPath = join(cacheDirectory, 'hls.key');
+      const keyInfoPath = join(cacheDirectory, 'keyinfo');
+      try {
+        writeFileSync(keyPath, randomBytes(16), { mode: 0o600 });
+        writeFileSync(keyInfoPath, `key.bin\n${keyPath}\n`, { mode: 0o600 });
+        await execFileAsync(ffmpegPath, [
+          '-hide_banner', '-loglevel', 'error', '-y',
+          '-i', sourcePath,
+          '-map', '0:v:0',
+          '-map', '0:a:0?',
+          '-vf', "scale=w='min(1280,iw)':h=-2",
+          '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '25',
+          '-c:a', 'aac', '-b:a', '96k', '-ac', '2',
+          '-f', 'hls', '-hls_time', '6', '-hls_playlist_type', 'vod',
+          '-hls_flags', 'independent_segments',
+          '-hls_key_info_file', keyInfoPath,
+          '-hls_segment_filename', join(cacheDirectory, 'segment-%05d.ts'),
+          playlistPath,
+        ], { timeout: 600000, maxBuffer: 2 * 1024 * 1024 });
+        if (existsSync(keyInfoPath)) unlinkSync(keyInfoPath);
+      } catch (error) {
+        rmSync(cacheDirectory, { recursive: true, force: true });
+        console.error('[ProtectedHLS] video conversion failed for file', fileId, error);
+        throw new ServiceUnavailableException('آماده‌سازی ویدئو ناموفق بود. لطفاً بعداً دوباره تلاش کنید.');
+      }
+      if (!existsSync(playlistPath) || !existsSync(keyPath)) {
+        rmSync(cacheDirectory, { recursive: true, force: true });
+        throw new ServiceUnavailableException('فایل پخش محافظت‌شدهٔ ویدئو ساخته نشد.');
+      }
+    } finally {
+      this.activeHlsBuilds -= 1;
     }
   }
 
