@@ -1,32 +1,25 @@
-# React + TypeScript + Vite
+# Shamseh App
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+سامانهٔ مؤسسهٔ شمسه برای مدیریت دوره‌ها، هنرجویان، ثبت‌نام و امور مالی، آزمون‌های آزمایشی، مشاوره و محتوای آموزشی.
 
-Currently, two official plugins are available:
+> **قاعدهٔ مرجع پروژه:** نسخهٔ در حال اجرا روی VPS مرجع عملیاتی است. وضعیت GitHub ممکن است از VPS عقب باشد یا تغییرات آزمایشی داشته باشد؛ بنابراین هیچ شاخه‌ای را صرفاً به دلیل جدیدتر بودن، نسخهٔ تولیدی فرض نکنید.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## راهنمای کار با مخزن
 
-## React Compiler
+- [راهنمای ساختار GitHub و گردش کار](docs/GITHUB-WORKFLOW.md)
+- شاخهٔ کاری فعلی: `fix/student-panel-design-alignment-20261020`
+- شاخهٔ `main` ممکن است با نسخهٔ عملیاتی همگام نباشد؛ برای کارهای جاری ابتدا راهنمای گردش کار را بخوانید.
+- Pull Requestها قبل از ادغام باید با نسخهٔ VPS تطبیق داده شوند و Build و بررسی لازم را بگذرانند.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## فناوری‌ها
 
-## Expanding the Oxlint configuration
+- Frontend: React, TypeScript, Vite
+- Backend: NestJS
+- Database/ORM: PostgreSQL, Prisma
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## ایمنی و استقرار
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+- تغییر GitHub به معنی استقرار روی VPS نیست.
+- هیچ‌وقت فایل‌های محیطی، اطلاعات محرمانه، داده‌های ذخیره‌شده یا فایل‌های بارگذاری‌شده را به مخزن اضافه نکنید.
+- قبل از تغییر schema یا migration پایگاه داده، وضعیت واقعی VPS و migrationهای اعمال‌شده بررسی شود.
+- محافظت ویدئو/جزوه مانع مطلق ضبط صفحه یا کپی محتوا نمی‌شود؛ محدودیت‌های امنیتی را در نظر بگیرید.
