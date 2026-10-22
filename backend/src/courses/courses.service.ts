@@ -571,20 +571,24 @@ export class CoursesService {
     console.log('[FileViewer] serving:', viewPath, contentType);
 
     const isStreamableMedia = contentType.startsWith('audio/') || contentType.startsWith('video/');
+    // PDF.js can request byte ranges while rendering a document page-by-page.
+    // This reduces eager transfer in supported PDFs; it is not DRM and does not
+    // prevent an authorized user from retrieving the underlying bytes.
+    const supportsRanges = isStreamableMedia || contentType === 'application/pdf';
     const fileSize = statSync(viewPath).size;
 
     res.setHeader('Content-Type', contentType);
     res.setHeader('Content-Disposition', 'inline');
     res.setHeader('X-Content-Type-Options', 'nosniff');
 
-    if (isStreamableMedia) {
+    if (supportsRanges) {
       res.setHeader('Accept-Ranges', 'bytes');
       if (range) {
         const match = /^bytes=(\d*)-(\d*)$/.exec(range);
         if (match) {
           const start = match[1] ? Number(match[1]) : Math.max(fileSize - Number(match[2]), 0);
           const end = match[2] ? Number(match[2]) : fileSize - 1;
-          if (start <= end && start < fileSize) {
+          if (Number.isSafeInteger(start) && Number.isSafeInteger(end) && start <= end && start < fileSize) {
             const safeEnd = Math.min(end, fileSize - 1);
             res.status(206);
             res.setHeader('Content-Range', `bytes ${start}-${safeEnd}/${fileSize}`);
@@ -592,6 +596,9 @@ export class CoursesService {
             return createReadStream(viewPath, { start, end: safeEnd }).pipe(res);
           }
         }
+        res.status(416);
+        res.setHeader('Content-Range', `bytes */${fileSize}`);
+        return res.end();
       }
       res.setHeader('Content-Length', fileSize);
     }
