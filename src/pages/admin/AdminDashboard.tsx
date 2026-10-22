@@ -229,8 +229,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-spinning{animation:admin-spin 1s linear infinite}
         @keyframes admin-spin{to{transform:rotate(360deg)}}
         .admin-dashboard-notice{border:1px solid #c38b37;background:rgba(195,139,55,.09);color:var(--admin-text);border-radius:12px;padding:10px 13px;font-size:11px;line-height:1.8}
-        .admin-stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}
-        .admin-stat{min-width:0;border:1px solid var(--admin-border);background:var(--admin-card);color:var(--admin-text);border-radius:15px;padding:15px 13px;display:flex;align-items:center;gap:10px;text-align:right;cursor:pointer;transition:transform .18s,border-color .18s;box-shadow:var(--admin-shadow)}
+        .admin-stat-grid{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;background:none!important;background-image:none!important;border:0!important;border-top:0!important;box-shadow:none!important}
+        .admin-stat-grid::before,.admin-stat-grid::after{display:none!important;content:none!important;background:none!important;background-image:none!important;border:0!important;box-shadow:none!important}
+        .admin-stat{position:relative;min-width:0;border:1px solid var(--admin-border)!important;border-top:1px solid var(--admin-border)!important;background:var(--admin-card)!important;background-image:none!important;color:var(--admin-text);border-radius:14px;padding:15px 13px;display:flex;align-items:center;gap:10px;text-align:right;cursor:pointer;transition:transform .18s,border-color .18s;box-shadow:var(--admin-shadow)!important}
+        .admin-stat::before,.admin-stat::after{display:none!important;content:none!important;background:none!important;background-image:none!important;border:0!important;box-shadow:none!important}
         .admin-stat:hover{transform:translateY(-2px);border-color:var(--admin-accent)}
         .admin-stat-icon{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;color:var(--admin-accent);background:var(--admin-accent-soft);flex:none}
         .admin-stat-copy{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
