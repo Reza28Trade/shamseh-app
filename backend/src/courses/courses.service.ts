@@ -647,7 +647,7 @@ export class CoursesService {
    * is not DRM and cannot stop an authorized viewer from recording/reconstructing it.
    */
   async hlsAsset(user: AuthenticatedUser, fileId: string, assetName: string, res: Response) {
-    if (assetName !== 'index.m3u8' && !/^segment-\\d{5}\\.ts$/.test(assetName)) {
+    if (assetName !== 'index.m3u8' && !/^segment-\d{5}\.ts$/.test(assetName)) {
       throw new NotFoundException('HLS asset not found');
     }
 
