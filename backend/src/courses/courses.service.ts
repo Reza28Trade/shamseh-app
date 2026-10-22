@@ -718,11 +718,13 @@ export class CoursesService {
     if (!file) throw new NotFoundException('File not found');
 
     await this.prisma.courseFile.delete({ where: { id: fileId } });
+    const storageDirectory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
     if (file.storageKey) {
-      const storageDirectory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
       const filePath = join(storageDirectory, basename(file.storageKey));
       if (existsSync(filePath)) unlinkSync(filePath);
     }
+    // Remove private generated derivatives when an admin deletes the source file.
+    rmSync(join(storageDirectory, '.hls-cache', file.id), { recursive: true, force: true });
     return { success: true };
   }
 
