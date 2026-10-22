@@ -47,6 +47,15 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
       const hls = new Hls({
         enableWorker: true,
         lowLatencyMode: false,
+        // The first video request may wait for the first encrypted segment to be generated.
+        // Retry temporary server responses rather than failing playback immediately.
+        manifestLoadingMaxRetry: 30,
+        manifestLoadingRetryDelay: 1000,
+        manifestLoadingMaxRetryTimeout: 8000,
+        levelLoadingMaxRetry: 12,
+        levelLoadingRetryDelay: 1000,
+        fragLoadingMaxRetry: 12,
+        fragLoadingRetryDelay: 1000,
         xhrSetup: (xhr) => { xhr.withCredentials = true; },
       });
       hls.loadSource(viewUrl);
