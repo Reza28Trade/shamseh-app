@@ -480,6 +480,16 @@ export class CoursesService {
     }
   }
 
+  /** Apply conservative cache/security headers to protected course files. */
+  private setProtectedFileHeaders(res: Response) {
+    // Course content is account-protected; shared browser/proxy caches must not retain it.
+    res.setHeader('Cache-Control', 'private, no-store, no-cache, must-revalidate, max-age=0');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('Referrer-Policy', 'no-referrer');
+  }
+
   async viewFile(user: AuthenticatedUser, fileId: string, res: Response, range?: string) {
     console.log('[FileViewer] request:', fileId, user.role, user.studentId ?? 'no-student');
     const file = await this.prisma.courseFile.findUnique({ where: { id: fileId } });
@@ -488,6 +498,7 @@ export class CoursesService {
       throw new NotFoundException('File not found');
     }
     await this.ensureCourseAccess(user, file.courseId);
+    this.setProtectedFileHeaders(res);
 
     if (file.externalUrl) return res.redirect(file.externalUrl);
     if (!file.storageKey) throw new NotFoundException('Stored file not found');
@@ -566,6 +577,7 @@ export class CoursesService {
     const file = await this.prisma.courseFile.findUnique({ where: { id: fileId } });
     if (!file) throw new NotFoundException('File not found');
     await this.ensureCourseAccess(user, file.courseId);
+    this.setProtectedFileHeaders(res);
 
     if (file.externalUrl) return res.redirect(file.externalUrl);
     if (!file.storageKey) throw new NotFoundException('Stored file not found');
