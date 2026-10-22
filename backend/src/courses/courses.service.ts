@@ -1,9 +1,9 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { Response } from 'express';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
 import { randomUUID } from 'crypto';
-import { createReadStream, existsSync, mkdirSync, unlinkSync, writeFileSync, statSync } from 'fs';
+import { createReadStream, existsSync, mkdirSync, unlinkSync, writeFileSync, statSync, rmSync } from 'fs';
 import { basename, extname, join } from 'path';
 import { PrismaService } from '../database/prisma.service';
 import { AuthenticatedUser } from '../auth/auth.types';
@@ -484,7 +484,7 @@ export class CoursesService {
   private async logProtectedContentAccess(
     user: AuthenticatedUser,
     file: { id: string; courseId: string; title: string },
-    route: 'view' | 'stream',
+    route: 'view' | 'stream' | 'hls',
   ) {
     try {
       await this.prisma.auditLog.create({
@@ -604,6 +604,78 @@ export class CoursesService {
     }
 
     return createReadStream(viewPath).pipe(res);
+  }
+
+  /**
+   * Serve an authenticated HLS playlist or segment. The generated cache lives
+   * under the private file-storage directory and is never exposed as static files.
+   * HLS improves delivery and raises the effort required to bulk-save content; it
+   * is not DRM and cannot stop an authorized viewer from recording/reconstructing it.
+   */
+  async hlsAsset(user: AuthenticatedUser, fileId: string, assetName: string, res: Response) {
+    if (assetName !== 'index.m3u8' && !/^segment-\\d{5}\\.ts$/.test(assetName)) {
+      throw new NotFoundException('HLS asset not found');
+    }
+
+    const file = await this.prisma.courseFile.findUnique({ where: { id: fileId } });
+    if (!file) throw new NotFoundException('File not found');
+    await this.ensureCourseAccess(user, file.courseId);
+    this.setProtectedFileHeaders(res);
+
+    if (file.externalUrl || !file.storageKey) {
+      throw new BadRequestException('این فایل ویدئویی داخلی برای پخش محافظت‌شده نیست.');
+    }
+
+    const storageDirectory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
+    const sourcePath = join(storageDirectory, basename(file.storageKey));
+    if (!existsSync(sourcePath)) throw new NotFoundException('Stored file not found');
+    const extension = extname(file.storageKey).toLowerCase();
+    const videoExtensions = new Set(['.mp4', '.m4v', '.mov', '.webm', '.mkv', '.avi', '.mpeg', '.mpg']);
+    if (!String(file.mimeType || '').startsWith('video/') && !videoExtensions.has(extension)) {
+      throw new BadRequestException('این فایل ویدئو نیست.');
+    }
+
+    const cacheDirectory = join(storageDirectory, '.hls-cache', file.id);
+    const playlistPath = join(cacheDirectory, 'index.m3u8');
+    if (!existsSync(playlistPath)) {
+      const ffmpegPath = process.env.FFMPEG_PATH || '/usr/bin/ffmpeg';
+      if (!existsSync(ffmpegPath)) {
+        throw new ServiceUnavailableException('پخش محافظت‌شدهٔ ویدئو هنوز روی این سرور آماده نشده است.');
+      }
+
+      mkdirSync(cacheDirectory, { recursive: true, mode: 0o700 });
+      try {
+        await execFileAsync(ffmpegPath, [
+          '-hide_banner', '-loglevel', 'error', '-y',
+          '-i', sourcePath,
+          '-map', '0:v:0',
+          '-map', '0:a:0?',
+          '-vf', "scale=w='min(1280,iw)':h=-2",
+          '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '25',
+          '-c:a', 'aac', '-b:a', '96k', '-ac', '2',
+          '-f', 'hls', '-hls_time', '6', '-hls_playlist_type', 'vod',
+          '-hls_flags', 'independent_segments',
+          '-hls_segment_filename', join(cacheDirectory, 'segment-%05d.ts'),
+          playlistPath,
+        ], { timeout: 600000, maxBuffer: 2 * 1024 * 1024 });
+      } catch (error) {
+        rmSync(cacheDirectory, { recursive: true, force: true });
+        console.error('[ProtectedHLS] video conversion failed for file', file.id, error);
+        throw new ServiceUnavailableException('آماده‌سازی ویدئو ناموفق بود. لطفاً بعداً دوباره تلاش کنید.');
+      }
+      if (!existsSync(playlistPath)) {
+        rmSync(cacheDirectory, { recursive: true, force: true });
+        throw new ServiceUnavailableException('فایل پخش ویدئو ساخته نشد.');
+      }
+      await this.logProtectedContentAccess(user, file, 'hls');
+    }
+
+    const assetPath = join(cacheDirectory, assetName);
+    if (!existsSync(assetPath)) throw new NotFoundException('HLS asset not found');
+    res.setHeader('Content-Type', assetName === 'index.m3u8' ? 'application/vnd.apple.mpegurl' : 'video/mp2t');
+    res.setHeader('Content-Disposition', 'inline');
+    res.setHeader('X-Accel-Buffering', 'no');
+    return createReadStream(assetPath).pipe(res);
   }
 
   async streamFile(user: AuthenticatedUser, fileId: string, res: Response) {
