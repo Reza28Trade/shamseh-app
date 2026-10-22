@@ -540,6 +540,13 @@ export class CoursesService {
     }
 
     const extension = extname(file.storageKey).toLowerCase();
+    const isVideoContent =
+      file.type === 'VIDEO' ||
+      String(file.mimeType || '').startsWith('video/') ||
+      ['.mp4', '.m4v', '.mov', '.webm', '.mkv', '.avi', '.mpeg', '.mpg'].includes(extension);
+    if (isVideoContent) {
+      throw new BadRequestException('ویدئوها فقط از مسیر پخش محافظت‌شده قابل مشاهده‌اند.');
+    }
     let contentType = file.mimeType || 'application/octet-stream';
     if (extension === '.mp3') contentType = 'audio/mpeg';
     else if (extension === '.wav') contentType = 'audio/wav';
@@ -723,6 +730,15 @@ export class CoursesService {
     const storageDirectory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
     const filePath = join(storageDirectory, basename(file.storageKey));
     if (!existsSync(filePath)) throw new NotFoundException('Stored file not found');
+
+    const extension = extname(file.storageKey).toLowerCase();
+    const isVideoContent =
+      file.type === 'VIDEO' ||
+      String(file.mimeType || '').startsWith('video/') ||
+      ['.mp4', '.m4v', '.mov', '.webm', '.mkv', '.avi', '.mpeg', '.mpg'].includes(extension);
+    if (isVideoContent) {
+      throw new BadRequestException('دریافت مستقیم ویدئو غیرفعال است؛ از مسیر پخش محافظت‌شده استفاده کنید.');
+    }
 
     res.setHeader('Content-Type', file.mimeType || 'application/octet-stream');
     res.setHeader('Content-Disposition', `inline; filename*=UTF-8''${encodeURIComponent(file.title)}`);
