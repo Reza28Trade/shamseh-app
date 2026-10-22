@@ -7,6 +7,8 @@ type ViewerFile = {
   id: string;
   title: string;
   type: 'PDF' | 'POWERPOINT' | 'AUDIO' | 'VIDEO' | 'DOCUMENT' | 'LINK';
+  mimeType?: string | null;
+  storageKey?: string | null;
 };
 
 interface FileViewerProps {
@@ -24,16 +26,23 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
   const [zoom, setZoom] = useState<number | null>(null);
   const [viewUrl, setViewUrl] = useState('');
   const [pdfDocument, setPdfDocument] = useState<PDFDocumentProxy | null>(null);
+  const [textContent, setTextContent] = useState('');
   const [pageNumber, setPageNumber] = useState(1);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const fileUrl = `/api/files/${file.id}/view`;
-  const isPdfViewer = file.type === 'PDF' || file.type === 'POWERPOINT' || file.type === 'DOCUMENT';
+  const fileExtension = (file.storageKey || file.title).toLowerCase().match(/\.([a-z0-9]+)$/)?.[1] || '';
+  const mimeType = String(file.mimeType || '').toLowerCase();
+  const officeExtensions = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'odt', 'ods', 'odp'];
+  const isImageViewer = mimeType.startsWith('image/') || ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'].includes(fileExtension);
+  const isTextViewer = mimeType.startsWith('text/') || ['txt', 'md', 'csv', 'json', 'xml', 'js', 'jsx', 'ts', 'tsx', 'css', 'html', 'log'].includes(fileExtension);
+  const isPdfViewer = mimeType === 'application/pdf' || fileExtension === 'pdf' || file.type === 'PDF' || file.type === 'POWERPOINT' || officeExtensions.includes(fileExtension) || (file.type === 'DOCUMENT' && !file.mimeType && !file.storageKey);
 
   useEffect(() => {
     if (isPdfViewer) return;
     setError('');
     setLoading(false);
+    setTextContent('');
     setViewUrl(file.type === 'VIDEO' ? `/api/files/${file.id}/hls/index.m3u8` : fileUrl);
   }, [file.id, file.type, fileUrl, isPdfViewer]);
 
@@ -137,6 +146,32 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
   }, [file.id, fileUrl, isPdfViewer]);
 
   useEffect(() => {
+    if (!isTextViewer || !viewUrl) return;
+    let cancelled = false;
+    setLoading(true);
+    setError('');
+    setTextContent('');
+    fetch(viewUrl, { credentials: 'include' })
+      .then(response => {
+        if (!response.ok) throw new Error(`درخواست فایل با خطای HTTP ${response.status} مواجه شد.`);
+        return response.text();
+      })
+      .then(content => {
+        if (!cancelled) {
+          setTextContent(content);
+          setLoading(false);
+        }
+      })
+      .catch(fetchError => {
+        if (!cancelled) {
+          setError(fetchError instanceof Error ? `نمایش فایل انجام نشد: ${fetchError.message}` : 'نمایش فایل متنی ناموفق بود.');
+          setLoading(false);
+        }
+      });
+    return () => { cancelled = true; };
+  }, [isTextViewer, viewUrl]);
+
+  useEffect(() => {
     if (!pdfDocument || !canvasRef.current) return;
     let renderTask: RenderTask | undefined;
     let cancelled = false;
@@ -212,6 +247,18 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
             </div>
           ) : file.type === 'VIDEO' ? (
             <video ref={videoRef} controls controlsList="nodownload" disablePictureInPicture onError={() => { if (file.type === 'VIDEO') { setError('پخش ویدئو ناموفق بود.'); setLoading(false); } }} style={{ width: '100%', height: '100%', objectFit: 'contain', display: error ? 'none' : 'block' }} />
+          ) : isImageViewer ? (
+            <div style={{ minHeight: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, boxSizing: 'border-box' }}>
+              {loading && <div style={{ color: '#fff', textAlign: 'center', padding: 40 }}>در حال بارگذاری تصویر...</div>}
+              {error && <div style={{ color: '#f87171', textAlign: 'center', padding: 40 }}>{error}</div>}
+              {!error && <img src={viewUrl} alt={file.title} onLoad={() => setLoading(false)} onError={() => { setError('نمایش تصویر ناموفق بود.'); setLoading(false); }} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', display: loading ? 'none' : 'block' }} />}
+            </div>
+          ) : isTextViewer ? (
+            <div style={{ minHeight: '100%', padding: 20, boxSizing: 'border-box' }}>
+              {loading && <div style={{ color: '#fff', textAlign: 'center', padding: 40 }}>در حال بارگذاری متن...</div>}
+              {error && <div style={{ color: '#f87171', textAlign: 'center', padding: 40 }}>{error}</div>}
+              {!loading && !error && <pre dir="auto" style={{ margin: 0, color: '#f3f4f6', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', font: '13px/1.8 ui-monospace, SFMono-Regular, Consolas, monospace' }}>{textContent}</pre>}
+            </div>
           ) : (
             <>
               {loading && <div style={{ color: '#fff', textAlign: 'center', padding: 40 }}>در حال آماده‌سازی نمایش فایل...</div>}
