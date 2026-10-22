@@ -301,7 +301,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-action-center .admin-panel-heading h2,.admin-upcoming-panel .admin-panel-heading h2{margin:0;font-size:17px}
         .admin-action-summary{font-size:11px;font-weight:800;color:var(--admin-accent);background:var(--admin-accent-soft);padding:6px 10px;border-radius:9px;white-space:nowrap}
         .admin-action-list,.admin-upcoming-list{display:flex;flex-direction:column;gap:8px}
+        .admin-action-list{max-height:392px;overflow-y:auto;overscroll-behavior:contain;padding:2px 3px 2px 2px}
+        .admin-action-list::-webkit-scrollbar{width:5px}
+        .admin-action-list::-webkit-scrollbar-thumb{background:var(--admin-border);border-radius:8px}
+        .admin-action-list::-webkit-scrollbar-track{background:transparent}
         .admin-action-row,.admin-upcoming-row{width:100%;display:flex;align-items:center;gap:12px;text-align:right;padding:12px;border:1px solid var(--admin-border);border-radius:12px;background:var(--admin-inner);color:var(--admin-text);cursor:pointer;transition:border-color .15s,transform .15s}
+        .admin-action-row{flex:0 0 auto;min-height:64px}
         .admin-action-row:hover,.admin-upcoming-row:hover{border-color:var(--admin-accent);transform:translateY(-1px)}
         .admin-action-icon,.admin-upcoming-icon{width:36px;height:36px;display:grid;place-items:center;flex:none;border-radius:10px;color:var(--admin-accent);background:var(--admin-accent-soft)}
         .admin-action-icon.amber{color:#b98327;background:rgba(185,131,39,.12)}
