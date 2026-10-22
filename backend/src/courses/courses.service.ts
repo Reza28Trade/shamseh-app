@@ -1,9 +1,9 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { Response } from 'express';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
-import { randomUUID } from 'crypto';
-import { createReadStream, existsSync, mkdirSync, unlinkSync, writeFileSync, statSync } from 'fs';
+import { randomBytes, randomUUID } from 'crypto';
+import { createReadStream, existsSync, mkdirSync, unlinkSync, writeFileSync, statSync, rmSync } from 'fs';
 import { basename, extname, join } from 'path';
 import { PrismaService } from '../database/prisma.service';
 import { AuthenticatedUser } from '../auth/auth.types';
@@ -18,6 +18,9 @@ const execFileAsync = promisify(execFile);
 
 @Injectable()
 export class CoursesService {
+  private readonly hlsBuilds = new Map<string, Promise<void>>();
+  private activeHlsBuilds = 0;
+
   constructor(private readonly prisma: PrismaService) {}
 
   private requireAdmin(user: AuthenticatedUser) {
@@ -480,6 +483,38 @@ export class CoursesService {
     }
   }
 
+  /** Record successful protected-content access without blocking delivery if audit storage fails. */
+  private async logProtectedContentAccess(
+    user: AuthenticatedUser,
+    file: { id: string; courseId: string; title: string },
+    route: 'view' | 'stream' | 'hls',
+  ) {
+    try {
+      await this.prisma.auditLog.create({
+        data: {
+          actorUserId: user.id,
+          action: 'COURSE_CONTENT_ACCESS',
+          entityType: 'CourseFile',
+          entityId: file.id,
+          metadata: { courseId: file.courseId, fileTitle: file.title, route, role: user.role },
+        },
+      });
+    } catch (error) {
+      // Content delivery should remain available if audit logging is temporarily unavailable.
+      console.error('[CourseContentAudit] failed to record access', error);
+    }
+  }
+
+  /** Apply conservative cache/security headers to protected course files. */
+  private setProtectedFileHeaders(res: Response) {
+    // Course content is account-protected; shared browser/proxy caches must not retain it.
+    res.setHeader('Cache-Control', 'private, no-store, no-cache, must-revalidate, max-age=0');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('Referrer-Policy', 'no-referrer');
+  }
+
   async viewFile(user: AuthenticatedUser, fileId: string, res: Response, range?: string) {
     console.log('[FileViewer] request:', fileId, user.role, user.studentId ?? 'no-student');
     const file = await this.prisma.courseFile.findUnique({ where: { id: fileId } });
@@ -488,6 +523,11 @@ export class CoursesService {
       throw new NotFoundException('File not found');
     }
     await this.ensureCourseAccess(user, file.courseId);
+    this.setProtectedFileHeaders(res);
+    // Log the initial media request, not every Range request generated while seeking.
+    if (!range || /^bytes=0-/.test(range)) {
+      await this.logProtectedContentAccess(user, file, 'view');
+    }
 
     if (file.externalUrl) return res.redirect(file.externalUrl);
     if (!file.storageKey) throw new NotFoundException('Stored file not found');
@@ -500,6 +540,13 @@ export class CoursesService {
     }
 
     const extension = extname(file.storageKey).toLowerCase();
+    const isVideoContent =
+      file.type === 'VIDEO' ||
+      String(file.mimeType || '').startsWith('video/') ||
+      ['.mp4', '.m4v', '.mov', '.webm', '.mkv', '.avi', '.mpeg', '.mpg'].includes(extension);
+    if (isVideoContent) {
+      throw new BadRequestException('ویدئوها فقط از مسیر پخش محافظت‌شده قابل مشاهده‌اند.');
+    }
     let contentType = file.mimeType || 'application/octet-stream';
     if (extension === '.mp3') contentType = 'audio/mpeg';
     else if (extension === '.wav') contentType = 'audio/wav';
@@ -534,20 +581,24 @@ export class CoursesService {
     console.log('[FileViewer] serving:', viewPath, contentType);
 
     const isStreamableMedia = contentType.startsWith('audio/') || contentType.startsWith('video/');
+    // PDF.js can request byte ranges while rendering a document page-by-page.
+    // This reduces eager transfer in supported PDFs; it is not DRM and does not
+    // prevent an authorized user from retrieving the underlying bytes.
+    const supportsRanges = isStreamableMedia || contentType === 'application/pdf';
     const fileSize = statSync(viewPath).size;
 
     res.setHeader('Content-Type', contentType);
     res.setHeader('Content-Disposition', 'inline');
     res.setHeader('X-Content-Type-Options', 'nosniff');
 
-    if (isStreamableMedia) {
+    if (supportsRanges) {
       res.setHeader('Accept-Ranges', 'bytes');
       if (range) {
         const match = /^bytes=(\d*)-(\d*)$/.exec(range);
         if (match) {
           const start = match[1] ? Number(match[1]) : Math.max(fileSize - Number(match[2]), 0);
           const end = match[2] ? Number(match[2]) : fileSize - 1;
-          if (start <= end && start < fileSize) {
+          if (Number.isSafeInteger(start) && Number.isSafeInteger(end) && start <= end && start < fileSize) {
             const safeEnd = Math.min(end, fileSize - 1);
             res.status(206);
             res.setHeader('Content-Range', `bytes ${start}-${safeEnd}/${fileSize}`);
@@ -555,6 +606,9 @@ export class CoursesService {
             return createReadStream(viewPath, { start, end: safeEnd }).pipe(res);
           }
         }
+        res.status(416);
+        res.setHeader('Content-Range', `bytes */${fileSize}`);
+        return res.end();
       }
       res.setHeader('Content-Length', fileSize);
     }
@@ -562,10 +616,113 @@ export class CoursesService {
     return createReadStream(viewPath).pipe(res);
   }
 
+  private async generateHlsPlaylist(sourcePath: string, cacheDirectory: string, playlistPath: string, fileId: string) {
+    const ffmpegPath = process.env.FFMPEG_PATH || '/usr/bin/ffmpeg';
+    if (!existsSync(ffmpegPath)) {
+      throw new ServiceUnavailableException('پخش محافظت‌شدهٔ ویدئو هنوز روی این سرور آماده نشده است.');
+    }
+    // The test VPS has limited memory/CPU. Do not allow simultaneous first-play
+    // transcodes of different videos to exhaust the server.
+    if (this.activeHlsBuilds >= 1) {
+      throw new ServiceUnavailableException('آماده‌سازی ویدئوی دیگری در حال انجام است؛ کمی بعد دوباره تلاش کنید.');
+    }
+
+    this.activeHlsBuilds += 1;
+    try {
+      mkdirSync(cacheDirectory, { recursive: true, mode: 0o700 });
+      const keyPath = join(cacheDirectory, 'hls.key');
+      const keyInfoPath = join(cacheDirectory, 'keyinfo');
+      try {
+        writeFileSync(keyPath, randomBytes(16), { mode: 0o600 });
+        writeFileSync(keyInfoPath, `key.bin\n${keyPath}\n`, { mode: 0o600 });
+        await execFileAsync(ffmpegPath, [
+          '-hide_banner', '-loglevel', 'error', '-y',
+          '-i', sourcePath,
+          '-map', '0:v:0',
+          '-map', '0:a:0?',
+          '-vf', "scale=w='min(1280,iw)':h=-2",
+          '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '25',
+          '-c:a', 'aac', '-b:a', '96k', '-ac', '2',
+          '-f', 'hls', '-hls_time', '6', '-hls_playlist_type', 'vod',
+          '-hls_flags', 'independent_segments',
+          '-hls_key_info_file', keyInfoPath,
+          '-hls_segment_filename', join(cacheDirectory, 'segment-%05d.ts'),
+          playlistPath,
+        ], { timeout: 600000, maxBuffer: 2 * 1024 * 1024 });
+        if (existsSync(keyInfoPath)) unlinkSync(keyInfoPath);
+      } catch (error) {
+        rmSync(cacheDirectory, { recursive: true, force: true });
+        console.error('[ProtectedHLS] video conversion failed for file', fileId, error);
+        throw new ServiceUnavailableException('آماده‌سازی ویدئو ناموفق بود. لطفاً بعداً دوباره تلاش کنید.');
+      }
+      if (!existsSync(playlistPath) || !existsSync(keyPath)) {
+        rmSync(cacheDirectory, { recursive: true, force: true });
+        throw new ServiceUnavailableException('فایل پخش محافظت‌شدهٔ ویدئو ساخته نشد.');
+      }
+    } finally {
+      this.activeHlsBuilds -= 1;
+    }
+  }
+
+  /**
+   * Serve an authenticated HLS playlist or segment. The generated cache lives
+   * under the private file-storage directory and is never exposed as static files.
+   * HLS improves delivery and raises the effort required to bulk-save content; it
+   * is not DRM and cannot stop an authorized viewer from recording/reconstructing it.
+   */
+  async hlsAsset(user: AuthenticatedUser, fileId: string, assetName: string, res: Response) {
+    if (assetName !== 'index.m3u8' && assetName !== 'key.bin' && !/^segment-\d{5}\.ts$/.test(assetName)) {
+      throw new NotFoundException('HLS asset not found');
+    }
+
+    const file = await this.prisma.courseFile.findUnique({ where: { id: fileId } });
+    if (!file) throw new NotFoundException('File not found');
+    await this.ensureCourseAccess(user, file.courseId);
+    this.setProtectedFileHeaders(res);
+
+    if (file.externalUrl || !file.storageKey) {
+      throw new BadRequestException('این فایل ویدئویی داخلی برای پخش محافظت‌شده نیست.');
+    }
+
+    const storageDirectory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
+    const sourcePath = join(storageDirectory, basename(file.storageKey));
+    if (!existsSync(sourcePath)) throw new NotFoundException('Stored file not found');
+    const extension = extname(file.storageKey).toLowerCase();
+    const videoExtensions = new Set(['.mp4', '.m4v', '.mov', '.webm', '.mkv', '.avi', '.mpeg', '.mpg']);
+    if (!String(file.mimeType || '').startsWith('video/') && !videoExtensions.has(extension)) {
+      throw new BadRequestException('این فایل ویدئو نیست.');
+    }
+
+    const cacheDirectory = join(storageDirectory, '.hls-cache', file.id);
+    const playlistPath = join(cacheDirectory, 'index.m3u8');
+    if (assetName === 'index.m3u8') await this.logProtectedContentAccess(user, file, 'hls');
+    if (!existsSync(playlistPath) || !existsSync(join(cacheDirectory, 'hls.key'))) {
+      let build = this.hlsBuilds.get(file.id);
+      if (!build) {
+        build = this.generateHlsPlaylist(sourcePath, cacheDirectory, playlistPath, file.id);
+        this.hlsBuilds.set(file.id, build);
+      }
+      try {
+        await build;
+      } finally {
+        if (this.hlsBuilds.get(file.id) === build) this.hlsBuilds.delete(file.id);
+      }
+    }
+
+    const assetPath = join(cacheDirectory, assetName === 'key.bin' ? 'hls.key' : assetName);
+    if (!existsSync(assetPath)) throw new NotFoundException('HLS asset not found');
+    res.setHeader('Content-Type', assetName === 'index.m3u8' ? 'application/vnd.apple.mpegurl' : assetName === 'key.bin' ? 'application/octet-stream' : 'video/mp2t');
+    res.setHeader('Content-Disposition', 'inline');
+    res.setHeader('X-Accel-Buffering', 'no');
+    return createReadStream(assetPath).pipe(res);
+  }
+
   async streamFile(user: AuthenticatedUser, fileId: string, res: Response) {
     const file = await this.prisma.courseFile.findUnique({ where: { id: fileId } });
     if (!file) throw new NotFoundException('File not found');
     await this.ensureCourseAccess(user, file.courseId);
+    this.setProtectedFileHeaders(res);
+    await this.logProtectedContentAccess(user, file, 'stream');
 
     if (file.externalUrl) return res.redirect(file.externalUrl);
     if (!file.storageKey) throw new NotFoundException('Stored file not found');
@@ -573,6 +730,15 @@ export class CoursesService {
     const storageDirectory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
     const filePath = join(storageDirectory, basename(file.storageKey));
     if (!existsSync(filePath)) throw new NotFoundException('Stored file not found');
+
+    const extension = extname(file.storageKey).toLowerCase();
+    const isVideoContent =
+      file.type === 'VIDEO' ||
+      String(file.mimeType || '').startsWith('video/') ||
+      ['.mp4', '.m4v', '.mov', '.webm', '.mkv', '.avi', '.mpeg', '.mpg'].includes(extension);
+    if (isVideoContent) {
+      throw new BadRequestException('دریافت مستقیم ویدئو غیرفعال است؛ از مسیر پخش محافظت‌شده استفاده کنید.');
+    }
 
     res.setHeader('Content-Type', file.mimeType || 'application/octet-stream');
     res.setHeader('Content-Disposition', `inline; filename*=UTF-8''${encodeURIComponent(file.title)}`);
@@ -585,11 +751,13 @@ export class CoursesService {
     if (!file) throw new NotFoundException('File not found');
 
     await this.prisma.courseFile.delete({ where: { id: fileId } });
+    const storageDirectory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
     if (file.storageKey) {
-      const storageDirectory = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
       const filePath = join(storageDirectory, basename(file.storageKey));
       if (existsSync(filePath)) unlinkSync(filePath);
     }
+    // Remove private generated derivatives when an admin deletes the source file.
+    rmSync(join(storageDirectory, '.hls-cache', file.id), { recursive: true, force: true });
     return { success: true };
   }
 

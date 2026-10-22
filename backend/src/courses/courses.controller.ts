@@ -152,6 +152,16 @@ export class CoursesController {
     return this.coursesService.streamFile(req.user, fileId, res);
   }
 
+  @Get('files/:fileId/hls/:assetName')
+  protectedHlsAsset(
+    @Req() req: AuthenticatedRequest,
+    @Param('fileId') fileId: string,
+    @Param('assetName') assetName: string,
+    @Res() res: Response,
+  ) {
+    return this.coursesService.hlsAsset(req.user, fileId, assetName, res);
+  }
+
   @Delete('admin/files/:fileId')
   deleteFile(@Req() req: AuthenticatedRequest, @Param('fileId') fileId: string) {
     return this.coursesService.deleteFile(req.user, fileId);

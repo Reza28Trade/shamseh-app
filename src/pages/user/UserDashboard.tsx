@@ -1267,6 +1267,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
           isDark={isDark}
           borderColor={borderColor}
           textColor={textColor}
+          watermarkLabel={student.fullName}
           onClose={() => setViewerFile(null)}
         />
       )}

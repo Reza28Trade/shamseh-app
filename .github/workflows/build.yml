@@ -7,6 +7,7 @@ on:
       - integration/product-schema-public-finance
       - fix/system-audit-logs
       - feat/shamseh-shared-panel-design-20261018
+      - fix/student-panel-design-alignment-20261020
   push:
     branches:
       - integration/product-schema-public-finance
