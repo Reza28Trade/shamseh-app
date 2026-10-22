@@ -362,7 +362,22 @@
   background-image:none!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-dashboard-page .admin-stat-grid{
+  display:grid!important;
   gap:12px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-dashboard-page .admin-stat{
+  border:1px solid var(--admin-border)!important;
+  border-top:1px solid var(--admin-border)!important;
+  border-radius:14px!important;
+  background:var(--admin-card)!important;
+  background-image:none!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-dashboard-page .admin-stat::before,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-dashboard-page .admin-stat::after{
+  display:none!important;
+  content:none!important;
+  background:none!important;
 }
 /* Dashboard uses a distinct live-data layout but the same surfaces and type scale. */
 .admin-shell .admin-page-content .admin-dashboard-page{
