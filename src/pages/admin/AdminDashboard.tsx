@@ -64,18 +64,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
     setLoading(true);
     setRefreshError('');
     try {
-      const [courses, students, registrations, refunds, exams, tickets, counselors, conversations, logs] = await Promise.all([
+      const [courses, students, registrations, refunds, exams, tickets] = await Promise.all([
         loadList<CourseRow>('/api/courses', isAllowed('courses')),
         loadList<StudentRow>('/api/admin/students', isAllowed('students')),
         loadList<RegistrationRow>('/api/admin/registrations?status=ALL', isAllowed('finance')),
         loadList<RefundRow>('/api/admin/refunds?status=ALL', isAllowed('finance')),
         loadList<ExamRow>('/api/admin/mock-exams', isAllowed('mockExams')),
         loadList<TicketRow>('/api/admin/support/tickets', admin?.role === 'super_admin'),
-        loadList<CounselorRow>('/api/admin/counselors', isAllowed('counseling')),
-        loadList<ConversationRow>('/api/counseling/conversations', isAllowed('counseling')),
-        loadList<AuditRow>('/api/admin/audit-logs', isAllowed('logs')),
       ]);
-      setData({ courses, students, registrations, refunds, exams, tickets, counselors, conversations, logs });
+      setData({ courses, students, registrations, refunds, exams, tickets, counselors: null, conversations: null, logs: null });
       setLastUpdated(new Date().toISOString());
     } catch {
       setRefreshError('بروزرسانی داشبورد کامل نشد. بخش‌هایی که داده معتبر دریافت نکرده‌اند با خط تیره مشخص می‌شوند.');
