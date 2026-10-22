@@ -27,7 +27,7 @@ sudo apt-get install -y ffmpeg
 /usr/bin/ffmpeg -version | head -n 2
 ```
 
-This installs a free system package; it does not add a paid service. HLS conversion consumes CPU and disk, and the first request for each video may take time because the HLS version is generated on demand. Generated segments are cached under `$FILE_STORAGE_PATH/.hls-cache/<course-file-id>` (default `/opt/shamseh-app/storage/files/.hls-cache`) and are removed when the corresponding course file is deleted. Monitor cache size and disk space during testing.
+This installs a free system package; it does not add a paid service. HLS conversion consumes CPU and disk, and the first request for each video may take time because the HLS version is generated on demand. The backend intentionally limits first-time transcodes to one at a time to reduce load on the small test VPS. Generated segments are cached under `$FILE_STORAGE_PATH/.hls-cache/<course-file-id>` (default `/opt/shamseh-app/storage/files/.hls-cache`) and are removed when the corresponding course file is deleted. Monitor cache size and disk space during testing.
 
 ## Safe test sequence
 
