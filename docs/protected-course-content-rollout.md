@@ -4,7 +4,7 @@ This change adds authenticated HLS delivery for internally stored video files an
 
 ## Important security boundary
 
-HLS is not DRM. A student who is authorized to watch a video can still capture the playback or retrieve the HLS segments. The implementation requires an authenticated session and checks course access for the playlist and every segment, uses private/no-store response headers, and keeps generated segments under a private cache directory rather than serving them as static files. The viewer watermark is a deterrent, not a guarantee against copying.
+HLS is not DRM. A student who is authorized to watch a video can still capture the playback or retrieve the HLS segments. The implementation requires an authenticated session and checks course access for the playlist and every segment, uses private/no-store response headers, encrypts HLS segments with AES-128, authenticates every playlist/segment/key request, and keeps generated files under a private cache directory rather than serving them as static files. The AES key is served only through the authenticated backend route. The viewer watermark is a deterrent, not a guarantee against copying.
 
 ## Test-VPS prerequisites
 
