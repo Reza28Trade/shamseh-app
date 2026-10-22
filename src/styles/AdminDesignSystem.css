@@ -346,6 +346,24 @@
 }
 
 
+/* Dashboard alignment: match the content width and card surfaces used by the other admin pages. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-dashboard-page{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  align-self:stretch!important;
+  box-sizing:border-box!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-dashboard-page .admin-stat{
+  border:1px solid var(--admin-border)!important;
+  border-top:1px solid var(--admin-border)!important;
+  background:var(--admin-card)!important;
+  background-image:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-dashboard-page .admin-stat-grid{
+  gap:12px!important;
+}
 /* Dashboard uses a distinct live-data layout but the same surfaces and type scale. */
 .admin-shell .admin-page-content .admin-dashboard-page{
   width:100%;
