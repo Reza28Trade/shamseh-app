@@ -480,6 +480,28 @@ export class CoursesService {
     }
   }
 
+  /** Record successful protected-content access without blocking delivery if audit storage fails. */
+  private async logProtectedContentAccess(
+    user: AuthenticatedUser,
+    file: { id: string; courseId: string; title: string },
+    route: 'view' | 'stream',
+  ) {
+    try {
+      await this.prisma.auditLog.create({
+        data: {
+          actorUserId: user.id,
+          action: 'COURSE_CONTENT_ACCESS',
+          entityType: 'CourseFile',
+          entityId: file.id,
+          metadata: { courseId: file.courseId, fileTitle: file.title, route, role: user.role },
+        },
+      });
+    } catch (error) {
+      // Content delivery should remain available if audit logging is temporarily unavailable.
+      console.error('[CourseContentAudit] failed to record access', error);
+    }
+  }
+
   /** Apply conservative cache/security headers to protected course files. */
   private setProtectedFileHeaders(res: Response) {
     // Course content is account-protected; shared browser/proxy caches must not retain it.
@@ -499,6 +521,10 @@ export class CoursesService {
     }
     await this.ensureCourseAccess(user, file.courseId);
     this.setProtectedFileHeaders(res);
+    // Log the initial media request, not every Range request generated while seeking.
+    if (!range || /^bytes=0-/.test(range)) {
+      await this.logProtectedContentAccess(user, file, 'view');
+    }
 
     if (file.externalUrl) return res.redirect(file.externalUrl);
     if (!file.storageKey) throw new NotFoundException('Stored file not found');
@@ -578,6 +604,7 @@ export class CoursesService {
     if (!file) throw new NotFoundException('File not found');
     await this.ensureCourseAccess(user, file.courseId);
     this.setProtectedFileHeaders(res);
+    await this.logProtectedContentAccess(user, file, 'stream');
 
     if (file.externalUrl) return res.redirect(file.externalUrl);
     if (!file.storageKey) throw new NotFoundException('Stored file not found');
