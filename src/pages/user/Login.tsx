@@ -1,9 +1,7 @@
 import React,{useEffect,useRef,useState} from 'react';
 import type { Student,Admin } from '../../types';
-import { User,Shield,Lock,ArrowRight,Send,Globe,Camera,Play,BookOpen,GraduationCap } from 'lucide-react';
-import React,{useEffect,useState} from 'react';
-import type { Student,Admin } from '../../types';
 import { User,Shield,Lock,ArrowRight,Send,Globe,Camera,Play,BookOpen,GraduationCap,ChevronLeft,ChevronRight,CalendarDays,Newspaper,BookOpenCheck,ExternalLink } from 'lucide-react';
+import { CourseCatalogPage, RulesPage, ExamAnalysisPage } from '../public/PublicPages';
 
 interface AuthUser{ id:string; username:string; role:'SUPER_ADMIN'|'STAFF'|'STUDENT'|'COUNSELOR'; studentId:string|null; student?:{fullName:string;nationalId:string}|null; }
 interface LoginProps{students:Student[];admins:Admin[];onLoginSuccess:(user:AuthUser)=>void;onAdminLoginSuccess:(user:AuthUser)=>void;rulesText?:string;}
@@ -122,7 +120,7 @@ export const Login:React.FC<LoginProps>=({students,admins,onLoginSuccess,onAdmin
  if (viewState === 'courses') return <CourseCatalogPage onBack={() => setViewState('welcome')} />;
  if (viewState === 'rules') return <RulesPage onBack={() => setViewState('welcome')} />;
  if (viewState === 'analysis') return <ExamAnalysisPage onBack={() => setViewState('welcome')} />;
- if (viewState === 'information') return <div className="sh-information-page"><div className="sh-information-intro"><span>راهنمای متقاضیان</span><h1>اطلاعات آموزشی شمسه</h1><p>معرفی دوره‌ها، تحلیل کنکورهای سال‌های گذشته و قوانین آموزشی را در یک صفحه مرور کنید.</p></div><CourseCatalogPage onBack={back}/><ExamAnalysisPage onBack={back}/><RulesPage onBack={back}/><style>{`.sh-information-page{min-height:100vh;background:#f5f8f7;color:#182022;direction:rtl;font-family:system-ui,sans-serif}.sh-information-top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;padding:12px clamp(16px,4vw,48px);background:rgba(255,255,255,.96);border-bottom:1px solid #dfe7e5}.sh-information-top img{width:38px;height:38px;object-fit:contain}.sh-information-top div{display:grid;gap:3px;flex:1}.sh-information-top strong{font-size:13px}.sh-information-top span{font-size:10px;color:#71807f}.sh-information-intro{padding:28px clamp(16px,4vw,48px);background:linear-gradient(120deg,#e7f5f5,#fff);border-bottom:1px solid #dfe7e5}.sh-information-intro>span{font-size:11px;font-weight:900;color:#168C91}.sh-information-intro h1{font-size:clamp(23px,3vw,34px);margin:8px 0;line-height:1.6}.sh-information-intro p{font-size:13px;line-height:2;color:#71807f;margin:0}.sh-information-page>div:not(.sh-information-top):not(.sh-information-intro){box-sizing:border-box}.sh-information-page>div[style*="min-height: 100vh"]{min-height:auto!important;padding-top:22px!important;padding-bottom:22px!important}.sh-information-page>div[style*="min-height: 100vh"]>div{max-width:1180px}.sh-information-page>div[style*="min-height: 100vh"] header{display:none}.sh-information-page>div[style*="min-height: 100vh"] footer{display:none}@media(max-width:520px){.sh-information-top{flex-wrap:wrap}}`}</style></div>;
+ if (viewState === 'information') return <InformationPage onBack={back} />;
  return <div className="sh-login">
    <div className="sh-login-visual">
      <ShamsehParticleIntro/>
