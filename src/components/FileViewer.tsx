@@ -36,7 +36,8 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
   const officeExtensions = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'odt', 'ods', 'odp'];
   const isImageViewer = mimeType.startsWith('image/') || ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'].includes(fileExtension);
   const isTextViewer = mimeType.startsWith('text/') || ['txt', 'md', 'csv', 'json', 'xml', 'js', 'jsx', 'ts', 'tsx', 'css', 'html', 'log'].includes(fileExtension);
-  const isPdfViewer = mimeType === 'application/pdf' || fileExtension === 'pdf' || file.type === 'PDF' || file.type === 'POWERPOINT' || officeExtensions.includes(fileExtension) || (file.type === 'DOCUMENT' && !file.mimeType && !file.storageKey);
+  const isOfficeMime = mimeType.includes('msword') || mimeType.includes('wordprocessingml') || mimeType.includes('ms-excel') || mimeType.includes('spreadsheetml') || mimeType.includes('ms-powerpoint') || mimeType.includes('presentationml') || mimeType.includes('opendocument');
+  const isPdfViewer = mimeType === 'application/pdf' || fileExtension === 'pdf' || file.type === 'PDF' || file.type === 'POWERPOINT' || officeExtensions.includes(fileExtension) || isOfficeMime || (file.type === 'DOCUMENT' && !file.mimeType && !file.storageKey);
 
   useEffect(() => {
     if (isPdfViewer) return;
