@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import type { Admin } from '../../types';
 import {
-  Activity, ArrowLeft, Bell, BookOpen, CalendarClock, ClipboardList,
-  CreditCard, FileCheck2, RefreshCw, ShieldAlert, Users, Wallet, MessageSquare,
+  Activity, ArrowLeft, Bell, BookOpen, CalendarClock, CreditCard,
+  FileCheck2, RefreshCw, Users, Wallet, MessageSquare,
 } from 'lucide-react';
-
 type CourseRow = { id: string; title: string; professor?: string | null; status?: string | null; startDate?: string | null };
 type StudentRow = { id: string; fullName?: string; nationalId?: string; isArchived?: boolean };
 type PaymentRow = { id: string; purpose?: string; status: string; claimedAmount?: number; approvedAmount?: number | null; createdAt?: string; paymentDate?: string | null; trackingCode?: string | null };
@@ -119,22 +118,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
   }, [data.registrations]);
 
   const statCards = [
-    { label: 'دوره‌های فعال', value: activeCourses ? numberFa(activeCourses.length) : '—', note: activeCourses ? 'بر اساس فهرست دوره‌ها' : 'داده در دسترس نیست', icon: BookOpen, tab: 'courses' as const, permission: 'courses' },
-    { label: 'هنرجویان ثبت‌شده', value: data.students ? numberFa(data.students.length) : '—', note: data.students ? 'بر اساس فهرست هنرجویان' : 'داده در دسترس نیست', icon: Users, tab: 'students' as const, permission: 'students' },
-    { label: 'ثبت‌نام‌های نیازمند بررسی', value: pendingRegistrations ? numberFa(pendingRegistrations.length) : '—', note: pendingRegistrations ? 'در انتظار بررسی یا اصلاح' : 'داده در دسترس نیست', icon: FileCheck2, tab: 'registrations' as const, permission: 'finance' },
-    { label: 'رسیدهای پرداخت در انتظار', value: pendingPayments ? numberFa(pendingPayments.length) : '—', note: pendingPayments ? 'نیازمند بررسی مالی' : 'داده در دسترس نیست', icon: CreditCard, tab: 'registrations' as const, permission: 'finance' },
+    { label: 'دوره‌های فعال', value: activeCourses ? numberFa(activeCourses.length) : '—', note: 'وضعیت فعلی دوره‌ها', icon: BookOpen, tab: 'courses' as const, permission: 'courses' },
+    { label: 'هنرجویان ثبت‌شده', value: data.students ? numberFa(data.students.length) : '—', note: 'تعداد هنرجویان', icon: Users, tab: 'students' as const, permission: 'students' },
   ].filter(item => isAllowed(item.permission));
-
-  const quickLinks = [
-    { label: 'مدیریت دوره‌ها', note: 'دوره‌ها و محتوای آموزشی', icon: BookOpen, tab: 'courses' as const, permission: 'courses' },
-    { label: 'مدیریت هنرجویان', note: 'حساب‌ها و وضعیت هنرجویان', icon: Users, tab: 'students' as const, permission: 'students' },
-    { label: 'آزمون‌های آزمایشی', note: 'زمان‌بندی و شرکت‌کنندگان', icon: ClipboardList, tab: 'mockExams' as const, permission: 'mockExams' },
-    { label: 'مشاوره و گفتگوها', note: 'مشاوران و مکالمات', icon: CalendarClock, tab: 'counseling' as const, permission: 'counseling' },
-    { label: 'پیام‌ها و پرسش‌ها', note: 'پیگیری تیکت‌های هنرجویان', icon: MessageSquare, tab: 'messages' as const, permission: 'messages' },
-    { label: 'امور مالی و ثبت‌نام', note: 'شهریه، رسیدها و بازپرداخت', icon: Wallet, tab: 'registrations' as const, permission: 'finance' },
-    { label: 'ارسال اطلاعیه', note: 'اطلاع‌رسانی به هنرجویان', icon: Bell, tab: 'notifications' as const, permission: 'notifications' },
-    { label: 'گزارش‌های سیستمی', note: 'رویدادهای مدیریتی ثبت‌شده', icon: ShieldAlert, tab: 'logs' as const, permission: 'logs' },
-  ].filter(item => item.tab === 'messages' ? admin?.role === 'super_admin' : isAllowed(item.permission));
 
   return (
     <div className="admin-dashboard-page">
@@ -156,66 +142,60 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         })}
       </section>
 
-      <section className="admin-followup-grid" aria-label="موارد نیازمند پیگیری">
-        {isAllowed('finance') && <>
-          <button className="admin-followup-card" onClick={() => onNavigate('registrations')}><span className="admin-followup-icon amber"><FileCheck2 size={17} /></span><span><small>ثبت‌نام‌های نیازمند پیگیری</small><strong>{pendingRegistrations ? numberFa(pendingRegistrations.length) : '—'}</strong></span><ArrowLeft size={14} /></button>
-          <button className="admin-followup-card" onClick={() => onNavigate('registrations')}><span className="admin-followup-icon amber"><CreditCard size={17} /></span><span><small>رسیدهای در انتظار بررسی</small><strong>{pendingPayments ? numberFa(pendingPayments.length) : '—'}</strong></span><ArrowLeft size={14} /></button>
-          <button className="admin-followup-card" onClick={() => onNavigate('registrations')}><span className="admin-followup-icon amber"><Wallet size={17} /></span><span><small>درخواست‌های بازپرداخت</small><strong>{openRefunds ? numberFa(openRefunds.length) : '—'}</strong></span><ArrowLeft size={14} /></button>
-        </>}
-        {admin?.role === 'super_admin' && <button className="admin-followup-card" onClick={() => onNavigate('messages')}><span className="admin-followup-icon"><MessageSquare size={17} /></span><span><small>تیکت‌های در انتظار پاسخ</small><strong>{openTickets ? numberFa(openTickets.length) : '—'}</strong></span><ArrowLeft size={14} /></button>}
+      <section className="admin-action-center" aria-label="اقدامات نیازمند رسیدگی">
+        <div className="admin-panel-heading">
+          <div><span>اولویت‌های مدیریتی</span><h2>نیازمند اقدام</h2></div>
+          <span className="admin-action-summary">{numberFa(
+            (pendingRegistrations?.length || 0) +
+            (pendingPayments?.length || 0) +
+            (openRefunds?.length || 0) +
+            (admin?.role === 'super_admin' ? (openTickets?.length || 0) : 0)
+          )} مورد</span>
+        </div>
+        <div className="admin-action-list">
+          {isAllowed('finance') && pendingRegistrations !== null && pendingRegistrations.length > 0 &&
+            <button className="admin-action-row" onClick={() => onNavigate('registrations')}>
+              <span className="admin-action-icon"><FileCheck2 size={18}/></span>
+              <span className="admin-action-copy"><strong>ثبت‌نام‌های نیازمند بررسی</strong><small>بررسی درخواست‌های جدید یا اصلاح‌شده</small></span>
+              <b>{numberFa(pendingRegistrations.length)}</b><ArrowLeft size={15}/>
+            </button>}
+          {isAllowed('finance') && pendingPayments !== null && pendingPayments.length > 0 &&
+            <button className="admin-action-row" onClick={() => onNavigate('registrations')}>
+              <span className="admin-action-icon amber"><CreditCard size={18}/></span>
+              <span className="admin-action-copy"><strong>رسیدهای پرداخت در انتظار تأیید</strong><small>بررسی رسید و ثبت نتیجهٔ مالی</small></span>
+              <b>{numberFa(pendingPayments.length)}</b><ArrowLeft size={15}/>
+            </button>}
+          {isAllowed('finance') && openRefunds !== null && openRefunds.length > 0 &&
+            <button className="admin-action-row" onClick={() => onNavigate('registrations')}>
+              <span className="admin-action-icon amber"><Wallet size={18}/></span>
+              <span className="admin-action-copy"><strong>درخواست‌های بازپرداخت</strong><small>درخواست‌هایی که هنوز تعیین تکلیف نشده‌اند</small></span>
+              <b>{numberFa(openRefunds.length)}</b><ArrowLeft size={15}/>
+            </button>}
+          {admin?.role === 'super_admin' && openTickets !== null && openTickets.length > 0 &&
+            <button className="admin-action-row" onClick={() => onNavigate('messages')}>
+              <span className="admin-action-icon"><MessageSquare size={18}/></span>
+              <span className="admin-action-copy"><strong>تیکت‌های باز هنرجویان</strong><small>گفتگوهایی که هنوز بسته نشده‌اند</small></span>
+              <b>{numberFa(openTickets.length)}</b><ArrowLeft size={15}/>
+            </button>}
+          {!loading &&
+            (pendingRegistrations?.length || 0) === 0 &&
+            (pendingPayments?.length || 0) === 0 &&
+            (openRefunds?.length || 0) === 0 &&
+            (admin?.role !== 'super_admin' || (openTickets?.length || 0) === 0) &&
+            <div className="admin-action-empty"><Bell size={18}/><span><strong>مورد فوری برای رسیدگی وجود ندارد</strong><small>در حال حاضر اقدامی در انتظار شما نیست.</small></span></div>}
+          {loading && <div className="admin-action-empty">در حال بررسی موارد نیازمند اقدام…</div>}
+        </div>
       </section>
 
-      <div className="admin-dashboard-grid">
-        <section className="admin-panel-card">
-          <div className="admin-panel-heading"><div><span>دسترسی سریع</span><h2>مدیریت روزانه</h2></div></div>
-          <div className="admin-quick-grid">
-            {quickLinks.map(item => {
-              const Icon = item.icon;
-              return <button key={item.tab} onClick={() => onNavigate(item.tab)}><Icon size={17} /><span>{item.label}</span><small>{item.note}</small></button>;
-            })}
-          </div>
-        </section>
-
-        <section className="admin-panel-card">
-          <div className="admin-panel-heading"><div><span>نمای کلی</span><h2>دوره‌های آموزشی</h2></div><button onClick={() => onNavigate('courses')}>مشاهده همه <ArrowLeft size={13} /></button></div>
-          {activeCourses === null ? <div className="admin-empty">اطلاعات دوره‌ها در دسترس نیست یا مجوز مشاهده آن وجود ندارد.</div> :
-            activeCourses.length === 0 ? <div className="admin-empty">در حال حاضر دوره‌ای ثبت نشده است.</div> :
-            <div className="admin-course-list">{activeCourses.slice(0, 5).map(course => <button key={course.id} onClick={() => onNavigate('courses')}>
-              <span className="admin-course-dot" /><span><strong>{course.title}</strong><small>{course.professor || 'مدرس مشخص نشده'}</small></span><ArrowLeft size={13} />
+      {isAllowed('mockExams') && <section className="admin-panel-card admin-upcoming-panel">
+        <div className="admin-panel-heading"><div><span>برنامه‌ریزی</span><h2>آزمون‌های پیش‌رو</h2></div><button onClick={() => onNavigate('mockExams')}>مدیریت آزمون‌ها <ArrowLeft size={13}/></button></div>
+        {upcomingExams === null ? <div className="admin-empty">اطلاعات آزمون‌ها در دسترس نیست.</div> :
+          upcomingExams.length === 0 ? <div className="admin-empty">آزمون زمان‌بندی‌شده‌ای در آینده وجود ندارد.</div> :
+          <div className="admin-upcoming-list">{[...upcomingExams].sort((a,b)=>new Date(a.examDate || 0).getTime()-new Date(b.examDate || 0).getTime()).slice(0,3).map(exam =>
+            <button key={exam.id} className="admin-upcoming-row" onClick={() => onNavigate('mockExams')}>
+              <span className="admin-upcoming-icon"><CalendarClock size={17}/></span>
+              <span><strong>{exam.title}</strong><small>{dateFa(exam.examDate)}</small></span><ArrowLeft size={14}/>
             </button>)}</div>}
-        </section>
-      </div>
-
-      <div className="admin-dashboard-grid admin-dashboard-lower">
-        <section className="admin-panel-card">
-          <div className="admin-panel-heading"><div><span>پیگیری مالی</span><h2>آخرین پرداخت‌ها و رسیدها</h2></div><button onClick={() => onNavigate('registrations')}>گزارش مالی <ArrowLeft size={13} /></button></div>
-          {transactions === null ? <div className="admin-empty">اطلاعات مالی در دسترس نیست یا مجوز مشاهده آن وجود ندارد.</div> :
-            transactions.length === 0 ? <div className="admin-empty">تراکنشی برای نمایش ثبت نشده است.</div> :
-            <div className="admin-transaction-list">{transactions.map(tx => <div key={tx.id} className="admin-transaction-row">
-              <span className={'admin-transaction-status ' + (tx.status === 'APPROVED' ? 'success' : tx.status === 'PENDING' ? 'pending' : 'failed')}>{statusText(tx.status)}</span>
-              <span className="admin-transaction-copy"><strong>{tx.student}</strong><small>{tx.purpose} · {tx.course}</small><small>{dateFa(tx.date)}</small></span>
-              <strong className="admin-transaction-amount">{moneyFa(tx.amount)}</strong>
-            </div>)}</div>}
-        </section>
-
-        <section className="admin-panel-card">
-          <div className="admin-panel-heading"><div><span>آزمون و ارتباطات</span><h2>وضعیت سایر بخش‌ها</h2></div></div>
-          <div className="admin-module-status-list">
-            {isAllowed('mockExams') && <button onClick={() => onNavigate('mockExams')}><span className="admin-module-icon"><ClipboardList size={16} /></span><span><strong>آزمون‌های آزمایشی</strong><small>{data.exams === null ? 'اطلاعات در دسترس نیست' : numberFa(data.exams.length) + ' آزمون ثبت‌شده'}</small></span><ArrowLeft size={13} /></button>}
-            {isAllowed('mockExams') && <button onClick={() => onNavigate('mockExams')}><span className="admin-module-icon"><CalendarClock size={16} /></span><span><strong>آزمون‌های پیش‌رو</strong><small>{upcomingExams === null ? 'اطلاعات در دسترس نیست' : numberFa(upcomingExams.length) + ' آزمون آینده'}</small></span><ArrowLeft size={13} /></button>}
-            {isAllowed('counseling') && <button onClick={() => onNavigate('counseling')}><span className="admin-module-icon"><Users size={16} /></span><span><strong>مشاوران فعال</strong><small>{data.counselors === null ? 'اطلاعات در دسترس نیست' : numberFa(data.counselors.filter(c => c.isActive && c.user?.status === 'ACTIVE').length) + ' مشاور فعال'}</small></span><ArrowLeft size={13} /></button>}
-            {isAllowed('counseling') && <button onClick={() => onNavigate('counseling')}><span className="admin-module-icon"><MessageSquare size={16} /></span><span><strong>گفتگوهای مشاوره</strong><small>{data.conversations === null ? 'اطلاعات در دسترس نیست' : numberFa(data.conversations.length) + ' گفتگوی ثبت‌شده'}</small></span><ArrowLeft size={13} /></button>}
-          </div>
-        </section>
-      </div>
-
-      {isAllowed('logs') && <section className="admin-panel-card">
-        <div className="admin-panel-heading"><div><span>ردپای مدیریتی</span><h2>آخرین رویدادهای سیستمی</h2></div><button onClick={() => onNavigate('logs')}>مشاهده گزارش‌ها <ArrowLeft size={13} /></button></div>
-        {data.logs === null ? <div className="admin-empty">گزارش‌های سیستمی در دسترس نیست یا مجوز مشاهده آن وجود ندارد.</div> :
-          data.logs.length === 0 ? <div className="admin-empty">رویدادی برای نمایش ثبت نشده است.</div> :
-          <div className="admin-audit-list">{[...data.logs].sort((a, b) => new Date(b.timestamp || 0).getTime() - new Date(a.timestamp || 0).getTime()).slice(0, 5).map(log => <div className="admin-audit-row" key={log.id}>
-            <span className="admin-audit-icon"><ShieldAlert size={15} /></span><span className="admin-audit-copy"><strong>{log.action}</strong><small>{log.entityType || 'رویداد سیستمی'} · {log.performedBy || 'کاربر نامشخص'}</small></span><time>{dateFa(log.timestamp)}</time>
-          </div>)}</div>}
       </section>}
 
       <style>{`
@@ -230,7 +210,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-spinning{animation:admin-spin 1s linear infinite}
         @keyframes admin-spin{to{transform:rotate(360deg)}}
         .admin-dashboard-notice{border:1px solid #c38b37;background:rgba(195,139,55,.09);color:var(--admin-text);border-radius:12px;padding:10px 13px;font-size:11px;line-height:1.8}
-        .admin-stat-grid{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;width:100%;min-width:0;padding:0!important;margin:0!important;background:transparent!important;background-color:transparent!important;background-image:none!important;border:0!important;border-top:0!important;border-radius:0!important;outline:0!important;box-shadow:none!important;filter:none!important}
+        .admin-stat-grid{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;width:100%;min-width:0;padding:0!important;margin:0!important;background:transparent!important;background-color:transparent!important;background-image:none!important;border:0!important;border-top:0!important;border-radius:0!important;outline:0!important;box-shadow:none!important;filter:none!important}
         .admin-stat-grid::before,.admin-stat-grid::after{display:none!important;content:none!important;background:none!important;background-image:none!important;border:0!important;box-shadow:none!important}
         .admin-dashboard-page > section.admin-stat-grid{
           display:grid!important;
@@ -329,6 +309,28 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-audit-row time{font-size:8px;color:var(--admin-sub);white-space:nowrap}
         @media(max-width:1100px){.admin-stat-grid,.admin-followup-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-dashboard-grid{grid-template-columns:1fr}}
         @media(max-width:600px){.admin-dashboard-tools{align-items:flex-start;flex-wrap:wrap}.admin-refresh-button{font-size:9px;padding:8px}.admin-stat-grid,.admin-followup-grid{grid-template-columns:1fr}.admin-quick-grid{grid-template-columns:1fr}.admin-panel-card{padding:14px}.admin-transaction-row{flex-wrap:wrap}.admin-transaction-amount{margin-right:40px}.admin-audit-row{align-items:flex-start;flex-wrap:wrap}.admin-audit-row time{margin-right:40px}}
+
+        .admin-action-center,.admin-upcoming-panel{border:1px solid var(--admin-border);border-radius:16px;background:var(--admin-card);box-shadow:var(--admin-shadow);padding:18px}
+        .admin-action-center .admin-panel-heading,.admin-upcoming-panel .admin-panel-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:12px;margin-bottom:10px;border-bottom:1px solid var(--admin-border)}
+        .admin-action-center .admin-panel-heading>div,.admin-upcoming-panel .admin-panel-heading>div{display:flex;flex-direction:column;gap:3px}
+        .admin-action-center .admin-panel-heading span:first-child,.admin-upcoming-panel .admin-panel-heading span:first-child{font-size:10px;color:var(--admin-accent);font-weight:800}
+        .admin-action-center .admin-panel-heading h2,.admin-upcoming-panel .admin-panel-heading h2{margin:0;font-size:17px}
+        .admin-action-summary{font-size:11px;font-weight:800;color:var(--admin-accent);background:var(--admin-accent-soft);padding:6px 10px;border-radius:9px;white-space:nowrap}
+        .admin-action-list,.admin-upcoming-list{display:flex;flex-direction:column;gap:8px}
+        .admin-action-row,.admin-upcoming-row{width:100%;display:flex;align-items:center;gap:12px;text-align:right;padding:12px;border:1px solid var(--admin-border);border-radius:12px;background:var(--admin-inner);color:var(--admin-text);cursor:pointer;transition:border-color .15s,transform .15s}
+        .admin-action-row:hover,.admin-upcoming-row:hover{border-color:var(--admin-accent);transform:translateY(-1px)}
+        .admin-action-icon,.admin-upcoming-icon{width:36px;height:36px;display:grid;place-items:center;flex:none;border-radius:10px;color:var(--admin-accent);background:var(--admin-accent-soft)}
+        .admin-action-icon.amber{color:#b98327;background:rgba(185,131,39,.12)}
+        .admin-action-copy{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+        .admin-action-copy strong,.admin-upcoming-row strong{font-size:12px;font-weight:850}
+        .admin-action-copy small,.admin-upcoming-row small{font-size:10px;color:var(--admin-sub);line-height:1.6}
+        .admin-action-row>b{font-size:16px;min-width:28px;text-align:center;color:var(--admin-accent)}
+        .admin-action-empty{display:flex;align-items:center;gap:10px;padding:18px 10px;color:var(--admin-sub);font-size:12px}
+        .admin-action-empty strong,.admin-action-empty small{display:block}
+        .admin-action-empty strong{color:var(--admin-text);font-size:12px;margin-bottom:4px}
+        .admin-action-empty small{font-size:10px}
+        .admin-upcoming-row>span:nth-child(2){display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+        @media(max-width:600px){.admin-stat-grid{grid-template-columns:1fr}.admin-action-center,.admin-upcoming-panel{padding:14px}.admin-action-row{gap:8px;padding:10px}}
         @media(prefers-reduced-motion:reduce){.admin-dashboard-page *{transition:none!important;animation:none!important}}
       `}</style>
     </div>
