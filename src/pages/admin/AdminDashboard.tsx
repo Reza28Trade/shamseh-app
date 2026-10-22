@@ -232,6 +232,35 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-dashboard-notice{border:1px solid #c38b37;background:rgba(195,139,55,.09);color:var(--admin-text);border-radius:12px;padding:10px 13px;font-size:11px;line-height:1.8}
         .admin-stat-grid{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;width:100%;min-width:0;padding:0!important;margin:0!important;background:transparent!important;background-color:transparent!important;background-image:none!important;border:0!important;border-top:0!important;border-radius:0!important;outline:0!important;box-shadow:none!important;filter:none!important}
         .admin-stat-grid::before,.admin-stat-grid::after{display:none!important;content:none!important;background:none!important;background-image:none!important;border:0!important;box-shadow:none!important}
+        section.admin-stat-grid,
+        .admin-dashboard-page > section.admin-stat-grid{
+          display:grid!important;
+          width:100%!important;
+          max-width:none!important;
+          min-width:0!important;
+          margin:0!important;
+          padding:0!important;
+          background:transparent!important;
+          background-color:transparent!important;
+          background-image:none!important;
+          border:0!important;
+          outline:0!important;
+          border-radius:0!important;
+          box-shadow:none!important;
+          filter:none!important;
+        }
+        section.admin-stat-grid::before,
+        section.admin-stat-grid::after,
+        .admin-dashboard-page > section.admin-stat-grid::before,
+        .admin-dashboard-page > section.admin-stat-grid::after{
+          display:none!important;
+          content:none!important;
+          background:transparent!important;
+          background-image:none!important;
+          border:0!important;
+          outline:0!important;
+          box-shadow:none!important;
+        }
         .admin-stat{position:relative;min-width:0;border:1px solid var(--admin-border)!important;border-top:1px solid var(--admin-border)!important;background:var(--admin-card)!important;background-image:none!important;color:var(--admin-text);border-radius:14px;padding:15px 13px;display:flex;align-items:center;gap:10px;text-align:right;cursor:pointer;transition:transform .18s,border-color .18s;box-shadow:var(--admin-shadow)!important}
         .admin-stat::before,.admin-stat::after{display:none!important;content:none!important;background:none!important;background-image:none!important;border:0!important;box-shadow:none!important}
         .admin-stat:hover{transform:translateY(-2px);border-color:var(--admin-accent)}
