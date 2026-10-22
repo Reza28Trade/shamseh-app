@@ -119,6 +119,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         })}
       </section>
 
+      <div className="admin-dashboard-priority-grid">
       <section className="admin-action-center" aria-label="اقدامات نیازمند رسیدگی">
         <div className="admin-panel-heading">
           <div><span>اولویت‌های مدیریتی</span><h2>نیازمند اقدام</h2></div>
@@ -163,7 +164,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
           {loading && <div className="admin-action-empty">در حال بررسی موارد نیازمند اقدام…</div>}
         </div>
       </section>
-
       {isAllowed('mockExams') && <section className="admin-panel-card admin-upcoming-panel">
         <div className="admin-panel-heading"><div><span>برنامه‌ریزی</span><h2>آزمون‌های پیش‌رو</h2></div><button onClick={() => onNavigate('mockExams')}>مدیریت آزمون‌ها <ArrowLeft size={13}/></button></div>
         {upcomingExams === null ? <div className="admin-empty">اطلاعات آزمون‌ها در دسترس نیست.</div> :
@@ -174,6 +174,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
               <span><strong>{exam.title}</strong><small>{dateFa(exam.examDate)}</small></span><ArrowLeft size={14}/>
             </button>)}</div>}
       </section>}
+      </div>
 
       <style>{`
         .admin-page-content:has(> .admin-dashboard-page){width:100%;max-width:none;margin:0}
@@ -287,6 +288,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         @media(max-width:1100px){.admin-stat-grid,.admin-followup-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-dashboard-grid{grid-template-columns:1fr}}
         @media(max-width:600px){.admin-dashboard-tools{align-items:flex-start;flex-wrap:wrap}.admin-refresh-button{font-size:9px;padding:8px}.admin-stat-grid,.admin-followup-grid{grid-template-columns:1fr}.admin-quick-grid{grid-template-columns:1fr}.admin-panel-card{padding:14px}.admin-transaction-row{flex-wrap:wrap}.admin-transaction-amount{margin-right:40px}.admin-audit-row{align-items:flex-start;flex-wrap:wrap}.admin-audit-row time{margin-right:40px}}
 
+        .admin-dashboard-priority-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:12px;align-items:stretch;width:100%;min-width:0}
+        .admin-dashboard-priority-grid>.admin-action-center,.admin-dashboard-priority-grid>.admin-upcoming-panel{min-width:0;height:100%}
+        .admin-dashboard-priority-grid .admin-action-center{padding:17px}
+        .admin-dashboard-priority-grid .admin-upcoming-panel{padding:17px}
+        .admin-dashboard-priority-grid .admin-action-row{padding:10px;gap:9px}
+        @media(max-width:760px){.admin-dashboard-priority-grid{grid-template-columns:minmax(0,1fr)}}
         .admin-action-center,.admin-upcoming-panel{border:1px solid var(--admin-border);border-radius:16px;background:var(--admin-card);box-shadow:var(--admin-shadow);padding:18px}
         .admin-action-center .admin-panel-heading,.admin-upcoming-panel .admin-panel-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:12px;margin-bottom:10px;border-bottom:1px solid var(--admin-border)}
         .admin-action-center .admin-panel-heading>div,.admin-upcoming-panel .admin-panel-heading>div{display:flex;flex-direction:column;gap:3px}
