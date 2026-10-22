@@ -485,15 +485,16 @@ export class CoursesService {
     user: AuthenticatedUser,
     file: { id: string; courseId: string; title: string },
     route: 'view' | 'stream',
+    outcome: 'allowed' | 'denied' = 'allowed',
   ) {
     try {
       await this.prisma.auditLog.create({
         data: {
           actorUserId: user.id,
-          action: 'COURSE_CONTENT_ACCESS',
+          action: outcome === 'allowed' ? 'COURSE_CONTENT_ACCESS' : 'COURSE_CONTENT_ACCESS_DENIED',
           entityType: 'CourseFile',
           entityId: file.id,
-          metadata: { courseId: file.courseId, fileTitle: file.title, route, role: user.role },
+          metadata: { courseId: file.courseId, fileTitle: file.title, route, role: user.role, outcome },
         },
       });
     } catch (error) {
@@ -519,7 +520,12 @@ export class CoursesService {
       console.error('[FileViewer] file not found:', fileId);
       throw new NotFoundException('File not found');
     }
-    await this.ensureCourseAccess(user, file.courseId);
+    try {
+      await this.ensureCourseAccess(user, file.courseId);
+    } catch (error) {
+      await this.logProtectedContentAccess(user, file, 'view', 'denied');
+      throw error;
+    }
     this.setProtectedFileHeaders(res);
     // Log the initial media request, not every Range request generated while seeking.
     if (!range || /^bytes=0-/.test(range)) {
@@ -602,7 +608,12 @@ export class CoursesService {
   async streamFile(user: AuthenticatedUser, fileId: string, res: Response) {
     const file = await this.prisma.courseFile.findUnique({ where: { id: fileId } });
     if (!file) throw new NotFoundException('File not found');
-    await this.ensureCourseAccess(user, file.courseId);
+    try {
+      await this.ensureCourseAccess(user, file.courseId);
+    } catch (error) {
+      await this.logProtectedContentAccess(user, file, 'stream', 'denied');
+      throw error;
+    }
     this.setProtectedFileHeaders(res);
     await this.logProtectedContentAccess(user, file, 'stream');
 
