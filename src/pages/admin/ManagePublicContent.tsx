@@ -58,7 +58,9 @@ export const ManagePublicContent: React.FC = () => {
     border: dark ? 'rgba(238,229,218,.14)' : 'rgba(38,36,36,.14)',
     accent: dark ? '#48D1CC' : '#008080',
   };
-  const [tab, setTab] = useState<'rules' | 'analysis'>('rules');
+  const [tab, setTab] = useState<'rules' | 'analysis' | 'news'>('rules');
+  const [newsJson, setNewsJson] = useState('[\\n  {\\n    "id": "news-1",\\n    "title": "عنوان خبر",\\n    "summary": "خلاصه خبر",\\n    "imageUrl": "",\\n    "category": "اطلاعیه",\\n    "date": "",\\n    "published": true\\n  }\\n]');
+  const [newsSaving, setNewsSaving] = useState(false);
   const [records, setRecords] = useState<ContentRecord[]>([]);
   const [rulesTitle, setRulesTitle] = useState('قوانین و مقررات آموزشی');
   const [rulesSections, setRulesSections] = useState({
@@ -91,6 +93,13 @@ export const ManagePublicContent: React.FC = () => {
       if (!response.ok) throw new Error('load');
       const data: ContentRecord[] = await response.json();
       setRecords(Array.isArray(data) ? data : []);
+      try {
+        const newsResponse = await fetch('/api/content/news', { credentials: 'include' });
+        if (newsResponse.ok) {
+          const newsData = await newsResponse.json();
+          setNewsJson(JSON.stringify(Array.isArray(newsData) ? newsData : [], null, 2));
+        }
+      } catch { /* news editor remains available */ }
       const rules = Array.isArray(data) ? data.find((item) => item.type === 'RULES') : undefined;
       setRulesTitle(rules?.title || 'قوانین و مقررات آموزشی');
       const rawRules = rules?.content || '';
@@ -123,6 +132,19 @@ export const ManagePublicContent: React.FC = () => {
     return matchesSearch && (yearFilter === 'ALL' || item.examYear === yearFilter)
       && (publishFilter === 'ALL' || String(item.published) === publishFilter);
   });
+
+  const saveNews = async () => {
+    setNewsSaving(true); setError(''); setSuccess('');
+    try {
+      const parsed = JSON.parse(newsJson);
+      if (!Array.isArray(parsed)) throw new Error('ساختار اخبار باید آرایه JSON باشد.');
+      const response = await fetch('/api/content/news', { method: 'PATCH', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: JSON.stringify(parsed) }) });
+      if (!response.ok) throw new Error('ذخیره اخبار انجام نشد.');
+      setSuccess('اخبار و اسلایدر ذخیره شدند.');
+      await load();
+    } catch (e) { setError(e instanceof Error ? e.message : 'ساختار JSON معتبر نیست.'); }
+    finally { setNewsSaving(false); }
+  };
 
   const saveRules = async (event: React.FormEvent) => {
     event.preventDefault();
