@@ -643,7 +643,7 @@ export class CoursesService {
           '-vf', "scale=w='min(1280,iw)':h=-2",
           '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '25',
           '-c:a', 'aac', '-b:a', '96k', '-ac', '2',
-          '-f', 'hls', '-hls_time', '6', '-hls_playlist_type', 'vod',
+          '-f', 'hls', '-hls_time', '6', '-hls_playlist_type', 'event',
           '-hls_flags', 'independent_segments',
           '-hls_key_info_file', keyInfoPath,
           '-hls_segment_filename', join(cacheDirectory, 'segment-%05d.ts'),
@@ -664,6 +664,25 @@ export class CoursesService {
     }
   }
 
+  /** Wait for the first encrypted segment, not the entire video transcode. */
+  private async waitForHlsReady(cacheDirectory: string, build: Promise<void>, timeoutMs: number) {
+    const playlistPath = join(cacheDirectory, 'index.m3u8');
+    const keyPath = join(cacheDirectory, 'hls.key');
+    const firstSegmentPath = join(cacheDirectory, 'segment-00000.ts');
+    const isReady = () => existsSync(playlistPath) && existsSync(keyPath) && existsSync(firstSegmentPath);
+    const deadline = Date.now() + timeoutMs;
+
+    while (!isReady() && Date.now() < deadline) {
+      const remaining = deadline - Date.now();
+      const result = await Promise.race([
+        build.then(() => 'complete' as const),
+        new Promise<'wait'>(resolve => setTimeout(() => resolve('wait'), Math.min(250, remaining))),
+      ]);
+      if (result === 'complete') return isReady();
+    }
+    return isReady();
+  }
+
   /**
    * Serve an authenticated HLS playlist or segment. The generated cache lives
    * under the private file-storage directory and is never exposed as static files.
@@ -671,7 +690,7 @@ export class CoursesService {
    * is not DRM and cannot stop an authorized viewer from recording/reconstructing it.
    */
   async hlsAsset(user: AuthenticatedUser, fileId: string, assetName: string, res: Response) {
-    if (assetName !== 'index.m3u8' && assetName !== 'key.bin' && !/^segment-\d{5}\.ts$/.test(assetName)) {
+    if (assetName !== 'index.m3u8' && assetName !== 'key.bin' && !/^segment-\\d{5}\\.ts$/.test(assetName)) {
       throw new NotFoundException('HLS asset not found');
     }
 
@@ -688,24 +707,29 @@ export class CoursesService {
     const sourcePath = join(storageDirectory, basename(file.storageKey));
     if (!existsSync(sourcePath)) throw new NotFoundException('Stored file not found');
     const extension = extname(file.storageKey).toLowerCase();
-    const videoExtensions = new Set(['.mp4', '.m4v', '.mov', '.webm', '.mkv', '.avi', '.mpeg', '.mpg']);
-    if (!String(file.mimeType || '').startsWith('video/') && !videoExtensions.has(extension)) {
+    const videoExtensions = new Set(['.mp4', '.m4v', '.mov', '.webm', '.mkv', '.avi', '.mpeg', '.mpg');
+    if (file.type !== 'VIDEO' && !String(file.mimeType || '').startsWith('video/') && !videoExtensions.has(extension)) {
       throw new BadRequestException('این فایل ویدئو نیست.');
     }
 
     const cacheDirectory = join(storageDirectory, '.hls-cache', file.id);
     const playlistPath = join(cacheDirectory, 'index.m3u8');
     if (assetName === 'index.m3u8') await this.logProtectedContentAccess(user, file, 'hls');
-    if (!existsSync(playlistPath) || !existsSync(join(cacheDirectory, 'hls.key'))) {
+
+    if (!existsSync(playlistPath) || !existsSync(join(cacheDirectory, 'hls.key')) || !existsSync(join(cacheDirectory, 'segment-00000.ts'))) {
       let build = this.hlsBuilds.get(file.id);
       if (!build) {
         build = this.generateHlsPlaylist(sourcePath, cacheDirectory, playlistPath, file.id);
         this.hlsBuilds.set(file.id, build);
+        void build.then(
+          () => { if (this.hlsBuilds.get(file.id) === build) this.hlsBuilds.delete(file.id); },
+          () => { if (this.hlsBuilds.get(file.id) === build) this.hlsBuilds.delete(file.id); },
+        );
       }
-      try {
-        await build;
-      } finally {
-        if (this.hlsBuilds.get(file.id) === build) this.hlsBuilds.delete(file.id);
+
+      const ready = await this.waitForHlsReady(cacheDirectory, build, 20000);
+      if (!ready) {
+        throw new ServiceUnavailableException('ویدئو در حال آماده‌سازی است؛ پخش به‌صورت خودکار دوباره تلاش می‌کند.');
       }
     }
 
