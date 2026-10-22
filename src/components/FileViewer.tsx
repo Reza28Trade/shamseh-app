@@ -1,4 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { GlobalWorkerOptions, getDocument, type PDFDocumentProxy, type RenderTask } from 'pdfjs-dist';
+
+GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 type ViewerFile = {
   id: string;
   title: string;
@@ -19,10 +22,12 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
   const [error, setError] = useState('');
   const [zoom, setZoom] = useState<number | null>(null);
   const [viewUrl, setViewUrl] = useState('');
+  const [pdfDocument, setPdfDocument] = useState<PDFDocumentProxy | null>(null);
+  const [pageNumber, setPageNumber] = useState(1);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const objectUrlRef = useRef('');
   const fileUrl = `/api/files/${file.id}/view`;
   const isPdfViewer = file.type === 'PDF' || file.type === 'POWERPOINT' || file.type === 'DOCUMENT';
-  const pdfSrc = viewUrl ? `${viewUrl}#toolbar=0&navpanes=0&scrollbar=0&${zoom === null ? 'zoom=page-width' : `zoom=${Math.round(zoom * 100)}`}` : '';
 
   useEffect(() => {
     if (isPdfViewer) return;
@@ -32,25 +37,35 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
   }, [file.id, fileUrl, isPdfViewer]);
 
   useEffect(() => {
-    if (!isPdfViewer) return;
+    if (!isPdfViewer) {
+      setPdfDocument(null);
+      return;
+    }
     let cancelled = false;
     setLoading(true);
     setError('');
     setViewUrl('');
+    setPdfDocument(null);
+    setPageNumber(1);
     setZoom(null);
-    fetch(fileUrl, { credentials: 'include' })
-      .then(async response => {
-        if (!response.ok) {
-          const message = await response.text().catch(() => '');
-          throw new Error(`HTTP ${response.status}${message ? `: ${message.slice(0, 160)}` : ''}`);
+
+    // Use PDF.js directly against the authenticated endpoint. The backend supports
+    // HTTP byte ranges so PDF.js can request data as needed instead of eagerly
+    // creating a complete Blob URL. This is a deterrent, not DRM.
+    const loadingTask = getDocument({
+      url: fileUrl,
+      withCredentials: true,
+      disableAutoFetch: true,
+      disableStream: true,
+      rangeChunkSize: 65536,
+    });
+    loadingTask.promise
+      .then(document => {
+        if (cancelled) {
+          void document.destroy();
+          return;
         }
-        return response.blob();
-      })
-      .then(blob => {
-        if (cancelled) return;
-        const url = URL.createObjectURL(blob);
-        objectUrlRef.current = url;
-        setViewUrl(url);
+        setPdfDocument(document);
         setLoading(false);
       })
       .catch(fetchError => {
@@ -59,14 +74,50 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
           setLoading(false);
         }
       });
+
     return () => {
       cancelled = true;
-      if (objectUrlRef.current) {
-        URL.revokeObjectURL(objectUrlRef.current);
-        objectUrlRef.current = '';
-      }
+      void loadingTask.destroy();
     };
   }, [file.id, fileUrl, isPdfViewer]);
+
+  useEffect(() => {
+    if (!pdfDocument || !canvasRef.current) return;
+    let renderTask: RenderTask | undefined;
+    let cancelled = false;
+    setLoading(true);
+    pdfDocument.getPage(pageNumber)
+      .then(page => {
+        if (cancelled || !canvasRef.current) return;
+        const baseViewport = page.getViewport({ scale: 1 });
+        const containerWidth = Math.max(320, Math.min(1000, window.innerWidth * 0.88 - 48));
+        const fitScale = containerWidth / baseViewport.width;
+        const scale = fitScale * (zoom ?? 1);
+        const viewport = page.getViewport({ scale });
+        const canvas = canvasRef.current;
+        const context = canvas.getContext('2d');
+        if (!context) throw new Error('مرورگر امکان نمایش این صفحه را ندارد.');
+        canvas.width = Math.ceil(viewport.width);
+        canvas.height = Math.ceil(viewport.height);
+        canvas.style.width = `${Math.ceil(viewport.width)}px`;
+        canvas.style.height = `${Math.ceil(viewport.height)}px`;
+        renderTask = page.render({ canvas, canvasContext: context, viewport });
+        return renderTask.promise;
+      })
+      .then(() => {
+        if (!cancelled) setLoading(false);
+      })
+      .catch(renderError => {
+        if (!cancelled && !(renderError instanceof Error && renderError.name === 'RenderingCancelledException')) {
+          setError('نمایش صفحه انجام نشد.');
+          setLoading(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+      renderTask?.cancel();
+    };
+  }, [pdfDocument, pageNumber, zoom]);
 
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,.82)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
@@ -76,6 +127,9 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
             {isPdfViewer && (
               <>
+                <button type="button" aria-label="صفحه قبل" disabled={!pdfDocument || pageNumber <= 1} onClick={() => setPageNumber(value => Math.max(1, value - 1))} style={{ border: `1px solid ${borderColor}`, background: isDark ? '#1b1e24' : '#f5f6f8', color: textColor, borderRadius: 8, minWidth: 34, height: 32, cursor: 'pointer', fontSize: 12, opacity: !pdfDocument || pageNumber <= 1 ? .45 : 1 }}>قبلی</button>
+                <span style={{ color: textColor, fontSize: 11, whiteSpace: 'nowrap' }}>{pdfDocument ? `${pageNumber} / ${pdfDocument.numPages}` : '— / —'}</span>
+                <button type="button" aria-label="صفحه بعد" disabled={!pdfDocument || pageNumber >= pdfDocument.numPages} onClick={() => setPageNumber(value => Math.min(pdfDocument?.numPages ?? value, value + 1))} style={{ border: `1px solid ${borderColor}`, background: isDark ? '#1b1e24' : '#f5f6f8', color: textColor, borderRadius: 8, minWidth: 34, height: 32, cursor: 'pointer', fontSize: 12, opacity: !pdfDocument || pageNumber >= pdfDocument.numPages ? .45 : 1 }}>بعدی</button>
                 <button type="button" aria-label="Zoom out" onClick={() => setZoom(value => Math.max(0.6, Number(((value ?? 1) - 0.1).toFixed(1))))} style={{ border: `1px solid ${borderColor}`, background: isDark ? '#1b1e24' : '#f5f6f8', color: textColor, borderRadius: 8, width: 34, height: 32, cursor: 'pointer', fontSize: 18 }}>−</button>
                 <button type="button" aria-label="Fit to width" onClick={() => setZoom(null)} style={{ border: `1px solid ${borderColor}`, background: isDark ? '#1b1e24' : '#f5f6f8', color: textColor, borderRadius: 8, minWidth: 58, height: 32, cursor: 'pointer', fontSize: 12 }}>{zoom === null ? 'عرض کامل' : `${Math.round(zoom * 100)}%`}</button>
                 <button type="button" aria-label="Zoom in" onClick={() => setZoom(value => Math.min(2.5, Number(((value ?? 1) + 0.1).toFixed(1))))} style={{ border: `1px solid ${borderColor}`, background: isDark ? '#1b1e24' : '#f5f6f8', color: textColor, borderRadius: 8, width: 34, height: 32, cursor: 'pointer', fontSize: 18 }}>+</button>
@@ -105,13 +159,10 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
             <>
               {loading && <div style={{ color: '#fff', textAlign: 'center', padding: 40 }}>در حال آماده‌سازی نمایش فایل...</div>}
               {error && <div style={{ color: '#f87171', textAlign: 'center', padding: 40 }}>{error}</div>}
-              {!loading && !error && viewUrl && (
-                <iframe
-                  key={pdfSrc}
-                  title={file.title}
-                  src={pdfSrc}
-                  style={{ width: '100%', height: '100%', minHeight: 500, border: 'none', display: 'block', background: '#fff' }}
-                />
+              {!error && pdfDocument && (
+                <div style={{ minHeight: '100%', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: 16, boxSizing: 'border-box' }}>
+                  <canvas ref={canvasRef} aria-label={`صفحه ${pageNumber} از ${pdfDocument.numPages}`} style={{ maxWidth: '100%', height: 'auto', background: '#fff', boxShadow: '0 2px 16px rgba(0,0,0,.35)' }} />
+                </div>
               )}
             </>
           )}
