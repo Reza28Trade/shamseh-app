@@ -707,7 +707,7 @@ export class CoursesService {
     const sourcePath = join(storageDirectory, basename(file.storageKey));
     if (!existsSync(sourcePath)) throw new NotFoundException('Stored file not found');
     const extension = extname(file.storageKey).toLowerCase();
-    const videoExtensions = new Set(['.mp4', '.m4v', '.mov', '.webm', '.mkv', '.avi', '.mpeg', '.mpg');
+    const videoExtensions = new Set(['.mp4', '.m4v', '.mov', '.webm', '.mkv', '.avi', '.mpeg', '.mpg']);
     if (file.type !== 'VIDEO' && !String(file.mimeType || '').startsWith('video/') && !videoExtensions.has(extension)) {
       throw new BadRequestException('این فایل ویدئو نیست.');
     }
