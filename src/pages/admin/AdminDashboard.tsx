@@ -36,18 +36,11 @@ interface AdminDashboardProps {
 }
 
 const numberFa = (value: number | null) => value === null ? '—' : new Intl.NumberFormat('fa-IR').format(value);
-const moneyFa = (value: number) => new Intl.NumberFormat('fa-IR').format(value) + ' تومان';
 const dateFa = (value?: string | null) => {
   if (!value) return 'تاریخ ثبت نشده';
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat('fa-IR', { dateStyle: 'short', timeStyle: 'short' }).format(date);
 };
-const statusText = (status: string) => ({
-  PENDING_REVIEW: 'در انتظار بررسی', NEEDS_CORRECTION: 'نیازمند اصلاح', APPROVED: 'تأیید شده',
-  REJECTED: 'رد شده', PENDING: 'در انتظار بررسی', OPEN: 'باز', ANSWERED: 'پاسخ داده شده',
-  CLOSED: 'بسته شده', REQUESTED: 'درخواست جدید', RESERVED: 'مبلغ رزرو شده', PAID: 'پرداخت شده',
-}[status] || status);
-
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigate }) => {
   const [data, setData] = useState<DashboardData>(emptyData);
   const [loading, setLoading] = useState(true);
@@ -103,19 +96,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
     const timestamp = new Date(exam.examDate).getTime();
     return Number.isFinite(timestamp) && timestamp >= Date.now();
   }) ?? null;
-
-  const transactions = useMemo(() => {
-    if (!data.registrations) return null;
-    return data.registrations.flatMap(registration => (registration.payments || []).map(payment => ({
-      id: payment.id,
-      student: registration.applicantFullName,
-      course: registration.courses?.map(course => course.courseTitleSnapshot).filter(Boolean).join('، ') || 'ثبت‌نام دوره',
-      amount: payment.approvedAmount ?? payment.claimedAmount ?? 0,
-      status: payment.status,
-      date: payment.paymentDate || payment.createdAt || registration.createdAt,
-      purpose: payment.purpose === 'INITIAL' ? 'پیش‌پرداخت ثبت‌نام' : 'پرداخت قسط',
-    }))).sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime()).slice(0, 5);
-  }, [data.registrations]);
 
   const statCards = [
     { label: 'دوره‌های فعال', value: activeCourses ? numberFa(activeCourses.length) : '—', note: 'وضعیت فعلی دوره‌ها', icon: BookOpen, tab: 'courses' as const, permission: 'courses' },
