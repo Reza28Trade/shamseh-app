@@ -678,7 +678,7 @@ export class CoursesService {
     const cacheDirectory = join(storageDirectory, '.hls-cache', file.id);
     const playlistPath = join(cacheDirectory, 'index.m3u8');
     if (assetName === 'index.m3u8') await this.logProtectedContentAccess(user, file, 'hls');
-    if (!existsSync(playlistPath)) {
+    if (!existsSync(playlistPath) || !existsSync(join(cacheDirectory, 'hls.key'))) {
       let build = this.hlsBuilds.get(file.id);
       if (!build) {
         build = this.generateHlsPlaylist(sourcePath, cacheDirectory, playlistPath, file.id);
