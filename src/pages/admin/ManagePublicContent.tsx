@@ -94,7 +94,7 @@ export const ManagePublicContent: React.FC = () => {
       const data: ContentRecord[] = await response.json();
       setRecords(Array.isArray(data) ? data : []);
       try {
-        const newsResponse = await fetch('/api/content/news', { credentials: 'include' });
+        const newsResponse = await fetch('/api/content/admin/news', { credentials: 'include' });
         if (newsResponse.ok) {
           const newsData = await newsResponse.json();
           setNewsJson(JSON.stringify(Array.isArray(newsData) ? newsData : [], null, 2));
