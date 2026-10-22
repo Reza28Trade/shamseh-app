@@ -8,7 +8,7 @@ HLS is not DRM. A student who is authorized to watch a video can still capture t
 
 ## Test-VPS prerequisites
 
-The current test VPS inspection found LibreOffice but did not find FFmpeg, ffprobe, pdftoppm, or pdfinfo in PATH. The HLS endpoint will return a controlled service-unavailable response until FFmpeg is installed at `/usr/bin/ffmpeg` or `FFMPEG_PATH` is configured.
+The current test VPS inspection found LibreOffice but did not find FFmpeg, ffprobe, pdftoppm, or pdfinfo in PATH. The HLS endpoint will return a controlled service-unavailable response until FFmpeg is installed at `/usr/bin/ffmpeg` or `FFMPEG_PATH` is configured. First playback now uses an event playlist and serves it as soon as the first encrypted segment is ready, rather than waiting for the entire video to transcode. The player retries temporary responses while the first segment is being prepared.
 
 Before installing anything, check the branch and current backups. Do not run these steps on the production server without explicit approval.
 
@@ -27,7 +27,7 @@ sudo apt-get install -y ffmpeg
 /usr/bin/ffmpeg -version | head -n 2
 ```
 
-This installs a free system package; it does not add a paid service. HLS conversion consumes CPU and disk, and the first request for each video may take time because the HLS version is generated on demand. The backend intentionally limits first-time transcodes to one at a time to reduce load on the small test VPS. Generated segments are cached under `$FILE_STORAGE_PATH/.hls-cache/<course-file-id>` (default `/opt/shamseh-app/storage/files/.hls-cache`) and are removed when the corresponding course file is deleted. Monitor cache size and disk space during testing.
+This installs a free system package; it does not add a paid service. HLS conversion consumes CPU and disk, and the first request for each video may take time because the HLS version is generated on demand. The backend intentionally limits first-time transcodes to one at a time to reduce load on the small test VPS. Generated segments are cached under `$FILE_STORAGE_PATH/.hls-cache/<course-file-id>` (default `/opt/shamseh-app/storage/files/.hls-cache`) and are removed when the corresponding course file is deleted. The playlist grows while FFmpeg transcodes and is finalized when conversion finishes. Monitor cache size and disk space during testing.
 
 ## Safe test sequence
 
