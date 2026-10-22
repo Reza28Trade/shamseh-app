@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable, NotFoundException,
 import { Response } from 'express';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
-import { randomUUID } from 'crypto';
+import { randomBytes, randomUUID } from 'crypto';
 import { createReadStream, existsSync, mkdirSync, unlinkSync, writeFileSync, statSync, rmSync } from 'fs';
 import { basename, extname, join } from 'path';
 import { PrismaService } from '../database/prisma.service';
@@ -615,7 +615,11 @@ export class CoursesService {
     }
 
     mkdirSync(cacheDirectory, { recursive: true, mode: 0o700 });
+    const keyPath = join(cacheDirectory, 'hls.key');
+    const keyInfoPath = join(cacheDirectory, 'keyinfo');
     try {
+      writeFileSync(keyPath, randomBytes(16), { mode: 0o600 });
+      writeFileSync(keyInfoPath, `key.bin\n${keyPath}\n`, { mode: 0o600 });
       await execFileAsync(ffmpegPath, [
         '-hide_banner', '-loglevel', 'error', '-y',
         '-i', sourcePath,
@@ -626,9 +630,11 @@ export class CoursesService {
         '-c:a', 'aac', '-b:a', '96k', '-ac', '2',
         '-f', 'hls', '-hls_time', '6', '-hls_playlist_type', 'vod',
         '-hls_flags', 'independent_segments',
+        '-hls_key_info_file', keyInfoPath,
         '-hls_segment_filename', join(cacheDirectory, 'segment-%05d.ts'),
         playlistPath,
       ], { timeout: 600000, maxBuffer: 2 * 1024 * 1024 });
+      if (existsSync(keyInfoPath)) unlinkSync(keyInfoPath);
     } catch (error) {
       rmSync(cacheDirectory, { recursive: true, force: true });
       console.error('[ProtectedHLS] video conversion failed for file', fileId, error);
@@ -647,7 +653,7 @@ export class CoursesService {
    * is not DRM and cannot stop an authorized viewer from recording/reconstructing it.
    */
   async hlsAsset(user: AuthenticatedUser, fileId: string, assetName: string, res: Response) {
-    if (assetName !== 'index.m3u8' && !/^segment-\d{5}\.ts$/.test(assetName)) {
+    if (assetName !== 'index.m3u8' && assetName !== 'key.bin' && !/^segment-\d{5}\.ts$/.test(assetName)) {
       throw new NotFoundException('HLS asset not found');
     }
 
@@ -685,9 +691,9 @@ export class CoursesService {
       }
     }
 
-    const assetPath = join(cacheDirectory, assetName);
+    const assetPath = join(cacheDirectory, assetName === 'key.bin' ? 'hls.key' : assetName);
     if (!existsSync(assetPath)) throw new NotFoundException('HLS asset not found');
-    res.setHeader('Content-Type', assetName === 'index.m3u8' ? 'application/vnd.apple.mpegurl' : 'video/mp2t');
+    res.setHeader('Content-Type', assetName === 'index.m3u8' ? 'application/vnd.apple.mpegurl' : assetName === 'key.bin' ? 'application/octet-stream' : 'video/mp2t');
     res.setHeader('Content-Disposition', 'inline');
     res.setHeader('X-Accel-Buffering', 'no');
     return createReadStream(assetPath).pipe(res);
