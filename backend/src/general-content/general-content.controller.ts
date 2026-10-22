@@ -10,6 +10,17 @@ type AuthenticatedRequest = Request & { user: AuthenticatedUser };
 export class GeneralContentController {
   constructor(private readonly generalContentService: GeneralContentService) {}
 
+  @Get('news')
+  getNews() {
+    return this.generalContentService.getNews();
+  }
+
+  @Patch('news')
+  @UseGuards(AuthGuard)
+  updateNews(@Req() req: AuthenticatedRequest, @Body('content') content: string) {
+    return this.generalContentService.updateNews(req.user, content);
+  }
+
   @Get('rules')
   getRules() {
     return this.generalContentService.getRules();
