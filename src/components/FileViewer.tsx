@@ -11,9 +11,10 @@ interface FileViewerProps {
   borderColor: string;
   textColor: string;
   onClose: () => void;
+  watermarkLabel?: string;
 }
 
-export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColor, textColor, onClose }) => {
+export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColor, textColor, onClose, watermarkLabel }) => {
   const [loading, setLoading] = useState(file.type !== 'AUDIO' && file.type !== 'VIDEO');
   const [error, setError] = useState('');
   const [zoom, setZoom] = useState<number | null>(null);
@@ -83,7 +84,17 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
             <button type="button" onClick={onClose} style={{ border: 'none', background: 'rgba(239,68,68,.1)', color: '#f87171', borderRadius: 8, padding: '7px 12px', cursor: 'pointer', fontWeight: 800 }}>بستن</button>
           </div>
         </div>
-        <div style={{ flex: 1, minHeight: 0, overflow: 'auto', background: '#202124' }}>
+        <div style={{ flex: 1, minHeight: 0, overflow: 'auto', background: '#202124', position: 'relative' }}>
+          {watermarkLabel && (
+            <>
+              <style>{`@keyframes shamseh-content-watermark { 0% { transform: translate(-8%, -8%) rotate(-22deg); } 50% { transform: translate(8%, 8%) rotate(-22deg); } 100% { transform: translate(-8%, -8%) rotate(-22deg); } }`}</style>
+              <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 5, overflow: 'hidden', pointerEvents: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ color: 'rgba(255,255,255,.34)', fontSize: 'clamp(14px, 2vw, 24px)', fontWeight: 800, textAlign: 'center', textShadow: '0 1px 3px rgba(0,0,0,.55)', whiteSpace: 'nowrap', userSelect: 'none', animation: 'shamseh-content-watermark 24s ease-in-out infinite' }}>
+                  شمسه • {watermarkLabel}
+                </div>
+              </div>
+            </>
+          )}
           {file.type === 'AUDIO' ? (
             <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 30, boxSizing: 'border-box' }}>
               <audio src={viewUrl} controls controlsList="nodownload" style={{ width: 'min(700px, 100%)' }} />
