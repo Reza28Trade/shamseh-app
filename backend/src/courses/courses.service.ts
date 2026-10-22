@@ -18,6 +18,8 @@ const execFileAsync = promisify(execFile);
 
 @Injectable()
 export class CoursesService {
+  private readonly hlsBuilds = new Map<string, Promise<void>>();
+
   constructor(private readonly prisma: PrismaService) {}
 
   private requireAdmin(user: AuthenticatedUser) {
@@ -606,6 +608,38 @@ export class CoursesService {
     return createReadStream(viewPath).pipe(res);
   }
 
+  private async generateHlsPlaylist(sourcePath: string, cacheDirectory: string, playlistPath: string, fileId: string) {
+    const ffmpegPath = process.env.FFMPEG_PATH || '/usr/bin/ffmpeg';
+    if (!existsSync(ffmpegPath)) {
+      throw new ServiceUnavailableException('پخش محافظت‌شدهٔ ویدئو هنوز روی این سرور آماده نشده است.');
+    }
+
+    mkdirSync(cacheDirectory, { recursive: true, mode: 0o700 });
+    try {
+      await execFileAsync(ffmpegPath, [
+        '-hide_banner', '-loglevel', 'error', '-y',
+        '-i', sourcePath,
+        '-map', '0:v:0',
+        '-map', '0:a:0?',
+        '-vf', "scale=w='min(1280,iw)':h=-2",
+        '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '25',
+        '-c:a', 'aac', '-b:a', '96k', '-ac', '2',
+        '-f', 'hls', '-hls_time', '6', '-hls_playlist_type', 'vod',
+        '-hls_flags', 'independent_segments',
+        '-hls_segment_filename', join(cacheDirectory, 'segment-%05d.ts'),
+        playlistPath,
+      ], { timeout: 600000, maxBuffer: 2 * 1024 * 1024 });
+    } catch (error) {
+      rmSync(cacheDirectory, { recursive: true, force: true });
+      console.error('[ProtectedHLS] video conversion failed for file', fileId, error);
+      throw new ServiceUnavailableException('آماده‌سازی ویدئو ناموفق بود. لطفاً بعداً دوباره تلاش کنید.');
+    }
+    if (!existsSync(playlistPath)) {
+      rmSync(cacheDirectory, { recursive: true, force: true });
+      throw new ServiceUnavailableException('فایل پخش ویدئو ساخته نشد.');
+    }
+  }
+
   /**
    * Serve an authenticated HLS playlist or segment. The generated cache lives
    * under the private file-storage directory and is never exposed as static files.
@@ -637,37 +671,18 @@ export class CoursesService {
 
     const cacheDirectory = join(storageDirectory, '.hls-cache', file.id);
     const playlistPath = join(cacheDirectory, 'index.m3u8');
+    if (assetName === 'index.m3u8') await this.logProtectedContentAccess(user, file, 'hls');
     if (!existsSync(playlistPath)) {
-      const ffmpegPath = process.env.FFMPEG_PATH || '/usr/bin/ffmpeg';
-      if (!existsSync(ffmpegPath)) {
-        throw new ServiceUnavailableException('پخش محافظت‌شدهٔ ویدئو هنوز روی این سرور آماده نشده است.');
+      let build = this.hlsBuilds.get(file.id);
+      if (!build) {
+        build = this.generateHlsPlaylist(sourcePath, cacheDirectory, playlistPath, file.id);
+        this.hlsBuilds.set(file.id, build);
       }
-
-      mkdirSync(cacheDirectory, { recursive: true, mode: 0o700 });
       try {
-        await execFileAsync(ffmpegPath, [
-          '-hide_banner', '-loglevel', 'error', '-y',
-          '-i', sourcePath,
-          '-map', '0:v:0',
-          '-map', '0:a:0?',
-          '-vf', "scale=w='min(1280,iw)':h=-2",
-          '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '25',
-          '-c:a', 'aac', '-b:a', '96k', '-ac', '2',
-          '-f', 'hls', '-hls_time', '6', '-hls_playlist_type', 'vod',
-          '-hls_flags', 'independent_segments',
-          '-hls_segment_filename', join(cacheDirectory, 'segment-%05d.ts'),
-          playlistPath,
-        ], { timeout: 600000, maxBuffer: 2 * 1024 * 1024 });
-      } catch (error) {
-        rmSync(cacheDirectory, { recursive: true, force: true });
-        console.error('[ProtectedHLS] video conversion failed for file', file.id, error);
-        throw new ServiceUnavailableException('آماده‌سازی ویدئو ناموفق بود. لطفاً بعداً دوباره تلاش کنید.');
+        await build;
+      } finally {
+        if (this.hlsBuilds.get(file.id) === build) this.hlsBuilds.delete(file.id);
       }
-      if (!existsSync(playlistPath)) {
-        rmSync(cacheDirectory, { recursive: true, force: true });
-        throw new ServiceUnavailableException('فایل پخش ویدئو ساخته نشد.');
-      }
-      await this.logProtectedContentAccess(user, file, 'hls');
     }
 
     const assetPath = join(cacheDirectory, assetName);
