@@ -25,7 +25,6 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
   const [pdfDocument, setPdfDocument] = useState<PDFDocumentProxy | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const objectUrlRef = useRef('');
   const fileUrl = `/api/files/${file.id}/view`;
   const isPdfViewer = file.type === 'PDF' || file.type === 'POWERPOINT' || file.type === 'DOCUMENT';
 
