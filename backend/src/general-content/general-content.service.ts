@@ -24,6 +24,19 @@ export class GeneralContentService {
     }
   }
 
+  async getAdminNews(user: AuthenticatedUser) {
+    if (user.role !== 'SUPER_ADMIN' && user.role !== 'STAFF') {
+      throw new Error('Admin access required');
+    }
+    const item = await this.prisma.generalContent.findUnique({ where: { key: NEWS_KEY } });
+    try {
+      const parsed = JSON.parse(item?.content ?? DEFAULT_NEWS);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
   async updateNews(user: AuthenticatedUser, content: string) {
     if (user.role !== 'SUPER_ADMIN' && user.role !== 'STAFF') {
       throw new Error('Admin access required');
