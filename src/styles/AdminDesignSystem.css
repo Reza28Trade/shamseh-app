@@ -3089,3 +3089,35 @@
   outline:0!important;
   box-shadow:none!important;
 }
+
+/* Correct selectors for the dashboard component (it does not use admin-legacy-page). */
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  box-sizing:border-box!important;
+}
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page > .admin-stat-grid{
+  display:grid!important;
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  border-radius:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  filter:none!important;
+}
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page > .admin-stat-grid::before,
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page > .admin-stat-grid::after{
+  display:none!important;
+  content:none!important;
+  background:none!important;
+  border:0!important;
+  box-shadow:none!important;
+}
