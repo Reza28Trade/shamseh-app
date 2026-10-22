@@ -1616,11 +1616,11 @@
   flex-direction:column!important;
   box-sizing:border-box!important;
   width:100%!important;
-  max-width:1240px!important;
-  margin:0 auto!important;
+  max-width:none!important;
+  margin:0!important;
   padding:0!important;
   gap:15px!important;
-  align-self:center!important;
+  align-self:stretch!important;
   color:var(--admin-text);
   font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif;
 }
