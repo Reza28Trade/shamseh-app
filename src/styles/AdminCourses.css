@@ -404,7 +404,8 @@
 .admin-courses-page .course-title{font-size:20px!important;font-weight:850!important;gap:8px}
 .admin-courses-page .course-title svg{color:var(--course-teal)!important}
 .admin-courses-page .course-subtitle{font-size:12px!important;line-height:1.8;color:var(--admin-sub)!important}
-.admin-courses-page .course-toolbar-actions{gap:14px!important;column-gap:14px!important;row-gap:10px!important}
+.admin-courses-page .course-toolbar-actions{display:flex!important;flex-wrap:wrap!important;gap:14px!important;column-gap:14px!important;row-gap:10px!important}
+.admin-courses-page .course-toolbar-actions > .course-btn + .course-btn{margin-inline-start:7px!important}
 .admin-courses-page .course-btn{
   min-height:36px;
   padding:8px 11px;
