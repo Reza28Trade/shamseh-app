@@ -59,7 +59,7 @@ export const ManagePublicContent: React.FC = () => {
     accent: dark ? '#48D1CC' : '#008080',
   };
   const [tab, setTab] = useState<'rules' | 'analysis' | 'news'>('rules');
-  const [newsJson, setNewsJson] = useState('[\\n  {\\n    "id": "news-1",\\n    "title": "عنوان خبر",\\n    "summary": "خلاصه خبر",\\n    "imageUrl": "",\\n    "category": "اطلاعیه",\\n    "date": "",\\n    "published": true\\n  }\\n]');
+  const [newsJson, setNewsJson] = useState(JSON.stringify([{ id: 'news-1', title: 'عنوان خبر', summary: 'خلاصه خبر', imageUrl: '', category: 'اطلاعیه', date: '', published: true }], null, 2));
   const [newsSaving, setNewsSaving] = useState(false);
   const [records, setRecords] = useState<ContentRecord[]>([]);
   const [rulesTitle, setRulesTitle] = useState('قوانین و مقررات آموزشی');
@@ -257,11 +257,19 @@ ${value}`.trim();
       <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
         <button type="button" onClick={() => { setTab('rules'); setError(''); }} style={{ ...buttonStyle, background: tab === 'rules' ? colors.accent : colors.bg, color: tab === 'rules' ? '#fff' : colors.text }}><FileText size={15} /> قوانین و مقررات</button>
         <button type="button" onClick={() => { setTab('analysis'); setError(''); }} style={{ ...buttonStyle, background: tab === 'analysis' ? colors.accent : colors.bg, color: tab === 'analysis' ? '#fff' : colors.text }}><BookOpenText size={15} /> تحلیل کنکور سال‌های قبل</button>
+        <button type="button" onClick={() => { setTab('news'); setError(''); }} style={{ ...buttonStyle, background: tab === 'news' ? colors.accent : colors.bg, color: tab === 'news' ? '#fff' : colors.text }}><FileText size={15} /> اخبار و اسلایدر</button>
       </div>
 
       {error && <div role="alert" style={{ padding: 12, borderRadius: 10, background: dark ? 'rgba(122,32,56,.22)' : 'rgba(122,32,56,.10)', color: dark ? '#e6a7b5' : '#7A2038', fontSize: 12 }}>{error}</div>}
       {success && <div role="status" style={{ padding: 12, borderRadius: 10, background: 'rgba(16,185,129,.1)', color: '#10b981', fontSize: 12 }}>{success}</div>}
-      {loading ? <div style={{ padding: 32, textAlign: 'center', color: colors.muted }}>در حال دریافت اطلاعات...</div> : tab === 'rules' ? (
+      {loading ? <div style={{ padding: 32, textAlign: 'center', color: colors.muted }}>در حال دریافت اطلاعات...</div> : tab === 'news' ? (
+        <section style={{ border: '1px solid ' + colors.border, borderRadius: 16, padding: 18, background: colors.alt, display: 'grid', gap: 12 }}>
+          <h2 style={{ margin: 0, fontSize: 16 }}>مدیریت اخبار و اسلایدر صفحه اطلاعات آموزشی</h2>
+          <p style={{ margin: 0, color: colors.muted, fontSize: 12, lineHeight: 2 }}>هر خبر یک شیء با فیلدهای title، summary، imageUrl، category، date و published است. imageUrl باید نشانی تصویر قابل دسترس باشد. برای انتشار، published را true بگذارید.</p>
+          <textarea value={newsJson} onChange={(event) => setNewsJson(event.target.value)} rows={16} spellCheck={false} style={{ width: '100%', boxSizing: 'border-box', direction: 'ltr', textAlign: 'left', fontFamily: 'monospace', fontSize: 12, lineHeight: 1.7, padding: 14, borderRadius: 12, border: '1px solid ' + colors.border, background: colors.bg, color: colors.text }} />
+          <div><button type="button" disabled={newsSaving} onClick={() => void saveNews()} style={{ ...buttonStyle, background: colors.accent, color: '#fff', borderColor: colors.accent }}><Save size={15}/>{newsSaving ? 'در حال ذخیره…' : 'ذخیره اخبار'}</button></div>
+        </section>
+      ) : tab === 'rules' ? (
         <form onSubmit={saveRules} style={{ background: colors.bg, border: `1px solid ${colors.border}`, borderRadius: 18, padding: '18px', display: 'flex', flexDirection: 'column', gap: 14 }}>
           <label style={{ display: 'flex', flexDirection: 'column', gap: 7, fontSize: 12, fontWeight: 800 }}>عنوان صفحه قوانین
             <input required value={rulesTitle} onChange={(event) => setRulesTitle(event.target.value)} style={inputStyle} />
