@@ -211,67 +211,102 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
   }, [pdfDocument, pageNumber, zoom]);
 
   return (
-    <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,.82)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
-      <div onClick={event => event.stopPropagation()} style={{ width: 'min(1150px, 96vw)', height: 'min(92vh, 1000px)', background: isDark ? '#111318' : '#fff', borderRadius: 18, overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 24px 80px rgba(0,0,0,.55)' }}>
-        <div style={{ minHeight: 54, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '0 16px', borderBottom: `1px solid ${borderColor}` }}>
-          <strong style={{ color: textColor, fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{file.title}</strong>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+    <div className="shamseh-viewer-backdrop" onClick={onClose}>
+      <style>{`
+        .shamseh-viewer-backdrop{position:fixed;inset:0;z-index:9999;background:rgba(7,11,16,.78);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:clamp(8px,2vw,24px);animation:shamsehViewerFade .18s ease-out}
+        .shamseh-viewer-shell{width:min(1380px,98vw);height:min(94vh,1100px);background:${isDark ? '#101419' : '#f8fafc'};color:${textColor};border:1px solid ${isDark ? 'rgba(255,255,255,.11)' : 'rgba(15,23,42,.12)'};border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 32px 100px rgba(0,0,0,.48);animation:shamsehViewerUp .22s ease-out}
+        .shamseh-viewer-header{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 20px;border-bottom:1px solid ${borderColor};background:${isDark ? '#151a21' : '#fff'}}
+        .shamseh-viewer-fileinfo{display:flex;align-items:center;gap:12px;min-width:0}
+        .shamseh-viewer-fileicon{width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;border-radius:13px;background:${isDark ? 'rgba(70,181,174,.13)' : '#e8f6f4'};color:#42a9a2;font-size:19px;font-weight:800}
+        .shamseh-viewer-title{font-size:14px;font-weight:750;line-height:1.6;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:min(55vw,760px)}
+        .shamseh-viewer-subtitle{font-size:11px;color:${isDark ? '#9ba7b5' : '#64748b'};margin-top:2px}
+        .shamseh-viewer-actions{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap}
+        .shamseh-viewer-btn{height:36px;min-width:36px;padding:0 11px;border:1px solid ${borderColor};border-radius:10px;background:${isDark ? '#202731' : '#f8fafc'};color:${textColor};font:600 12px/1.2 inherit;cursor:pointer;transition:background .15s,border-color .15s,transform .15s}
+        .shamseh-viewer-btn:hover:not(:disabled){background:${isDark ? '#293541' : '#edf5f5'};border-color:#4aa9a1}
+        .shamseh-viewer-btn:active:not(:disabled){transform:scale(.97)}
+        .shamseh-viewer-btn:disabled{opacity:.35;cursor:not-allowed}
+        .shamseh-viewer-close{background:rgba(239,68,68,.09);border-color:rgba(239,68,68,.2);color:#f87171;padding:0 14px}
+        .shamseh-viewer-stage{flex:1;min-height:0;overflow:auto;background:${isDark ? '#171b21' : '#e9edf2'};position:relative;overscroll-behavior:contain}
+        .shamseh-viewer-state{color:${isDark ? '#d6dee8' : '#475569'};text-align:center;padding:48px 20px;font-size:13px}
+        .shamseh-viewer-canvas-wrap{min-height:100%;display:flex;justify-content:center;align-items:flex-start;padding:clamp(12px,2vw,28px);box-sizing:border-box}
+        .shamseh-viewer-canvas{max-width:100%;height:auto;background:#fff;box-shadow:0 8px 32px rgba(0,0,0,.2);border-radius:2px}
+        .shamseh-viewer-text{min-height:100%;padding:clamp(16px,3vw,36px);box-sizing:border-box}
+        .shamseh-viewer-text pre{margin:0;color:${isDark ? '#e7edf4' : '#263445'};white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.9 ui-monospace,SFMono-Regular,Consolas,monospace}
+        .shamseh-viewer-media{height:100%;min-height:260px;display:flex;align-items:center;justify-content:center;padding:clamp(10px,2vw,24px);box-sizing:border-box}
+        .shamseh-viewer-video{width:100%;height:100%;max-height:100%;object-fit:contain;background:#090b0e}
+        .shamseh-viewer-audio{width:min(720px,100%);padding:26px;border:1px solid ${isDark ? 'rgba(255,255,255,.1)' : '#dbe3eb'};border-radius:18px;background:${isDark ? '#202731' : '#fff'};box-shadow:0 12px 36px rgba(0,0,0,.12)}
+        .shamseh-viewer-audio-label{font-size:13px;font-weight:700;margin:0 0 18px;overflow-wrap:anywhere}
+        @keyframes shamsehViewerFade{from{opacity:0}to{opacity:1}}@keyframes shamsehViewerUp{from{opacity:.7;transform:translateY(8px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+        @media(max-width:680px){.shamseh-viewer-backdrop{padding:0}.shamseh-viewer-shell{width:100vw;height:100dvh;max-height:100dvh;border-radius:0;border:0}.shamseh-viewer-header{min-height:58px;padding:9px 11px;gap:8px}.shamseh-viewer-fileicon{width:34px;height:34px;flex-basis:34px;border-radius:10px;font-size:16px}.shamseh-viewer-fileinfo{gap:8px}.shamseh-viewer-title{font-size:12px;max-width:40vw}.shamseh-viewer-subtitle{font-size:10px}.shamseh-viewer-actions{gap:4px}.shamseh-viewer-btn{height:32px;min-width:31px;padding:0 7px;border-radius:8px;font-size:11px}.shamseh-viewer-close{padding:0 9px}.shamseh-viewer-canvas-wrap{padding:8px}.shamseh-viewer-audio{padding:16px}.shamseh-viewer-text{padding:14px}.shamseh-viewer-text pre{font-size:12px}}
+        @media(prefers-reduced-motion:reduce){.shamseh-viewer-backdrop,.shamseh-viewer-shell{animation:none}}
+      `}</style>
+      <div className="shamseh-viewer-shell" onClick={event => event.stopPropagation()}>
+        <header className="shamseh-viewer-header">
+          <div className="shamseh-viewer-fileinfo">
+            <div className="shamseh-viewer-fileicon" aria-hidden="true">{file.type === 'VIDEO' ? '▶' : file.type === 'AUDIO' ? '♫' : isImageViewer ? '▧' : isTextViewer ? '≡' : '▤'}</div>
+            <div style={{minWidth:0}}>
+              <div className="shamseh-viewer-title" title={file.title}>{file.title}</div>
+              <div className="shamseh-viewer-subtitle">{file.type === 'VIDEO' ? 'ویدئوی آموزشی' : file.type === 'AUDIO' ? 'فایل صوتی' : isImageViewer ? 'نمایش تصویر' : isTextViewer ? 'نمایش متن' : 'نمایش جزوه'} · محیط مطالعهٔ شمسه</div>
+            </div>
+          </div>
+          <div className="shamseh-viewer-actions">
             {isPdfViewer && (
               <>
-                <button type="button" aria-label="صفحه قبل" disabled={!pdfDocument || pageNumber <= 1} onClick={() => setPageNumber(value => Math.max(1, value - 1))} style={{ border: `1px solid ${borderColor}`, background: isDark ? '#1b1e24' : '#f5f6f8', color: textColor, borderRadius: 8, minWidth: 34, height: 32, cursor: 'pointer', fontSize: 12, opacity: !pdfDocument || pageNumber <= 1 ? .45 : 1 }}>قبلی</button>
-                <span style={{ color: textColor, fontSize: 11, whiteSpace: 'nowrap' }}>{pdfDocument ? `${pageNumber} / ${pdfDocument.numPages}` : '— / —'}</span>
-                <button type="button" aria-label="صفحه بعد" disabled={!pdfDocument || pageNumber >= pdfDocument.numPages} onClick={() => setPageNumber(value => Math.min(pdfDocument?.numPages ?? value, value + 1))} style={{ border: `1px solid ${borderColor}`, background: isDark ? '#1b1e24' : '#f5f6f8', color: textColor, borderRadius: 8, minWidth: 34, height: 32, cursor: 'pointer', fontSize: 12, opacity: !pdfDocument || pageNumber >= pdfDocument.numPages ? .45 : 1 }}>بعدی</button>
-                <button type="button" aria-label="Zoom out" onClick={() => setZoom(value => Math.max(0.6, Number(((value ?? 1) - 0.1).toFixed(1))))} style={{ border: `1px solid ${borderColor}`, background: isDark ? '#1b1e24' : '#f5f6f8', color: textColor, borderRadius: 8, width: 34, height: 32, cursor: 'pointer', fontSize: 18 }}>−</button>
-                <button type="button" aria-label="Fit to width" onClick={() => setZoom(null)} style={{ border: `1px solid ${borderColor}`, background: isDark ? '#1b1e24' : '#f5f6f8', color: textColor, borderRadius: 8, minWidth: 58, height: 32, cursor: 'pointer', fontSize: 12 }}>{zoom === null ? 'عرض کامل' : `${Math.round(zoom * 100)}%`}</button>
-                <button type="button" aria-label="Zoom in" onClick={() => setZoom(value => Math.min(2.5, Number(((value ?? 1) + 0.1).toFixed(1))))} style={{ border: `1px solid ${borderColor}`, background: isDark ? '#1b1e24' : '#f5f6f8', color: textColor, borderRadius: 8, width: 34, height: 32, cursor: 'pointer', fontSize: 18 }}>+</button>
+                <button className="shamseh-viewer-btn" type="button" aria-label="صفحه قبل" disabled={!pdfDocument || pageNumber <= 1} onClick={() => setPageNumber(value => Math.max(1, value - 1))}>قبلی</button>
+                <span style={{color:textColor,fontSize:11,whiteSpace:'nowrap',padding:'0 3px'}}>{pdfDocument ? `${pageNumber} / ${pdfDocument.numPages}` : '— / —'}</span>
+                <button className="shamseh-viewer-btn" type="button" aria-label="صفحه بعد" disabled={!pdfDocument || pageNumber >= pdfDocument.numPages} onClick={() => setPageNumber(value => Math.min(pdfDocument?.numPages ?? value, value + 1))}>بعدی</button>
+                <button className="shamseh-viewer-btn" type="button" aria-label="Zoom out" onClick={() => setZoom(value => Math.max(0.6, Number(((value ?? 1) - 0.1).toFixed(1))))}>−</button>
+                <button className="shamseh-viewer-btn" type="button" aria-label="Fit to width" onClick={() => setZoom(null)}>{zoom === null ? 'عرض کامل' : `${Math.round(zoom * 100)}٪`}</button>
+                <button className="shamseh-viewer-btn" type="button" aria-label="Zoom in" onClick={() => setZoom(value => Math.min(2.5, Number(((value ?? 1) + 0.1).toFixed(1))))}>+</button>
               </>
             )}
-            <button type="button" onClick={onClose} style={{ border: 'none', background: 'rgba(239,68,68,.1)', color: '#f87171', borderRadius: 8, padding: '7px 12px', cursor: 'pointer', fontWeight: 800 }}>بستن</button>
+            <button className="shamseh-viewer-btn shamseh-viewer-close" type="button" onClick={onClose}>بستن <span aria-hidden="true">×</span></button>
           </div>
-        </div>
-        <div style={{ flex: 1, minHeight: 0, overflow: 'auto', background: '#202124', position: 'relative' }}>
+        </header>
+        <main className="shamseh-viewer-stage">
           {watermarkLabel && (
             <>
               <style>{`@keyframes shamseh-content-watermark { 0% { transform: translate(-8%, -8%) rotate(-22deg); } 50% { transform: translate(8%, 8%) rotate(-22deg); } 100% { transform: translate(-8%, -8%) rotate(-22deg); } }`}</style>
-              <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 5, overflow: 'hidden', pointerEvents: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ color: 'rgba(255,255,255,.34)', fontSize: 'clamp(14px, 2vw, 24px)', fontWeight: 800, textAlign: 'center', textShadow: '0 1px 3px rgba(0,0,0,.55)', whiteSpace: 'nowrap', userSelect: 'none', animation: 'shamseh-content-watermark 24s ease-in-out infinite' }}>
-                  شمسه • {watermarkLabel}
-                </div>
+              <div aria-hidden="true" style={{position:'absolute',inset:0,zIndex:5,overflow:'hidden',pointerEvents:'none',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                <div style={{color:'rgba(255,255,255,.28)',fontSize:'clamp(14px,2vw,24px)',fontWeight:800,textAlign:'center',textShadow:'0 1px 3px rgba(0,0,0,.55)',whiteSpace:'nowrap',userSelect:'none',animation:'shamseh-content-watermark 24s ease-in-out infinite'}}>شمسه • {watermarkLabel}</div>
               </div>
             </>
           )}
-          {file.type === 'VIDEO' && loading && <div style={{ color: '#fff', textAlign: 'center', padding: 40 }}>در حال آماده‌سازی پخش محافظت‌شدهٔ ویدئو...</div>}
-          {file.type === 'VIDEO' && error && <div style={{ color: '#f87171', textAlign: 'center', padding: 40 }}>{error}</div>}
+          {file.type === 'VIDEO' && loading && <div className="shamseh-viewer-state">در حال آماده‌سازی پخش محافظت‌شدهٔ ویدئو...</div>}
+          {file.type === 'VIDEO' && error && <div className="shamseh-viewer-state" style={{color:'#f87171'}}>{error}</div>}
           {file.type === 'AUDIO' ? (
-            <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 30, boxSizing: 'border-box' }}>
-              <audio src={viewUrl} controls controlsList="nodownload" style={{ width: 'min(700px, 100%)' }} />
+            <div className="shamseh-viewer-media">
+              <div className="shamseh-viewer-audio">
+                <p className="shamseh-viewer-audio-label">{file.title}</p>
+                <audio src={viewUrl} controls controlsList="nodownload" style={{width:'100%'}} />
+              </div>
             </div>
           ) : file.type === 'VIDEO' ? (
-            <video ref={videoRef} controls controlsList="nodownload" disablePictureInPicture onError={() => { if (file.type === 'VIDEO') { setError('پخش ویدئو ناموفق بود.'); setLoading(false); } }} style={{ width: '100%', height: '100%', objectFit: 'contain', display: error ? 'none' : 'block' }} />
+            <video ref={videoRef} controls controlsList="nodownload" disablePictureInPicture onError={() => { if (file.type === 'VIDEO') { setError('پخش ویدئو ناموفق بود.'); setLoading(false); } }} className="shamseh-viewer-video" style={{display:error ? 'none' : 'block'}} />
           ) : isImageViewer ? (
-            <div style={{ minHeight: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, boxSizing: 'border-box' }}>
-              {loading && <div style={{ color: '#fff', textAlign: 'center', padding: 40 }}>در حال بارگذاری تصویر...</div>}
-              {error && <div style={{ color: '#f87171', textAlign: 'center', padding: 40 }}>{error}</div>}
-              {!error && <img src={viewUrl} alt={file.title} onLoad={() => setLoading(false)} onError={() => { setError('نمایش تصویر ناموفق بود.'); setLoading(false); }} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', display: loading ? 'none' : 'block' }} />}
+            <div className="shamseh-viewer-media">
+              {loading && <div className="shamseh-viewer-state">در حال بارگذاری تصویر...</div>}
+              {error && <div className="shamseh-viewer-state" style={{color:'#f87171'}}>{error}</div>}
+              {!error && <img src={viewUrl} alt={file.title} onLoad={() => setLoading(false)} onError={() => { setError('نمایش تصویر ناموفق بود.'); setLoading(false); }} style={{maxWidth:'100%',maxHeight:'100%',objectFit:'contain',display:loading ? 'none' : 'block',borderRadius:8,boxShadow:'0 12px 36px rgba(0,0,0,.2)'}} />}
             </div>
           ) : isTextViewer ? (
-            <div style={{ minHeight: '100%', padding: 20, boxSizing: 'border-box' }}>
-              {loading && <div style={{ color: '#fff', textAlign: 'center', padding: 40 }}>در حال بارگذاری متن...</div>}
-              {error && <div style={{ color: '#f87171', textAlign: 'center', padding: 40 }}>{error}</div>}
-              {!loading && !error && <pre dir="auto" style={{ margin: 0, color: '#f3f4f6', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', font: '13px/1.8 ui-monospace, SFMono-Regular, Consolas, monospace' }}>{textContent}</pre>}
+            <div className="shamseh-viewer-text">
+              {loading && <div className="shamseh-viewer-state">در حال بارگذاری متن...</div>}
+              {error && <div className="shamseh-viewer-state" style={{color:'#f87171'}}>{error}</div>}
+              {!loading && !error && <pre dir="auto">{textContent}</pre>}
             </div>
           ) : (
             <>
-              {loading && <div style={{ color: '#fff', textAlign: 'center', padding: 40 }}>در حال آماده‌سازی نمایش فایل...</div>}
-              {error && <div style={{ color: '#f87171', textAlign: 'center', padding: 40 }}>{error}</div>}
+              {loading && <div className="shamseh-viewer-state">در حال آماده‌سازی نمایش فایل...</div>}
+              {error && <div className="shamseh-viewer-state" style={{color:'#f87171'}}>{error}</div>}
               {!error && pdfDocument && (
-                <div style={{ minHeight: '100%', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: 16, boxSizing: 'border-box' }}>
-                  <canvas ref={canvasRef} aria-label={`صفحه ${pageNumber} از ${pdfDocument.numPages}`} style={{ maxWidth: '100%', height: 'auto', background: '#fff', boxShadow: '0 2px 16px rgba(0,0,0,.35)' }} />
+                <div className="shamseh-viewer-canvas-wrap">
+                  <canvas ref={canvasRef} aria-label={`صفحه ${pageNumber} از ${pdfDocument.numPages}`} className="shamseh-viewer-canvas" />
                 </div>
               )}
             </>
           )}
-        </div>
+        </main>
       </div>
     </div>
   );
