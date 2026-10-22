@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { GlobalWorkerOptions, getDocument, type PDFDocumentProxy, type RenderTask } from 'pdfjs-dist';
+import Hls from 'hls.js';
 
 GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 type ViewerFile = {
@@ -25,15 +26,61 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
   const [pdfDocument, setPdfDocument] = useState<PDFDocumentProxy | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const fileUrl = `/api/files/${file.id}/view`;
   const isPdfViewer = file.type === 'PDF' || file.type === 'POWERPOINT' || file.type === 'DOCUMENT';
 
   useEffect(() => {
     if (isPdfViewer) return;
-    setViewUrl(fileUrl);
     setError('');
     setLoading(false);
-  }, [file.id, fileUrl, isPdfViewer]);
+    setViewUrl(file.type === 'VIDEO' ? `/api/files/${file.id}/hls/index.m3u8` : fileUrl);
+  }, [file.id, file.type, fileUrl, isPdfViewer]);
+
+  useEffect(() => {
+    if (file.type !== 'VIDEO' || !viewUrl || !videoRef.current) return;
+    const video = videoRef.current;
+    setError('');
+    setLoading(true);
+
+    if (Hls.isSupported()) {
+      const hls = new Hls({
+        enableWorker: true,
+        lowLatencyMode: false,
+        xhrSetup: (xhr) => { xhr.withCredentials = true; },
+      });
+      hls.loadSource(viewUrl);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => setLoading(false));
+      hls.on(Hls.Events.ERROR, (_event, data) => {
+        if (data.fatal) {
+          setError('پخش محافظت‌شدهٔ ویدئو آماده نیست یا دسترسی به آن امکان‌پذیر نیست.');
+          setLoading(false);
+        }
+      });
+      return () => hls.destroy();
+    }
+
+    if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = viewUrl;
+      const onReady = () => setLoading(false);
+      const onError = () => {
+        setError('پخش ویدئو ناموفق بود. ممکن است ابزار پخش روی سرور آماده نشده باشد.');
+        setLoading(false);
+      };
+      video.addEventListener('loadedmetadata', onReady);
+      video.addEventListener('error', onError);
+      return () => {
+        video.removeEventListener('loadedmetadata', onReady);
+        video.removeEventListener('error', onError);
+        video.removeAttribute('src');
+        video.load();
+      };
+    }
+
+    setError('مرورگر شما از پخش این نوع ویدئو پشتیبانی نمی‌کند.');
+    setLoading(false);
+  }, [file.id, file.type, viewUrl]);
 
   useEffect(() => {
     if (!isPdfViewer) {
@@ -148,12 +195,14 @@ export const FileViewer: React.FC<FileViewerProps> = ({ file, isDark, borderColo
               </div>
             </>
           )}
+          {file.type === 'VIDEO' && loading && <div style={{ color: '#fff', textAlign: 'center', padding: 40 }}>در حال آماده‌سازی پخش محافظت‌شدهٔ ویدئو...</div>}
+          {file.type === 'VIDEO' && error && <div style={{ color: '#f87171', textAlign: 'center', padding: 40 }}>{error}</div>}
           {file.type === 'AUDIO' ? (
             <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 30, boxSizing: 'border-box' }}>
               <audio src={viewUrl} controls controlsList="nodownload" style={{ width: 'min(700px, 100%)' }} />
             </div>
           ) : file.type === 'VIDEO' ? (
-            <video src={viewUrl} controls controlsList="nodownload" disablePictureInPicture style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            <video ref={videoRef} controls controlsList="nodownload" disablePictureInPicture onError={() => { if (file.type === 'VIDEO') { setError('پخش ویدئو ناموفق بود.'); setLoading(false); } }} style={{ width: '100%', height: '100%', objectFit: 'contain', display: error ? 'none' : 'block' }} />
           ) : (
             <>
               {loading && <div style={{ color: '#fff', textAlign: 'center', padding: 40 }}>در حال آماده‌سازی نمایش فایل...</div>}
