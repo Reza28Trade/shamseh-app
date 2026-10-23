@@ -3,9 +3,6 @@ import type { Student,Admin } from '../../types';
 import { User,Shield,Lock,ArrowRight,Send,Globe,Camera,Play,BookOpen,GraduationCap,ChevronLeft,ChevronRight,CalendarDays,Newspaper,BookOpenCheck,ExternalLink } from 'lucide-react';
 import { CourseCatalogPage, RulesPage, ExamAnalysisPage } from '../public/PublicPages';
 
-interface AuthUser{ id:string; username:string; role:'SUPER_ADMIN'|'STAFF'|'STUDENT'|'COUNSELOR'; studentId:string|null; student?:{fullName:string;nationalId:string}|null; }
-interface LoginProps{students:Student[];admins:Admin[];onLoginSuccess:(user:AuthUser)=>void;onAdminLoginSuccess:(user:AuthUser)=>void;rulesText?:string;}
-
 type NewsItem={id?:string;title:string;summary:string;imageUrl?:string;category?:string;date?:string;published?:boolean};
 type InfoCourse={id:string;title:string;professor:string;description?:string|null;coverImage?:string|null;level?:string|null};
 type InfoAnalysis={id:string;title:string;subtitle?:string|null;content:string;examYear?:string|null;resourceUrl?:string|null};
