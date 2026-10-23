@@ -58,7 +58,9 @@ export const ManagePublicContent: React.FC = () => {
     border: dark ? 'rgba(238,229,218,.14)' : 'rgba(38,36,36,.14)',
     accent: dark ? '#48D1CC' : '#008080',
   };
-  const [tab, setTab] = useState<'rules' | 'analysis'>('rules');
+  const [tab, setTab] = useState<'rules' | 'analysis' | 'news'>('rules');
+  const [newsJson, setNewsJson] = useState(JSON.stringify([{ id: 'news-1', title: 'عنوان خبر', summary: 'خلاصه خبر', imageUrl: '', category: 'اطلاعیه', date: '', published: true }], null, 2));
+  const [newsSaving, setNewsSaving] = useState(false);
   const [records, setRecords] = useState<ContentRecord[]>([]);
   const [rulesTitle, setRulesTitle] = useState('قوانین و مقررات آموزشی');
   const [rulesSections, setRulesSections] = useState({
@@ -91,6 +93,13 @@ export const ManagePublicContent: React.FC = () => {
       if (!response.ok) throw new Error('load');
       const data: ContentRecord[] = await response.json();
       setRecords(Array.isArray(data) ? data : []);
+      try {
+        const newsResponse = await fetch('/api/content/admin/news', { credentials: 'include' });
+        if (newsResponse.ok) {
+          const newsData = await newsResponse.json();
+          setNewsJson(JSON.stringify(Array.isArray(newsData) ? newsData : [], null, 2));
+        }
+      } catch { /* news editor remains available */ }
       const rules = Array.isArray(data) ? data.find((item) => item.type === 'RULES') : undefined;
       setRulesTitle(rules?.title || 'قوانین و مقررات آموزشی');
       const rawRules = rules?.content || '';
@@ -123,6 +132,19 @@ export const ManagePublicContent: React.FC = () => {
     return matchesSearch && (yearFilter === 'ALL' || item.examYear === yearFilter)
       && (publishFilter === 'ALL' || String(item.published) === publishFilter);
   });
+
+  const saveNews = async () => {
+    setNewsSaving(true); setError(''); setSuccess('');
+    try {
+      const parsed = JSON.parse(newsJson);
+      if (!Array.isArray(parsed)) throw new Error('ساختار اخبار باید آرایه JSON باشد.');
+      const response = await fetch('/api/content/news', { method: 'PATCH', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: JSON.stringify(parsed) }) });
+      if (!response.ok) throw new Error('ذخیره اخبار انجام نشد.');
+      setSuccess('اخبار و اسلایدر ذخیره شدند.');
+      await load();
+    } catch (e) { setError(e instanceof Error ? e.message : 'ساختار JSON معتبر نیست.'); }
+    finally { setNewsSaving(false); }
+  };
 
   const saveRules = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -235,11 +257,19 @@ ${value}`.trim();
       <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
         <button type="button" onClick={() => { setTab('rules'); setError(''); }} style={{ ...buttonStyle, background: tab === 'rules' ? colors.accent : colors.bg, color: tab === 'rules' ? '#fff' : colors.text }}><FileText size={15} /> قوانین و مقررات</button>
         <button type="button" onClick={() => { setTab('analysis'); setError(''); }} style={{ ...buttonStyle, background: tab === 'analysis' ? colors.accent : colors.bg, color: tab === 'analysis' ? '#fff' : colors.text }}><BookOpenText size={15} /> تحلیل کنکور سال‌های قبل</button>
+        <button type="button" onClick={() => { setTab('news'); setError(''); }} style={{ ...buttonStyle, background: tab === 'news' ? colors.accent : colors.bg, color: tab === 'news' ? '#fff' : colors.text }}><FileText size={15} /> اخبار و اسلایدر</button>
       </div>
 
       {error && <div role="alert" style={{ padding: 12, borderRadius: 10, background: dark ? 'rgba(122,32,56,.22)' : 'rgba(122,32,56,.10)', color: dark ? '#e6a7b5' : '#7A2038', fontSize: 12 }}>{error}</div>}
       {success && <div role="status" style={{ padding: 12, borderRadius: 10, background: 'rgba(16,185,129,.1)', color: '#10b981', fontSize: 12 }}>{success}</div>}
-      {loading ? <div style={{ padding: 32, textAlign: 'center', color: colors.muted }}>در حال دریافت اطلاعات...</div> : tab === 'rules' ? (
+      {loading ? <div style={{ padding: 32, textAlign: 'center', color: colors.muted }}>در حال دریافت اطلاعات...</div> : tab === 'news' ? (
+        <section style={{ border: '1px solid ' + colors.border, borderRadius: 16, padding: 18, background: colors.alt, display: 'grid', gap: 12 }}>
+          <h2 style={{ margin: 0, fontSize: 16 }}>مدیریت اخبار و اسلایدر صفحه اطلاعات آموزشی</h2>
+          <p style={{ margin: 0, color: colors.muted, fontSize: 12, lineHeight: 2 }}>هر خبر یک شیء با فیلدهای title، summary، imageUrl، category، date و published است. imageUrl باید نشانی تصویر قابل دسترس باشد. برای انتشار، published را true بگذارید.</p>
+          <textarea value={newsJson} onChange={(event) => setNewsJson(event.target.value)} rows={16} spellCheck={false} style={{ width: '100%', boxSizing: 'border-box', direction: 'ltr', textAlign: 'left', fontFamily: 'monospace', fontSize: 12, lineHeight: 1.7, padding: 14, borderRadius: 12, border: '1px solid ' + colors.border, background: colors.bg, color: colors.text }} />
+          <div><button type="button" disabled={newsSaving} onClick={() => void saveNews()} style={{ ...buttonStyle, background: colors.accent, color: '#fff', borderColor: colors.accent }}><Save size={15}/>{newsSaving ? 'در حال ذخیره…' : 'ذخیره اخبار'}</button></div>
+        </section>
+      ) : tab === 'rules' ? (
         <form onSubmit={saveRules} style={{ background: colors.bg, border: `1px solid ${colors.border}`, borderRadius: 18, padding: '18px', display: 'flex', flexDirection: 'column', gap: 14 }}>
           <label style={{ display: 'flex', flexDirection: 'column', gap: 7, fontSize: 12, fontWeight: 800 }}>عنوان صفحه قوانین
             <input required value={rulesTitle} onChange={(event) => setRulesTitle(event.target.value)} style={inputStyle} />
