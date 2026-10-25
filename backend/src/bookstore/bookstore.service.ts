@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { extname, join } from 'node:path';
@@ -9,8 +9,20 @@ const RESERVATION_HOURS = 72;
 const storageRoot = process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files';
 
 @Injectable()
-export class BookstoreService {
+export class BookstoreService implements OnModuleInit, OnModuleDestroy {
+  private expiryTimer: ReturnType<typeof setInterval> | null = null;
+
   constructor(private readonly prisma: PrismaService) {}
+
+  onModuleInit() {
+    this.expiryTimer = setInterval(() => {
+      void this.releaseExpiredReservations().catch(error => console.error('[Bookstore] reservation expiry failed:', error));
+    }, 60_000);
+  }
+
+  onModuleDestroy() {
+    if (this.expiryTimer) clearInterval(this.expiryTimer);
+  }
 
   private requireAdmin(user: AuthenticatedUser) {
     if (user.role !== 'SUPER_ADMIN' && user.role !== 'STAFF') throw new ForbiddenException('Admin access required');
