@@ -25,13 +25,9 @@ const InformationPage:React.FC<{onBack:()=>void}>=({onBack})=>{
 
  {error&&<p role="status" style={{padding:12,background:'#fff7ed',borderRadius:10,color:'#9a3412'}}>{error}</p>}
  <section aria-label="آخرین اخبار و اطلاعات آموزشی" style={{...card,position:'relative',isolation:'isolate',overflow:'hidden',minHeight:310,marginBottom:36,background:'linear-gradient(115deg,#252525 0%,#343434 55%,#202020 100%)',border:'1px solid rgba(72,209,204,.22)',boxShadow:'0 18px 48px rgba(13,47,49,.16)'}}>
- <div style={{position:'absolute',inset:0,zIndex:-1,pointerEvents:'none',overflow:'hidden'}}><ShamsehParticleIntro/></div>
- <div style={{position:'relative',display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,280px),1fr))',gap:22,alignItems:'center',padding:'clamp(22px,4vw,42px)'}}>
- <div style={{color:'#f4fbfa',maxWidth:460}}>
- <h1 style={{fontSize:'clamp(25px,4vw,39px)',lineHeight:1.55,margin:'0 0 12px',fontWeight:850}}>آخرین اخبار و اطلاعات آموزشی</h1>
- <p style={{fontSize:13,lineHeight:2.1,color:'rgba(239,250,249,.78)',margin:0}}>خبرها، معرفی دوره‌ها و اطلاعات آموزشی آکادمی شمسه؛ یک‌جا و به‌روز.</p>
- </div>
- <article style={{background:'rgba(250,255,254,.96)',border:'1px solid rgba(255,255,255,.65)',borderRadius:16,overflow:'hidden',boxShadow:'0 12px 35px rgba(0,0,0,.15)',color:'#1c2929',maxWidth:520,width:'100%',justifySelf:'end'}}>
+ <div style={{position:'absolute',inset:0,zIndex:0,pointerEvents:'none',overflow:'hidden'}}><ShamsehParticleIntro/></div>
+ <div style={{position:'relative',zIndex:1,display:'grid',gridTemplateColumns:'minmax(0,1fr)',gap:22,alignItems:'center',justifyItems:'center',padding:'clamp(22px,4vw,42px)'}}>
+ <article style={{background:'rgba(250,255,254,.96)',border:'1px solid rgba(255,255,255,.65)',borderRadius:16,overflow:'hidden',boxShadow:'0 12px 35px rgba(0,0,0,.15)',color:'#1c2929',maxWidth:520,width:'100%',justifySelf:'center'}}>
  {featured?.imageUrl?<img src={featured.imageUrl} alt="" style={{width:'100%',height:150,objectFit:'cover',display:'block'}}/>:<div style={{height:110,background:'radial-gradient(circle at 20% 20%,rgba(72,209,204,.35),transparent 36%),linear-gradient(135deg,#153a40,#10272c)',display:'grid',placeItems:'center',color:'#168c91'}}><Newspaper size={70} strokeWidth={1}/></div>}
  <div style={{padding:'18px clamp(17px,2.5vw,26px)',display:'flex',flexDirection:'column',justifyContent:'center',gap:10}}>
  <span style={{fontSize:10,color:'#168c91',fontWeight:850}}>{featured?.category||'اخبار و اطلاعیه‌ها'}</span><h2 style={{fontSize:'clamp(16px,2vw,21px)',lineHeight:1.7,margin:0}}>{featured?.title||'اخبار و اطلاعیه‌های آموزشی شمسه'}</h2><p style={{fontSize:12,color:'#71807f',lineHeight:1.9,margin:0}}>{featured?.summary||'خبرها و اطلاعیه‌های جدید آکادمی در این بخش نمایش داده می‌شوند.'}</p>
