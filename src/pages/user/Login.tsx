@@ -24,10 +24,10 @@ const InformationPage:React.FC<{onBack:()=>void}>=({onBack})=>{
  <div style={{maxWidth:1180,margin:'auto',padding:'24px clamp(16px,4vw,40px) 50px'}}>
 
  {error&&<p role="status" style={{padding:12,background:'#fff7ed',borderRadius:10,color:'#9a3412'}}>{error}</p>}
- <section aria-label="آخرین اخبار و اطلاعات آموزشی" style={{position:'relative',isolation:'isolate',overflow:'hidden',minHeight:220,marginBottom:28,borderRadius:16,background:'linear-gradient(115deg,#252525 0%,#303030 55%,#202020 100%)',border:'1px solid rgba(255,255,255,.10)',boxShadow:'0 18px 48px rgba(13,47,49,.12)'}}>
+ <section aria-label="آخرین اخبار و اطلاعات آموزشی" style={{position:'relative',isolation:'isolate',overflow:'hidden',height:210,marginBottom:28,borderRadius:16,background:'linear-gradient(115deg,#252525 0%,#303030 55%,#202020 100%)',border:'1px solid rgba(255,255,255,.10)',boxShadow:'0 12px 30px rgba(13,47,49,.10)'}}>
  
- <div style={{position:'relative',zIndex:1,display:'grid',gridTemplateColumns:'minmax(0,1fr)',gap:0,alignItems:'stretch',justifyItems:'stretch',padding:0}}>
- <article style={{display:'grid',gridTemplateColumns:'minmax(0,0.8fr) minmax(0,1.2fr)',gridTemplateRows:'210px',direction:'ltr',background:'rgba(250,255,254,.76)',backdropFilter:'blur(14px) saturate(135%)',WebkitBackdropFilter:'blur(14px) saturate(135%)',border:'1px solid rgba(255,255,255,.22)',borderRadius:16,overflow:'hidden',boxShadow:'0 8px 24px rgba(0,0,0,.10)',color:'#1c2929',width:'100%',height:'210px',minHeight:0,justifySelf:'stretch',transition:'background .25s ease,border-color .25s ease'}}>
+ <div style={{position:'relative',zIndex:1,display:'grid',gridTemplateColumns:'minmax(0,1fr)',height:'100%',gap:0,alignItems:'stretch',justifyItems:'stretch',padding:0}}>
+ <article style={{display:'grid',gridTemplateColumns:'minmax(0,0.8fr) minmax(0,1.2fr)',gridTemplateRows:'210px',direction:'ltr',background:'rgba(250,255,254,.76)',backdropFilter:'blur(14px) saturate(135%)',WebkitBackdropFilter:'blur(14px) saturate(135%)',border:0,borderRadius:0,overflow:'hidden',boxShadow:'none',color:'#1c2929',width:'100%',height:'210px',minHeight:0,justifySelf:'stretch',transition:'background .25s ease,border-color .25s ease'}}>
  <div style={{height:'210px',minHeight:0,overflow:'hidden',background:'linear-gradient(135deg,#153a40,#10272c)',display:'grid',placeItems:'center',color:'#168c91'}}>
  {featured?.imageUrl?<img src={featured.imageUrl} alt="" style={{width:'100%',height:'210px',objectFit:'cover',display:'block'}}/>:<Newspaper size={70} strokeWidth={1}/>}
  </div>
