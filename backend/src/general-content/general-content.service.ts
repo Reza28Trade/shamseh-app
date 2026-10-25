@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { createReadStream, existsSync, mkdirSync, writeFileSync } from 'fs';
+import { basename, extname, join } from 'path';
+import { randomUUID } from 'crypto';
+import { Response } from 'express';
 import { PrismaService } from '../database/prisma.service';
 import { AuthenticatedUser } from '../auth/auth.types';
 
@@ -14,6 +18,32 @@ const DEFAULT_RULES = '۱. حضور به موقع در کلاس‌های آنل�
 export class GeneralContentService {
   constructor(private readonly prisma: PrismaService) {}
 
+  private assertNewsEditor(user: AuthenticatedUser) {
+    if (user.role !== 'SUPER_ADMIN' && user.role !== 'STAFF') throw new ForbiddenException('برای مدیریت اخبار دسترسی ندارید.');
+  }
+
+  async saveNewsImage(user: AuthenticatedUser, file: any) {
+    this.assertNewsEditor(user);
+    const allowed: Record<string, string> = { 'image/jpeg': '.jpg', 'image/png': '.png', 'image/webp': '.webp', 'image/gif': '.gif' };
+    const extension = allowed[String(file?.mimetype || '')];
+    if (!file?.buffer || !extension) throw new BadRequestException('فرمت تصویر باید JPG، PNG، WEBP یا GIF باشد.');
+    if (file.size > 5 * 1024 * 1024) throw new BadRequestException('حجم تصویر باید کمتر از ۵ مگابایت باشد.');
+    const directory = join(process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files', 'news-images');
+    mkdirSync(directory, { recursive: true });
+    const filename = `${randomUUID()}${extension}`;
+    writeFileSync(join(directory, filename), file.buffer, { flag: 'wx' });
+    return { imageUrl: `/api/content/news/images/${filename}` };
+  }
+
+  getNewsImage(filename: string, res: Response) {
+    const safeName = basename(filename);
+    if (safeName !== filename || !/^[a-f0-9-]+\\.(jpg|png|webp|gif)$/i.test(safeName)) throw new NotFoundException('تصویر پیدا نشد.');
+    const filePath = join(process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files', 'news-images', safeName);
+    if (!existsSync(filePath)) throw new NotFoundException('تصویر پیدا نشد.');
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+    return createReadStream(filePath).pipe(res);
+  }
+
   async getNews() {
     const item = await this.prisma.generalContent.findUnique({ where: { key: NEWS_KEY } });
     try {
@@ -25,9 +55,7 @@ export class GeneralContentService {
   }
 
   async getAdminNews(user: AuthenticatedUser) {
-    if (user.role !== 'SUPER_ADMIN' && user.role !== 'STAFF') {
-      throw new Error('Admin access required');
-    }
+    this.assertNewsEditor(user);
     const item = await this.prisma.generalContent.findUnique({ where: { key: NEWS_KEY } });
     try {
       const parsed = JSON.parse(item?.content ?? DEFAULT_NEWS);
@@ -42,11 +70,11 @@ export class GeneralContentService {
       throw new Error('Admin access required');
     }
     let parsed: unknown;
-    try { parsed = JSON.parse(content); } catch { throw new Error('News content must be valid JSON'); }
-    if (!Array.isArray(parsed)) throw new Error('News content must be a JSON array');
+    try { parsed = JSON.parse(content); } catch { throw new BadRequestException('اطلاعات خبرها معتبر نیست.'); }
+    if (!Array.isArray(parsed)) throw new BadRequestException('ساختار خبرها معتبر نیست.');
     for (const item of parsed) {
       if (!item || typeof item.title !== 'string' || typeof item.summary !== 'string') {
-        throw new Error('Each news item must have a title and summary');
+        throw new BadRequestException('هر خبر باید عنوان و خلاصه داشته باشد.');
       }
     }
     return this.prisma.generalContent.upsert({
