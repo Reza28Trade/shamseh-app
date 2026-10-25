@@ -23,6 +23,7 @@ export class BookstoreService {
   }
 
   async listBooks(user: AuthenticatedUser) {
+    await this.releaseExpiredReservations();
     const admin = user.role === 'SUPER_ADMIN' || (user.role === 'STAFF' && user.permissions.includes('books'));
     const books = await this.prisma.book.findMany({
       where: admin ? {} : { isActive: true },
@@ -118,6 +119,7 @@ export class BookstoreService {
   }
 
   async studentOrders(user: AuthenticatedUser) {
+    await this.releaseExpiredReservations();
     const studentId = this.requireStudent(user);
     return this.prisma.bookOrder.findMany({
       where: { studentId }, orderBy: { createdAt: 'desc' }, include: { items: { include: { book: true } } },
@@ -146,6 +148,29 @@ export class BookstoreService {
     } });
   }
 
+  private async releaseExpiredReservations() {
+    const now = new Date();
+    await this.prisma.$transaction(async tx => {
+      const expired = await tx.bookOrder.findMany({
+        where: { status: { in: ['RESERVED', 'AWAITING_RECEIPT'] }, reservationExpiresAt: { lte: now }, receiptUploadedAt: null },
+        include: { items: true },
+      });
+      for (const order of expired) {
+        for (const item of order.items) {
+          await tx.book.update({ where: { id: item.bookId }, data: { reservedQuantity: { decrement: item.quantity } } });
+        }
+        await tx.bookOrder.update({ where: { id: order.id }, data: { status: 'CANCELLED', cancelledAt: now, reservationExpiresAt: null } });
+      }
+    });
+  }
+
+  async receiptPath(user: AuthenticatedUser, orderId: string) {
+    this.requireAdmin(user);
+    const order = await this.prisma.bookOrder.findUnique({ where: { id: orderId } });
+    if (!order?.receiptStorageKey) throw new NotFoundException('رسید این سفارش پیدا نشد.');
+    return join(storageRoot, order.receiptStorageKey);
+  }
+
   private async releaseReservation(orderId: string) {
     await this.prisma.$transaction(async tx => {
       const order = await tx.bookOrder.findUnique({ where: { id: orderId }, include: { items: true } });
@@ -168,6 +193,7 @@ export class BookstoreService {
 
   async adminOrders(user: AuthenticatedUser) {
     this.requireAdmin(user);
+    await this.releaseExpiredReservations();
     return this.prisma.bookOrder.findMany({
       orderBy: { createdAt: 'desc' },
       include: { student: { select: { id: true, fullName: true, phone: true } }, items: { include: { book: true } }, reviewer: { select: { username: true } }, shipper: { select: { username: true } } },
@@ -221,14 +247,18 @@ export class BookstoreService {
     if (!order) throw new NotFoundException('سفارش پیدا نشد.');
     if (body.action === 'REQUEST') {
       if (!['PAID', 'PROCESSING', 'PAYMENT_REJECTED', 'PAYMENT_REVIEW'].includes(order.status)) throw new BadRequestException('این سفارش برای بازپرداخت در وضعیت مناسبی نیست.');
-      return this.prisma.bookOrder.update({ where: { id: orderId }, data: { status: 'REFUND_PENDING', refundStatus: 'REQUESTED', refundRequestedAt: new Date(), refundNote: String(body.note ?? '').trim() || null } });
+      return this.prisma.bookOrder.update({ where: { id: orderId }, data: { status: 'REFUND_PENDING', refundStatus: 'REQUESTED', refundFromStatus: order.status, refundRequestedAt: new Date(), refundNote: String(body.note ?? '').trim() || null } });
     }
     if (body.action !== 'COMPLETE') throw new BadRequestException('عملیات بازپرداخت معتبر نیست.');
     if (order.status !== 'REFUND_PENDING' || order.refundStatus !== 'REQUESTED') throw new BadRequestException('ابتدا بازپرداخت را در وضعیت انتظار قرار دهید.');
     return this.prisma.$transaction(async tx => {
       // Stock is returned only when the order has not shipped; shipped books are not assumed to be back in inventory.
-      if (!order.shippedAt) {
+      if (['PAID', 'PROCESSING'].includes(order.refundFromStatus || '') && !order.shippedAt) {
         for (const item of order.items) await tx.book.update({ where: { id: item.bookId }, data: { stockQuantity: { increment: item.quantity } } });
+      } else if (['PAYMENT_REVIEW', 'PAYMENT_REJECTED'].includes(order.refundFromStatus || '')) {
+        for (const item of order.items) await tx.book.update({ where: { id: item.bookId }, data: { reservedQuantity: { decrement: item.quantity } } });
+      } else if (['RESERVED', 'AWAITING_RECEIPT'].includes(order.refundFromStatus || '')) {
+        for (const item of order.items) await tx.book.update({ where: { id: item.bookId }, data: { reservedQuantity: { decrement: item.quantity } } });
       }
       return tx.bookOrder.update({ where: { id: orderId }, data: { status: 'REFUNDED', refundStatus: 'COMPLETED', refundCompletedAt: new Date(), refundById: user.id, refundNote: String(body.note ?? order.refundNote ?? '').trim() || null } });
     });
