@@ -86,8 +86,8 @@ const ShamsehParticleIntro:React.FC=()=>{
   resize();const observer=new ResizeObserver(resize);observer.observe(canvas);raf=requestAnimationFrame(draw);
   return()=>{cancelAnimationFrame(raf);observer.disconnect();};
  },[reducedMotion]);
- return <div className={'sh-particle-intro'+(reducedMotion?' reduced':'')} aria-hidden="true">
-  <canvas ref={canvasRef}/>
+ return <div className={'sh-particle-intro'+(reducedMotion?' reduced':'')} aria-hidden="true" style={{position:'absolute',inset:0,width:'100%',height:'100%',background:'transparent',pointerEvents:'none',overflow:'hidden'}}>
+  <canvas ref={canvasRef} style={{position:'absolute',inset:0,display:'block',width:'100%',height:'100%',background:'transparent'}}/>
  </div>;
 };
 
