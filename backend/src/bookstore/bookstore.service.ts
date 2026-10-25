@@ -297,21 +297,36 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     const order = await this.prisma.bookOrder.findUnique({ where: { id: orderId }, include: { items: true } });
     if (!order) throw new NotFoundException('سفارش پیدا نشد.');
     if (body.action === 'REQUEST') {
-      if (!['PAID', 'PROCESSING', 'PAYMENT_REJECTED', 'PAYMENT_REVIEW'].includes(order.status)) throw new BadRequestException('این سفارش برای بازپرداخت در وضعیت مناسبی نیست.');
-      return this.prisma.bookOrder.update({ where: { id: orderId }, data: { status: 'REFUND_PENDING', refundStatus: 'REQUESTED', refundFromStatus: order.status, refundRequestedAt: new Date(), refundNote: String(body.note ?? '').trim() || null } });
+      const allowedStatuses = ['PAID', 'PROCESSING', 'PAYMENT_REJECTED', 'PAYMENT_REVIEW'] as const;
+      if (!allowedStatuses.includes(order.status as typeof allowedStatuses[number])) throw new BadRequestException('این سفارش برای بازپرداخت در وضعیت مناسبی نیست.');
+      const now = new Date();
+      const changed = await this.prisma.bookOrder.updateMany({
+        where: { id: orderId, status: { in: [...allowedStatuses] }, refundStatus: 'NONE' },
+        data: { status: 'REFUND_PENDING', refundStatus: 'REQUESTED', refundFromStatus: order.status, refundRequestedAt: now, refundNote: String(body.note ?? '').trim() || null },
+      });
+      if (changed.count !== 1) throw new BadRequestException('وضعیت سفارش تغییر کرده است؛ فهرست را تازه‌سازی کنید.');
+      return this.prisma.bookOrder.findUnique({ where: { id: orderId } });
     }
     if (body.action !== 'COMPLETE') throw new BadRequestException('عملیات بازپرداخت معتبر نیست.');
     if (order.status !== 'REFUND_PENDING' || order.refundStatus !== 'REQUESTED') throw new BadRequestException('ابتدا بازپرداخت را در وضعیت انتظار قرار دهید.');
     return this.prisma.$transaction(async tx => {
+      const completedAt = new Date();
+      // Claim the refund before changing inventory; a repeated/concurrent request must not return stock twice.
+      const claimed = await tx.bookOrder.updateMany({
+        where: { id: orderId, status: 'REFUND_PENDING', refundStatus: 'REQUESTED' },
+        data: { status: 'REFUNDED', refundStatus: 'COMPLETED', refundCompletedAt: completedAt, refundById: user.id, refundNote: String(body.note ?? order.refundNote ?? '').trim() || null },
+      });
+      if (claimed.count !== 1) throw new BadRequestException('بازپرداخت قبلاً انجام شده یا وضعیت سفارش تغییر کرده است.');
       // Stock is returned only when the order has not shipped; shipped books are not assumed to be back in inventory.
       if (['PAID', 'PROCESSING'].includes(order.refundFromStatus || '') && !order.shippedAt) {
         for (const item of order.items) await tx.book.update({ where: { id: item.bookId }, data: { stockQuantity: { increment: item.quantity } } });
-      } else if (['PAYMENT_REVIEW', 'PAYMENT_REJECTED'].includes(order.refundFromStatus || '')) {
-        for (const item of order.items) await tx.book.update({ where: { id: item.bookId }, data: { reservedQuantity: { decrement: item.quantity } } });
-      } else if (['RESERVED', 'AWAITING_RECEIPT'].includes(order.refundFromStatus || '')) {
-        for (const item of order.items) await tx.book.update({ where: { id: item.bookId }, data: { reservedQuantity: { decrement: item.quantity } } });
+      } else if (['PAYMENT_REVIEW', 'PAYMENT_REJECTED', 'RESERVED', 'AWAITING_RECEIPT'].includes(order.refundFromStatus || '')) {
+        for (const item of order.items) {
+          const changed = await tx.book.updateMany({ where: { id: item.bookId, reservedQuantity: { gte: item.quantity } }, data: { reservedQuantity: { decrement: item.quantity } } });
+          if (changed.count !== 1) throw new BadRequestException('موجودی رزروشده ناسازگار است؛ بررسی دستی لازم است.');
+        }
       }
-      return tx.bookOrder.update({ where: { id: orderId }, data: { status: 'REFUNDED', refundStatus: 'COMPLETED', refundCompletedAt: new Date(), refundById: user.id, refundNote: String(body.note ?? order.refundNote ?? '').trim() || null } });
-    });
+      return tx.bookOrder.findUnique({ where: { id: orderId } });
+    }, { isolationLevel: 'Serializable' });
   }
 }
