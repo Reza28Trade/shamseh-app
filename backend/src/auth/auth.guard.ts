@@ -60,6 +60,9 @@ export class AuthGuard implements CanActivate {
       || path === '/student/finance-access'
       || path === '/student/registrations'
       || path === '/student/refunds'
+      || path === '/student/book-orders'
+      || /^\/student\/book-orders\/[^/]+\/(receipt|cancel)$/.test(path)
+      || path === '/books'
       || /^\/student\/installments\/[^/]+\/payments$/.test(path);
   }
 
