@@ -1,7 +1,7 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { mkdirSync, unlinkSync, writeFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
-import { extname, join } from 'node:path';
+import { join } from 'node:path';
 import { PrismaService } from '../database/prisma.service';
 import { AuthenticatedUser } from '../auth/auth.types';
 
@@ -53,14 +53,16 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     const title = String(body?.title ?? '').trim();
     const stockQuantity = Number(body?.stockQuantity ?? 0);
     const price = Number(body?.price ?? body?.discountedPrice ?? 0);
-    if (!title || !Number.isInteger(stockQuantity) || stockQuantity < 0 || !Number.isFinite(price) || price < 0) {
-      throw new BadRequestException('عنوان، قیمت و موجودی معتبر الزامی است.');
+    const discountedPrice = body?.discountedPrice == null || body.discountedPrice === '' ? null : Number(body.discountedPrice);
+    if (!title || !Number.isInteger(stockQuantity) || stockQuantity < 0 || !Number.isFinite(price) || price < 0
+      || (discountedPrice !== null && (!Number.isFinite(discountedPrice) || discountedPrice < 0 || discountedPrice > price))) {
+      throw new BadRequestException('عنوان، قیمت، قیمت تخفیف‌خورده و موجودی معتبر الزامی است.');
     }
     return this.prisma.book.create({ data: {
       title, description: body.description ? String(body.description) : null,
       coverImage: body.coverImage ? String(body.coverImage) : null,
       category: body.category ? String(body.category) : null,
-      price, discountedPrice: body.discountedPrice == null || body.discountedPrice === '' ? null : Number(body.discountedPrice),
+      price, discountedPrice,
       stockQuantity, isActive: body.isActive !== false, displayOrder: Number.isInteger(Number(body.displayOrder)) ? Number(body.displayOrder) : 0,
     } });
   }
@@ -83,6 +85,9 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
         throw new BadRequestException('قیمت یا قیمت تخفیف‌خورده معتبر نیست.');
       }
     }
+    const effectivePrice = data.price === undefined ? Number(existing.price ?? 0) : Number(data.price);
+    const effectiveDiscount = data.discountedPrice === undefined ? (existing.discountedPrice == null ? null : Number(existing.discountedPrice)) : data.discountedPrice;
+    if (effectiveDiscount !== null && Number(effectiveDiscount) > effectivePrice) throw new BadRequestException('قیمت تخفیف‌خورده نمی‌تواند از قیمت اصلی بیشتر باشد.');
     if (data.title !== undefined) {
       data.title = String(data.title).trim();
       if (!data.title) throw new BadRequestException('عنوان کتاب نمی‌تواند خالی باشد.');
