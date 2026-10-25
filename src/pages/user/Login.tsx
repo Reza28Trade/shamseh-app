@@ -24,11 +24,10 @@ const InformationPage:React.FC<{onBack:()=>void}>=({onBack})=>{
  <div style={{maxWidth:1180,margin:'auto',padding:'24px clamp(16px,4vw,40px) 50px'}}>
 
  {error&&<p role="status" style={{padding:12,background:'#fff7ed',borderRadius:10,color:'#9a3412'}}>{error}</p>}
- <section aria-label="آخرین اخبار و اطلاعات آموزشی" style={{...card,position:'relative',isolation:'isolate',overflow:'hidden',minHeight:310,marginBottom:36,background:'linear-gradient(115deg,#122d32 0%,#17474a 55%,#236c6c 100%)',border:'1px solid rgba(72,209,204,.25)',boxShadow:'0 18px 48px rgba(13,47,49,.16)'}}>
+ <section aria-label="آخرین اخبار و اطلاعات آموزشی" style={{...card,position:'relative',isolation:'isolate',overflow:'hidden',minHeight:310,marginBottom:36,background:'linear-gradient(115deg,#252525 0%,#343434 55%,#202020 100%)',border:'1px solid rgba(72,209,204,.22)',boxShadow:'0 18px 48px rgba(13,47,49,.16)'}}>
  <div style={{position:'absolute',inset:0,zIndex:-1,pointerEvents:'none',overflow:'hidden'}}><ShamsehParticleIntro/></div>
  <div style={{position:'relative',display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,280px),1fr))',gap:22,alignItems:'center',padding:'clamp(22px,4vw,42px)'}}>
  <div style={{color:'#f4fbfa',maxWidth:460}}>
- <div style={{fontSize:11,fontWeight:850,letterSpacing:'.02em',color:'#71e0d8',marginBottom:10}}>آکادمی شمسه · اطلاع‌رسانی آموزشی</div>
  <h1 style={{fontSize:'clamp(25px,4vw,39px)',lineHeight:1.55,margin:'0 0 12px',fontWeight:850}}>آخرین اخبار و اطلاعات آموزشی</h1>
  <p style={{fontSize:13,lineHeight:2.1,color:'rgba(239,250,249,.78)',margin:0}}>خبرها، معرفی دوره‌ها و اطلاعات آموزشی آکادمی شمسه؛ یک‌جا و به‌روز.</p>
  </div>
