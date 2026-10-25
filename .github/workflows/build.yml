@@ -8,6 +8,7 @@ on:
       - fix/system-audit-logs
       - feat/shamseh-shared-panel-design-20261018
       - fix/student-panel-design-alignment-20261020
+      - feature/bookstore-orders-inventory
   push:
     branches:
       - security/protect-course-content-free
