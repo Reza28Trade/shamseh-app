@@ -149,7 +149,7 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     const order = await this.prisma.bookOrder.findFirst({ where: { id: orderId, studentId }, include: { items: true } });
     if (!order) throw new NotFoundException('سفارش پیدا نشد.');
     if (!['RESERVED', 'AWAITING_RECEIPT', 'PAYMENT_REJECTED'].includes(order.status)) throw new BadRequestException('در وضعیت فعلی امکان ارسال رسید وجود ندارد.');
-    if (order.status !== 'PAYMENT_REJECTED' && order.reservationExpiresAt && order.reservationExpiresAt < new Date()) {
+    if (order.reservationExpiresAt && order.reservationExpiresAt < new Date()) {
       await this.releaseReservation(order.id);
       throw new BadRequestException('مهلت رزرو تمام شده است؛ لطفاً سفارش جدید ثبت کنید.');
     }
@@ -167,7 +167,7 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
           id: orderId,
           studentId,
           OR: [
-            { status: 'PAYMENT_REJECTED' },
+            { status: 'PAYMENT_REJECTED', reservationExpiresAt: { gt: now } },
             { status: { in: ['RESERVED', 'AWAITING_RECEIPT'] }, reservationExpiresAt: { gt: now } },
           ],
         },
@@ -190,13 +190,26 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     const now = new Date();
     await this.prisma.$transaction(async tx => {
       const expired = await tx.bookOrder.findMany({
-        where: { status: { in: ['RESERVED', 'AWAITING_RECEIPT'] }, reservationExpiresAt: { lte: now }, receiptUploadedAt: null },
+        where: {
+          reservationExpiresAt: { lte: now },
+          OR: [
+            { status: { in: ['RESERVED', 'AWAITING_RECEIPT'] }, receiptUploadedAt: null },
+            { status: 'PAYMENT_REJECTED' },
+          ],
+        },
         include: { items: true },
       });
       for (const order of expired) {
         // Claim the order atomically so overlapping timer/API requests cannot release the same stock twice.
         const claimed = await tx.bookOrder.updateMany({
-          where: { id: order.id, status: { in: ['RESERVED', 'AWAITING_RECEIPT'] }, reservationExpiresAt: { lte: now }, receiptUploadedAt: null },
+          where: {
+            id: order.id,
+            reservationExpiresAt: { lte: now },
+            OR: [
+              { status: { in: ['RESERVED', 'AWAITING_RECEIPT'] }, receiptUploadedAt: null },
+              { status: 'PAYMENT_REJECTED' },
+            ],
+          },
           data: { status: 'CANCELLED', cancelledAt: now, reservationExpiresAt: null },
         });
         if (claimed.count !== 1) continue;
@@ -259,7 +272,12 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     if (body.status === 'REJECTED') {
       const reason = String(body.reason ?? '').trim();
       if (!reason) throw new BadRequestException('علت رد رسید را بنویسید.');
-      return this.prisma.bookOrder.update({ where: { id: orderId }, data: { status: 'PAYMENT_REJECTED', receiptRejectionReason: reason, reviewedAt: new Date(), reviewedById: user.id } });
+      const reviewedAt = new Date();
+      const reservationExpiresAt = new Date(reviewedAt.getTime() + RESERVATION_HOURS * 60 * 60 * 1000);
+      return this.prisma.bookOrder.update({ where: { id: orderId }, data: {
+        status: 'PAYMENT_REJECTED', receiptRejectionReason: reason,
+        reviewedAt, reviewedById: user.id, reservationExpiresAt,
+      } });
     }
     if (body.status !== 'APPROVED') throw new BadRequestException('وضعیت بررسی معتبر نیست.');
     return this.prisma.$transaction(async tx => {
