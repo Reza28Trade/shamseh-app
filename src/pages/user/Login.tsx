@@ -63,21 +63,21 @@ const ShamsehParticleIntro:React.FC=()=>{
   const ctx=canvas.getContext('2d');
   if(!ctx)return;
   let elapsed=0,lastTime=0,raf=0,width=0,height=0,dpr=1;
-  const particles=Array.from({length:72},(_,i)=>({seed:i/72,phase:Math.random()*Math.PI*2,size:Math.random()*1.7+.45,speed:.12+Math.random()*.22,orbit:.16+Math.random()*.28}));
+  const particles=Array.from({length:132},(_,i)=>({seed:i/132,phase:Math.random()*Math.PI*2,size:Math.random()*1.9+.75,speed:.1+Math.random()*.24,orbit:.28+Math.random()*.34}));
   const resize=()=>{const rect=canvas.getBoundingClientRect();width=rect.width;height=rect.height;dpr=Math.min(window.devicePixelRatio||1,1.6);canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);};
   const draw=(now:number)=>{
    if(lastTime)elapsed+=(now-lastTime)/1000;
    lastTime=now;
    ctx!.clearRect(0,0,width,height);
-   const t=elapsed, cx=width*.5, cy=height*.53, rx=width*.38, ry=height*.29;
+   const t=elapsed, cx=width*.5, cy=height*.53, rx=width*.47, ry=height*.43;
    particles.forEach((p,i)=>{
     const a=(t*p.speed)+(p.seed*Math.PI*2)+p.phase;
     const x=cx+Math.cos(a)*rx*p.orbit*2.15;
     const y=cy+Math.sin(a*1.27)*ry*p.orbit*2.15;
-    const alpha=.22+.55*(.5+.5*Math.sin(a*1.8));
-    ctx!.beginPath();ctx!.fillStyle='rgba(72,209,204,'+alpha+')';ctx!.shadowBlur=p.size*5;ctx!.shadowColor='#48d1cc';ctx!.arc(x,y,p.size,0,Math.PI*2);ctx!.fill();
+    const alpha=.38+.58*(.5+.5*Math.sin(a*1.8));
+    ctx!.beginPath();ctx!.fillStyle='rgba(72,209,204,'+alpha+')';ctx!.shadowBlur=p.size*7;ctx!.shadowColor='#48d1cc';ctx!.arc(x,y,p.size,0,Math.PI*2);ctx!.fill();
     if(i%9===0){
-     const tailA=a-.18;ctx!.beginPath();ctx!.strokeStyle='rgba(72,209,204,.16)';ctx!.lineWidth=.7;ctx!.moveTo(cx+Math.cos(tailA)*rx*p.orbit*2.15,cy+Math.sin(tailA*1.27)*ry*p.orbit*2.15);ctx!.lineTo(x,y);ctx!.stroke();
+     const tailA=a-.18;ctx!.beginPath();ctx!.strokeStyle='rgba(72,209,204,.25)';ctx!.lineWidth=.7;ctx!.moveTo(cx+Math.cos(tailA)*rx*p.orbit*2.15,cy+Math.sin(tailA*1.27)*ry*p.orbit*2.15);ctx!.lineTo(x,y);ctx!.stroke();
     }
    });
    ctx!.shadowBlur=0;
