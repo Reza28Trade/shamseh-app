@@ -5,6 +5,7 @@ import { FileViewer } from '../../components/FileViewer';
 import { StudentCounselingChat } from './StudentCounselingChat';
 import { StudentManagementContact } from './StudentManagementContact';
 import { StudentRegistrationFinance } from './StudentRegistrationFinance';
+import { Bookstore } from './Bookstore';
 import { StudentNextInstallmentSummary } from './StudentNextInstallmentSummary';
 import '../../styles/StudentDesignSystem.css';
 import { BookOpen, LogOut, Video, FileText, Send, Sun, Moon, CheckCircle, Bell, Volume2, Presentation, Link as LinkIcon, AlertCircle, CalendarClock, ClipboardList, ExternalLink, Home, Wallet, MessageSquareText } from 'lucide-react';
@@ -63,7 +64,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
 
   } = useStore();
 
-  const [activeTab, setActiveTab] = useState<'home' | 'courses' | 'mockExams' | 'notifications' | 'messages' | 'managementContact' | 'counseling' | 'finance'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'courses' | 'mockExams' | 'notifications' | 'messages' | 'managementContact' | 'counseling' | 'finance' | 'bookstore'>('home');
   const [mockExams, setMockExams] = useState<BackendMockExam[]>([]);
   const [mockExamsLoading, setMockExamsLoading] = useState(false);
   const [mockExamsError, setMockExamsError] = useState('');
@@ -645,6 +646,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
             <button className={activeTab==='mockExams' ? 'active' : ''} aria-current={activeTab==='mockExams' ? 'page' : undefined} onClick={() => setActiveTab('mockExams')} style={{display:'flex',alignItems:'center',gap:'7px'}}><ClipboardList size={14}/> آزمون‌های من</button>
             <button className={activeTab==='notifications' ? 'active' : ''} aria-current={activeTab==='notifications' ? 'page' : undefined} onClick={handleOpenNotificationTab} style={{display:'flex',alignItems:'center',gap:'7px'}}><Bell size={14}/> اطلاعیه‌ها {unreadCount>0&&<span style={{marginRight:'auto',backgroundColor:'#ef5d68',color:'#fff',fontSize:'8px',padding:'2px 6px',borderRadius:'999px',fontWeight:900}}>{unreadCount}</span>}</button>
             </>}
+            <button className={activeTab==='bookstore' ? 'active' : ''} aria-current={activeTab==='bookstore' ? 'page' : undefined} onClick={() => setActiveTab('bookstore')} style={{display:'flex',alignItems:'center',gap:'7px'}}><BookOpen size={14}/> فروشگاه کتاب</button>
             <button className={activeTab==='finance' ? 'active' : ''} aria-current={activeTab==='finance' ? 'page' : undefined} onClick={() => setActiveTab('finance')} style={{display:'flex',alignItems:'center',gap:'7px'}}><Wallet size={14}/> وضعیت مالی من</button>
             {!financeRestricted && <>
             <button className={activeTab==='counseling' ? 'active' : ''} aria-current={activeTab==='counseling' ? 'page' : undefined} onClick={() => setActiveTab('counseling')} style={{display:'flex',alignItems:'center',gap:'7px'}}><CalendarClock size={14}/> مشاوره</button>
@@ -1084,6 +1086,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
         )}
 
         {activeTab === 'finance' && <StudentRegistrationFinance />}
+        {activeTab === 'bookstore' && <Bookstore isDark={isDark} />}
 
         {activeTab === 'notifications' && (
           <div style={{ backgroundColor: cardBg, border: `1px solid ${borderColor}`, padding: '22px', borderRadius: '16px', boxShadow: '0 8px 22px rgba(0,0,0,.05)', minWidth: 0 }}>
