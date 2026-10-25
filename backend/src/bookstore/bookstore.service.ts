@@ -1,5 +1,5 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, unlinkSync, writeFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { extname, join } from 'node:path';
 import { PrismaService } from '../database/prisma.service';
@@ -149,15 +149,36 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
       throw new BadRequestException('مهلت رزرو تمام شده است؛ لطفاً سفارش جدید ثبت کنید.');
     }
     mkdirSync(storageRoot, { recursive: true });
-    const filename = randomUUID() + extname(String(file.originalname || '')).toLowerCase().slice(0, 10);
+    const extensionByMime: Record<string, string> = {
+      'image/jpeg': '.jpg', 'image/png': '.png', 'image/webp': '.webp', 'application/pdf': '.pdf',
+    };
+    const filename = randomUUID() + extensionByMime[file.mimetype];
     const fullPath = join(storageRoot, filename);
     writeFileSync(fullPath, file.buffer, { flag: 'wx', mode: 0o600 });
-    return this.prisma.bookOrder.update({ where: { id: orderId }, data: {
-      status: 'PAYMENT_REVIEW', receiptStorageKey: filename, receiptMimeType: file.mimetype,
-      receiptFileSize: BigInt(file.size), receiptUploadedAt: new Date(),
-      paymentReference: paymentReference?.trim() || null, paymentSubmittedAt: new Date(),
-      receiptRejectionReason: null, reservationExpiresAt: null,
-    } });
+    try {
+      const now = new Date();
+      const changed = await this.prisma.bookOrder.updateMany({
+        where: {
+          id: orderId,
+          studentId,
+          OR: [
+            { status: 'PAYMENT_REJECTED' },
+            { status: { in: ['RESERVED', 'AWAITING_RECEIPT'] }, reservationExpiresAt: { gt: now } },
+          ],
+        },
+        data: {
+          status: 'PAYMENT_REVIEW', receiptStorageKey: filename, receiptMimeType: file.mimetype,
+          receiptFileSize: BigInt(file.size), receiptUploadedAt: now,
+          paymentReference: paymentReference?.trim() || null, paymentSubmittedAt: now,
+          receiptRejectionReason: null, reservationExpiresAt: null,
+        },
+      });
+      if (changed.count !== 1) throw new BadRequestException('مهلت رزرو تمام شده یا وضعیت سفارش تغییر کرده است؛ لطفاً وضعیت سفارش را تازه‌سازی کنید.');
+      return this.prisma.bookOrder.findUnique({ where: { id: orderId } });
+    } catch (error) {
+      try { unlinkSync(fullPath); } catch { /* The file may already have been removed. */ }
+      throw error;
+    }
   }
 
   private async releaseExpiredReservations() {
@@ -209,7 +230,7 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     const studentId = this.requireStudent(user);
     const order = await this.prisma.bookOrder.findFirst({ where: { id: orderId, studentId }, include: { items: true } });
     if (!order) throw new NotFoundException('سفارش پیدا نشد.');
-    if (!['RESERVED', 'AWAITING_RECEIPT', 'PAYMENT_REJECTED'].includes(order.status) || order.receiptUploadedAt) {
+    if (!['RESERVED', 'AWAITING_RECEIPT', 'PAYMENT_REJECTED'].includes(order.status)) {
       throw new BadRequestException('این سفارش را نمی‌توان از پنل هنرجو لغو کرد؛ با پشتیبانی تماس بگیرید.');
     }
     await this.releaseReservation(order.id);
