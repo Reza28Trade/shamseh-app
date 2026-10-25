@@ -37,7 +37,7 @@ export class GeneralContentService {
 
   getNewsImage(filename: string, res: Response) {
     const safeName = basename(filename);
-    if (safeName !== filename || !/^[a-f0-9-]+\\.(jpg|png|webp|gif)$/i.test(safeName)) throw new NotFoundException('تصویر پیدا نشد.');
+    if (safeName !== filename || !/^[a-f0-9-]+\.(jpg|png|webp|gif)$/i.test(safeName)) throw new NotFoundException('تصویر پیدا نشد.');
     const filePath = join(process.env.FILE_STORAGE_PATH || '/opt/shamseh-app/storage/files', 'news-images', safeName);
     if (!existsSync(filePath)) throw new NotFoundException('تصویر پیدا نشد.');
     res.setHeader('Cache-Control', 'public, max-age=86400');
