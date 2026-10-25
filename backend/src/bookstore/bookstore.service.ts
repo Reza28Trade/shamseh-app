@@ -78,7 +78,15 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
       if (!Number.isInteger(stock) || stock < existing.reservedQuantity) throw new BadRequestException('موجودی کل نمی‌تواند کمتر از تعداد رزروشده باشد.');
       data.stockQuantity = stock;
     }
-    if (data.price !== undefined && (!Number.isFinite(Number(data.price)) || Number(data.price) < 0)) throw new BadRequestException('قیمت معتبر نیست.');
+    for (const key of ['price', 'discountedPrice']) {
+      if (data[key] !== undefined && data[key] !== null && (!Number.isFinite(Number(data[key])) || Number(data[key]) < 0)) {
+        throw new BadRequestException('قیمت یا قیمت تخفیف‌خورده معتبر نیست.');
+      }
+    }
+    if (data.title !== undefined) {
+      data.title = String(data.title).trim();
+      if (!data.title) throw new BadRequestException('عنوان کتاب نمی‌تواند خالی باشد.');
+    }
     return this.prisma.book.update({ where: { id: bookId }, data });
   }
 
@@ -98,17 +106,9 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
       if (!item.bookId || !Number.isInteger(quantity) || quantity < 1 || quantity > 20) throw new BadRequestException('تعداد کتاب معتبر نیست.');
       normalized.set(String(item.bookId), (normalized.get(String(item.bookId)) || 0) + quantity);
     }
+    await this.releaseExpiredReservations();
     const expiresAt = new Date(Date.now() + RESERVATION_HOURS * 60 * 60 * 1000);
     return this.prisma.$transaction(async tx => {
-      const now = new Date();
-      const expired = await tx.bookOrder.findMany({
-        where: { status: { in: ['RESERVED', 'AWAITING_RECEIPT'] }, reservationExpiresAt: { lte: now }, receiptUploadedAt: null },
-        include: { items: true },
-      });
-      for (const order of expired) {
-        for (const item of order.items) await tx.book.update({ where: { id: item.bookId }, data: { reservedQuantity: { decrement: item.quantity } } });
-        await tx.bookOrder.update({ where: { id: order.id }, data: { status: 'CANCELLED', cancelledAt: now, reservationExpiresAt: null } });
-      }
       const books = [];
       let subtotal = 0;
       for (const [bookId, quantity] of normalized.entries()) {
@@ -168,12 +168,17 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
         include: { items: true },
       });
       for (const order of expired) {
+        // Claim the order atomically so overlapping timer/API requests cannot release the same stock twice.
+        const claimed = await tx.bookOrder.updateMany({
+          where: { id: order.id, status: { in: ['RESERVED', 'AWAITING_RECEIPT'] }, reservationExpiresAt: { lte: now }, receiptUploadedAt: null },
+          data: { status: 'CANCELLED', cancelledAt: now, reservationExpiresAt: null },
+        });
+        if (claimed.count !== 1) continue;
         for (const item of order.items) {
-          await tx.book.update({ where: { id: item.bookId }, data: { reservedQuantity: { decrement: item.quantity } } });
+          await tx.book.updateMany({ where: { id: item.bookId, reservedQuantity: { gte: item.quantity } }, data: { reservedQuantity: { decrement: item.quantity } } });
         }
-        await tx.bookOrder.update({ where: { id: order.id }, data: { status: 'CANCELLED', cancelledAt: now, reservationExpiresAt: null } });
       }
-    });
+    }, { isolationLevel: 'Serializable' });
   }
 
   async receiptPath(user: AuthenticatedUser, orderId: string) {
@@ -186,10 +191,18 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
   private async releaseReservation(orderId: string) {
     await this.prisma.$transaction(async tx => {
       const order = await tx.bookOrder.findUnique({ where: { id: orderId }, include: { items: true } });
-      if (!order || !['RESERVED', 'AWAITING_RECEIPT'].includes(order.status) || order.receiptUploadedAt) return;
-      for (const item of order.items) await tx.book.update({ where: { id: item.bookId }, data: { reservedQuantity: { decrement: item.quantity } } });
-      await tx.bookOrder.update({ where: { id: order.id }, data: { status: 'CANCELLED', cancelledAt: new Date(), reservationExpiresAt: null } });
-    });
+      if (!order || !['RESERVED', 'AWAITING_RECEIPT', 'PAYMENT_REJECTED'].includes(order.status)) return;
+      const allowedStatuses = ['RESERVED', 'AWAITING_RECEIPT', 'PAYMENT_REJECTED'] as const;
+      const claimed = await tx.bookOrder.updateMany({
+        where: { id: orderId, status: { in: [...allowedStatuses] } },
+        data: { status: 'CANCELLED', cancelledAt: new Date(), reservationExpiresAt: null },
+      });
+      if (claimed.count !== 1) return;
+      for (const item of order.items) {
+        const changed = await tx.book.updateMany({ where: { id: item.bookId, reservedQuantity: { gte: item.quantity } }, data: { reservedQuantity: { decrement: item.quantity } } });
+        if (changed.count !== 1) throw new BadRequestException('موجودی رزروشده ناسازگار است؛ بررسی دستی لازم است.');
+      }
+    }, { isolationLevel: 'Serializable' });
   }
 
   async cancelOrder(user: AuthenticatedUser, orderId: string) {
