@@ -1,9 +1,9 @@
 import {
-  BadRequestException, Body, Controller, Get, Param, Patch, Post, Req, UploadedFile,
+  BadRequestException, Body, Controller, Get, Param, Patch, Post, Req, Res, UploadedFile,
   UseGuards, UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { BookstoreService } from './bookstore.service';
@@ -46,6 +46,12 @@ export class BookstoreController {
 
   @Get('admin/book-orders')
   adminOrders(@Req() req: AuthenticatedRequest) { return this.bookstore.adminOrders(req.user); }
+
+  @Get('admin/book-orders/:orderId/receipt')
+  async receipt(@Req() req: AuthenticatedRequest, @Param('orderId') orderId: string, @Res() res: Response) {
+    const path = await this.bookstore.receiptPath(req.user, orderId);
+    return res.sendFile(path);
+  }
 
   @Patch('admin/book-orders/:orderId/review')
   reviewReceipt(@Req() req: AuthenticatedRequest, @Param('orderId') orderId: string, @Body() body: any) {
