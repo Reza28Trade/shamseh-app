@@ -24,8 +24,8 @@ const InformationPage:React.FC<{onBack:()=>void}>=({onBack})=>{
  <div style={{maxWidth:1180,margin:'auto',padding:'24px clamp(16px,4vw,40px) 50px'}}>
 
  {error&&<p role="status" style={{padding:12,background:'#fff7ed',borderRadius:10,color:'#9a3412'}}>{error}</p>}
- <section aria-label="آخرین اخبار و اطلاعات آموزشی" style={{...card,position:'relative',isolation:'isolate',overflow:'hidden',minHeight:310,marginBottom:36,background:'linear-gradient(115deg,#252525 0%,#343434 55%,#202020 100%)',border:'1px solid rgba(72,209,204,.22)',boxShadow:'0 18px 48px rgba(13,47,49,.16)'}}>
- <div style={{position:'absolute',inset:0,zIndex:0,pointerEvents:'none',overflow:'hidden'}}><ShamsehParticleIntro/></div>
+ <section aria-label="آخرین اخبار و اطلاعات آموزشی" style={{...card,position:'relative',isolation:'isolate',overflow:'hidden',minHeight:310,marginBottom:36,background:'#252525',border:'1px solid rgba(72,209,204,.32)',boxShadow:'0 18px 48px rgba(13,47,49,.16)'}}>
+ <div style={{position:'absolute',inset:0,zIndex:0,pointerEvents:'none',overflow:'hidden',background:'linear-gradient(115deg,#252525 0%,#303030 55%,#202020 100%)'}}><ShamsehParticleIntro/></div>
  <div style={{position:'relative',zIndex:1,display:'grid',gridTemplateColumns:'minmax(0,1fr)',gap:22,alignItems:'center',justifyItems:'center',padding:'clamp(22px,4vw,42px)'}}>
  <article style={{background:'rgba(250,255,254,.96)',border:'1px solid rgba(255,255,255,.65)',borderRadius:16,overflow:'hidden',boxShadow:'0 12px 35px rgba(0,0,0,.15)',color:'#1c2929',maxWidth:520,width:'100%',justifySelf:'center'}}>
  {featured?.imageUrl?<img src={featured.imageUrl} alt="" style={{width:'100%',height:150,objectFit:'cover',display:'block'}}/>:<div style={{height:110,background:'radial-gradient(circle at 20% 20%,rgba(72,209,204,.35),transparent 36%),linear-gradient(135deg,#153a40,#10272c)',display:'grid',placeItems:'center',color:'#168c91'}}><Newspaper size={70} strokeWidth={1}/></div>}
