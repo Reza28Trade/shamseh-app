@@ -77,6 +77,7 @@ export class AuthGuard implements CanActivate {
     if (/^\/admin\/(public-content|general-content|rules)(\/|$)/.test(path)) return 'rules';
     if (/^\/admin\/(registrations|registration-payments|registration-receipts|refunds)(\/|$)/.test(path)) return 'finance';
     if (/^\/admin\/finance(\/|$)/.test(path)) return 'finance';
+    if (/^\/admin\/(books|book-orders)(\/|$)/.test(path)) return 'books';
     if (/^\/admin\/(audit-logs|logs)(\/|$)/.test(path)) return 'logs';
     return null;
   }
