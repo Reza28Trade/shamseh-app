@@ -17,6 +17,7 @@ import { UserDashboard } from './pages/user/UserDashboard';
 import { CounselorPortal } from './pages/counselor/CounselorPortal';
 import { RegistrationPage } from './pages/public/RegistrationPage';
 import { ManageRegistrations } from './pages/admin/ManageRegistrations';
+import { ManageBookstore } from './pages/admin/ManageBookstore';
 import type { Student, Admin } from './types';
 import './styles/AdminDesignSystem.css';
 
@@ -33,6 +34,7 @@ const ADMIN_PERMISSION_OPTIONS = [
   ['notifications', 'ارسال اطلاعیه'],
   ['rules', 'قوانین و تحلیل کنکور'],
   ['finance', 'مدیریت مالی، ثبت‌نام و بازپرداخت'],
+  ['books', 'مدیریت کتاب‌ها و سفارش‌ها'],
   ['logs', 'گزارش‌های سیستمی'],
 ] as const;
 
@@ -114,7 +116,7 @@ export function App() {
   } = useStore();
 
   const [view, setView] = useState<'checking' | 'login' | 'admin' | 'user' | 'counselor'>('checking');
-  type AdminTab = 'dashboard' | 'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'managementContact' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams' | 'counseling' | 'finance' | 'registrations';
+  type AdminTab = 'dashboard' | 'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'managementContact' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams' | 'counseling' | 'finance' | 'registrations' | 'books';
   const [adminTab, setAdminTab] = useState<AdminTab>('dashboard');
   const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
 
@@ -240,6 +242,8 @@ export function App() {
           <ManageNotifications />
         ) : adminTab === 'rules' ? (
           <ManagePublicContent />
+        ) : adminTab === 'books' ? (
+          <ManageBookstore />
         ) : adminTab === 'finance' || adminTab === 'registrations' ? (
           <ManageRegistrations />
         ) : adminTab === 'admins' && currentAdmin?.role === 'super_admin' ? (

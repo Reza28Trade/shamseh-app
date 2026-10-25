@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import type { Admin } from '../types';
 import { useStore } from '../store/useStore';
 import '../styles/AdminLegacy.css';
-import { LayoutDashboard, BookOpen, Users, MessageSquare, ShieldAlert, FileText, LogOut, Sun, Moon, Menu, X, CheckSquare, ClipboardList, Bell, Wallet, ShieldCheck, KeyRound } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Users, MessageSquare, ShieldAlert, FileText, LogOut, Sun, Moon, Menu, X, CheckSquare, ClipboardList, Bell, Wallet, ShieldCheck, KeyRound, ShoppingBag } from 'lucide-react';
 
 interface AdminLayoutProps { admin?: Admin; onLogout: () => void; activeTab: string; setActiveTab: any; children: React.ReactNode; }
 
@@ -37,6 +37,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
     { id: 'notifications', label: 'ارسال اطلاعیه', icon: Bell },
     { id: 'rules', label: 'قوانین و تحلیل کنکور', icon: FileText },
     { id: 'registrations', label: 'مدیریت مالی، ثبت‌نام و بازپرداخت', icon: Wallet },
+    { id: 'books', label: 'مدیریت کتاب‌ها و سفارش‌ها', icon: ShoppingBag },
     { id: 'logs', label: 'گزارش‌های سیستمی', icon: ShieldAlert },
   ];
   const menuItems = allMenuItems.filter((item) => {
