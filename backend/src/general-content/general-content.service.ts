@@ -1,6 +1,6 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { createReadStream, existsSync, mkdirSync, writeFileSync } from 'fs';
-import { basename, extname, join } from 'path';
+import { basename, join } from 'path';
 import { randomUUID } from 'crypto';
 import { Response } from 'express';
 import { PrismaService } from '../database/prisma.service';
