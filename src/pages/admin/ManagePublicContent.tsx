@@ -18,6 +18,9 @@ type ContentRecord = {
   updatedAt: string;
 };
 
+type NewsRecord = { id: string; title: string; summary: string; imageUrl: string; category: string; date: string; published: boolean };
+type NewsForm = Omit<NewsRecord, 'id'>;
+const emptyNewsForm: NewsForm = { title: '', summary: '', imageUrl: '', category: 'اطلاعیه', date: '', published: true };
 type QuestionRow = { questionNumber: string; explanation: string; topic?: string; className?: string; professor?: string; source?: string; page?: string; status: 'COVERED' | 'PARTIAL' | 'NOT_COVERED' | 'UNKNOWN' };
 type AnalysisForm = {
   title: string; subtitle: string; content: string; examYear: string;
@@ -59,7 +62,10 @@ export const ManagePublicContent: React.FC = () => {
     accent: dark ? '#48D1CC' : '#008080',
   };
   const [tab, setTab] = useState<'rules' | 'analysis' | 'news'>('rules');
-  const [newsJson, setNewsJson] = useState(JSON.stringify([{ id: 'news-1', title: 'عنوان خبر', summary: 'خلاصه خبر', imageUrl: '', category: 'اطلاعیه', date: '', published: true }], null, 2));
+  const [newsItems, setNewsItems] = useState<NewsRecord[]>([]);
+  const [newsForm, setNewsForm] = useState<NewsForm>(emptyNewsForm);
+  const [newsEditingId, setNewsEditingId] = useState<string | null>(null);
+  const [showNewsForm, setShowNewsForm] = useState(false);
   const [newsSaving, setNewsSaving] = useState(false);
   const [records, setRecords] = useState<ContentRecord[]>([]);
   const [rulesTitle, setRulesTitle] = useState('قوانین و مقررات آموزشی');
@@ -97,7 +103,7 @@ export const ManagePublicContent: React.FC = () => {
         const newsResponse = await fetch('/api/content/admin/news', { credentials: 'include' });
         if (newsResponse.ok) {
           const newsData = await newsResponse.json();
-          setNewsJson(JSON.stringify(Array.isArray(newsData) ? newsData : [], null, 2));
+          setNewsItems(Array.isArray(newsData) ? newsData.map((item: any, index: number) => ({ id: String(item.id || `news-${index + 1}`), title: String(item.title || ''), summary: String(item.summary || ''), imageUrl: String(item.imageUrl || ''), category: String(item.category || 'اطلاعیه'), date: String(item.date || ''), published: item.published !== false })) : []);
         }
       } catch { /* news editor remains available */ }
       const rules = Array.isArray(data) ? data.find((item) => item.type === 'RULES') : undefined;
@@ -133,16 +139,34 @@ export const ManagePublicContent: React.FC = () => {
       && (publishFilter === 'ALL' || String(item.published) === publishFilter);
   });
 
-  const saveNews = async () => {
+  const saveNews = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!newsForm.title.trim() || !newsForm.summary.trim()) { setError('عنوان و خلاصه خبر را وارد کنید.'); return; }
+    const next = newsEditingId
+      ? newsItems.map((item) => item.id === newsEditingId ? { ...newsForm, id: item.id } : item)
+      : [...newsItems, { ...newsForm, id: `news-${Date.now()}` }];
     setNewsSaving(true); setError(''); setSuccess('');
     try {
-      const parsed = JSON.parse(newsJson);
-      if (!Array.isArray(parsed)) throw new Error('ساختار اخبار باید آرایه JSON باشد.');
-      const response = await fetch('/api/content/news', { method: 'PATCH', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: JSON.stringify(parsed) }) });
-      if (!response.ok) throw new Error('ذخیره اخبار انجام نشد.');
-      setSuccess('اخبار و اسلایدر ذخیره شدند.');
+      const response = await fetch('/api/content/news', { method: 'PATCH', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: JSON.stringify(next) }) });
+      if (!response.ok) throw new Error('ذخیره خبر انجام نشد.');
+      setNewsItems(next); setShowNewsForm(false); setNewsEditingId(null); setNewsForm(emptyNewsForm);
+      setSuccess(newsEditingId ? 'تغییرات خبر ذخیره شد.' : 'خبر جدید ذخیره شد.');
       await load();
-    } catch (e) { setError(e instanceof Error ? e.message : 'ساختار JSON معتبر نیست.'); }
+    } catch { setError('ذخیره خبر انجام نشد. دسترسی مدیریت و اتصال سرور را بررسی کنید.'); }
+    finally { setNewsSaving(false); }
+  };
+  const editNews = (item: NewsRecord) => {
+    setNewsEditingId(item.id); setNewsForm({ title: item.title, summary: item.summary, imageUrl: item.imageUrl, category: item.category, date: item.date, published: item.published }); setShowNewsForm(true); setError(''); setSuccess('');
+  };
+  const deleteNews = async (item: NewsRecord) => {
+    if (!window.confirm(`خبر «${item.title}» حذف شود؟`)) return;
+    const next = newsItems.filter((news) => news.id !== item.id);
+    setNewsSaving(true); setError(''); setSuccess('');
+    try {
+      const response = await fetch('/api/content/news', { method: 'PATCH', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: JSON.stringify(next) }) });
+      if (!response.ok) throw new Error('delete');
+      setNewsItems(next); setSuccess('خبر حذف شد.'); await load();
+    } catch { setError('حذف خبر انجام نشد.'); }
     finally { setNewsSaving(false); }
   };
 
@@ -263,11 +287,44 @@ ${value}`.trim();
       {error && <div role="alert" style={{ padding: 12, borderRadius: 10, background: dark ? 'rgba(122,32,56,.22)' : 'rgba(122,32,56,.10)', color: dark ? '#e6a7b5' : '#7A2038', fontSize: 12 }}>{error}</div>}
       {success && <div role="status" style={{ padding: 12, borderRadius: 10, background: 'rgba(16,185,129,.1)', color: '#10b981', fontSize: 12 }}>{success}</div>}
       {loading ? <div style={{ padding: 32, textAlign: 'center', color: colors.muted }}>در حال دریافت اطلاعات...</div> : tab === 'news' ? (
-        <section style={{ border: '1px solid ' + colors.border, borderRadius: 16, padding: 18, background: colors.alt, display: 'grid', gap: 12 }}>
-          <h2 style={{ margin: 0, fontSize: 16 }}>مدیریت اخبار و اسلایدر صفحه اطلاعات آموزشی</h2>
-          <p style={{ margin: 0, color: colors.muted, fontSize: 12, lineHeight: 2 }}>هر خبر یک شیء با فیلدهای title، summary، imageUrl، category، date و published است. imageUrl باید نشانی تصویر قابل دسترس باشد. برای انتشار، published را true بگذارید.</p>
-          <textarea value={newsJson} onChange={(event) => setNewsJson(event.target.value)} rows={16} spellCheck={false} style={{ width: '100%', boxSizing: 'border-box', direction: 'ltr', textAlign: 'left', fontFamily: 'monospace', fontSize: 12, lineHeight: 1.7, padding: 14, borderRadius: 12, border: '1px solid ' + colors.border, background: colors.bg, color: colors.text }} />
-          <div><button type="button" disabled={newsSaving} onClick={() => void saveNews()} style={{ ...buttonStyle, background: colors.accent, color: '#fff', borderColor: colors.accent }}><Save size={15}/>{newsSaving ? 'در حال ذخیره…' : 'ذخیره اخبار'}</button></div>
+        <section style={{ border: '1px solid ' + colors.border, borderRadius: 16, padding: 18, background: colors.alt, display: 'grid', gap: 14 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+            <div><h2 style={{ margin: 0, fontSize: 17 }}>مدیریت اخبار و اطلاعیه‌ها</h2><p style={{ margin: '5px 0 0', color: colors.muted, fontSize: 12 }}>خبرها را از اینجا اضافه، ویرایش، منتشر یا حذف کنید.</p></div>
+            <button type="button" onClick={() => { setNewsEditingId(null); setNewsForm(emptyNewsForm); setShowNewsForm(true); setError(''); setSuccess(''); }} style={{ ...buttonStyle, background: colors.accent, color: '#fff', borderColor: colors.accent }}><Plus size={15}/> افزودن خبر جدید</button>
+          </div>
+          {showNewsForm && <form onSubmit={(event) => void saveNews(event)} style={{ display: 'grid', gap: 12, padding: 16, borderRadius: 14, border: '1px solid ' + colors.border, background: colors.bg }}>
+            <h3 style={{ margin: 0, fontSize: 15 }}>{newsEditingId ? 'ویرایش خبر' : 'ثبت خبر جدید'}</h3>
+            <label style={{ display: 'grid', gap: 6, fontSize: 12, fontWeight: 750 }}>عنوان خبر *
+              <input required maxLength={180} value={newsForm.title} onChange={(event) => setNewsForm({ ...newsForm, title: event.target.value })} placeholder="مثلاً آغاز ثبت‌نام آزمون آزمایشی" style={inputStyle}/>
+            </label>
+            <label style={{ display: 'grid', gap: 6, fontSize: 12, fontWeight: 750 }}>خلاصه خبر *
+              <textarea required rows={3} maxLength={1000} value={newsForm.summary} onChange={(event) => setNewsForm({ ...newsForm, summary: event.target.value })} placeholder="توضیح کوتاه که در صفحه اخبار نمایش داده می‌شود" style={{ ...inputStyle, lineHeight: 1.9, resize: 'vertical' }}/>
+            </label>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: 12 }}>
+              <label style={{ display: 'grid', gap: 6, fontSize: 12, fontWeight: 750 }}>دسته‌بندی
+                <select value={newsForm.category} onChange={(event) => setNewsForm({ ...newsForm, category: event.target.value })} style={inputStyle}><option>اطلاعیه</option><option>اخبار آموزشی</option><option>ثبت‌نام دوره‌ها</option><option>آزمون‌ها</option><option>رویدادها</option></select>
+              </label>
+              <label style={{ display: 'grid', gap: 6, fontSize: 12, fontWeight: 750 }}>تاریخ خبر (اختیاری)
+                <input value={newsForm.date} onChange={(event) => setNewsForm({ ...newsForm, date: event.target.value })} placeholder="مثلاً ۱۴۰۵/۰۸/۰۳" style={inputStyle}/>
+              </label>
+            </div>
+            <label style={{ display: 'grid', gap: 6, fontSize: 12, fontWeight: 750 }}>نشانی تصویر خبر (اختیاری)
+              <input dir="ltr" value={newsForm.imageUrl} onChange={(event) => setNewsForm({ ...newsForm, imageUrl: event.target.value })} placeholder="https://..." style={{ ...inputStyle, textAlign: 'left' }}/>
+              <span style={{ color: colors.muted, fontSize: 11, fontWeight: 400 }}>فعلاً باید نشانی مستقیم یک تصویر قابل دسترس وارد شود؛ بارگذاری فایل از دستگاه در این نسخه پیاده‌سازی نشده است.</span>
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, cursor: 'pointer' }}><input type="checkbox" checked={newsForm.published} onChange={(event) => setNewsForm({ ...newsForm, published: event.target.checked })}/> انتشار در صفحه اخبار</label>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button type="submit" disabled={newsSaving} style={{ ...buttonStyle, background: colors.accent, color: '#fff', borderColor: colors.accent }}><Save size={15}/>{newsSaving ? 'در حال ذخیره…' : newsEditingId ? 'ذخیره تغییرات' : 'ذخیره خبر'}</button><button type="button" onClick={() => { setShowNewsForm(false); setNewsEditingId(null); setNewsForm(emptyNewsForm); }} style={buttonStyle}>انصراف</button></div>
+          </form>}
+          {newsItems.length === 0 ? <div style={{ padding: 24, textAlign: 'center', border: '1px dashed ' + colors.border, borderRadius: 12, color: colors.muted }}>هنوز خبری ثبت نشده است. برای شروع روی «افزودن خبر جدید» بزنید.</div> : <div style={{ display: 'grid', gap: 10 }}>
+            <div style={{ color: colors.muted, fontSize: 12 }}>تعداد خبرهای ثبت‌شده: <strong>{newsItems.length}</strong></div>
+            {newsItems.map((item) => <article key={item.id} style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap', padding: 14, border: '1px solid ' + colors.border, borderRadius: 12, background: colors.bg }}>
+              <div style={{ flex: '1 1 260px', minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 6 }}><strong style={{ fontSize: 13 }}>{item.title || 'بدون عنوان'}</strong><span style={{ fontSize: 10, borderRadius: 999, padding: '4px 8px', background: item.published ? 'rgba(16,185,129,.12)' : colors.alt, color: item.published ? '#10b981' : colors.muted }}>{item.published ? 'منتشرشده' : 'پیش‌نویس'}</span><span style={{ fontSize: 10, color: colors.muted }}>{item.category}{item.date ? ' · ' + item.date : ''}</span></div>
+                <p style={{ margin: 0, fontSize: 12, lineHeight: 1.9, color: colors.muted }}>{item.summary}</p>
+              </div>
+              <div style={{ display: 'flex', gap: 7 }}><button type="button" onClick={() => editNews(item)} style={buttonStyle}><Pencil size={14}/> ویرایش</button><button type="button" disabled={newsSaving} onClick={() => void deleteNews(item)} style={{ ...buttonStyle, color: dark ? '#e6a7b5' : '#7A2038' }}><Trash2 size={14}/> حذف</button></div>
+            </article>)}
+          </div>}
         </section>
       ) : tab === 'rules' ? (
         <form onSubmit={saveRules} style={{ background: colors.bg, border: `1px solid ${colors.border}`, borderRadius: 18, padding: '18px', display: 'flex', flexDirection: 'column', gap: 14 }}>
