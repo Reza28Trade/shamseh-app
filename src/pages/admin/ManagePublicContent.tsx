@@ -67,6 +67,7 @@ export const ManagePublicContent: React.FC = () => {
   const [newsEditingId, setNewsEditingId] = useState<string | null>(null);
   const [showNewsForm, setShowNewsForm] = useState(false);
   const [newsSaving, setNewsSaving] = useState(false);
+  const [newsImageUploading, setNewsImageUploading] = useState(false);
   const [records, setRecords] = useState<ContentRecord[]>([]);
   const [rulesTitle, setRulesTitle] = useState('قوانین و مقررات آموزشی');
   const [rulesSections, setRulesSections] = useState({
@@ -148,12 +149,28 @@ export const ManagePublicContent: React.FC = () => {
     setNewsSaving(true); setError(''); setSuccess('');
     try {
       const response = await fetch('/api/content/news', { method: 'PATCH', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: JSON.stringify(next) }) });
-      if (!response.ok) throw new Error('ذخیره خبر انجام نشد.');
+      if (!response.ok) { let message = 'ذخیره خبر انجام نشد.'; try { const data = await response.json(); message = data.message || message; } catch {} throw new Error(Array.isArray(message) ? message.join('، ') : message); }
       setNewsItems(next); setShowNewsForm(false); setNewsEditingId(null); setNewsForm(emptyNewsForm);
       setSuccess(newsEditingId ? 'تغییرات خبر ذخیره شد.' : 'خبر جدید ذخیره شد.');
       await load();
-    } catch { setError('ذخیره خبر انجام نشد. دسترسی مدیریت و اتصال سرور را بررسی کنید.'); }
+    } catch (e) { setError(e instanceof Error ? e.message : 'ذخیره خبر انجام نشد. دسترسی مدیریت و اتصال سرور را بررسی کنید.'); }
     finally { setNewsSaving(false); }
+  };
+  const uploadNewsImage = async (file?: File) => {
+    if (!file) return;
+    if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type)) { setError('فرمت تصویر باید JPG، PNG، WEBP یا GIF باشد.'); return; }
+    if (file.size > 5 * 1024 * 1024) { setError('حجم تصویر باید کمتر از ۵ مگابایت باشد.'); return; }
+    setNewsImageUploading(true); setError(''); setSuccess('');
+    try {
+      const data = new FormData(); data.append('file', file);
+      const response = await fetch('/api/content/news/image', { method: 'POST', credentials: 'include', body: data });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(Array.isArray(result.message) ? result.message.join('، ') : result.message || 'بارگذاری تصویر انجام نشد.');
+      if (!result.imageUrl) throw new Error('نشانی تصویر از سرور دریافت نشد.');
+      setNewsForm((current) => ({ ...current, imageUrl: result.imageUrl }));
+      setSuccess('تصویر بارگذاری شد. برای ثبت نهایی، خبر را ذخیره کنید.');
+    } catch (e) { setError(e instanceof Error ? e.message : 'بارگذاری تصویر انجام نشد.'); }
+    finally { setNewsImageUploading(false); }
   };
   const editNews = (item: NewsRecord) => {
     setNewsEditingId(item.id); setNewsForm({ title: item.title, summary: item.summary, imageUrl: item.imageUrl, category: item.category, date: item.date, published: item.published }); setShowNewsForm(true); setError(''); setSuccess('');
@@ -308,10 +325,23 @@ ${value}`.trim();
                 <input value={newsForm.date} onChange={(event) => setNewsForm({ ...newsForm, date: event.target.value })} placeholder="مثلاً ۱۴۰۵/۰۸/۰۳" style={inputStyle}/>
               </label>
             </div>
-            <label style={{ display: 'grid', gap: 6, fontSize: 12, fontWeight: 750 }}>نشانی تصویر خبر (اختیاری)
-              <input dir="ltr" value={newsForm.imageUrl} onChange={(event) => setNewsForm({ ...newsForm, imageUrl: event.target.value })} placeholder="https://..." style={{ ...inputStyle, textAlign: 'left' }}/>
-              <span style={{ color: colors.muted, fontSize: 11, fontWeight: 400 }}>فعلاً باید نشانی مستقیم یک تصویر قابل دسترس وارد شود؛ بارگذاری فایل از دستگاه در این نسخه پیاده‌سازی نشده است.</span>
-            </label>
+            <div style={{ display: 'grid', gap: 8, fontSize: 12, fontWeight: 750 }}>
+              تصویر خبر (اختیاری)
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                <label style={{ ...buttonStyle, cursor: newsImageUploading ? 'wait' : 'pointer', background: colors.bg }}>
+                  <FileText size={15}/>{newsImageUploading ? 'در حال بارگذاری…' : 'انتخاب تصویر از کامپیوتر'}
+                  <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" disabled={newsImageUploading} onChange={(event) => { void uploadNewsImage(event.target.files?.[0]); event.currentTarget.value = ''; }} style={{ display: 'none' }}/>
+                </label>
+                <span style={{ color: colors.muted, fontSize: 11, fontWeight: 400 }}>JPG، PNG، WEBP یا GIF · حداکثر ۵ مگابایت</span>
+              </div>
+              <label style={{ display: 'grid', gap: 5, fontWeight: 500 }}>یا نشانی تصویر
+                <input dir="ltr" value={newsForm.imageUrl} onChange={(event) => setNewsForm({ ...newsForm, imageUrl: event.target.value })} placeholder="https://..." style={{ ...inputStyle, textAlign: 'left' }}/>
+              </label>
+              {newsForm.imageUrl && <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', padding: 8, border: '1px solid ' + colors.border, borderRadius: 10 }}>
+                <img src={newsForm.imageUrl} alt="پیش‌نمایش تصویر خبر" onError={(event) => { event.currentTarget.style.visibility = 'hidden'; }} style={{ width: 100, height: 64, objectFit: 'cover', borderRadius: 7 }}/>
+                <button type="button" onClick={() => setNewsForm({ ...newsForm, imageUrl: '' })} style={buttonStyle}>حذف تصویر</button>
+              </div>}
+            </div>
             <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, cursor: 'pointer' }}><input type="checkbox" checked={newsForm.published} onChange={(event) => setNewsForm({ ...newsForm, published: event.target.checked })}/> انتشار در صفحه اخبار</label>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button type="submit" disabled={newsSaving} style={{ ...buttonStyle, background: colors.accent, color: '#fff', borderColor: colors.accent }}><Save size={15}/>{newsSaving ? 'در حال ذخیره…' : newsEditingId ? 'ذخیره تغییرات' : 'ذخیره خبر'}</button><button type="button" onClick={() => { setShowNewsForm(false); setNewsEditingId(null); setNewsForm(emptyNewsForm); }} style={buttonStyle}>انصراف</button></div>
           </form>}
