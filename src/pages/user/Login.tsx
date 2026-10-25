@@ -1,6 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import type { Student,Admin } from '../../types';
-import { User,Shield,Lock,ArrowRight,Send,Globe,Camera,Play,BookOpen,GraduationCap,ChevronLeft,ChevronRight,CalendarDays,Newspaper,BookOpenCheck,ExternalLink } from 'lucide-react';
+import { User,Shield,Lock,ArrowRight,Send,Globe,Camera,Play,BookOpen,GraduationCap,ChevronLeft,ChevronRight,CalendarDays,Newspaper,BookOpenCheck,ExternalLink,FileText } from 'lucide-react';
 import { CourseCatalogPage, RulesPage, ExamAnalysisPage } from '../public/PublicPages';
 
 type NewsItem={id?:string;title:string;summary:string;imageUrl?:string;category?:string;date?:string;published?:boolean};
