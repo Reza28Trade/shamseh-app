@@ -46,7 +46,7 @@ const InformationPage:React.FC<{onBack:()=>void}>=({onBack})=>{
  <span style={{color:'#648987',height:30,display:'flex',alignItems:'center'}}>{item.icon}</span>
  <span style={{fontSize:14,fontWeight:750,lineHeight:1.7}}>{item.title}</span>
  <span style={{fontSize:11,color:'#788684',lineHeight:1.9}}>{item.text}</span>
- <span style={{fontSize:10,color:'#9aa7a5',letterSpacing:1,marginTop:2}}>{item.number} — مشاهده بخش ←</span>
+ <span style={{fontSize:10,color:'#9aa7a5',letterSpacing:1,marginTop:2}}>مشاهده بخش ←</span>
  </a>)}
  </section>
  <section id="courses-section" style={{marginBottom:36,scrollMarginTop:24}}><div style={{display:'flex',alignItems:'end',justifyContent:'space-between',gap:10,marginBottom:15}}><div><span style={{fontSize:10,color:'#168c91',fontWeight:850}}>01 · دوره‌ها</span><h2 style={{fontSize:21,margin:'5px 0',fontWeight:850}}>معرفی دوره‌های شمسه</h2></div><GraduationCap color="#168c91" size={24}/></div>
