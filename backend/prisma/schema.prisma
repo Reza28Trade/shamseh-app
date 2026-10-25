@@ -661,6 +661,7 @@ model BookOrder {
   studentId String
   status BookOrderStatus @default(RESERVED)
   refundStatus BookRefundStatus @default(NONE)
+  refundFromStatus BookOrderStatus?
   recipientName String
   recipientPhone String
   postalCode String
