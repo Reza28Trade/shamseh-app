@@ -235,10 +235,8 @@ export function CourseCatalogPage({ onBack }: { onBack: () => void }) {
           ))}
         </div>}
       </>}
-    </>
+    </PageFrame>
   );
-
-  return embedded ? <div>{analysisContent}</div> : <PageFrame eyebrow="تحلیل کنکورهای گذشته · گزارش پوشش آموزشی" title="تحلیل آماری کنکورهای گذشته" description="نمودار پوشش تمام کدرشته‌ها و مقاطع را برای هر سال بررسی کنید؛ با انتخاب هر نمودار، جدول کامل تحلیل سؤال‌ها باز می‌شود." onBack={onBack}>{analysisContent}</PageFrame>;
 }
 
 export function RulesPage({ onBack }: { onBack: () => void }) {
@@ -530,6 +528,8 @@ export function ExamAnalysisPage({ onBack, embedded = false }: { onBack: () => v
           </div>
         </section>
       </div>}
-    </PageFrame>
+    </>
   );
+
+  return embedded ? <div>{analysisContent}</div> : <PageFrame eyebrow="تحلیل کنکورهای گذشته · گزارش پوشش آموزشی" title="تحلیل آماری کنکورهای گذشته" description="نمودار پوشش تمام کدرشته‌ها و مقاطع را برای هر سال بررسی کنید؛ با انتخاب هر نمودار، جدول کامل تحلیل سؤال‌ها باز می‌شود." onBack={onBack}>{analysisContent}</PageFrame>;
 }
