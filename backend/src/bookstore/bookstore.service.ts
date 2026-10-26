@@ -44,6 +44,7 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     return books.map(({ stockQuantity, reservedQuantity, ...book }) => ({
       ...book,
       stockQuantity,
+      reservedQuantity,
       availableQuantity: Math.max(0, stockQuantity - reservedQuantity),
     }));
   }
