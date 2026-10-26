@@ -640,6 +640,7 @@ model Book {
   title String
   description String?
   coverImage String?
+  academicLevel String?
   category String?
   price Decimal? @db.Decimal(12, 2)
   discountedPrice Decimal? @db.Decimal(12, 2)
