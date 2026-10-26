@@ -465,7 +465,7 @@ export function ExamAnalysisPage({ onBack, embedded = false }: { onBack: () => v
     const included = questionsFor(data).filter((question) => questionNumber(question) >= startQuestion);
     if (!included.length) return null;
     const coveredCount = included.filter((question) => covered(question.status)).length;
-    const palette = ['#168C91', '#3478D4', '#D97706', '#8057C7', '#0F9D78', '#C05276'];
+    const palette = ['#f43f78', '#ef174b', '#e53935', '#c2185b', '#fb7185', '#d9465f'];
     return { id: item.id, item, data, code: data.fieldCode || '—', field: data.fieldName, level: levelLabel(data.examLevel || item.examLevel), percent: Math.round(coveredCount / included.length * 100), coveredCount, includedCount: included.length, startQuestion, color: palette[index % palette.length] };
   }).filter((item): item is NonNullable<typeof item> => item !== null);
 
