@@ -54,7 +54,7 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
       where: { isActive: true },
       orderBy: [{ displayOrder: 'asc' }, { title: 'asc' }],
       select: {
-        id: true, title: true, description: true, coverImage: true, category: true,
+        id: true, title: true, description: true, coverImage: true, academicLevel: true, category: true,
         price: true, discountedPrice: true, stockQuantity: true, reservedQuantity: true,
       },
     });
@@ -106,6 +106,7 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     return this.prisma.book.create({ data: {
       title, description: body.description ? String(body.description) : null,
       coverImage: body.coverImage ? String(body.coverImage) : null,
+      academicLevel: body.academicLevel ? String(body.academicLevel) : null,
       category: body.category ? String(body.category) : null,
       price, discountedPrice,
       stockQuantity, isActive: body.isActive !== false, displayOrder: Number.isInteger(Number(body.displayOrder)) ? Number(body.displayOrder) : 0,
