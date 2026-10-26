@@ -408,11 +408,13 @@ export function RulesPage({ onBack }: { onBack: () => void }) {
 export function ExamAnalysisPage({ onBack }: { onBack: () => void }) {
   const colors = usePageColors();
   const [analyses, setAnalyses] = useState<PublicAnalysis[]>([]);
-  const [query, setQuery] = useState('');
-  const [year, setYear] = useState('1404');
-  const [expanded, setExpanded] = useState<string | null>(null);
+  const [year, setYear] = useState('');
+  const [selected, setSelected] = useState<PublicAnalysis | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  type AnalysisQuestion = { questionNumber: string; explanation?: string; topic?: string; className?: string; professor?: string; source?: string; page?: string; status?: string };
+  type StructuredAnalysis = { __shamsehExamAnalysis: 1; narrative?: string; fieldCode?: string; fieldName?: string; examLevel?: string; startQuestionNumber?: number | string; questions?: AnalysisQuestion[] };
 
   const loadAnalyses = async () => {
     setLoading(true); setError('');
@@ -426,101 +428,105 @@ export function ExamAnalysisPage({ onBack }: { onBack: () => void }) {
   };
   useEffect(() => { void loadAnalyses(); }, []);
 
-  const normalizeYear = (value: string) => value.replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit))).replace(/[٠-٩]/g, (digit) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit))).replace(/[^0-9]/g, '');
-  const years = useMemo(() => Array.from(new Set(['1404', ...analyses.map((item) => normalizeYear(item.examYear || '')).filter(Boolean)])).sort((a, b) => Number(b) - Number(a)), [analyses]);
+  const normalizeDigits = (value: unknown) => String(value ?? '')
+    .replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))
+    .replace(/[٠-٩]/g, (digit) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit)));
+  const numberValue = (value: unknown, fallback: number) => {
+    const parsed = Number(normalizeDigits(value).replace(/[^0-9.-]/g, ''));
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+  };
+  const normalizeYear = (value: string) => normalizeDigits(value).replace(/[^0-9]/g, '');
   const yearLabel = (value: string) => value.replace(/[0-9]/g, (digit) => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
-  const currentAnalyses = analyses.filter((item) => normalizeYear(item.examYear || '') === year);
-  const coverageColors = ['#168C91', '#3478D4', '#D97706', '#8057C7', '#0F9D78', '#C05276'];
-  const readStructured = (item: PublicAnalysis) => {
+  const readStructured = (item: PublicAnalysis): StructuredAnalysis | null => {
     try {
       const value = JSON.parse(item.content);
-      if (value && value.__shamsehExamAnalysis === 1) return value as { narrative?: string; fieldCode?: string; fieldName?: string; coveragePercent?: number | null; questions?: Array<{ questionNumber: string; explanation?: string; topic?: string; className?: string; professor?: string; source?: string; page?: string; status: string }> };
-    } catch { /* legacy plain-text analysis */ }
+      if (value && value.__shamsehExamAnalysis === 1) return value as StructuredAnalysis;
+    } catch { /* older plain-text records are not chart data */ }
     return null;
   };
-  const coverageCards = currentAnalyses.map((item, index) => {
+  const years = useMemo(() => Array.from(new Set(analyses.map((item) => normalizeYear(item.examYear || '')).filter(Boolean))).sort((a, b) => Number(b) - Number(a)), [analyses]);
+  useEffect(() => { if (years.length && !years.includes(year)) setYear(years[0]); }, [years, year]);
+  const currentAnalyses = analyses.filter((item) => normalizeYear(item.examYear || '') === year);
+  const levelLabel = (value?: string | null) => {
+    const normalized = String(value || '').trim().toUpperCase();
+    if (/MASTER|ARSHAD|کارشناسی ارشد|ارشد/.test(normalized)) return 'کارشناسی ارشد';
+    if (/DOCTOR|DOKTOR|دکتری|دکترا/.test(normalized)) return 'دکتری';
+    return value || 'مقطع ثبت نشده';
+  };
+  const questionsFor = (data: StructuredAnalysis) => Array.isArray(data.questions) ? data.questions : [];
+  const questionNumber = (question: AnalysisQuestion) => numberValue(question.questionNumber, 0);
+  const startFor = (data: StructuredAnalysis) => numberValue(data.startQuestionNumber, 1);
+  const covered = (status?: string) => String(status || '').toUpperCase() === 'COVERED';
+
+  const charts = currentAnalyses.map((item, index) => {
     const data = readStructured(item);
-    if (!data || data.coveragePercent == null || !data.fieldName) return null;
-    return { code: data.fieldCode || '—', field: data.fieldName, percent: data.coveragePercent, color: coverageColors[index % coverageColors.length], soft: coverageColors[index % coverageColors.length] + '12', icon: '◈', title: item.title };
-  }).filter((item): item is { code: string; field: string; percent: number; color: string; soft: string; icon: string; title: string } => item !== null);
-  const fallbackCoverage = [
-    { code: '۱۳۵۷', field: 'هنرهای نمایشی', percent: 63, color: '#168C91', soft: 'rgba(22,140,145,.09)', icon: '◈', title: 'هنرهای نمایشی' },
-    { code: '۱۳۵۸', field: 'هنرهای تصویری', percent: 88, color: '#3478D4', soft: 'rgba(52,120,212,.09)', icon: '▧', title: 'هنرهای تصویری' },
-    { code: '۱۳۵۹', field: 'پژوهش هنر', percent: 83, color: '#D97706', soft: 'rgba(217,119,6,.09)', icon: '▤', title: 'پژوهش هنر' },
-    { code: '۱۱۱۶', field: 'فلسفه', percent: 83, color: '#8057C7', soft: 'rgba(128,87,199,.09)', icon: '⌂', title: 'فلسفه' },
-  ];
-  const visibleCoverage = coverageCards.length ? coverageCards : year === '1404' ? fallbackCoverage : [];
-  const structuredQuestionRows = currentAnalyses.flatMap((item) => {
-    const data = readStructured(item);
-    return (data?.questions || []).map((q, index) => ({ id: item.id + '-q-' + index, title: item.title, questionNumber: q.questionNumber, explanation: q.explanation ?? [q.topic, q.className, q.professor, q.source, q.page].filter(Boolean).join(' · '), topic: q.topic, className: q.className, professor: q.professor, source: q.source, page: q.page, status: q.status, resourceUrl: item.resourceUrl, examLevel: item.examLevel }));
-  }).filter((row) => {
-    const term = query.trim().toLocaleLowerCase();
-    return !term || [row.title, row.questionNumber, row.explanation, row.topic, row.className, row.professor, row.source, row.page].some((value) => (value || '').toLocaleLowerCase().includes(term));
-  });
+    if (!data || !data.fieldName || !questionsFor(data).length) return null;
+    const startQuestion = startFor(data);
+    const included = questionsFor(data).filter((question) => questionNumber(question) >= startQuestion);
+    if (!included.length) return null;
+    const coveredCount = included.filter((question) => covered(question.status)).length;
+    const palette = ['#168C91', '#3478D4', '#D97706', '#8057C7', '#0F9D78', '#C05276'];
+    return { id: item.id, item, data, code: data.fieldCode || '—', field: data.fieldName, level: levelLabel(data.examLevel || item.examLevel), percent: Math.round(coveredCount / included.length * 100), coveredCount, includedCount: included.length, startQuestion, color: palette[index % palette.length] };
+  }).filter((item): item is NonNullable<typeof item> => item !== null);
+
+  const detailData = selected ? readStructured(selected) : null;
+  const detailStart = detailData ? startFor(detailData) : 1;
+  const detailQuestions = detailData ? questionsFor(detailData).filter((question) => questionNumber(question) >= detailStart).slice().sort((a, b) => questionNumber(a) - questionNumber(b)) : [];
+  const detailCovered = detailQuestions.filter((question) => covered(question.status)).length;
+  const detailPercent = detailQuestions.length ? Math.round(detailCovered / detailQuestions.length * 100) : 0;
+
   return (
-    <PageFrame eyebrow="تحلیل کنکورهای گذشته · مستند به منابع آموزشی" title="پوشش گسترده سؤالات کنکور در دوره‌های آکادمی شمسه" description="تحلیل سؤال‌های کنکور و تطبیق آن‌ها با مباحث، کلاس‌ها و منابع آموزشی؛ برای آن‌که با اطمینان بیشتری مسیر آمادگی خود را انتخاب کنید." onBack={onBack}>
-      <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: 20, alignItems: 'center', marginBottom: 22 }}>
-        <div style={{ order: 2, background: colors.surface, border: '1px solid ' + colors.border, borderRadius: 22, padding: 'clamp(20px, 4vw, 34px)', boxShadow: '0 14px 38px rgba(15,47,61,.05)' }}>
-          <div style={{ color: colors.accent, fontSize: 12, fontWeight: 900, marginBottom: 10 }}>آکادمی آموزشی شمسه</div>
-          <h2 style={{ margin: 0, fontSize: 'clamp(21px, 3vw, 31px)', lineHeight: 1.8, fontWeight: 950 }}>یادگیری هدفمند، با تکیه بر تحلیل کنکورهای گذشته</h2>
-          <p style={{ margin: '10px 0 18px', color: colors.muted, fontSize: 13, lineHeight: 2.1 }}>در شمسه، سؤالات کنکور با مباحث و منابع آموزشی تطبیق داده می‌شوند تا میزان پوشش دوره‌ها شفاف و قابل بررسی باشد.</p>
-          <div style={{ display: 'flex', gap: 9, flexWrap: 'wrap' }}>
-            {[[ 'تحلیل تخصصی سؤال‌ها', BookOpenCheck ], [ 'تطبیق با منابع آموزشی', BookOpen ], [ 'بررسی سال‌های مختلف', CalendarDays ]].map(([label, Icon]) => {
-              const FeatureIcon = Icon as typeof BookOpen;
-              return <span key={label as string} style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '8px 10px', borderRadius: 10, background: colors.surfaceAlt, color: colors.text, fontSize: 11, fontWeight: 750 }}><FeatureIcon size={15} color={colors.accent}/>{label as string}</span>;
-            })}
-          </div>
-        </div>
-        <div style={{ order: 1, minHeight: 220, borderRadius: 22, padding: 22, overflow: 'hidden', background: colors.dark ? 'radial-gradient(circle at 30% 30%, rgba(81,196,187,.28), transparent 40%), linear-gradient(145deg,#102f3d,#11191c)' : 'radial-gradient(circle at 24% 25%, rgba(81,196,187,.35), transparent 42%), linear-gradient(145deg,#e7f7f7,#f8fbff)', border: '1px solid ' + colors.border, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
-          <div style={{ width: 104, height: 104, borderRadius: '50%', border: '1px solid rgba(22,140,145,.35)', display: 'grid', placeItems: 'center', background: colors.surface, boxShadow: '0 12px 40px rgba(22,140,145,.12)', color: colors.accent }}><BookOpenCheck size={48}/></div>
-          <div style={{ marginTop: 14, fontWeight: 900, fontSize: 17 }}>تحلیل مستند، انتخاب آگاهانه</div><div style={{ marginTop: 5, fontSize: 11, color: colors.muted }}>سؤال · مبحث · کلاس · منبع</div>
-        </div>
-      </section>
-
+    <PageFrame eyebrow="تحلیل کنکورهای گذشته · گزارش پوشش آموزشی" title="تحلیل آماری کنکورهای گذشته" description="نمودار پوشش تمام کدرشته‌ها و مقاطع را برای هر سال بررسی کنید؛ با انتخاب هر نمودار، جدول کامل تحلیل سؤال‌ها باز می‌شود." onBack={onBack}>
       <section style={{ background: colors.surface, border: '1px solid ' + colors.border, borderRadius: 20, padding: '18px clamp(14px, 3vw, 26px)', marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap' }}>
-        <div><h2 style={{ margin: 0, fontSize: 17, fontWeight: 900 }}>سال کنکور را انتخاب کنید</h2><p style={{ margin: '5px 0 0', color: colors.muted, fontSize: 11 }}>اطلاعات هر سال به‌صورت مستقل نمایش داده می‌شود.</p></div>
+        <div><h2 style={{ margin: 0, fontSize: 17, fontWeight: 900 }}>سال کنکور</h2><p style={{ margin: '5px 0 0', color: colors.muted, fontSize: 11 }}>تمام نمودارهای ثبت‌شده برای سال انتخاب‌شده نمایش داده می‌شوند.</p></div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }} role="group" aria-label="انتخاب سال کنکور">
-          {years.map((item) => <button type="button" key={item} onClick={() => { setYear(item); setQuery(''); setExpanded(null); }} aria-pressed={year === item} style={{ padding: '10px 17px', borderRadius: 11, border: '1px solid ' + (year === item ? colors.accent : colors.border), background: year === item ? colors.accent : colors.surfaceAlt, color: year === item ? '#fff' : colors.text, fontSize: 12, fontWeight: 850, cursor: 'pointer' }}>{yearLabel(item)}</button>)}
+          {years.map((item) => <button key={item} type="button" onClick={() => setYear(item)} aria-pressed={year === item} style={{ padding: '10px 17px', borderRadius: 11, border: '1px solid ' + (year === item ? colors.accent : colors.border), background: year === item ? colors.accent : colors.surfaceAlt, color: year === item ? '#fff' : colors.text, fontSize: 12, fontWeight: 850, cursor: 'pointer' }}>{yearLabel(item)}</button>)}
+          <button type="button" onClick={() => void loadAnalyses()} style={secondaryButton(colors)}><RefreshCw size={14}/> تازه‌سازی</button>
         </div>
       </section>
 
       <section style={{ background: colors.surface, border: '1px solid ' + colors.border, borderRadius: 22, padding: 'clamp(16px, 3vw, 26px)', marginBottom: 20 }}>
-        <div style={{ marginBottom: 18 }}><h2 style={{ margin: 0, fontSize: 19, fontWeight: 950 }}>درصد پوشش سؤالات کنکور {yearLabel(year)}</h2><p style={{ margin: '5px 0 0', color: colors.muted, fontSize: 12, lineHeight: 1.9 }}>بر اساس تطبیق محتوای سؤالات با دوره‌ها و منابع آموزشی آکادمی شمسه.</p></div>
-        {visibleCoverage.length ? <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 205px), 1fr))', gap: 13 }}>
-          {visibleCoverage.map((item) => <article key={item.code} style={{ border: '1px solid ' + colors.border, borderRadius: 17, padding: 17, background: item.soft, minWidth: 0 }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}><span style={{ fontSize: 11, color: colors.muted }}>کدرشته {item.code}</span><span style={{ fontSize: 18, color: item.color }}>{item.icon}</span></div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 15, marginTop: 12 }}>
-              <div style={{ width: 86, height: 86, borderRadius: '50%', flexShrink: 0, background: 'conic-gradient(' + item.color + ' ' + item.percent + '%, ' + item.color + '22 0)', display: 'grid', placeItems: 'center' }}><div style={{ width: 66, height: 66, borderRadius: '50%', background: colors.surface, display: 'grid', placeItems: 'center', color: item.color, fontWeight: 950, fontSize: 20 }}>{yearLabel(String(item.percent))}٪</div></div>
-              <div style={{ minWidth: 0 }}><h3 style={{ margin: 0, fontSize: 15, fontWeight: 900, lineHeight: 1.8 }}>{item.field}</h3><p style={{ margin: '4px 0 0', color: colors.muted, fontSize: 11 }}>کارشناسی ارشد</p><p style={{ margin: '7px 0 0', color: item.color, fontSize: 11, fontWeight: 850 }}>پوشش اعلام‌شده در دوره‌ها</p></div>
-            </div>
-            <div style={{ height: 6, borderRadius: 99, background: item.color + '22', overflow: 'hidden', marginTop: 15 }}><div style={{ width: item.percent + '%', height: '100%', borderRadius: 99, background: item.color }} /></div>
-          </article>)}
-        </div> : <div style={{ borderRadius: 14, background: colors.surfaceAlt, padding: 22, color: colors.muted, fontSize: 13, lineHeight: 2 }}>برای سال {yearLabel(year)} هنوز درصد پوشش ساختاریافته‌ای ثبت نشده است. پس از ثبت اطلاعات معتبر در پنل مدیریت، نمودار همان سال در این بخش نمایش داده می‌شود.</div>}
-        <p style={{ color: colors.muted, fontSize: 10, lineHeight: 1.9, margin: '15px 0 0' }}>درصدها بیانگر پوشش آموزشی اعلام‌شده هستند و به معنای درصد پاسخ صحیح یا تضمین نتیجه آزمون نیستند.</p>
-      </section>
-
-      <section style={{ background: colors.surface, border: '1px solid ' + colors.border, borderRadius: 22, padding: 'clamp(16px, 3vw, 26px)', marginBottom: 20 }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', marginBottom: 15 }}>
-          <div><h2 style={{ margin: 0, fontSize: 19, fontWeight: 950 }}>جدول ردیابی سؤال‌ها و منابع پوشش</h2><p style={{ margin: '5px 0 0', color: colors.muted, fontSize: 12, lineHeight: 1.9 }}>مشاهده ارتباط سؤال‌های تحلیل‌شده با مباحث و منابع آموزشی.</p></div>
-          <div style={{ position: 'relative', flex: '1 1 220px', maxWidth: 340 }}><Search size={16} color={colors.muted} style={{ position: 'absolute', right: 12, top: 13 }}/><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="جست‌وجو در تحلیل و منابع..." aria-label="جست‌وجو در جدول تحلیل سؤال‌ها" style={{ width: '100%', boxSizing: 'border-box', padding: '11px 37px 11px 12px', borderRadius: 10, border: '1px solid ' + colors.border, background: colors.surfaceAlt, color: colors.text, fontSize: 12 }}/></div>
-        </div>
-        {loading ? <div style={{ padding: 25, textAlign: 'center', color: colors.muted }}>در حال دریافت جزئیات تحلیل‌ها...</div>
-          : error ? <div style={{ padding: 20, color: colors.muted, fontSize: 12 }}>{error} <button type="button" onClick={() => void loadAnalyses()} style={secondaryButton(colors)}>تلاش مجدد</button></div>
-          : structuredQuestionRows.length ? <div style={{ display: 'grid', gap: 9 }}>
-            {structuredQuestionRows.map((row) => <article key={row.id} style={{ border: '1px solid ' + colors.border, borderRadius: 13, overflow: 'hidden', background: colors.surface }}>
-              <button type="button" onClick={() => setExpanded(expanded === row.id ? null : row.id)} aria-expanded={expanded === row.id} style={{ width: '100%', border: 0, cursor: 'pointer', textAlign: 'right', display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', gap: 12, alignItems: 'center', padding: 14, background: colors.surfaceAlt, color: colors.text }}>
-                <span style={{ minWidth: 0 }}><strong style={{ display: 'block', fontSize: 12, lineHeight: 1.9 }}>{row.title}</strong><span style={{ display: 'block', color: colors.muted, fontSize: 11, lineHeight: 1.9 }}>سؤال {yearLabel(row.questionNumber || '—')} · {row.explanation || 'توضیح ثبت نشده'} · {row.status === 'COVERED' ? 'پوشش داده‌شده' : row.status === 'PARTIAL' ? 'پوشش نسبی' : row.status === 'NOT_COVERED' ? 'پوشش داده‌نشده' : 'وضعیت نامشخص'}</span></span><span style={{ color: colors.accent, fontSize: 12, fontWeight: 900 }}>{expanded === row.id ? 'بستن −' : 'جزئیات +'}</span>
-              </button>
-              {expanded === row.id && <div style={{ padding: 14, display: 'grid', gap: 9, fontSize: 12, lineHeight: 2 }}><div><strong>شماره سؤال:</strong> {yearLabel(row.questionNumber || '—')}</div><div style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}><strong>توضیحات:</strong> {row.explanation || 'توضیحی ثبت نشده است.'}</div><div><strong>وضعیت پوشش:</strong> {row.status === 'COVERED' ? 'پوشش داده‌شده' : row.status === 'PARTIAL' ? 'پوشش نسبی' : row.status === 'NOT_COVERED' ? 'پوشش داده‌نشده' : 'نامشخص'}</div>{row.resourceUrl ? <a href={row.resourceUrl} target="_blank" rel="noreferrer" style={{ ...primaryButton(colors), textDecoration: 'none', justifySelf: 'start' }}>مشاهده فایل تحلیل <ExternalLink size={15}/></a> : <span style={{ color: colors.muted }}>برای این تحلیل فایل جداگانه‌ای ثبت نشده است.</span>}</div>}
-            </article>)}
+        <div style={{ marginBottom: 18 }}><h2 style={{ margin: 0, fontSize: 19, fontWeight: 950 }}>نمودار درصد پوشش · کنکور {year ? yearLabel(year) : '—'}</h2><p style={{ margin: '5px 0 0', color: colors.muted, fontSize: 12, lineHeight: 1.9 }}>برای مشاهده جدول کامل، نمودار یا کارت همان کدرشته را انتخاب کنید.</p></div>
+        {loading ? <div style={{ padding: 35, textAlign: 'center', color: colors.muted }}>در حال دریافت تحلیل‌ها…</div>
+          : error ? <div role="alert" style={{ padding: 20, color: colors.text }}>{error}<div style={{ marginTop: 10 }}><button type="button" onClick={() => void loadAnalyses()} style={primaryButton(colors)}>تلاش مجدد</button></div></div>
+          : charts.length ? <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 245px), 1fr))', gap: 14 }}>
+            {charts.map((chart) => <button key={chart.id} type="button" onClick={() => setSelected(chart.item)} aria-label={'نمایش جدول کامل کدرشته ' + chart.code + '، ' + chart.field} style={{ textAlign: 'right', border: '1px solid ' + colors.border, borderRadius: 17, padding: 17, background: colors.surface, color: colors.text, cursor: 'pointer', minWidth: 0, boxShadow: '0 8px 24px rgba(15,47,61,.035)' }}>
+              <div style={{ display: 'flex', alignItems: 'start', justifyContent: 'space-between', gap: 8 }}><div><div style={{ fontSize: 11, color: colors.muted }}>کدرشته {chart.code}</div><h3 style={{ margin: '5px 0 0', fontSize: 15, lineHeight: 1.8, fontWeight: 900 }}>{chart.field}</h3><div style={{ marginTop: 4, fontSize: 11, color: colors.muted }}>{chart.level}</div></div><span style={{ fontSize: 11, color: colors.accent, fontWeight: 850, whiteSpace: 'nowrap' }}>جدول کامل ←</span></div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 15, marginTop: 18 }}>
+                <div style={{ width: 108, height: 108, flexShrink: 0, borderRadius: '50%', background: 'conic-gradient(' + chart.color + ' ' + chart.percent + '%, ' + (colors.dark ? '#354248' : '#e7eeee') + ' 0)', display: 'grid', placeItems: 'center' }}><div style={{ width: 78, height: 78, borderRadius: '50%', background: colors.surface, display: 'grid', placeItems: 'center', color: chart.color, fontWeight: 950, fontSize: 21 }}>{yearLabel(String(chart.percent))}٪</div></div>
+                <div style={{ minWidth: 0, flex: 1 }}><div style={{ fontSize: 12, lineHeight: 2 }}>پوشش داده‌شده: <strong>{yearLabel(String(chart.coveredCount))}</strong></div><div style={{ fontSize: 12, lineHeight: 2 }}>سؤال‌های مشمول: <strong>{yearLabel(String(chart.includedCount))}</strong></div><div style={{ fontSize: 11, lineHeight: 1.9, color: colors.muted }}>محاسبه از سؤال {yearLabel(String(chart.startQuestion))}</div></div>
+              </div>
+              <div style={{ height: 5, borderRadius: 99, background: colors.dark ? '#354248' : '#e7eeee', overflow: 'hidden', marginTop: 16 }}><div style={{ width: chart.percent + '%', height: '100%', borderRadius: 99, background: chart.color }} /></div>
+            </button>)}
           </div>
-          : <div style={{ padding: 22, borderRadius: 14, background: colors.surfaceAlt, color: colors.muted, fontSize: 12, lineHeight: 2 }}>هنوز ردیف‌های ساختاریافته سؤال، مبحث، کلاس و منبع برای این سال در پنل مدیریت ثبت نشده‌اند. تا زمان ثبت جزئیات واقعی، اطلاعاتی به‌صورت حدسی نمایش داده نمی‌شود.</div>}
+          : <div style={{ borderRadius: 14, background: colors.surfaceAlt, padding: 22, color: colors.muted, fontSize: 13, lineHeight: 2 }}>{years.length ? 'برای سال ' + yearLabel(year) + ' هنوز تحلیل ساختاریافته دارای وضعیت سؤال‌ها ثبت نشده است.' : 'هنوز تحلیل ساختاریافته‌ای برای نمایش ثبت نشده است.'}<p style={{ margin: '8px 0 0', fontSize: 11 }}>نمودار فقط از داده واقعی سؤال‌ها ساخته می‌شود؛ درصد نمونه یا حدسی نمایش داده نمی‌شود.</p></div>}
+        <p style={{ color: colors.muted, fontSize: 10, lineHeight: 1.9, margin: '15px 0 0' }}>درصد پوشش برابر تعداد سؤال‌های «پوشش داده شده» تقسیم بر سؤال‌های مشمول محاسبه است؛ این درصد، درصد پاسخ صحیح داوطلبان نیست.</p>
       </section>
 
-      {currentAnalyses.some((item) => item.resourceUrl) && <section style={{ background: colors.dark ? 'linear-gradient(120deg,#10272c,#11191c)' : 'linear-gradient(120deg,#f7fbff,#eaf7f7)', border: '1px solid ' + colors.border, borderRadius: 20, padding: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap' }}>
-        <div><h2 style={{ margin: 0, fontSize: 16, fontWeight: 900 }}>دریافت فایل تحلیل کامل کنکور {yearLabel(year)}</h2><p style={{ margin: '6px 0 0', color: colors.muted, fontSize: 11 }}>برای مشاهده جزئیات بیشتر، فایل تحلیل منتشرشده را دریافت کنید.</p></div>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>{currentAnalyses.filter((item) => item.resourceUrl).map((item) => <a key={item.id} href={item.resourceUrl!} target="_blank" rel="noreferrer" style={{ ...primaryButton(colors), textDecoration: 'none' }}><FileText size={15}/>{item.title}</a>)}</div>
-      </section>}
+      {selected && detailData && <div role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setSelected(null); }} style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(3,10,14,.68)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 14, backdropFilter: 'blur(5px)' }}>
+        <section role="dialog" aria-modal="true" aria-labelledby="exam-analysis-modal-title" style={{ width: 'min(1100px, 100%)', maxHeight: '92vh', overflow: 'auto', background: colors.surface, color: colors.text, border: '1px solid ' + colors.border, borderRadius: 20, boxShadow: '0 24px 90px rgba(0,0,0,.3)', direction: 'rtl' }}>
+          <header style={{ position: 'sticky', top: 0, zIndex: 2, display: 'flex', alignItems: 'start', justifyContent: 'space-between', gap: 14, padding: '18px clamp(16px, 3vw, 26px)', background: colors.surface, borderBottom: '1px solid ' + colors.border }}>
+            <div><div style={{ fontSize: 11, color: colors.accent, fontWeight: 850 }}>کنکور {yearLabel(normalizeYear(selected.examYear || year))} · کدرشته {detailData.fieldCode || '—'}</div><h2 id="exam-analysis-modal-title" style={{ margin: '5px 0', fontSize: 20, lineHeight: 1.8, fontWeight: 950 }}>{detailData.fieldName || selected.title}</h2><div style={{ fontSize: 12, color: colors.muted }}>{levelLabel(detailData.examLevel || selected.examLevel)}</div></div>
+            <button type="button" onClick={() => setSelected(null)} aria-label="بستن پنجره" style={{ ...secondaryButton(colors), flexShrink: 0 }}>بستن ×</button>
+          </header>
+          <div style={{ padding: '18px clamp(16px, 3vw, 26px) 26px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 150px), 1fr))', gap: 10, marginBottom: 18 }}>
+              {[['درصد پوشش', yearLabel(String(detailPercent)) + '٪'], ['پوشش داده‌شده', yearLabel(String(detailCovered))], ['تعداد سؤال‌های مشمول', yearLabel(String(detailQuestions.length))], ['شروع محاسبه از سؤال', yearLabel(String(detailStart))]].map(([label, value]) => <div key={label} style={{ padding: 13, border: '1px solid ' + colors.border, borderRadius: 12, background: colors.surfaceAlt }}><div style={{ fontSize: 10, color: colors.muted, marginBottom: 5 }}>{label}</div><strong style={{ fontSize: 18 }}>{value}</strong></div>)}
+            </div>
+            {detailData.narrative && <p style={{ whiteSpace: 'pre-wrap', fontSize: 12, lineHeight: 2, color: colors.muted }}>{detailData.narrative}</p>}
+            {detailQuestions.length ? <div style={{ overflowX: 'auto', border: '1px solid ' + colors.border, borderRadius: 12 }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 760, fontSize: 12, textAlign: 'right' }}>
+                <thead><tr style={{ background: colors.surfaceAlt }}>{['شماره سؤال', 'وضعیت پوشش', 'مبحث', 'کلاس / درس', 'استاد', 'منبع', 'صفحه', 'توضیحات'].map((heading) => <th key={heading} style={{ padding: '12px 10px', borderBottom: '1px solid ' + colors.border, whiteSpace: 'nowrap' }}>{heading}</th>)}</tr></thead>
+                <tbody>{detailQuestions.map((question, index) => <tr key={question.questionNumber + '-' + index} style={{ borderBottom: index === detailQuestions.length - 1 ? 0 : '1px solid ' + colors.border }}>
+                  <td style={{ padding: 10, whiteSpace: 'nowrap' }}>{yearLabel(question.questionNumber || '—')}</td><td style={{ padding: 10, whiteSpace: 'nowrap', color: covered(question.status) ? '#168C91' : '#c45b5b', fontWeight: 850 }}>{covered(question.status) ? 'پوشش داده شده' : 'پوشش داده نشده'}</td>
+                  <td style={{ padding: 10 }}>{question.topic || '—'}</td><td style={{ padding: 10 }}>{question.className || '—'}</td><td style={{ padding: 10 }}>{question.professor || '—'}</td><td style={{ padding: 10 }}>{question.source || '—'}</td><td style={{ padding: 10 }}>{question.page || '—'}</td><td style={{ padding: 10, whiteSpace: 'pre-wrap', minWidth: 180 }}>{question.explanation || '—'}</td>
+                </tr>)}</tbody>
+              </table>
+            </div> : <div style={{ padding: 20, background: colors.surfaceAlt, borderRadius: 12, color: colors.muted, fontSize: 12 }}>برای این کدرشته، سؤال‌های دارای شماره در محدوده محاسبه ثبت نشده‌اند.</div>}
+            {selected.resourceUrl && <a href={selected.resourceUrl} target="_blank" rel="noreferrer" style={{ ...primaryButton(colors), textDecoration: 'none', marginTop: 16 }}><FileText size={15}/> مشاهده فایل تحلیل کامل <ExternalLink size={15}/></a>}
+          </div>
+        </section>
+      </div>}
     </PageFrame>
   );
 }
