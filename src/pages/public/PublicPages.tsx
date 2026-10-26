@@ -471,7 +471,8 @@ export function ExamAnalysisPage({ onBack }: { onBack: () => void }) {
 
   const detailData = selected ? readStructured(selected) : null;
   const detailStart = detailData ? startFor(detailData) : 1;
-  const detailQuestions = detailData ? questionsFor(detailData).filter((question) => questionNumber(question) >= detailStart).slice().sort((a, b) => questionNumber(a) - questionNumber(b)) : [];
+  const detailAllQuestions = detailData ? questionsFor(detailData).slice().sort((a, b) => questionNumber(a) - questionNumber(b)) : [];
+  const detailQuestions = detailAllQuestions.filter((question) => questionNumber(question) >= detailStart);
   const detailCovered = detailQuestions.filter((question) => covered(question.status)).length;
   const detailPercent = detailQuestions.length ? Math.round(detailCovered / detailQuestions.length * 100) : 0;
 
@@ -514,15 +515,15 @@ export function ExamAnalysisPage({ onBack }: { onBack: () => void }) {
               {[['درصد پوشش', yearLabel(String(detailPercent)) + '٪'], ['پوشش داده‌شده', yearLabel(String(detailCovered))], ['تعداد سؤال‌های مشمول', yearLabel(String(detailQuestions.length))], ['شروع محاسبه از سؤال', yearLabel(String(detailStart))]].map(([label, value]) => <div key={label} style={{ padding: 13, border: '1px solid ' + colors.border, borderRadius: 12, background: colors.surfaceAlt }}><div style={{ fontSize: 10, color: colors.muted, marginBottom: 5 }}>{label}</div><strong style={{ fontSize: 18 }}>{value}</strong></div>)}
             </div>
             {detailData.narrative && <p style={{ whiteSpace: 'pre-wrap', fontSize: 12, lineHeight: 2, color: colors.muted }}>{detailData.narrative}</p>}
-            {detailQuestions.length ? <div style={{ overflowX: 'auto', border: '1px solid ' + colors.border, borderRadius: 12 }}>
+            {detailAllQuestions.length ? <div style={{ overflowX: 'auto', border: '1px solid ' + colors.border, borderRadius: 12 }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 760, fontSize: 12, textAlign: 'right' }}>
                 <thead><tr style={{ background: colors.surfaceAlt }}>{['شماره سؤال', 'وضعیت پوشش', 'مبحث', 'کلاس / درس', 'استاد', 'منبع', 'صفحه', 'توضیحات'].map((heading) => <th key={heading} style={{ padding: '12px 10px', borderBottom: '1px solid ' + colors.border, whiteSpace: 'nowrap' }}>{heading}</th>)}</tr></thead>
-                <tbody>{detailQuestions.map((question, index) => <tr key={question.questionNumber + '-' + index} style={{ borderBottom: index === detailQuestions.length - 1 ? 0 : '1px solid ' + colors.border }}>
-                  <td style={{ padding: 10, whiteSpace: 'nowrap' }}>{yearLabel(question.questionNumber || '—')}</td><td style={{ padding: 10, whiteSpace: 'nowrap', color: covered(question.status) ? '#168C91' : '#c45b5b', fontWeight: 850 }}>{covered(question.status) ? 'پوشش داده شده' : 'پوشش داده نشده'}</td>
+                <tbody>{detailAllQuestions.map((question, index) => { const inCalculation = questionNumber(question) >= detailStart; return <tr key={question.questionNumber + '-' + index} style={{ borderBottom: index === detailAllQuestions.length - 1 ? 0 : '1px solid ' + colors.border, opacity: inCalculation ? 1 : 0.62 }}>
+                  <td style={{ padding: 10, whiteSpace: 'nowrap' }}>{yearLabel(question.questionNumber || '—')}</td><td style={{ padding: 10, whiteSpace: 'nowrap', color: !inCalculation ? colors.muted : covered(question.status) ? '#168C91' : '#c45b5b', fontWeight: 850 }}>{!inCalculation ? 'خارج از محاسبه' : covered(question.status) ? 'پوشش داده شده' : 'پوشش داده نشده'}</td>
                   <td style={{ padding: 10 }}>{question.topic || '—'}</td><td style={{ padding: 10 }}>{question.className || '—'}</td><td style={{ padding: 10 }}>{question.professor || '—'}</td><td style={{ padding: 10 }}>{question.source || '—'}</td><td style={{ padding: 10 }}>{question.page || '—'}</td><td style={{ padding: 10, whiteSpace: 'pre-wrap', minWidth: 180 }}>{question.explanation || '—'}</td>
-                </tr>)}</tbody>
+                </tr>; })}</tbody>
               </table>
-            </div> : <div style={{ padding: 20, background: colors.surfaceAlt, borderRadius: 12, color: colors.muted, fontSize: 12 }}>برای این کدرشته، سؤال‌های دارای شماره در محدوده محاسبه ثبت نشده‌اند.</div>}
+            </div> : <div style={{ padding: 20, background: colors.surfaceAlt, borderRadius: 12, color: colors.muted, fontSize: 12 }}>برای این کدرشته، سؤال‌های ساختاریافته‌ای ثبت نشده‌اند.</div>}
             {selected.resourceUrl && <a href={selected.resourceUrl} target="_blank" rel="noreferrer" style={{ ...primaryButton(colors), textDecoration: 'none', marginTop: 16 }}><FileText size={15}/> مشاهده فایل تحلیل کامل <ExternalLink size={15}/></a>}
           </div>
         </section>
