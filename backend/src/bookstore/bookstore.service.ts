@@ -1,5 +1,5 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { mkdirSync, unlinkSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, unlinkSync, writeFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { join } from 'node:path';
 import { PrismaService } from '../database/prisma.service';
@@ -46,6 +46,50 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
       stockQuantity,
       availableQuantity: Math.max(0, stockQuantity - reservedQuantity),
     }));
+  }
+
+  async publicBooks() {
+    const books = await this.prisma.book.findMany({
+      where: { isActive: true },
+      orderBy: [{ displayOrder: 'asc' }, { title: 'asc' }],
+      select: {
+        id: true, title: true, description: true, coverImage: true, category: true,
+        price: true, discountedPrice: true, stockQuantity: true, reservedQuantity: true,
+      },
+    });
+    return books.map(({ stockQuantity, reservedQuantity, ...book }) => ({
+      ...book,
+      availableQuantity: Math.max(0, stockQuantity - reservedQuantity),
+    }));
+  }
+
+  async uploadCover(user: AuthenticatedUser, file: any) {
+    this.requireAdmin(user);
+    const extensionByMime: Record<string, string> = {
+      'image/jpeg': '.jpg',
+      'image/png': '.png',
+      'image/webp': '.webp',
+    };
+    const extension = file?.mimetype ? extensionByMime[file.mimetype] : undefined;
+    if (!file?.buffer || !extension) {
+      throw new BadRequestException('جلد کتاب باید تصویر JPG، PNG یا WebP باشد.');
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      throw new BadRequestException('حجم تصویر جلد نباید بیشتر از ۵ مگابایت باشد.');
+    }
+    mkdirSync(storageRoot, { recursive: true });
+    const filename = randomUUID() + extension;
+    writeFileSync(join(storageRoot, filename), file.buffer, { flag: 'wx', mode: 0o600 });
+    return { coverImage: '/api/public/books/covers/' + filename };
+  }
+
+  publicCoverPath(filename: string) {
+    if (!/^[0-9a-f-]{36}\\.(jpg|png|webp)$/.test(filename)) {
+      throw new NotFoundException('تصویر جلد پیدا نشد.');
+    }
+    const path = join(storageRoot, filename);
+    if (!existsSync(path)) throw new NotFoundException('تصویر جلد پیدا نشد.');
+    return path;
   }
 
   async createBook(user: AuthenticatedUser, body: any) {
