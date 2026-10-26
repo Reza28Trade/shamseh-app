@@ -25,29 +25,27 @@ type QuestionRow = { questionNumber: string; explanation: string; topic?: string
 type AnalysisForm = {
   title: string; subtitle: string; content: string; examYear: string;
   examLevel: string; resourceUrl: string; published: boolean; sortOrder: string;
-  fieldCode: string; fieldName: string; totalQuestions: string; questions: QuestionRow[];
+  fieldCode: string; fieldName: string; totalQuestions: string; startQuestionNumber: string; questions: QuestionRow[];
 };
 const parseAnalysisContent = (content: string) => {
   try {
     const parsed = JSON.parse(content);
-    if (parsed && parsed.__shamsehExamAnalysis === 1) return parsed as { narrative?: string; fieldCode?: string; fieldName?: string; totalQuestions?: number; coveragePercent?: number | null; questions?: QuestionRow[] };
+    if (parsed && parsed.__shamsehExamAnalysis === 1) return parsed as { narrative?: string; fieldCode?: string; fieldName?: string; totalQuestions?: number; startQuestionNumber?: number; coveragePercent?: number | null; questions?: QuestionRow[] };
   } catch { /* legacy plain-text analysis */ }
   return null;
 };
 const emptyAnalysis: AnalysisForm = {
   title: '', subtitle: '', content: '', examYear: '', examLevel: '',
-  resourceUrl: '', published: false, sortOrder: '0', fieldCode: '', fieldName: '', totalQuestions: '0', questions: [],
+  resourceUrl: '', published: false, sortOrder: '0', fieldCode: '', fieldName: '', totalQuestions: '0', startQuestionNumber: '1', questions: [],
 };
-const questionStatusOptions: Array<{ value: QuestionRow['status']; label: string }> = [
+const questionStatusOptions: Array<{ value: 'COVERED' | 'NOT_COVERED'; label: string }> = [
   { value: 'COVERED', label: 'پوشش داده شده' },
-  { value: 'PARTIAL', label: 'پوشش ناقص' },
   { value: 'NOT_COVERED', label: 'پوشش داده نشده' },
-  { value: 'UNKNOWN', label: 'بررسی نشده' },
 ];
-const calculateCoverage = (questions: QuestionRow[], total: number) => {
-  if (!total || total < 1) return null;
-  const score = questions.reduce((sum, question) => sum + (question.status === 'COVERED' ? 1 : question.status === 'PARTIAL' ? 0.5 : 0), 0);
-  return Math.round((score / total) * 100);
+const calculateCoverage = (questions: QuestionRow[], startQuestion: number) => {
+  const included = questions.filter((question) => Number(String(question.questionNumber).replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))) >= startQuestion);
+  if (!included.length) return null;
+  return Math.round((included.filter((question) => question.status === 'COVERED').length / included.length) * 100);
 };
 
 export const ManagePublicContent: React.FC = () => {
@@ -221,7 +219,7 @@ ${value}`.trim();
   const startEdit = (item: ContentRecord) => {
     setEditingId(item.id);
     const structured = parseAnalysisContent(item.content);
-    const questions = (structured?.questions || []).map((question) => ({ ...question, explanation: question.explanation ?? [question.topic, question.className, question.professor, question.source, question.page].filter(Boolean).join(' · ') }));
+    const questions = (structured?.questions || []).map((question) => ({ ...question, status: question.status === 'COVERED' ? 'COVERED' as const : 'NOT_COVERED' as const, explanation: question.explanation ?? [question.topic, question.className, question.professor, question.source, question.page].filter(Boolean).join(' · ') }));
     setForm({
       title: item.title, subtitle: item.subtitle || '', content: structured?.narrative ?? item.content,
       examYear: item.examYear || '', examLevel: /دکتری|دکترا|doctorate/i.test(item.examLevel || '') ? 'دکتری' : /ارشد|کارشناسی ارشد|master/i.test(item.examLevel || '') ? 'کارشناسی ارشد' : '',
@@ -230,6 +228,7 @@ ${value}`.trim();
       fieldCode: structured?.fieldCode || '',
       fieldName: structured?.fieldName || '',
       totalQuestions: String(Math.max(structured?.totalQuestions ?? questions.length, questions.length, 0)),
+      startQuestionNumber: String(structured?.startQuestionNumber ?? 1),
       questions,
     });
     setShowForm(true); setError(''); setSuccess('');
@@ -238,19 +237,22 @@ ${value}`.trim();
   const saveAnalysis = async (event: React.FormEvent) => {
     event.preventDefault();
     const totalQuestions = Number(form.totalQuestions) || 0;
+    const startQuestionNumber = Number(form.startQuestionNumber) || 1;
     const structured = Boolean(form.fieldCode.trim() || form.fieldName.trim() || totalQuestions > 0 || form.questions.length);
     if (!form.title.trim() || (!form.content.trim() && !structured)) { setError('عنوان و حداقل یکی از متن تحلیل یا اطلاعات ساختاریافته الزامی است.'); return; }
     if (totalQuestions < 0 || !Number.isInteger(totalQuestions)) { setError('تعداد سؤال‌ها باید یک عدد صحیح و نامنفی باشد.'); return; }
     if (form.questions.length > totalQuestions) { setError('تعداد ردیف‌های سؤال از تعداد کل سؤال‌ها بیشتر است.'); return; }
+    if (!Number.isInteger(startQuestionNumber) || startQuestionNumber < 1 || (totalQuestions > 0 && startQuestionNumber > totalQuestions)) { setError('شماره اولین سؤال مشمول محاسبه باید بین ۱ و تعداد کل سؤال‌ها باشد.'); return; }
     setSaving(true); setError(''); setSuccess('');
-    const questions = form.questions.map((question) => ({ questionNumber: question.questionNumber, status: question.status, explanation: question.explanation ?? [question.topic, question.className, question.professor, question.source, question.page].filter(Boolean).join(' · ') }));
-    const coverage = calculateCoverage(questions, totalQuestions);
+    const questions = form.questions.map((question) => ({ ...question, status: question.status === 'COVERED' ? 'COVERED' : 'NOT_COVERED', explanation: question.explanation ?? [question.topic, question.className, question.professor, question.source, question.page].filter(Boolean).join(' · ') }));
+    const coverage = calculateCoverage(questions, startQuestionNumber);
     const content = structured ? JSON.stringify({
       __shamsehExamAnalysis: 1,
       narrative: form.content,
       fieldCode: form.fieldCode.trim(),
       fieldName: form.fieldName.trim(),
       totalQuestions,
+      startQuestionNumber,
       coveragePercent: coverage,
       questions,
     }) : form.content;
@@ -399,15 +401,16 @@ ${value}`.trim();
             </div>
             <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>متن تحلیل (اختیاری در صورت ثبت اطلاعات ساختاریافته)<textarea rows={8} value={form.content} onChange={(event) => setForm({ ...form, content: event.target.value })} style={{ ...inputStyle, lineHeight: 2, resize: 'vertical' }} placeholder="توضیحات تکمیلی تحلیل را وارد کنید؛ اگر اطلاعات ساختاریافته ثبت می‌کنید، این بخش می‌تواند خالی بماند." /></label>
             <section style={{ border: '1px solid ' + colors.border, borderRadius: 14, padding: 15, display: 'flex', flexDirection: 'column', gap: 12, background: colors.alt }}>
-              <div><strong style={{ fontSize: 13 }}>اطلاعات ساختاریافته پوشش و سؤال‌ها</strong><p style={{ margin: '5px 0 0', color: colors.muted, fontSize: 11, lineHeight: 1.9 }}>درصد و اطلاعات سؤال‌ها را وارد کنید تا در نمودار و جدول صفحه عمومی نمایش داده شوند. این اطلاعات در کنار متن تحلیل ذخیره می‌شوند.</p></div>
+              <div><strong style={{ fontSize: 13 }}>اطلاعات ساختاریافته پوشش و سؤال‌ها</strong><p style={{ margin: '5px 0 0', color: colors.muted, fontSize: 11, lineHeight: 1.9 }}>وضعیت هر سؤال را مشخص کنید. درصد پوشش بر اساس سؤال‌های شماره‌گذاری‌شده از شماره شروع محاسبه می‌شود؛ سؤال‌های قبل از آن نادیده گرفته می‌شوند.</p></div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: 12 }}>
                 <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>کدرشته<input value={form.fieldCode} onChange={(event) => setForm({ ...form, fieldCode: event.target.value })} style={inputStyle} placeholder="مثلاً ۱۳۵۹" /></label>
                 <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>نام رشته<input value={form.fieldName} onChange={(event) => setForm({ ...form, fieldName: event.target.value })} style={inputStyle} placeholder="مثلاً پژوهش هنر" /></label>
-                <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>تعداد کل سؤال‌های این کدرشته<input type="number" min="0" step="1" value={form.totalQuestions} onChange={(event) => { const raw = event.target.value; const total = Math.max(0, Math.floor(Number(raw) || 0)); setForm((current) => ({ ...current, totalQuestions: raw, questions: current.questions.slice(0, total).concat(Array.from({ length: Math.max(0, total - current.questions.length) }, (_, index) => ({ questionNumber: String(current.questions.length + index + 1), explanation: '', status: 'UNKNOWN' as const }))) })); }} style={{ ...inputStyle, direction: 'ltr', textAlign: 'left' }} placeholder="60" /></label>
+                <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>تعداد کل سؤال‌های این کدرشته<input type="number" min="0" step="1" value={form.totalQuestions} onChange={(event) => { const raw = event.target.value; const total = Math.max(0, Math.floor(Number(raw) || 0)); setForm((current) => ({ ...current, totalQuestions: raw, questions: current.questions.slice(0, total).concat(Array.from({ length: Math.max(0, total - current.questions.length) }, (_, index) => ({ questionNumber: String(current.questions.length + index + 1), explanation: '', status: 'NOT_COVERED' as const }))) })); }} style={{ ...inputStyle, direction: 'ltr', textAlign: 'left' }} placeholder="60" /></label>
+                <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 11 }}>شماره اولین سؤال در محاسبه<input type="number" min="1" max={Math.max(1, Number(form.totalQuestions) || 1)} step="1" value={form.startQuestionNumber} onChange={(event) => setForm({ ...form, startQuestionNumber: event.target.value })} style={{ ...inputStyle, direction: 'ltr', textAlign: 'left' }} placeholder="مثلاً ۲۶" /><span style={{ color: colors.muted, lineHeight: 1.8 }}>سؤال‌های قبل از این شماره در درصد پوشش حساب نمی‌شوند.</span></label>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' }}>
                 <div><strong style={{ fontSize: 12 }}>جدول وضعیت پوشش سؤال‌ها</strong><p style={{ color: colors.muted, fontSize: 11, margin: '4px 0 0' }}>برای هر سؤال فقط وضعیت پوشش را انتخاب کن؛ درصد پوشش خودکار محاسبه می‌شود.</p></div>
-                <div style={{ padding: '8px 12px', borderRadius: 10, background: colors.bg, border: '1px solid ' + colors.border, fontSize: 12, fontWeight: 800 }}>درصد پوشش محاسبه‌شده: {calculateCoverage(form.questions, Number(form.totalQuestions) || 0) == null ? '—' : `${calculateCoverage(form.questions, Number(form.totalQuestions) || 0)}٪`}</div>
+                <div style={{ padding: '8px 12px', borderRadius: 10, background: colors.bg, border: '1px solid ' + colors.border, fontSize: 12, fontWeight: 800 }}>درصد پوشش محاسبه‌شده: {calculateCoverage(form.questions, Number(form.startQuestionNumber) || 1) == null ? '—' : `${calculateCoverage(form.questions, Number(form.startQuestionNumber) || 1)}٪`}</div>
               </div>
               <div style={{ overflowX: 'auto', border: '1px solid ' + colors.border, borderRadius: 12, background: colors.bg }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 620, fontSize: 12 }}>
