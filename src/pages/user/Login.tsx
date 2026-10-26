@@ -1,21 +1,20 @@
 import React,{useEffect,useRef,useState} from 'react';
 import type { Student,Admin } from '../../types';
-import { User,Shield,Lock,ArrowRight,Send,Globe,Camera,Play,BookOpen,GraduationCap,ChevronLeft,ChevronRight,CalendarDays,Newspaper,BookOpenCheck,ExternalLink,FileText } from 'lucide-react';
+import { User,Shield,Lock,ArrowRight,Send,Globe,Camera,Play,BookOpen,GraduationCap,ChevronLeft,ChevronRight,CalendarDays,Newspaper,BookOpenCheck,FileText } from 'lucide-react';
 import { CourseCatalogPage, RulesPage, ExamAnalysisPage } from '../public/PublicPages';
 
 type NewsItem={id?:string;title:string;summary:string;imageUrl?:string;category?:string;date?:string;published?:boolean};
 type InfoCourse={id:string;title:string;professor:string;description?:string|null;coverImage?:string|null;level?:string|null;academicYear?:number|null;term?:string|null;category?:string|null;startDate?:string|null;schedule?:string|null;price?:string|number|null;classDays?:string[];classStartTime?:string|null;classEndTime?:string|null};
 type InfoAnalysis={id:string;title:string;subtitle?:string|null;content:string;examYear?:string|null;examLevel?:string|null;resourceUrl?:string|null};
 type InfoBook={id:string;title:string;description?:string|null;coverImage?:string|null;academicLevel?:string|null;category?:string|null;price?:string|number|null;discountedPrice?:string|number|null;availableQuantity?:number};
-const InformationPage:React.FC<{onBack:()=>void;onShowAnalysis:()=>void}>=({onBack,onShowAnalysis})=>{
- const [news,setNews]=useState<NewsItem[]>([]),[courses,setCourses]=useState<InfoCourse[]>([]),[selectedCourse,setSelectedCourse]=useState<InfoCourse|null>(null),[courseLevelFilter,setCourseLevelFilter]=useState<'ALL'|'MASTER'|'DOCTORATE'>('ALL'),[analyses,setAnalyses]=useState<InfoAnalysis[]>([]),[books,setBooks]=useState<InfoBook[]>([]),[bookLevelFilter,setBookLevelFilter]=useState<'ALL'|'MASTER'|'DOCTORATE'>('ALL'),[bookFieldFilter,setBookFieldFilter]=useState('ALL'),[rules,setRules]=useState<{title:string;content:string}|null>(null),[slide,setSlide]=useState(0),[rulesFilter,setRulesFilter]=useState('ALL'),[error,setError]=useState('');
+const InformationPage:React.FC<{onBack:()=>void}>=({onBack})=>{
+ const [news,setNews]=useState<NewsItem[]>([]),[courses,setCourses]=useState<InfoCourse[]>([]),[selectedCourse,setSelectedCourse]=useState<InfoCourse|null>(null),[courseLevelFilter,setCourseLevelFilter]=useState<'ALL'|'MASTER'|'DOCTORATE'>('ALL'),[books,setBooks]=useState<InfoBook[]>([]),[bookLevelFilter,setBookLevelFilter]=useState<'ALL'|'MASTER'|'DOCTORATE'>('ALL'),[bookFieldFilter,setBookFieldFilter]=useState('ALL'),[rules,setRules]=useState<{title:string;content:string}|null>(null),[slide,setSlide]=useState(0),[rulesFilter,setRulesFilter]=useState('ALL'),[error,setError]=useState('');
  useEffect(()=>{void Promise.all([
  fetch('/api/content/news').then(r=>r.ok?r.json():[]),
  fetch('/api/public/courses').then(r=>r.ok?r.json():[]),
- fetch('/api/public/content/analyses').then(r=>r.ok?r.json():[]),
  fetch('/api/public/content/rules').then(r=>r.ok?r.json():null),
  fetch('/api/public/books').then(r=>r.ok?r.json():[]),
- ]).then(([n,c,a,r,b])=>{setNews(Array.isArray(n)?n:[]);setCourses(Array.isArray(c)?c:[]);setAnalyses(Array.isArray(a)?a:[]);setRules(r);setBooks(Array.isArray(b)?b:[])}).catch(()=>setError('دریافت بخشی از اطلاعات انجام نشد. دوباره صفحه را بارگذاری کنید.'));},[]);
+ ]).then(([n,c,r,b])=>{setNews(Array.isArray(n)?n:[]);setCourses(Array.isArray(c)?c:[]);setRules(r);setBooks(Array.isArray(b)?b:[])}).catch(()=>setError('دریافت بخشی از اطلاعات انجام نشد. دوباره صفحه را بارگذاری کنید.'));},[]);
  useEffect(()=>{if(news.length<2)return;const id=window.setInterval(()=>setSlide(s=>(s+1)%news.length),8500);return()=>window.clearInterval(id)},[news.length]);
  const featured=news.length?news[((slide%news.length)+news.length)%news.length]:null;
  const normalizeLevel=(level?:string|null):'MASTER'|'DOCTORATE'|'OTHER'=>{const value=String(level||'').trim().toUpperCase();if(/MASTER|ARSHAD|کارشناسی ارشد|ارشد/.test(value))return 'MASTER';if(/DOCTOR|DOKTOR|دکتری|دکترا/.test(value))return 'DOCTORATE';return 'OTHER'};
