@@ -5,7 +5,6 @@ import { CourseCatalogPage, RulesPage, ExamAnalysisPage } from '../public/Public
 
 type NewsItem={id?:string;title:string;summary:string;imageUrl?:string;category?:string;date?:string;published?:boolean};
 type InfoCourse={id:string;title:string;professor:string;description?:string|null;coverImage?:string|null;level?:string|null;academicYear?:number|null;term?:string|null;category?:string|null;startDate?:string|null;schedule?:string|null;price?:string|number|null;classDays?:string[];classStartTime?:string|null;classEndTime?:string|null};
-type InfoAnalysis={id:string;title:string;subtitle?:string|null;content:string;examYear?:string|null;examLevel?:string|null;resourceUrl?:string|null};
 type InfoBook={id:string;title:string;description?:string|null;coverImage?:string|null;academicLevel?:string|null;category?:string|null;price?:string|number|null;discountedPrice?:string|number|null;availableQuantity?:number};
 const InformationPage:React.FC<{onBack:()=>void}>=({onBack})=>{
  const [news,setNews]=useState<NewsItem[]>([]),[courses,setCourses]=useState<InfoCourse[]>([]),[selectedCourse,setSelectedCourse]=useState<InfoCourse|null>(null),[courseLevelFilter,setCourseLevelFilter]=useState<'ALL'|'MASTER'|'DOCTORATE'>('ALL'),[books,setBooks]=useState<InfoBook[]>([]),[bookLevelFilter,setBookLevelFilter]=useState<'ALL'|'MASTER'|'DOCTORATE'>('ALL'),[bookFieldFilter,setBookFieldFilter]=useState('ALL'),[rules,setRules]=useState<{title:string;content:string}|null>(null),[slide,setSlide]=useState(0),[rulesFilter,setRulesFilter]=useState('ALL'),[error,setError]=useState('');
@@ -173,7 +172,7 @@ export const Login:React.FC<LoginProps>=({students,admins,onLoginSuccess,onAdmin
  if (viewState === 'courses') return <CourseCatalogPage onBack={() => setViewState('welcome')} />;
  if (viewState === 'rules') return <RulesPage onBack={() => setViewState('welcome')} />;
  if (viewState === 'analysis') return <ExamAnalysisPage onBack={() => setViewState('welcome')} />;
- if (viewState === 'information') return <InformationPage onBack={back} onShowAnalysis={() => setViewState('analysis')} />;
+ if (viewState === 'information') return <InformationPage onBack={back} />;
  return <div className="sh-login">
    <div className="sh-login-visual">
      <ShamsehParticleIntro/>
