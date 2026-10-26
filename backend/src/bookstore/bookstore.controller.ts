@@ -1,5 +1,5 @@
 import {
-  BadRequestException, Body, Controller, Get, Param, Patch, Post, Req, Res, UploadedFile,
+  BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Req, Res, UploadedFile,
   UseGuards, UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -26,6 +26,11 @@ export class BookstoreController {
 
   @Post('admin/books')
   createBook(@Req() req: AuthenticatedRequest, @Body() body: any) { return this.bookstore.createBook(req.user, body); }
+
+  @Delete('admin/books/:bookId')
+  deleteBook(@Req() req: AuthenticatedRequest, @Param('bookId') bookId: string) {
+    return this.bookstore.deleteBook(req.user, bookId);
+  }
 
   @Patch('admin/books/:bookId')
   updateBook(@Req() req: AuthenticatedRequest, @Param('bookId') bookId: string, @Body() body: any) {
