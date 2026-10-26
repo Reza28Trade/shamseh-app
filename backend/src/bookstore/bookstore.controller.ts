@@ -18,6 +18,12 @@ export class BookstoreController {
   @Get('books')
   listBooks(@Req() req: AuthenticatedRequest) { return this.bookstore.listBooks(req.user); }
 
+  @Post('admin/books/cover')
+  @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 5 * 1024 * 1024 } }))
+  uploadCover(@Req() req: AuthenticatedRequest, @UploadedFile() file: any) {
+    return this.bookstore.uploadCover(req.user, file);
+  }
+
   @Post('admin/books')
   createBook(@Req() req: AuthenticatedRequest, @Body() body: any) { return this.bookstore.createBook(req.user, body); }
 
@@ -66,5 +72,22 @@ export class BookstoreController {
   @Patch('admin/book-orders/:orderId/refund')
   refund(@Req() req: AuthenticatedRequest, @Param('orderId') orderId: string, @Body() body: any) {
     return this.bookstore.refund(req.user, orderId, body);
+  }
+}
+
+@Controller()
+export class PublicBookstoreController {
+  constructor(private readonly bookstore: BookstoreService) {}
+
+  @Get('public/books')
+  listPublicBooks() {
+    return this.bookstore.publicBooks();
+  }
+
+  @Get('public/books/covers/:filename')
+  async cover(@Param('filename') filename: string, @Res() res: Response) {
+    const path = this.bookstore.publicCoverPath(filename);
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+    return res.sendFile(path);
   }
 }
