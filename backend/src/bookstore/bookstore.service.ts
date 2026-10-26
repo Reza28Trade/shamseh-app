@@ -84,7 +84,7 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
   }
 
   publicCoverPath(filename: string) {
-    if (!/^[0-9a-f-]{36}\\.(jpg|png|webp)$/.test(filename)) {
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(jpg|png|webp)$/.test(filename)) {
       throw new NotFoundException('تصویر جلد پیدا نشد.');
     }
     const path = join(storageRoot, filename);
