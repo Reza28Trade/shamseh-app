@@ -235,8 +235,10 @@ export function CourseCatalogPage({ onBack }: { onBack: () => void }) {
           ))}
         </div>}
       </>}
-    </PageFrame>
+    </>
   );
+
+  return embedded ? <div>{analysisContent}</div> : <PageFrame eyebrow="تحلیل کنکورهای گذشته · گزارش پوشش آموزشی" title="تحلیل آماری کنکورهای گذشته" description="نمودار پوشش تمام کدرشته‌ها و مقاطع را برای هر سال بررسی کنید؛ با انتخاب هر نمودار، جدول کامل تحلیل سؤال‌ها باز می‌شود." onBack={onBack}>{analysisContent}</PageFrame>;
 }
 
 export function RulesPage({ onBack }: { onBack: () => void }) {
@@ -405,7 +407,7 @@ export function RulesPage({ onBack }: { onBack: () => void }) {
   );
 }
 
-export function ExamAnalysisPage({ onBack }: { onBack: () => void }) {
+export function ExamAnalysisPage({ onBack, embedded = false }: { onBack: () => void; embedded?: boolean }) {
   const colors = usePageColors();
   const [analyses, setAnalyses] = useState<PublicAnalysis[]>([]);
   const [year, setYear] = useState('');
@@ -476,8 +478,8 @@ export function ExamAnalysisPage({ onBack }: { onBack: () => void }) {
   const detailCovered = detailQuestions.filter((question) => covered(question.status)).length;
   const detailPercent = detailQuestions.length ? Math.round(detailCovered / detailQuestions.length * 100) : 0;
 
-  return (
-    <PageFrame eyebrow="تحلیل کنکورهای گذشته · گزارش پوشش آموزشی" title="تحلیل آماری کنکورهای گذشته" description="نمودار پوشش تمام کدرشته‌ها و مقاطع را برای هر سال بررسی کنید؛ با انتخاب هر نمودار، جدول کامل تحلیل سؤال‌ها باز می‌شود." onBack={onBack}>
+  const analysisContent = (
+    <>
       <section style={{ background: colors.surface, border: '1px solid ' + colors.border, borderRadius: 20, padding: '18px clamp(14px, 3vw, 26px)', marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap' }}>
         <div><h2 style={{ margin: 0, fontSize: 17, fontWeight: 900 }}>سال کنکور</h2><p style={{ margin: '5px 0 0', color: colors.muted, fontSize: 11 }}>تمام نمودارهای ثبت‌شده برای سال انتخاب‌شده نمایش داده می‌شوند.</p></div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }} role="group" aria-label="انتخاب سال کنکور">
