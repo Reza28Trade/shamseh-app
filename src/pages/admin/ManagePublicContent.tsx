@@ -244,7 +244,7 @@ ${value}`.trim();
     if (form.questions.length > totalQuestions) { setError('تعداد ردیف‌های سؤال از تعداد کل سؤال‌ها بیشتر است.'); return; }
     if (!Number.isInteger(startQuestionNumber) || startQuestionNumber < 1 || (totalQuestions > 0 && startQuestionNumber > totalQuestions)) { setError('شماره اولین سؤال مشمول محاسبه باید بین ۱ و تعداد کل سؤال‌ها باشد.'); return; }
     setSaving(true); setError(''); setSuccess('');
-    const questions = form.questions.map((question) => ({ ...question, status: question.status === 'COVERED' ? 'COVERED' : 'NOT_COVERED', explanation: question.explanation ?? [question.topic, question.className, question.professor, question.source, question.page].filter(Boolean).join(' · ') }));
+    const questions: QuestionRow[] = form.questions.map((question): QuestionRow => ({ ...question, status: question.status === 'COVERED' ? 'COVERED' : 'NOT_COVERED', explanation: question.explanation ?? [question.topic, question.className, question.professor, question.source, question.page].filter(Boolean).join(' · ') }));
     const coverage = calculateCoverage(questions, startQuestionNumber);
     const content = structured ? JSON.stringify({
       __shamsehExamAnalysis: 1,
