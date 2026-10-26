@@ -113,13 +113,27 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     } });
   }
 
+  async deleteBook(user: AuthenticatedUser, bookId: string) {
+    this.requireAdmin(user);
+    const existing = await this.prisma.book.findUnique({
+      where: { id: bookId },
+      include: { orderItems: { select: { id: true }, take: 1 } },
+    });
+    if (!existing) throw new NotFoundException('کتاب پیدا نشد.');
+    if (existing.reservedQuantity > 0 || existing.orderItems.length > 0) {
+      throw new BadRequestException('این کتاب سابقه سفارش یا رزرو دارد و برای حفظ سوابق مالی قابل حذف نیست؛ آن را غیرفعال کنید.');
+    }
+    await this.prisma.book.delete({ where: { id: bookId } });
+    return { success: true, id: bookId };
+  }
+
   async updateBook(user: AuthenticatedUser, bookId: string, body: any) {
     this.requireAdmin(user);
     const existing = await this.prisma.book.findUnique({ where: { id: bookId } });
     if (!existing) throw new NotFoundException('کتاب پیدا نشد.');
     const data: any = {};
-    for (const key of ['title', 'description', 'coverImage', 'category', 'isActive', 'displayOrder', 'price', 'discountedPrice']) {
-      if (body[key] !== undefined) data[key] = body[key] === '' && ['description','coverImage','category','discountedPrice'].includes(key) ? null : body[key];
+    for (const key of ['title', 'description', 'coverImage', 'academicLevel', 'category', 'isActive', 'displayOrder', 'price', 'discountedPrice']) {
+      if (body[key] !== undefined) data[key] = body[key] === '' && ['description','coverImage','academicLevel','category','discountedPrice'].includes(key) ? null : body[key];
     }
     if (body.stockQuantity !== undefined) {
       const stock = Number(body.stockQuantity);
