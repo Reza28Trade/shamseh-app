@@ -394,7 +394,7 @@ export function RulesPage({ onBack }: { onBack: () => void }) {
                 <h3 style={{ margin: 0, fontSize: 13, lineHeight: 1.9, fontWeight: 900 }}>{book.title}</h3>
                 {book.description && <p style={{ margin: 0, color: colors.muted, fontSize: 11, lineHeight: 1.9, overflowWrap: 'anywhere' }}>{book.description}</p>}
                 <div style={{ marginTop: 'auto', paddingTop: 8, borderTop: `1px solid ${colors.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                  <strong style={{ fontSize: 12 }}>{money(book.discountedPrice ?? book.price) || 'قیمت اعلام نشده'}</strong>
+                  <strong style={{ fontSize: 12 }}>{money(book.discountedPrice ?? book.price ?? null) || 'قیمت اعلام نشده'}</strong>
                   <span style={{ fontSize: 10, color: book.availableQuantity > 0 ? colors.muted : '#c45b5b' }}>{book.availableQuantity > 0 ? `موجود: ${book.availableQuantity.toLocaleString('fa-IR')}` : 'ناموجود'}</span>
                 </div>
               </article>
