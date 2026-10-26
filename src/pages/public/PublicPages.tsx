@@ -410,6 +410,7 @@ export function ExamAnalysisPage({ onBack, embedded = false }: { onBack: () => v
   const [analyses, setAnalyses] = useState<PublicAnalysis[]>([]);
   const [year, setYear] = useState('');
   const [selected, setSelected] = useState<PublicAnalysis | null>(null);
+  const [showFullTable, setShowFullTable] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -469,6 +470,19 @@ export function ExamAnalysisPage({ onBack, embedded = false }: { onBack: () => v
     return { id: item.id, item, data, code: data.fieldCode || '—', field: data.fieldName, level: levelLabel(data.examLevel || item.examLevel), percent: Math.round(coveredCount / included.length * 100), coveredCount, includedCount: included.length, startQuestion, color: palette[index % palette.length] };
   }).filter((item): item is NonNullable<typeof item> => item !== null);
 
+  const fullTableRows = currentAnalyses.flatMap((item) => {
+    const data = readStructured(item);
+    if (!data) return [];
+    const startQuestion = startFor(data);
+    return questionsFor(data).slice().sort((a, b) => questionNumber(a) - questionNumber(b)).map((question, index) => ({
+      key: item.id + '-' + question.questionNumber + '-' + index,
+      item,
+      data,
+      question,
+      inCalculation: questionNumber(question) >= startQuestion,
+    }));
+  });
+
   const detailData = selected ? readStructured(selected) : null;
   const detailStart = detailData ? startFor(detailData) : 1;
   const detailAllQuestions = detailData ? questionsFor(detailData).slice().sort((a, b) => questionNumber(a) - questionNumber(b)) : [];
@@ -501,9 +515,32 @@ export function ExamAnalysisPage({ onBack, embedded = false }: { onBack: () => v
             </button>)}
           </div>
           : <div style={{ borderRadius: 14, background: colors.surfaceAlt, padding: 22, color: colors.muted, fontSize: 13, lineHeight: 2 }}>{years.length ? 'برای سال ' + yearLabel(year) + ' هنوز تحلیل ساختاریافته دارای وضعیت سؤال‌ها ثبت نشده است.' : 'هنوز تحلیل ساختاریافته‌ای برای نمایش ثبت نشده است.'}<p style={{ margin: '8px 0 0', fontSize: 11 }}>نمودار فقط از داده واقعی سؤال‌ها ساخته می‌شود؛ درصد نمونه یا حدسی نمایش داده نمی‌شود.</p></div>}
+        {charts.length > 0 && <div style={{ display: 'flex', justifyContent: 'center', marginTop: 18 }}>
+          <button type="button" onClick={() => setShowFullTable(true)} style={primaryButton(colors)}><FileText size={16} /> جدول کامل سؤال‌ها · همه کدرشته‌ها</button>
+        </div>}
         <p style={{ color: colors.muted, fontSize: 10, lineHeight: 1.9, margin: '15px 0 0' }}>درصد پوشش برابر تعداد سؤال‌های «پوشش داده شده» تقسیم بر سؤال‌های مشمول محاسبه است؛ این درصد، درصد پاسخ صحیح داوطلبان نیست.</p>
       </section>
 
+      {showFullTable && <div role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setShowFullTable(false); }} style={{ position: 'fixed', inset: 0, zIndex: 1001, background: 'rgba(3,10,14,.72)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 14, backdropFilter: 'blur(5px)' }}>
+        <section role="dialog" aria-modal="true" aria-labelledby="exam-analysis-full-table-title" style={{ width: 'min(1200px, 100%)', maxHeight: '92vh', overflow: 'auto', background: colors.surface, color: colors.text, border: '1px solid ' + colors.border, borderRadius: 20, boxShadow: '0 24px 90px rgba(0,0,0,.3)', direction: 'rtl' }}>
+          <header style={{ position: 'sticky', top: 0, zIndex: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, padding: '18px clamp(16px, 3vw, 26px)', background: colors.surface, borderBottom: '1px solid ' + colors.border }}>
+            <div><h2 id="exam-analysis-full-table-title" style={{ margin: 0, fontSize: 19, fontWeight: 950 }}>جدول کامل سؤال‌ها</h2><p style={{ margin: '5px 0 0', color: colors.muted, fontSize: 12 }}>کنکور {year ? yearLabel(year) : '—'} · همه کدرشته‌ها و مقاطع</p></div>
+            <button type="button" onClick={() => setShowFullTable(false)} style={secondaryButton(colors)}>بستن ×</button>
+          </header>
+          <div style={{ padding: '18px clamp(12px, 2vw, 22px) 24px' }}>
+            {fullTableRows.length ? <div style={{ overflowX: 'auto', border: '1px solid ' + colors.border, borderRadius: 12 }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 1050, fontSize: 12, textAlign: 'right' }}>
+                <thead><tr style={{ background: colors.surfaceAlt }}>{['کدرشته', 'رشته', 'مقطع', 'شماره سؤال', 'وضعیت پوشش', 'مبحث', 'کلاس / درس', 'استاد', 'منبع', 'صفحه', 'توضیحات'].map((heading) => <th key={heading} style={{ padding: '12px 10px', borderBottom: '1px solid ' + colors.border, whiteSpace: 'nowrap' }}>{heading}</th>)}</tr></thead>
+                <tbody>{fullTableRows.map(({ key, data, question, inCalculation }) => <tr key={key} style={{ borderBottom: '1px solid ' + colors.border, opacity: inCalculation ? 1 : 0.62 }}>
+                  <td style={{ padding: 10, whiteSpace: 'nowrap' }}>{data.fieldCode || '—'}</td><td style={{ padding: 10 }}>{data.fieldName || '—'}</td><td style={{ padding: 10, whiteSpace: 'nowrap' }}>{levelLabel(data.examLevel)}</td>
+                  <td style={{ padding: 10, whiteSpace: 'nowrap' }}>{yearLabel(question.questionNumber || '—')}</td><td style={{ padding: 10, whiteSpace: 'nowrap', color: !inCalculation ? colors.muted : covered(question.status) ? '#168C91' : '#c45b5b', fontWeight: 850 }}>{!inCalculation ? 'خارج از محاسبه' : covered(question.status) ? 'پوشش داده شده' : 'پوشش داده نشده'}</td>
+                  <td style={{ padding: 10 }}>{question.topic || '—'}</td><td style={{ padding: 10 }}>{question.className || '—'}</td><td style={{ padding: 10 }}>{question.professor || '—'}</td><td style={{ padding: 10 }}>{question.source || '—'}</td><td style={{ padding: 10 }}>{question.page || '—'}</td><td style={{ padding: 10, whiteSpace: 'pre-wrap', minWidth: 180 }}>{question.explanation || '—'}</td>
+                </tr>)}</tbody>
+              </table>
+            </div> : <div style={{ padding: 22, borderRadius: 12, background: colors.surfaceAlt, color: colors.muted }}>برای این سال هنوز سؤال ساختاریافته‌ای ثبت نشده است.</div>}
+          </div>
+        </section>
+      </div>}
       {selected && detailData && <div role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setSelected(null); }} style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(3,10,14,.68)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 14, backdropFilter: 'blur(5px)' }}>
         <section role="dialog" aria-modal="true" aria-labelledby="exam-analysis-modal-title" style={{ width: 'min(1100px, 100%)', maxHeight: '92vh', overflow: 'auto', background: colors.surface, color: colors.text, border: '1px solid ' + colors.border, borderRadius: 20, boxShadow: '0 24px 90px rgba(0,0,0,.3)', direction: 'rtl' }}>
           <header style={{ position: 'sticky', top: 0, zIndex: 2, display: 'flex', alignItems: 'start', justifyContent: 'space-between', gap: 14, padding: '18px clamp(16px, 3vw, 26px)', background: colors.surface, borderBottom: '1px solid ' + colors.border }}>
