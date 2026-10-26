@@ -21,6 +21,7 @@ type PublicCourse = {
 };
 
 type PublicRule = { title: string; subtitle?: string | null; content: string; updatedAt?: string | null };
+type PublicBook = { id: string; title: string; description?: string | null; coverImage?: string | null; category?: string | null; price?: string | number | null; discountedPrice?: string | number | null; availableQuantity: number };
 type PublicAnalysis = {
   id: string;
   title: string;
@@ -243,6 +244,24 @@ export function RulesPage({ onBack }: { onBack: () => void }) {
   const [rules, setRules] = useState<PublicRule | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [books, setBooks] = useState<PublicBook[]>([]);
+  const [booksLoading, setBooksLoading] = useState(true);
+  const [booksError, setBooksError] = useState('');
+
+  const loadBooks = async () => {
+    setBooksLoading(true);
+    setBooksError('');
+    try {
+      const response = await fetch('/api/public/books');
+      if (!response.ok) throw new Error('load');
+      const data = await response.json();
+      setBooks(Array.isArray(data) ? data : []);
+    } catch {
+      setBooksError('دریافت فهرست کتاب‌ها انجام نشد. لطفاً دوباره تلاش کنید.');
+    } finally {
+      setBooksLoading(false);
+    }
+  };
 
   const loadRules = async () => {
     setLoading(true);
@@ -258,7 +277,7 @@ export function RulesPage({ onBack }: { onBack: () => void }) {
     }
   };
 
-  useEffect(() => { void loadRules(); }, []);
+  useEffect(() => { void loadRules(); void loadBooks(); }, []);
 
   const paragraphs = useMemo(
     () => (rules?.content || '').split(/\n\s*\n/).map((part) => part.trim()).filter(Boolean),
@@ -349,6 +368,38 @@ export function RulesPage({ onBack }: { onBack: () => void }) {
           <FileText size={16} style={{ flex: '0 0 auto', marginTop: 2 }} />
           <span>برای اطلاع از جزئیات اختصاصی هر دوره، برنامه آموزشی و اطلاعیه‌های همان دوره را نیز بررسی کنید.</span>
         </div>
+      </section>
+
+      <section aria-labelledby="shamseh-books-heading" style={{ marginTop: 26, border: `1px solid ${colors.border}`, background: colors.surface, borderRadius: 22, padding: 'clamp(18px, 3vw, 28px)', boxShadow: colors.dark ? '0 16px 38px rgba(0,0,0,.14)' : '0 16px 38px rgba(15,23,42,.035)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', marginBottom: 18 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ width: 44, height: 44, borderRadius: 13, display: 'grid', placeItems: 'center', color: colors.accent, background: colors.accentSoft, border: `1px solid ${colors.border}` }}><BookOpen size={21} /></div>
+            <div>
+              <h2 id="shamseh-books-heading" style={{ margin: 0, fontSize: 17, fontWeight: 900 }}>کتاب‌ها و منابع آموزشی</h2>
+              <p style={{ margin: '5px 0 0', color: colors.muted, fontSize: 12, lineHeight: 1.9 }}>کتاب‌های فعال فروشگاه شمسه، مستقیماً از فهرست مدیریت نمایش داده می‌شوند.</p>
+            </div>
+          </div>
+          <button type="button" onClick={() => void loadBooks()} style={secondaryButton(colors)}><RefreshCw size={14} /> تازه‌سازی فهرست</button>
+        </div>
+        {booksLoading ? <p style={{ color: colors.muted, fontSize: 12, padding: 12 }}>در حال دریافت منابع آموزشی…</p>
+          : booksError ? <div role="alert" style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}><p style={{ color: colors.text, fontSize: 12 }}>{booksError}</p><button type="button" onClick={() => void loadBooks()} style={primaryButton(colors)}>تلاش مجدد</button></div>
+          : books.length === 0 ? <div style={{ padding: '22px 12px', textAlign: 'center', color: colors.muted, border: `1px dashed ${colors.border}`, borderRadius: 14, fontSize: 12 }}>در حال حاضر کتاب فعالی برای نمایش ثبت نشده است.</div>
+          : <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 190px), 1fr))', gap: 12 }}>
+            {books.map((book) => (
+              <article key={book.id} style={{ display: 'grid', alignContent: 'start', gap: 10, minWidth: 0, padding: 13, borderRadius: 15, border: `1px solid ${colors.border}`, background: colors.dark ? 'rgba(255,255,255,.018)' : '#fff' }}>
+                <div style={{ height: 170, display: 'grid', placeItems: 'center', overflow: 'hidden', borderRadius: 11, background: colors.surfaceAlt, border: `1px solid ${colors.border}` }}>
+                  {book.coverImage ? <img src={book.coverImage} alt={`جلد ${book.title}`} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'contain' }} onError={(event) => { event.currentTarget.style.display = 'none'; }} /> : <BookOpen size={36} color={colors.muted} strokeWidth={1.3} />}
+                </div>
+                {book.category && <span style={{ color: colors.accent, fontSize: 10, fontWeight: 800 }}>{book.category}</span>}
+                <h3 style={{ margin: 0, fontSize: 13, lineHeight: 1.9, fontWeight: 900 }}>{book.title}</h3>
+                {book.description && <p style={{ margin: 0, color: colors.muted, fontSize: 11, lineHeight: 1.9, overflowWrap: 'anywhere' }}>{book.description}</p>}
+                <div style={{ marginTop: 'auto', paddingTop: 8, borderTop: `1px solid ${colors.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                  <strong style={{ fontSize: 12 }}>{money(book.discountedPrice ?? book.price) || 'قیمت اعلام نشده'}</strong>
+                  <span style={{ fontSize: 10, color: book.availableQuantity > 0 ? colors.muted : '#c45b5b' }}>{book.availableQuantity > 0 ? `موجود: ${book.availableQuantity.toLocaleString('fa-IR')}` : 'ناموجود'}</span>
+                </div>
+              </article>
+            ))}
+          </div>}
       </section>
     </PageFrame>
   );
