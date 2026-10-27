@@ -12,7 +12,7 @@ import { ManageMockExams } from './pages/admin/ManageMockExams';
 import { ManageCounseling } from './pages/admin/ManageCounseling';
 import { ManageNotifications } from './pages/admin/ManageNotifications';
 import { ManagePublicContent } from './pages/admin/ManagePublicContent';
-import { Login } from './pages/user/Login';
+import { Login, InformationPage } from './pages/user/Login';
 import { UserDashboard } from './pages/user/UserDashboard';
 import { CounselorPortal } from './pages/counselor/CounselorPortal';
 import { RegistrationPage } from './pages/public/RegistrationPage';
@@ -200,6 +200,10 @@ export function App() {
 
   if (window.location.pathname === '/register' || window.location.pathname === '/register/') {
     return <RegistrationPage />;
+  }
+
+  if (window.location.pathname === '/public' || window.location.pathname === '/public/') {
+    return <InformationPage onBack={() => { window.location.href = '/'; }} />;
   }
 
   if (view === 'checking') {
