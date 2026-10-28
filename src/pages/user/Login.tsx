@@ -46,7 +46,7 @@ export const InformationPage:React.FC<{onBack:()=>void}>=({onBack})=>{
 .sh-public-course-grid{align-items:stretch}
 .sh-public-course-card{height:360px;min-width:0;position:relative;display:flex;align-items:flex-end;overflow:hidden;border-radius:15px;background:#262424;box-shadow:0 7px 16px rgba(38,36,36,.14);isolation:isolate;transition:transform .4s ease,box-shadow .4s ease}
 .sh-public-course-card::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(38,36,36,.03) 10%,rgba(38,36,36,.25) 40%,rgba(25,24,23,.9) 100%);opacity:.88;transition:opacity .4s ease}
-.sh-public-course-image,.sh-public-course-placeholder{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;transition:transform .55s ease}
+.sh-public-course-image,.sh-public-course-placeholder{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;object-position:center;z-index:0;transition:none}
 .sh-public-course-placeholder{display:grid;place-items:center;background:linear-gradient(135deg,#e5d9cb,#cbbca9);color:#008080}
 .sh-public-course-info{position:relative;z-index:2;width:100%;padding:22px;color:#fffaf2;transform:translateY(18px);transition:transform .4s ease}
 .sh-public-course-info h3{font-size:17px;line-height:1.8;margin:0 0 8px;color:#fffaf2}
