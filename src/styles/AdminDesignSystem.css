@@ -3121,3 +3121,51 @@
   border:0!important;
   box-shadow:none!important;
 }
+
+/* Typography specimen-inspired card treatment: warm paper, quiet border, soft shadow. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page :is(
+  .students-stats,.student-chart-card,.student-form-card,.student-import-card,.student-list-card,
+  .course-stat,.course-form,.course-list,.admin-stat,.offline-stat-card,.messages-stat,
+  .mock-exam-stat,.offline-list-card,.messages-ticket-section,.messages-detail-section,
+  .accounts-card,.accounts-create-card,.notifications-form-card,.admin-page-heading,
+  .admin-page-head,.page-header,.messages-page-head,.notifications-page-head,
+  .student-stat,.student-home-panel,.student-home-stat,.student-home-exam,
+  .expanded-panel,.course-card
+){
+  border-radius:18px!important;
+  border:1px solid var(--admin-border)!important;
+  background:var(--admin-card)!important;
+  background-image:none!important;
+  box-shadow:0 8px 24px rgba(38,36,36,.055)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page :is(
+  .students-stats,.student-chart-card,.student-form-card,.student-import-card,.student-list-card,
+  .course-stat,.course-form,.course-list,.admin-stat,.offline-stat-card,.messages-stat,
+  .mock-exam-stat,.offline-list-card,.messages-ticket-section,.messages-detail-section,
+  .accounts-card,.accounts-create-card,.notifications-form-card,.admin-page-heading,
+  .admin-page-head,.page-header,.messages-page-head,.notifications-page-head,
+  .student-stat,.student-home-panel,.student-home-stat,.student-home-exam,
+  .expanded-panel,.course-card
+)::before,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page :is(
+  .students-stats,.student-chart-card,.student-form-card,.student-import-card,.student-list-card,
+  .course-stat,.course-form,.course-list,.admin-stat,.offline-stat-card,.messages-stat,
+  .mock-exam-stat,.offline-list-card,.messages-ticket-section,.messages-detail-section,
+  .accounts-card,.accounts-create-card,.notifications-form-card,.admin-page-heading,
+  .admin-page-head,.page-header,.messages-page-head,.notifications-page-head,
+  .student-stat,.student-home-panel,.student-home-stat,.student-home-exam,
+  .expanded-panel,.course-card
+)::after{
+  display:none!important;
+  content:none!important;
+  background:none!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page :is(
+  .students-page-head h2,.course-title,.section-title h3,.course-section-head h3,
+  .admin-page-heading h1,.admin-page-head h1,.page-header h1
+){
+  letter-spacing:-.25px;
+  line-height:1.55;
+}
+
