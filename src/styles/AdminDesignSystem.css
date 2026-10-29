@@ -3136,7 +3136,7 @@
   border:1px solid var(--admin-border)!important;
   background:var(--admin-card)!important;
   background-image:none!important;
-  box-shadow:0 8px 24px rgba(38,36,36,.055)!important;
+  box-shadow:none!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page :is(
   .students-stats,.student-chart-card,.student-form-card,.student-import-card,.student-list-card,
