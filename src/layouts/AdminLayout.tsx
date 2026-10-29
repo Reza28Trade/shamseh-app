@@ -49,7 +49,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
   });
   const activeItem = menuItems.find((item) => item.id === activeTab || (activeTab === 'finance' && item.id === 'registrations')) ?? menuItems[0];
   const vars = {
-    '--admin-bg': isDark ? 'var(--shamseh-charcoal)' : 'var(--shamseh-almond)',
+    '--admin-bg': isDark ? 'var(--shamseh-charcoal)' : '#F4EFE8',
     '--admin-card': isDark ? '#1D1B1B' : '#F7F1E8',
     '--admin-inner': isDark ? '#302D2D' : '#E5D9CB',
     '--admin-text': isDark ? 'var(--shamseh-almond)' : 'var(--shamseh-charcoal)',
