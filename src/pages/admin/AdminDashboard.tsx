@@ -290,13 +290,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-stat-arrow{color:var(--admin-sub);flex:none}
         .admin-followup-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
         .admin-operations-panel,.admin-recent-activity{width:100%;min-width:0}
-        .admin-dashboard-page>.admin-operations-panel,.admin-dashboard-page>.admin-recent-activity{box-sizing:border-box!important;width:100%!important;max-width:none!important;min-width:0!important;margin:0!important;padding:17px!important;border:1px solid var(--admin-border)!important;border-radius:17px!important;background:var(--admin-card)!important;background-image:none!important;color:var(--admin-text)!important;box-shadow:var(--admin-shadow)!important}
+        .admin-dashboard-page>.admin-operations-panel,.admin-dashboard-page>.admin-recent-activity{box-sizing:border-box!important;width:100%!important;max-width:none!important;min-width:0!important;margin:0!important;padding:17px!important;border:1px solid var(--admin-border)!important;border-radius:17px!important;background:var(--admin-card)!important;background-image:none!important;color:var(--admin-text)!important;box-shadow:var(--admin-shadow),inset 1px 1px 2px rgba(255,255,255,.52),inset -1px -1px 2px rgba(0,0,0,.035)!important}
         .admin-dashboard-page>.admin-operations-panel .admin-panel-heading,.admin-dashboard-page>.admin-recent-activity .admin-panel-heading{padding:0 0 12px!important;margin:0 0 13px!important;border-bottom:1px solid var(--admin-border)!important}
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-card{min-height:76px!important;border:1px solid var(--admin-border)!important;border-radius:12px!important;background:var(--admin-inner)!important;color:var(--admin-text)!important;box-shadow:none!important}
+        .admin-dashboard-page>.admin-operations-panel .admin-followup-card{min-height:76px!important;border:1px solid var(--admin-border)!important;border-radius:12px!important;background:var(--admin-inner)!important;color:var(--admin-text)!important;box-shadow:var(--admin-shadow),inset 1px 1px 2px rgba(255,255,255,.48),inset -1px -1px 2px rgba(0,0,0,.035)!important}
         .admin-dashboard-page>.admin-operations-panel .admin-followup-card:hover{border-color:var(--admin-accent)!important;background:var(--admin-accent-soft)!important;box-shadow:var(--admin-shadow)!important}
-        .admin-activity-list{display:flex;flex-direction:column;gap:0}
-        .admin-activity-row{display:flex;align-items:center;gap:10px;min-width:0;padding:10px 0;border-bottom:1px solid var(--admin-border)}
-        .admin-activity-row:last-child{border-bottom:0}
+        .admin-activity-list{display:flex;flex-direction:column;gap:8px}
+        .admin-activity-row{display:flex;align-items:center;gap:10px;min-width:0;padding:12px;border:1px solid var(--admin-border);border-radius:12px;background:var(--admin-inner);box-shadow:var(--admin-shadow),inset 1px 1px 2px rgba(255,255,255,.48),inset -1px -1px 2px rgba(0,0,0,.035);transition:border-color .18s,transform .18s,box-shadow .18s}
+        .admin-activity-row:hover{border-color:var(--admin-accent);transform:translateY(-1px)}
         .admin-activity-mark{width:29px;height:29px;display:grid;place-items:center;flex:none;border-radius:9px;background:var(--admin-accent-soft);color:var(--admin-accent)}
         .admin-activity-copy{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
         .admin-activity-copy strong{font-size:11px;overflow-wrap:anywhere}
