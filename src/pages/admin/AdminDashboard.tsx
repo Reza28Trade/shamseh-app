@@ -503,6 +503,29 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-dashboard-page>.admin-operations-panel .admin-followup-card>svg{color:var(--admin-sub)!important;flex:none!important}
         @media(max-width:900px){.admin-dashboard-page>.admin-operations-panel .admin-followup-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
         @media(max-width:600px){.admin-dashboard-page>.admin-operations-panel{padding:14px!important}.admin-dashboard-page>.admin-operations-panel .admin-followup-grid{grid-template-columns:minmax(0,1fr)!important}}
+        /* Final high-specificity surface reset: follow-up tiles are content rows, never raised stat cards. */
+        .admin-shell .admin-page-content .admin-dashboard-page > section.admin-operations-panel .admin-followup-grid > button.admin-followup-card{
+          background:var(--admin-inner)!important;
+          background-color:var(--admin-inner)!important;
+          background-image:none!important;
+          border:1px solid var(--admin-border)!important;
+          border-radius:12px!important;
+          box-shadow:none!important;
+          filter:none!important;
+          transform:none!important;
+          text-shadow:none!important;
+        }
+        .admin-shell .admin-page-content .admin-dashboard-page > section.admin-operations-panel .admin-followup-grid > button.admin-followup-card:hover{
+          background:var(--admin-inner)!important;
+          border-color:var(--admin-accent)!important;
+          box-shadow:none!important;
+          filter:none!important;
+          transform:translateY(-1px)!important;
+        }
+        .admin-shell .admin-page-content .admin-dashboard-page > section.admin-operations-panel .admin-followup-grid > button.admin-followup-card:focus-visible{
+          outline:2px solid var(--admin-accent)!important;
+          outline-offset:2px!important;
+        }
         @media(prefers-reduced-motion:reduce){.admin-dashboard-page *{transition:none!important;animation:none!important}}
       `}</style>
     </div>
