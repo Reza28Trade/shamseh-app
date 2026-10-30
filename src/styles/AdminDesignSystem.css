@@ -3324,3 +3324,68 @@
   }
 }
 
+/* Refresh action: reuse the login entry's glossy frosted-glass treatment. */
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button{
+  position:relative!important;
+  isolation:isolate;
+  overflow:hidden!important;
+  border:1px solid rgba(223,207,186,.92)!important;
+  border-top-color:rgba(255,255,255,.88)!important;
+  border-bottom-color:#d9c7af!important;
+  border-radius:12px!important;
+  background:linear-gradient(110deg,rgba(248,241,231,.92),rgba(239,229,215,.88))!important;
+  color:var(--admin-accent)!important;
+  box-shadow:0 8px 18px rgba(75,53,30,.075),inset 0 1px 0 rgba(255,255,255,.88)!important;
+  -webkit-backdrop-filter:blur(12px);
+  backdrop-filter:blur(12px);
+  transition:transform .28s ease,background .28s ease,border-color .28s ease,box-shadow .28s ease,color .28s ease!important;
+}
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button::before{
+  content:""!important;
+  position:absolute;
+  inset:0 auto 0 0;
+  width:48%;
+  z-index:-1;
+  background:linear-gradient(to left,rgba(255,255,255,0),rgba(255,255,255,.66));
+  transform:skewX(28deg) translateX(-150%);
+  transition:transform .55s ease;
+  pointer-events:none;
+}
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button:hover:not(:disabled),
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button:focus-visible{
+  transform:translateY(-2px);
+  background:linear-gradient(110deg,rgba(255,250,242,.98),rgba(232,240,233,.96))!important;
+  border-color:rgba(22,140,145,.48)!important;
+  color:#126f73!important;
+  box-shadow:0 14px 26px rgba(18,43,43,.11),0 0 16px rgba(72,209,204,.13),inset 0 1px 0 rgba(255,255,255,.94)!important;
+}
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button:hover:not(:disabled)::before,
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button:focus-visible::before{
+  transform:skewX(28deg) translateX(280%);
+}
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button:focus-visible{
+  outline:2px solid var(--admin-accent)!important;
+  outline-offset:3px;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button{
+  border-color:rgba(238,229,218,.16)!important;
+  border-top-color:rgba(255,255,255,.22)!important;
+  border-bottom-color:rgba(0,0,0,.35)!important;
+  background:linear-gradient(110deg,rgba(58,54,52,.94),rgba(39,36,35,.94))!important;
+  color:var(--admin-accent)!important;
+  box-shadow:0 8px 18px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.12)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button:hover:not(:disabled),
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button:focus-visible{
+  background:linear-gradient(110deg,rgba(68,64,61,.98),rgba(43,40,38,.98))!important;
+  border-color:var(--admin-brand-border)!important;
+  color:var(--admin-accent)!important;
+  box-shadow:0 12px 24px rgba(0,0,0,.34),0 0 14px rgba(72,209,204,.12),inset 0 1px 0 rgba(255,255,255,.16)!important;
+}
+@media(prefers-reduced-motion:reduce){
+  .admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button,
+  .admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button::before{
+    transition:none!important;
+  }
+}
+
