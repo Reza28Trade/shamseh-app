@@ -3344,9 +3344,9 @@
   content:""!important;
   position:absolute;
   inset:0 auto 0 0;
-  width:48%;
+  width:34%;
   z-index:-1;
-  background:linear-gradient(to left,rgba(255,255,255,0),rgba(255,255,255,.66));
+  background:linear-gradient(105deg,rgba(255,255,255,0),rgba(255,255,255,.20) 48%,rgba(0,128,128,.055) 72%,rgba(255,255,255,0));
   transform:skewX(28deg) translateX(-150%);
   transition:transform .55s ease;
   pointer-events:none;
@@ -3354,10 +3354,10 @@
 .admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button:hover:not(:disabled),
 .admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button:focus-visible{
   transform:translateY(-2px);
-  background:linear-gradient(110deg,rgba(255,250,242,.98),rgba(232,240,233,.96))!important;
+  background:linear-gradient(110deg,rgba(248,241,231,.96),rgba(239,233,222,.94))!important;
   border-color:rgba(22,140,145,.48)!important;
   color:#126f73!important;
-  box-shadow:0 14px 26px rgba(18,43,43,.11),0 0 16px rgba(72,209,204,.13),inset 0 1px 0 rgba(255,255,255,.94)!important;
+  box-shadow:0 11px 22px rgba(18,43,43,.085),0 0 10px rgba(72,209,204,.085),inset 0 1px 0 rgba(255,255,255,.72)!important;
 }
 .admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button:hover:not(:disabled)::before,
 .admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button:focus-visible::before{
