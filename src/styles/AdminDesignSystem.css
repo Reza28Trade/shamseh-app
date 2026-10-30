@@ -435,7 +435,11 @@
   line-height:1.5;
 }
 @media(max-width:760px){
-  .admin-shell .admin-page-content .admin-dashboard-page :is(.admin-stat-grid,.admin-followup-grid){
+  .admin-shell .admin-page-content .admin-dashboard-page .admin-stat-grid{
+    grid-template-columns:repeat(2,310px)!important;
+    justify-content:start!important;
+  }
+  .admin-shell .admin-page-content .admin-dashboard-page .admin-followup-grid{
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
   }
   .admin-shell .admin-page-content .admin-dashboard-page .admin-welcome{
@@ -444,7 +448,10 @@
   }
 }
 @media(max-width:440px){
-  .admin-shell .admin-page-content .admin-dashboard-page :is(.admin-stat-grid,.admin-followup-grid){
+  .admin-shell .admin-page-content .admin-dashboard-page .admin-stat-grid{
+    grid-template-columns:minmax(0,310px)!important;
+  }
+  .admin-shell .admin-page-content .admin-dashboard-page .admin-followup-grid{
     grid-template-columns:minmax(0,1fr)!important;
   }
 }
