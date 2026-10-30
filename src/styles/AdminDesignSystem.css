@@ -3389,3 +3389,109 @@
   }
 }
 
+/* Shamseh admin unified content-card standard.
+   The dashboard stat tiles remain the only raised-card exception.
+   All other admin content surfaces follow the Priority/Needs-action panel language. */
+.admin-shell{
+  --admin-content-surface:var(--admin-card);
+  --admin-content-inner:var(--admin-inner);
+  --admin-content-border:var(--admin-border);
+  --admin-content-shadow:var(--admin-shadow);
+  --admin-content-radius:15px;
+}
+.admin-shell .admin-page-content :is(
+  .admin-legacy-page > section,
+  .admin-legacy-page > form,
+  .admin-legacy-page > div:not([data-admin-overlay]),
+  .admin-finance-registration-page > section,
+  .admin-finance-registration-page > article,
+  .admin-finance-registration-page > div > article,
+  .admin-finance-registration-page > div > section,
+  .accounts-card,
+  .course-card,
+  .expanded-panel,
+  .counseling-account-section,
+  .counseling-assignment-section,
+  .counseling-conversation-section,
+  .messages-ticket-section,
+  .messages-detail-section,
+  .mock-exam-list-card,
+  .notifications-form-card,
+  .offline-list-card,
+  .student-chart-card,
+  .student-form-card,
+  .student-import-card,
+  .student-list-card,
+  .course-form,
+  .course-list,
+  .course-stat,
+  .mock-exam-stats,
+  .mock-exam-list-card
+){
+  border-color:var(--admin-content-border)!important;
+  border-radius:var(--admin-content-radius)!important;
+  background:var(--admin-content-surface)!important;
+  background-image:none!important;
+  box-shadow:var(--admin-content-shadow)!important;
+  color:var(--admin-text)!important;
+}
+/* Nested content tiles use the same inset surface as action rows. */
+.admin-shell .admin-page-content :is(
+  .admin-action-row,
+  .admin-upcoming-row,
+  .admin-followup-card,
+  .admin-activity-row,
+  .accounts-admin-row,
+  .course-stat,
+  .mock-exam-stat,
+  .counseling-student-row,
+  .offline-request-row,
+  .student-term-legend-row,
+  .student-clickable-row,
+  .messages-table-status
+){
+  border-color:var(--admin-content-border)!important;
+  background:var(--admin-content-inner)!important;
+  background-image:none!important;
+  color:var(--admin-text)!important;
+}
+/* Preserve layout and semantic status colors; standardize only surface treatment. */
+.admin-shell .admin-page-content :is(
+  .admin-action-row,
+  .admin-upcoming-row,
+  .admin-followup-card,
+  .admin-activity-row,
+  .accounts-admin-row,
+  .course-stat,
+  .mock-exam-stat,
+  .counseling-student-row,
+  .offline-request-row,
+  .student-term-legend-row,
+  .student-clickable-row
+):hover{
+  border-color:var(--admin-accent)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-page-content .admin-finance-registration-page > div > article{
+  padding:14px 15px;
+}
+.admin-shell .admin-page-content .admin-finance-registration-page > section{
+  padding:14px;
+}
+.admin-shell .admin-page-content .admin-finance-registration-page > section > div,
+.admin-shell .admin-page-content .admin-finance-registration-page > div{
+  min-width:0;
+}
+.admin-shell .admin-page-content .admin-finance-registration-page article,
+.admin-shell .admin-page-content .admin-finance-registration-page section{
+  color:var(--admin-text);
+}
+.admin-shell .admin-page-content .admin-finance-registration-page article strong{
+  color:var(--admin-text);
+}
+/* Keep the top dashboard statistics on their dedicated raised-card pattern. */
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat{
+  background:var(--admin-card)!important;
+  box-shadow:0 8px 18px rgba(38,36,36,.10),0 2px 5px rgba(38,36,36,.055),inset 1px 1px 2px rgba(255,255,255,.68),inset -2px -2px 4px rgba(38,36,36,.055)!important;
+}
+
