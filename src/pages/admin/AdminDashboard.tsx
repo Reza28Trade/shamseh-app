@@ -236,7 +236,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-dashboard-tools{display:flex;direction:rtl;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:30px}
         .admin-dashboard-updated{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--admin-sub)}
         .admin-dashboard-updated svg{color:var(--admin-accent);flex:none}
-        .admin-refresh-button{display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--admin-brand-border);border-radius:10px;padding:9px 12px;background:var(--admin-accent-soft);color:var(--shamseh-charcoal,#262424);font-size:11px;font-weight:800;white-space:nowrap;cursor:pointer;transition:color .18s,border-color .18s,background .18s}\n        .admin-refresh-button:hover:not(:disabled){color:var(--admin-accent);border-color:var(--admin-accent);background:var(--admin-brand-soft)}
+        .admin-dashboard-page .admin-refresh-button{display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--admin-brand-border);border-radius:10px;padding:9px 12px;background:var(--admin-accent-soft);color:#262424!important;-webkit-text-fill-color:#262424;font-size:11px;font-weight:800;white-space:nowrap;cursor:pointer;transition:color .18s,border-color .18s,background .18s}\n        .admin-dashboard-page .admin-refresh-button:hover:not(:disabled){color:var(--admin-accent)!important;-webkit-text-fill-color:var(--admin-accent);border-color:var(--admin-accent);background:var(--admin-brand-soft)}
         .admin-refresh-button:disabled{opacity:.6;cursor:wait}
         .admin-spinning{animation:admin-spin 1s linear infinite}
         @keyframes admin-spin{to{transform:rotate(360deg)}}
@@ -290,6 +290,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-stat-arrow{color:var(--admin-sub);flex:none}
         .admin-followup-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
         .admin-operations-panel,.admin-recent-activity{width:100%;min-width:0}
+        .admin-dashboard-page>.admin-operations-panel,.admin-dashboard-page>.admin-recent-activity{box-sizing:border-box!important;width:100%!important;max-width:none!important;min-width:0!important;margin:0!important;padding:17px!important;border:1px solid var(--admin-border)!important;border-radius:17px!important;background:var(--admin-card)!important;background-image:none!important;color:var(--admin-text)!important;box-shadow:var(--admin-shadow)!important}
+        .admin-dashboard-page>.admin-operations-panel .admin-panel-heading,.admin-dashboard-page>.admin-recent-activity .admin-panel-heading{padding:0 0 12px!important;margin:0 0 13px!important;border-bottom:1px solid var(--admin-border)!important}
+        .admin-dashboard-page>.admin-operations-panel .admin-followup-card{min-height:76px!important;border:1px solid var(--admin-border)!important;border-radius:12px!important;background:var(--admin-inner)!important;color:var(--admin-text)!important;box-shadow:none!important}
+        .admin-dashboard-page>.admin-operations-panel .admin-followup-card:hover{border-color:var(--admin-accent)!important;background:var(--admin-accent-soft)!important;box-shadow:var(--admin-shadow)!important}
         .admin-activity-list{display:flex;flex-direction:column;gap:0}
         .admin-activity-row{display:flex;align-items:center;gap:10px;min-width:0;padding:10px 0;border-bottom:1px solid var(--admin-border)}
         .admin-activity-row:last-child{border-bottom:0}
