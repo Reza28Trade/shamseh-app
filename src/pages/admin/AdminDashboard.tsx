@@ -116,8 +116,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
     { label: 'ثبت‌نام‌های در انتظار', value: pendingRegistrations ? numberFa(pendingRegistrations.length) : '—', note: 'نیازمند بررسی مدیریت', icon: FileCheck2, tab: 'registrations' as const, permission: 'finance' },
     { label: 'رسیدهای در انتظار', value: pendingPayments ? numberFa(pendingPayments.length) : '—', note: 'پرداخت‌های بررسی‌نشده', icon: CreditCard, tab: 'registrations' as const, permission: 'finance' },
     { label: 'اقساط معوق', value: overdueInstallments ? numberFa(overdueInstallments.length) : '—', note: 'قسط با مانده پس از سررسید', icon: Wallet, tab: 'registrations' as const, permission: 'finance' },
-    { label: 'تیکت‌های پشتیبانی باز', value: openTickets ? numberFa(openTickets.length) : '—', note: 'در انتظار پاسخ یا پیگیری', icon: MessageSquare, tab: 'messages' as const, permission: 'support' },
-  ].filter(item => isAllowed(item.permission));
+    { label: 'تیکت‌های پشتیبانی باز', value: openTickets ? numberFa(openTickets.length) : '—', note: 'در انتظار پاسخ یا پیگیری', icon: MessageSquare, tab: 'messages' as const, permission: 'super_admin' },
+  ].filter(item => item.permission === 'super_admin' ? admin?.role === 'super_admin' : isAllowed(item.permission));
 
   return (
     <div className="admin-dashboard-page">
