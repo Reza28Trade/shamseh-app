@@ -178,17 +178,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
 
       <style>{`
         .admin-page-content:has(> .admin-dashboard-page){width:100%;max-width:none;margin:0}
-        .admin-dashboard-page{width:100%;max-width:none;margin:0;padding:0;box-sizing:border-box;display:flex;flex-direction:column;gap:16px;color:var(--admin-text);font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif}
+        .admin-dashboard-page{width:100%;max-width:none;margin:0;padding:0;box-sizing:border-box;display:flex;flex-direction:column;align-items:flex-start;gap:18px;color:var(--admin-text);font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif}
         .admin-dashboard-page *{box-sizing:border-box}
         .admin-dashboard-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:30px}
-        .admin-dashboard-updated{display:flex;align-items:center;gap:6px;font-size:9px;color:var(--admin-sub)}
+        .admin-dashboard-updated{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--admin-sub)}
         .admin-dashboard-updated svg{color:var(--admin-accent);flex:none}
-        .admin-refresh-button{display:flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--admin-brand-border);border-radius:10px;padding:8px 10px;background:var(--admin-accent-soft);color:var(--admin-text);font-size:10px;font-weight:850;white-space:nowrap;cursor:pointer}
+        .admin-refresh-button{display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--admin-brand-border);border-radius:10px;padding:9px 12px;background:var(--admin-accent-soft);color:var(--admin-text);font-size:11px;font-weight:800;white-space:nowrap;cursor:pointer}
         .admin-refresh-button:disabled{opacity:.6;cursor:wait}
         .admin-spinning{animation:admin-spin 1s linear infinite}
         @keyframes admin-spin{to{transform:rotate(360deg)}}
         .admin-dashboard-notice{border:1px solid #c38b37;background:rgba(195,139,55,.09);color:var(--admin-text);border-radius:12px;padding:10px 13px;font-size:11px;line-height:1.8}
-        .admin-stat-grid{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;width:100%;min-width:0;padding:0!important;margin:0!important;background:transparent!important;background-color:transparent!important;background-image:none!important;border:0!important;border-top:0!important;border-radius:0!important;outline:0!important;box-shadow:none!important;filter:none!important}
+        .admin-stat-grid{position:relative;display:grid;grid-template-columns:repeat(2,310px);justify-content:start;gap:14px;width:100%;min-width:0;padding:0!important;margin:0!important;background:transparent!important;background-color:transparent!important;background-image:none!important;border:0!important;border-top:0!important;border-radius:0!important;outline:0!important;box-shadow:none!important;filter:none!important}
         .admin-stat-grid::before,.admin-stat-grid::after{display:none!important;content:none!important;background:none!important;background-image:none!important;border:0!important;box-shadow:none!important}
         .admin-dashboard-page > section.admin-stat-grid{
           display:grid!important;
@@ -196,6 +196,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
           width:100%!important;
           max-width:none!important;
           min-width:0!important;
+          justify-content:start!important;
           margin:0!important;
           padding:0!important;
           background:transparent!important;
@@ -225,14 +226,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
           outline:0!important;
           box-shadow:none!important;
         }
-        .admin-stat{position:relative;min-width:0;border:1px solid var(--admin-border)!important;border-top:1px solid var(--admin-border)!important;background:var(--admin-card)!important;background-image:none!important;color:var(--admin-text);border-radius:14px;padding:15px 13px;display:flex;align-items:center;gap:10px;text-align:right;cursor:pointer;transition:transform .18s,border-color .18s;box-shadow:var(--admin-shadow)!important}
+        .admin-stat{position:relative;width:310px;max-width:100%;height:108px;min-height:108px;min-width:0;border:1px solid var(--admin-border)!important;border-top:1px solid var(--admin-border)!important;background:var(--admin-card)!important;background-image:none!important;color:var(--admin-text);border-radius:16px;padding:17px 16px;display:flex;align-items:center;gap:12px;text-align:right;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s;box-shadow:var(--admin-shadow)!important}
         .admin-stat::before,.admin-stat::after{display:none!important;content:none!important;background:none!important;background-image:none!important;border:0!important;box-shadow:none!important}
         .admin-stat:hover{transform:translateY(-2px);border-color:var(--admin-accent)}
         .admin-stat-icon{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;color:var(--admin-accent);background:var(--admin-accent-soft);flex:none}
         .admin-stat-copy{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
-        .admin-stat-copy strong{font-size:22px;line-height:1.15;font-weight:900;overflow-wrap:anywhere}
-        .admin-stat-copy span{font-size:10px;font-weight:850;line-height:1.6}
-        .admin-stat-copy small{font-size:8px;color:var(--admin-sub);line-height:1.5}
+        .admin-stat-copy strong{font-size:23px;line-height:1.2;font-weight:900;overflow-wrap:anywhere}
+        .admin-stat-copy span{font-size:12px;font-weight:800;line-height:1.6}
+        .admin-stat-copy small{font-size:10px;color:var(--admin-sub);line-height:1.6}
         .admin-stat-arrow{color:var(--admin-sub);flex:none}
         .admin-followup-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
         .admin-followup-card{min-width:0;display:flex;align-items:center;gap:9px;text-align:right;padding:12px;border:1px solid var(--admin-border);border-radius:13px;background:var(--admin-inner);color:var(--admin-text);cursor:pointer}
@@ -285,20 +286,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-audit-copy strong{font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
         .admin-audit-copy small{font-size:8px;color:var(--admin-sub)}
         .admin-audit-row time{font-size:8px;color:var(--admin-sub);white-space:nowrap}
-        @media(max-width:1100px){.admin-stat-grid,.admin-followup-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-dashboard-grid{grid-template-columns:1fr}}
-        @media(max-width:600px){.admin-dashboard-tools{align-items:flex-start;flex-wrap:wrap}.admin-refresh-button{font-size:9px;padding:8px}.admin-stat-grid,.admin-followup-grid{grid-template-columns:1fr}.admin-quick-grid{grid-template-columns:1fr}.admin-panel-card{padding:14px}.admin-transaction-row{flex-wrap:wrap}.admin-transaction-amount{margin-right:40px}.admin-audit-row{align-items:flex-start;flex-wrap:wrap}.admin-audit-row time{margin-right:40px}}
+        @media(max-width:1100px){.admin-stat-grid{grid-template-columns:repeat(2,minmax(0,310px))}.admin-followup-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-dashboard-grid{grid-template-columns:1fr}.admin-dashboard-priority-grid{grid-template-columns:minmax(0,560px) minmax(0,420px)}}
+        @media(max-width:760px){.admin-dashboard-priority-grid{grid-template-columns:minmax(0,1fr);width:100%}.admin-dashboard-priority-grid>.admin-action-center,.admin-dashboard-priority-grid>.admin-upcoming-panel{max-width:560px}} 
+        @media(max-width:600px){.admin-dashboard-tools{align-items:flex-start;flex-wrap:wrap}.admin-refresh-button{font-size:10px;padding:8px 10px}.admin-stat-grid{grid-template-columns:minmax(0,310px)}.admin-stat{width:100%;height:104px;min-height:104px}.admin-followup-grid{grid-template-columns:1fr}.admin-quick-grid{grid-template-columns:1fr}.admin-panel-card{padding:14px}.admin-transaction-row{flex-wrap:wrap}.admin-transaction-amount{margin-right:40px}.admin-audit-row{align-items:flex-start;flex-wrap:wrap}.admin-audit-row time{margin-right:40px}}
 
-        .admin-dashboard-priority-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:12px;align-items:stretch;width:100%;min-width:0}
-        .admin-dashboard-priority-grid>.admin-action-center,.admin-dashboard-priority-grid>.admin-upcoming-panel{min-width:0;height:100%}
-        .admin-dashboard-priority-grid .admin-action-center{padding:17px}
-        .admin-dashboard-priority-grid .admin-upcoming-panel{padding:17px}
+        .admin-dashboard-priority-grid{display:grid;grid-template-columns:minmax(0,560px) minmax(0,420px);justify-content:start;gap:14px;align-items:start;width:100%;min-width:0}
+        .admin-dashboard-priority-grid>.admin-action-center,.admin-dashboard-priority-grid>.admin-upcoming-panel{min-width:0;width:100%;height:auto;min-height:190px}
+        .admin-dashboard-priority-grid .admin-action-center{padding:19px}
+        .admin-dashboard-priority-grid .admin-upcoming-panel{padding:19px}
         .admin-dashboard-priority-grid .admin-action-row{padding:10px;gap:9px}
         @media(max-width:760px){.admin-dashboard-priority-grid{grid-template-columns:minmax(0,1fr)}}
-        .admin-action-center,.admin-upcoming-panel{border:1px solid var(--admin-border);border-radius:16px;background:var(--admin-card);box-shadow:var(--admin-shadow);padding:18px}
+        .admin-action-center,.admin-upcoming-panel{box-sizing:border-box;min-width:0;border:1px solid var(--admin-border);border-radius:17px;background:var(--admin-card);box-shadow:var(--admin-shadow);padding:19px}
         .admin-action-center .admin-panel-heading,.admin-upcoming-panel .admin-panel-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:12px;margin-bottom:10px;border-bottom:1px solid var(--admin-border)}
         .admin-action-center .admin-panel-heading>div,.admin-upcoming-panel .admin-panel-heading>div{display:flex;flex-direction:column;gap:3px}
         .admin-action-center .admin-panel-heading span:first-child,.admin-upcoming-panel .admin-panel-heading span:first-child{font-size:10px;color:var(--admin-accent);font-weight:800}
-        .admin-action-center .admin-panel-heading h2,.admin-upcoming-panel .admin-panel-heading h2{margin:0;font-size:17px}
+        .admin-action-center .admin-panel-heading h2,.admin-upcoming-panel .admin-panel-heading h2{margin:0;font-size:18px}
         .admin-action-summary{font-size:11px;font-weight:800;color:var(--admin-accent);background:var(--admin-accent-soft);padding:6px 10px;border-radius:9px;white-space:nowrap}
         .admin-action-list,.admin-upcoming-list{display:flex;flex-direction:column;gap:8px}
         .admin-action-list{max-height:392px;overflow-y:auto;overscroll-behavior:contain;padding:2px 3px 2px 2px}
@@ -311,8 +313,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-action-icon,.admin-upcoming-icon{width:36px;height:36px;display:grid;place-items:center;flex:none;border-radius:10px;color:var(--admin-accent);background:var(--admin-accent-soft)}
         .admin-action-icon.amber{color:#b98327;background:rgba(185,131,39,.12)}
         .admin-action-copy{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
-        .admin-action-copy strong,.admin-upcoming-row strong{font-size:12px;font-weight:850}
-        .admin-action-copy small,.admin-upcoming-row small{font-size:10px;color:var(--admin-sub);line-height:1.6}
+        .admin-action-copy strong,.admin-upcoming-row strong{font-size:13px;font-weight:800}
+        .admin-action-copy small,.admin-upcoming-row small{font-size:11px;color:var(--admin-sub);line-height:1.7}
         .admin-action-row>b{font-size:16px;min-width:28px;text-align:center;color:var(--admin-accent)}
         .admin-action-empty{display:flex;align-items:center;gap:10px;padding:18px 10px;color:var(--admin-sub);font-size:12px}
         .admin-action-empty strong,.admin-action-empty small{display:block}
