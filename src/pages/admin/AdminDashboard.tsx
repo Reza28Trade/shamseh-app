@@ -352,8 +352,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         @media(max-width:760px){.admin-dashboard-priority-grid{grid-template-columns:minmax(0,1fr);width:100%}.admin-dashboard-priority-grid>.admin-action-center,.admin-dashboard-priority-grid>.admin-upcoming-panel{max-width:560px}} 
         @media(max-width:600px){.admin-dashboard-tools{align-items:flex-start;flex-wrap:wrap}.admin-refresh-button{font-size:10px;padding:8px 10px}.admin-stat-grid{grid-template-columns:minmax(0,1fr)}.admin-stat{width:100%;height:104px;min-height:104px}.admin-followup-grid{grid-template-columns:1fr}.admin-quick-grid{grid-template-columns:1fr}.admin-panel-card{padding:14px}.admin-transaction-row{flex-wrap:wrap}.admin-transaction-amount{margin-right:40px}.admin-audit-row{align-items:flex-start;flex-wrap:wrap}.admin-audit-row time{margin-right:40px}}
 
-        .admin-dashboard-priority-grid{display:grid;grid-template-columns:minmax(0,560px) minmax(0,420px);justify-content:start;gap:14px;align-items:start;width:100%;min-width:0}
+        .admin-dashboard-priority-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);justify-content:stretch;gap:14px;align-items:stretch;width:100%;min-width:0}
         .admin-dashboard-priority-grid>.admin-action-center,.admin-dashboard-priority-grid>.admin-upcoming-panel{min-width:0;width:100%;height:auto;min-height:190px}
+        @media(max-width:1100px){.admin-dashboard-priority-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+        @media(max-width:760px){.admin-dashboard-priority-grid{grid-template-columns:minmax(0,1fr)}}
         .admin-dashboard-priority-grid .admin-action-center{padding:19px}
         .admin-dashboard-priority-grid .admin-upcoming-panel{padding:19px}
         .admin-dashboard-priority-grid .admin-action-row{padding:10px;gap:9px}
