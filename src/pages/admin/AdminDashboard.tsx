@@ -446,6 +446,63 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
           background:var(--dashboard-icon-surface)!important;color:var(--admin-accent)!important;
           box-shadow:2px 2px 5px rgba(38,36,36,.10),-2px -2px 5px rgba(255,255,255,.72)!important;
         }
+        /* Daily operations must use the same content-card language as the action center. */
+        .admin-dashboard-page>.admin-operations-panel{
+          min-width:0!important;
+          padding:19px!important;
+          border:1px solid var(--admin-border)!important;
+          border-radius:17px!important;
+          background:var(--admin-card)!important;
+          box-shadow:var(--admin-shadow)!important;
+        }
+        .admin-dashboard-page>.admin-operations-panel .admin-followup-grid{
+          display:grid!important;
+          grid-template-columns:repeat(4,minmax(0,1fr))!important;
+          gap:9px!important;
+        }
+        .admin-dashboard-page>.admin-operations-panel .admin-followup-card{
+          appearance:none!important;
+          -webkit-appearance:none!important;
+          display:flex!important;
+          align-items:center!important;
+          gap:12px!important;
+          min-width:0!important;
+          min-height:64px!important;
+          padding:12px!important;
+          border:1px solid var(--admin-border)!important;
+          border-radius:12px!important;
+          background:var(--admin-inner)!important;
+          color:var(--admin-text)!important;
+          box-shadow:none!important;
+          transform:none!important;
+          transition:border-color .15s,background-color .15s!important;
+        }
+        .admin-dashboard-page>.admin-operations-panel .admin-followup-card:hover{
+          border-color:var(--admin-accent)!important;
+          background:var(--admin-inner)!important;
+          box-shadow:none!important;
+          transform:translateY(-1px)!important;
+        }
+        .admin-dashboard-page>.admin-operations-panel .admin-followup-icon{
+          width:36px!important;height:36px!important;flex:none!important;
+          border-radius:10px!important;
+          background:var(--admin-accent-soft)!important;
+          color:var(--admin-accent)!important;
+          box-shadow:none!important;
+        }
+        .admin-dashboard-page>.admin-operations-panel .admin-followup-card>span:nth-child(2){
+          display:flex!important;flex:1 1 auto!important;flex-direction:column!important;
+          gap:3px!important;min-width:0!important;
+        }
+        .admin-dashboard-page>.admin-operations-panel .admin-followup-card small{
+          color:var(--admin-sub)!important;font-size:10px!important;font-weight:700!important;
+        }
+        .admin-dashboard-page>.admin-operations-panel .admin-followup-card strong{
+          color:var(--admin-accent)!important;font-size:16px!important;line-height:1.4!important;font-weight:800!important;
+        }
+        .admin-dashboard-page>.admin-operations-panel .admin-followup-card>svg{color:var(--admin-sub)!important;flex:none!important}
+        @media(max-width:900px){.admin-dashboard-page>.admin-operations-panel .admin-followup-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+        @media(max-width:600px){.admin-dashboard-page>.admin-operations-panel{padding:14px!important}.admin-dashboard-page>.admin-operations-panel .admin-followup-grid{grid-template-columns:minmax(0,1fr)!important}}
         @media(prefers-reduced-motion:reduce){.admin-dashboard-page *{transition:none!important;animation:none!important}}
       `}</style>
     </div>
