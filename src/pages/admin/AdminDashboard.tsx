@@ -180,7 +180,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-page-content:has(> .admin-dashboard-page){width:100%;max-width:none;margin:0}
         .admin-dashboard-page{width:100%;max-width:none;margin:0;padding:0;box-sizing:border-box;display:flex;flex-direction:column;align-items:flex-start;gap:18px;color:var(--admin-text);font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif}
         .admin-dashboard-page *{box-sizing:border-box}
-        .admin-dashboard-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:30px}
+        .admin-dashboard-tools{display:flex;direction:rtl;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:30px}
         .admin-dashboard-updated{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--admin-sub)}
         .admin-dashboard-updated svg{color:var(--admin-accent);flex:none}
         .admin-refresh-button{display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--admin-brand-border);border-radius:10px;padding:9px 12px;background:var(--admin-accent-soft);color:var(--admin-text);font-size:11px;font-weight:800;white-space:nowrap;cursor:pointer}
