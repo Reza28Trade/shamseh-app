@@ -408,7 +408,7 @@
 .admin-shell .admin-page-content .admin-dashboard-page .admin-stat{
   min-width:0;
   overflow:hidden;
-  box-shadow:none!important;
+  box-shadow:var(--admin-shadow)!important;
 }
 .admin-shell .admin-page-content .admin-dashboard-page .admin-stat::before,
 .admin-shell .admin-page-content .admin-dashboard-page .admin-stat::after{
@@ -456,7 +456,74 @@
   outline-offset:2px;
 }
 
-/* Approved Shamseh palette + Orbit-inspired shell treatment (phase 1: admin). */
+/* Light admin theme: warm neutral surfaces with the original Shamseh turquoise identity. */
+.admin-shell.admin-theme-light .admin-main{
+  background:var(--admin-bg)!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell.admin-theme-light .admin-sidebar{
+  background:#E8E3DA!important;
+  border-left:1px solid var(--admin-border)!important;
+  box-shadow:4px 0 22px rgba(55,46,38,.045)!important;
+}
+.admin-shell.admin-theme-light .admin-sidebar-profile{
+  background:#F7F3EC!important;
+  border:1px solid var(--admin-border)!important;
+  box-shadow:0 5px 16px rgba(55,46,38,.045)!important;
+}
+.admin-shell.admin-theme-light .admin-sidebar-heading,
+.admin-shell.admin-theme-light .admin-sidebar-status{
+  color:var(--admin-sub)!important;
+}
+.admin-shell.admin-theme-light .admin-nav button{
+  color:#514940!important;
+  border-color:transparent!important;
+  border-radius:11px!important;
+}
+.admin-shell.admin-theme-light .admin-nav button:hover{
+  background:rgba(255,255,255,.48)!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell.admin-theme-light .admin-nav button.active{
+  background:var(--admin-accent-soft)!important;
+  color:var(--admin-text)!important;
+  border-color:var(--admin-brand-border)!important;
+  box-shadow:inset 0 0 0 1px rgba(0,128,128,.035)!important;
+}
+.admin-shell.admin-theme-light .admin-nav button.active .admin-nav-icon,
+.admin-shell.admin-theme-light .admin-nav-indicator{
+  color:var(--admin-accent)!important;
+  background:var(--admin-accent)!important;
+}
+.admin-shell.admin-theme-light .admin-page-content .admin-dashboard-page :is(.admin-welcome,.admin-followup-card,.admin-panel-card,.admin-stat){
+  background:var(--admin-card)!important;
+  border:1px solid var(--admin-border)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell.admin-theme-light .admin-page-content .admin-dashboard-page .admin-stat-grid{
+  display:grid!important;
+  gap:12px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-theme-light .admin-page-content .admin-dashboard-page .admin-stat{
+  border-radius:15px!important;
+}
+.admin-shell.admin-theme-light .admin-page-content .admin-dashboard-page .admin-stat-icon{
+  color:var(--admin-accent)!important;
+  background:var(--admin-accent-soft)!important;
+}
+.admin-shell.admin-theme-light .admin-page-content .admin-dashboard-page :is(.admin-panel-heading,.admin-transaction-row,.admin-audit-row){
+  border-color:var(--admin-border)!important;
+}
+.admin-shell.admin-theme-light .admin-page-content :is(input,select,textarea){
+  border-color:var(--admin-border);
+  background:var(--admin-control);
+  color:var(--admin-text);
+}
+\n/* Approved Shamseh palette + Orbit-inspired shell treatment (phase 1: admin). */
 .admin-shell.admin-theme-dark .admin-sidebar{
   background:#171616!important;
   border-left-color:rgba(238,229,218,.10)!important;
