@@ -3542,3 +3542,27 @@
   box-shadow:3px 3px 7px rgba(13,12,12,.55),-3px -3px 7px rgba(51,47,47,.48)!important;
   color:var(--admin-accent)!important;
 }
+
+
+/* Follow-up tiles: exact action-row surface and no turquoise hover frame. */
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page > .admin-operations-panel .admin-followup-grid > button.admin-followup-card,
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page > .admin-operations-panel .admin-followup-grid > button.admin-followup-card:hover{
+  background:#E7E3DC!important;
+  background-color:#E7E3DC!important;
+  background-image:none!important;
+  border:1px solid rgba(255,255,255,.62)!important;
+  border-color:rgba(255,255,255,.62)!important;
+  box-shadow:inset 3px 3px 7px rgba(177,169,157,.38),inset -3px -3px 7px rgba(255,255,255,.82)!important;
+  outline:0!important;
+  transform:none!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page > .admin-operations-panel .admin-followup-grid > button.admin-followup-card:hover{
+  border-color:rgba(255,255,255,.62)!important;
+  outline:0!important;
+  transform:translateY(-1px)!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page > .admin-operations-panel .admin-followup-grid > button.admin-followup-card:focus,
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page > .admin-operations-panel .admin-followup-grid > button.admin-followup-card:focus-visible{
+  outline:none!important;
+  box-shadow:inset 3px 3px 7px rgba(177,169,157,.38),inset -3px -3px 7px rgba(255,255,255,.82)!important;
+}
