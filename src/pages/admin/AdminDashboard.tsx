@@ -406,7 +406,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-upcoming-row>span:nth-child(2){display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
         @media(max-width:600px){.admin-stat-grid{grid-template-columns:1fr}.admin-action-center,.admin-upcoming-panel{padding:14px}.admin-action-row{gap:8px;padding:10px}}
 
-        /* One shared visual token set for every dashboard card surface */
+
+        /* Raised shell + recessed inner tiles for the daily operations panel */
         .admin-dashboard-page{
           --dashboard-card-surface:var(--admin-card);
           --dashboard-card-border:var(--admin-border);
@@ -414,39 +415,37 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
           --dashboard-card-shadow-hover:0 12px 28px rgba(0,128,128,.12),0 3px 7px rgba(38,36,36,.06),inset 1px 1px 2px rgba(255,255,255,.62);
           --dashboard-icon-surface:var(--admin-accent-soft);
         }
-        .admin-dashboard-page .admin-stat,
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-card,
-        .admin-dashboard-page>.admin-recent-activity .admin-activity-row{
+        .admin-dashboard-page>.admin-operations-panel{
+          background:var(--dashboard-card-surface)!important;
+          border:1px solid var(--dashboard-card-border)!important;
+          border-radius:17px!important;
+          box-shadow:var(--dashboard-card-shadow)!important;
+          padding:17px!important;
+        }
+        .admin-dashboard-page>.admin-operations-panel .admin-followup-card{
           appearance:none!important;
           -webkit-appearance:none!important;
-          background:var(--dashboard-card-surface)!important;
-          background-color:var(--dashboard-card-surface)!important;
+          background:var(--admin-inner)!important;
+          background-color:var(--admin-inner)!important;
           background-image:none!important;
           border:1px solid var(--dashboard-card-border)!important;
-          border-top:1px solid var(--dashboard-card-border)!important;
-          border-radius:16px!important;
-          box-shadow:var(--dashboard-card-shadow)!important;
+          border-radius:13px!important;
+          box-shadow:inset 3px 3px 7px rgba(38,36,36,.10),inset -3px -3px 7px rgba(255,255,255,.72)!important;
           color:var(--admin-text)!important;
-          filter:none!important;
+          min-height:108px!important;
+          padding:17px 16px!important;
+          transition:transform .18s,border-color .18s,box-shadow .18s!important;
         }
-        .admin-dashboard-page .admin-stat:hover,
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-card:hover,
-        .admin-dashboard-page>.admin-recent-activity .admin-activity-row:hover{
-          background:var(--dashboard-card-surface)!important;
+        .admin-dashboard-page>.admin-operations-panel .admin-followup-card:hover{
+          transform:translateY(-2px)!important;
           border-color:var(--admin-accent)!important;
-          box-shadow:var(--dashboard-card-shadow-hover)!important;
+          box-shadow:inset 2px 2px 5px rgba(38,36,36,.08),inset -2px -2px 5px rgba(255,255,255,.7),0 7px 16px rgba(0,128,128,.10)!important;
         }
-        .admin-dashboard-page .admin-stat-icon,
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-icon,
-        .admin-dashboard-page>.admin-recent-activity .admin-activity-mark{
-          background:var(--dashboard-icon-surface)!important;
-          background-color:var(--dashboard-icon-surface)!important;
-          color:var(--admin-accent)!important;
-          box-shadow:none!important;
-          border:0!important;
+        .admin-dashboard-page>.admin-operations-panel .admin-followup-icon{
+          width:36px!important;height:36px!important;border-radius:11px!important;
+          background:var(--dashboard-icon-surface)!important;color:var(--admin-accent)!important;
+          box-shadow:2px 2px 5px rgba(38,36,36,.10),-2px -2px 5px rgba(255,255,255,.72)!important;
         }
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-card{min-height:108px!important;border-radius:16px!important}
-        .admin-dashboard-page>.admin-recent-activity .admin-activity-row{min-height:62px!important;border-radius:16px!important}
         @media(prefers-reduced-motion:reduce){.admin-dashboard-page *{transition:none!important;animation:none!important}}
       `}</style>
     </div>
