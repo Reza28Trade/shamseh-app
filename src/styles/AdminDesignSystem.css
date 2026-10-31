@@ -3639,3 +3639,28 @@
   border:0!important;
   box-shadow:none!important;
 }
+
+
+/* Audit activity rows and icons: match the soft neumorphic depth of action-center rows. */
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page > section.admin-recent-activity .admin-activity-list > .admin-activity-row{
+  background:#E7E3DC!important;
+  background-color:#E7E3DC!important;
+  border:1px solid rgba(255,255,255,.62)!important;
+  box-shadow:inset 3px 3px 7px rgba(177,169,157,.38),inset -3px -3px 7px rgba(255,255,255,.82)!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page > section.admin-recent-activity .admin-activity-mark{
+  background:#E9E5DE!important;
+  border:1px solid rgba(255,255,255,.62)!important;
+  box-shadow:3px 3px 7px rgba(177,169,157,.38),-3px -3px 7px rgba(255,255,255,.86)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page > section.admin-recent-activity .admin-activity-list > .admin-activity-row{
+  background:#211F1F!important;
+  background-color:#211F1F!important;
+  border:1px solid rgba(255,255,255,.045)!important;
+  box-shadow:inset 3px 3px 7px rgba(12,11,11,.55),inset -3px -3px 7px rgba(52,48,48,.42)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page > section.admin-recent-activity .admin-activity-mark{
+  background:#252323!important;
+  border:1px solid rgba(255,255,255,.055)!important;
+  box-shadow:3px 3px 7px rgba(13,12,12,.55),-3px -3px 7px rgba(51,47,47,.48)!important;
+}
