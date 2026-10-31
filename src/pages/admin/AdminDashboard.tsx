@@ -421,7 +421,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
           .admin-dashboard-page>.admin-operations-panel{padding:14px}
           .admin-dashboard-page>.admin-operations-panel .admin-followup-grid{grid-template-columns:minmax(0,1fr)}
         }
-      </style>
+      `}</style>
     </div>
   );
 };
