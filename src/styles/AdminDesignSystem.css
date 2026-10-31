@@ -408,7 +408,7 @@
 .admin-shell .admin-page-content .admin-dashboard-page .admin-stat{
   min-width:0;
   overflow:hidden;
-  box-shadow:none!important;
+  box-shadow:var(--admin-shadow)!important;
 }
 .admin-shell .admin-page-content .admin-dashboard-page .admin-stat::before,
 .admin-shell .admin-page-content .admin-dashboard-page .admin-stat::after{
@@ -435,7 +435,11 @@
   line-height:1.5;
 }
 @media(max-width:760px){
-  .admin-shell .admin-page-content .admin-dashboard-page :is(.admin-stat-grid,.admin-followup-grid){
+  .admin-shell .admin-page-content .admin-dashboard-page .admin-stat-grid{
+    grid-template-columns:repeat(2,310px)!important;
+    justify-content:start!important;
+  }
+  .admin-shell .admin-page-content .admin-dashboard-page .admin-followup-grid{
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
   }
   .admin-shell .admin-page-content .admin-dashboard-page .admin-welcome{
@@ -444,7 +448,10 @@
   }
 }
 @media(max-width:440px){
-  .admin-shell .admin-page-content .admin-dashboard-page :is(.admin-stat-grid,.admin-followup-grid){
+  .admin-shell .admin-page-content .admin-dashboard-page .admin-stat-grid{
+    grid-template-columns:minmax(0,310px)!important;
+  }
+  .admin-shell .admin-page-content .admin-dashboard-page .admin-followup-grid{
     grid-template-columns:minmax(0,1fr)!important;
   }
 }
@@ -456,7 +463,74 @@
   outline-offset:2px;
 }
 
-/* Approved Shamseh palette + Orbit-inspired shell treatment (phase 1: admin). */
+/* Light admin theme: warm neutral surfaces with the original Shamseh turquoise identity. */
+.admin-shell.admin-theme-light .admin-main{
+  background:var(--admin-bg)!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell.admin-theme-light .admin-sidebar{
+  background:#E8E3DA!important;
+  border-left:1px solid var(--admin-border)!important;
+  box-shadow:4px 0 22px rgba(55,46,38,.045)!important;
+}
+.admin-shell.admin-theme-light .admin-sidebar-profile{
+  background:#F7F3EC!important;
+  border:1px solid var(--admin-border)!important;
+  box-shadow:0 5px 16px rgba(55,46,38,.045)!important;
+}
+.admin-shell.admin-theme-light .admin-sidebar-heading,
+.admin-shell.admin-theme-light .admin-sidebar-status{
+  color:var(--admin-sub)!important;
+}
+.admin-shell.admin-theme-light .admin-nav button{
+  color:#514940!important;
+  border-color:transparent!important;
+  border-radius:11px!important;
+}
+.admin-shell.admin-theme-light .admin-nav button:hover{
+  background:rgba(255,255,255,.48)!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell.admin-theme-light .admin-nav button.active{
+  background:var(--admin-accent-soft)!important;
+  color:var(--admin-text)!important;
+  border-color:var(--admin-brand-border)!important;
+  box-shadow:inset 0 0 0 1px rgba(0,128,128,.035)!important;
+}
+.admin-shell.admin-theme-light .admin-nav button.active .admin-nav-icon,
+.admin-shell.admin-theme-light .admin-nav-indicator{
+  color:var(--admin-accent)!important;
+  background:var(--admin-accent)!important;
+}
+.admin-shell.admin-theme-light .admin-page-content .admin-dashboard-page :is(.admin-welcome,.admin-followup-card,.admin-panel-card,.admin-stat){
+  background:var(--admin-card)!important;
+  border:1px solid var(--admin-border)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell.admin-theme-light .admin-page-content .admin-dashboard-page .admin-stat-grid{
+  display:grid!important;
+  gap:12px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-theme-light .admin-page-content .admin-dashboard-page .admin-stat{
+  border-radius:15px!important;
+}
+.admin-shell.admin-theme-light .admin-page-content .admin-dashboard-page .admin-stat-icon{
+  color:var(--admin-accent)!important;
+  background:var(--admin-accent-soft)!important;
+}
+.admin-shell.admin-theme-light .admin-page-content .admin-dashboard-page :is(.admin-panel-heading,.admin-transaction-row,.admin-audit-row){
+  border-color:var(--admin-border)!important;
+}
+.admin-shell.admin-theme-light .admin-page-content :is(input,select,textarea){
+  border-color:var(--admin-border);
+  background:var(--admin-control);
+  color:var(--admin-text);
+}
+\n/* Approved Shamseh palette + Orbit-inspired shell treatment (phase 1: admin). */
 .admin-shell.admin-theme-dark .admin-sidebar{
   background:#171616!important;
   border-left-color:rgba(238,229,218,.10)!important;
@@ -3118,6 +3192,450 @@
   display:none!important;
   content:none!important;
   background:none!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+
+/* Typography specimen-inspired card treatment: warm paper, quiet border, soft shadow. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page :is(
+  .students-stats,.student-chart-card,.student-form-card,.student-import-card,.student-list-card,
+  .course-stat,.course-form,.course-list,.admin-stat,.offline-stat-card,.messages-stat,
+  .mock-exam-stat,.offline-list-card,.messages-ticket-section,.messages-detail-section,
+  .accounts-card,.accounts-create-card,.notifications-form-card,.admin-page-heading,
+  .admin-page-head,.page-header,.messages-page-head,.notifications-page-head,
+  .student-stat,.student-home-panel,.student-home-stat,.student-home-exam,
+  .expanded-panel,.course-card
+){
+  border-radius:18px!important;
+  border:1px solid var(--admin-border)!important;
+  background:var(--admin-card)!important;
+  background-image:none!important;
+  box-shadow:0 10px 28px rgba(38,36,36,.075), 0 2px 8px rgba(38,36,36,.035)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page :is(
+  .students-stats,.student-chart-card,.student-form-card,.student-import-card,.student-list-card,
+  .course-stat,.course-form,.course-list,.admin-stat,.offline-stat-card,.messages-stat,
+  .mock-exam-stat,.offline-list-card,.messages-ticket-section,.messages-detail-section,
+  .accounts-card,.accounts-create-card,.notifications-form-card,.admin-page-heading,
+  .admin-page-head,.page-header,.messages-page-head,.notifications-page-head,
+  .student-stat,.student-home-panel,.student-home-stat,.student-home-exam,
+  .expanded-panel,.course-card
+)::before,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page :is(
+  .students-stats,.student-chart-card,.student-form-card,.student-import-card,.student-list-card,
+  .course-stat,.course-form,.course-list,.admin-stat,.offline-stat-card,.messages-stat,
+  .mock-exam-stat,.offline-list-card,.messages-ticket-section,.messages-detail-section,
+  .accounts-card,.accounts-create-card,.notifications-form-card,.admin-page-heading,
+  .admin-page-head,.page-header,.messages-page-head,.notifications-page-head,
+  .student-stat,.student-home-panel,.student-home-stat,.student-home-exam,
+  .expanded-panel,.course-card
+)::after{
+  display:none!important;
+  content:none!important;
+  background:none!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page :is(
+  .students-page-head h2,.course-title,.section-title h3,.course-section-head h3,
+  .admin-page-heading h1,.admin-page-head h1,.page-header h1
+){
+  letter-spacing:-.25px;
+  line-height:1.55;
+}
+
+/* Dashboard neumorphism: raised surfaces, inset rows and floating controls. */
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-stat,
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-action-center,
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-upcoming-panel{
+  background:var(--admin-bg)!important;
+  border:1px solid rgba(255,255,255,.56)!important;
+  box-shadow:
+    8px 8px 18px rgba(174,166,154,.48),
+    -8px -8px 18px rgba(255,255,255,.88),
+    inset 1px 1px 0 rgba(255,255,255,.35)!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page .admin-stat:hover{
+  transform:translateY(-2px);
+  border-color:var(--admin-brand-border)!important;
+  box-shadow:
+    10px 10px 21px rgba(174,166,154,.52),
+    -9px -9px 20px rgba(255,255,255,.92),
+    0 0 0 1px rgba(0,128,128,.08)!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page :is(.admin-action-row,.admin-upcoming-row){
+  background:#E7E3DC!important;
+  border:1px solid rgba(255,255,255,.62)!important;
+  box-shadow:
+    inset 3px 3px 7px rgba(177,169,157,.38),
+    inset -3px -3px 7px rgba(255,255,255,.82)!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page :is(.admin-stat-icon,.admin-action-icon,.admin-upcoming-icon,.admin-action-summary,.admin-refresh-button){
+  background:#E9E5DE!important;
+  border:1px solid rgba(255,255,255,.62)!important;
+  box-shadow:
+    3px 3px 7px rgba(177,169,157,.38),
+    -3px -3px 7px rgba(255,255,255,.86)!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page :is(.admin-stat-icon,.admin-action-icon,.admin-upcoming-icon){
+  color:var(--admin-accent)!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button{
+  color:var(--admin-accent)!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page .admin-stat-arrow{
+  color:var(--admin-sub)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page .admin-stat,
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page .admin-action-center,
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page .admin-upcoming-panel{
+  background:#252323!important;
+  border:1px solid rgba(255,255,255,.055)!important;
+  box-shadow:
+    8px 8px 18px rgba(13,12,12,.62),
+    -8px -8px 18px rgba(48,45,45,.58),
+    inset 1px 1px 0 rgba(255,255,255,.035)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page :is(.admin-action-row,.admin-upcoming-row){
+  background:#211F1F!important;
+  border:1px solid rgba(255,255,255,.045)!important;
+  box-shadow:
+    inset 3px 3px 7px rgba(12,11,11,.55),
+    inset -3px -3px 7px rgba(52,48,48,.42)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page :is(.admin-stat-icon,.admin-action-icon,.admin-upcoming-icon,.admin-action-summary,.admin-refresh-button){
+  background:#252323!important;
+  border:1px solid rgba(255,255,255,.055)!important;
+  box-shadow:
+    3px 3px 7px rgba(13,12,12,.55),
+    -3px -3px 7px rgba(51,47,47,.48)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page :is(.admin-stat-icon,.admin-action-icon,.admin-upcoming-icon){
+  color:var(--admin-accent)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button{
+  color:var(--admin-accent)!important;
+}
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page :is(.admin-stat,.admin-action-center,.admin-upcoming-panel,.admin-action-row,.admin-upcoming-row,.admin-stat-icon,.admin-action-icon,.admin-upcoming-icon,.admin-action-summary,.admin-refresh-button){
+  transition:box-shadow .18s ease,border-color .18s ease,transform .18s ease!important;
+}
+@media(prefers-reduced-motion:reduce){
+  .admin-shell .admin-main .admin-page-content > .admin-dashboard-page *{
+    transition:none!important;
+  }
+}
+
+/* Refresh action: reuse the login entry's glossy frosted-glass treatment. */
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button{
+  position:relative!important;
+  isolation:isolate;
+  overflow:hidden!important;
+  border:1px solid rgba(223,207,186,.92)!important;
+  border-top-color:rgba(255,255,255,.88)!important;
+  border-bottom-color:#d9c7af!important;
+  border-radius:12px!important;
+  background:linear-gradient(110deg,rgba(248,241,231,.92),rgba(239,229,215,.88))!important;
+  color:var(--admin-accent)!important;
+  box-shadow:0 8px 18px rgba(75,53,30,.075),inset 0 1px 0 rgba(255,255,255,.88)!important;
+  -webkit-backdrop-filter:blur(12px);
+  backdrop-filter:blur(12px);
+  transition:transform .28s ease,background .28s ease,border-color .28s ease,box-shadow .28s ease,color .28s ease!important;
+}
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button::before{
+  content:""!important;
+  position:absolute;
+  inset:0 auto 0 0;
+  width:34%;
+  z-index:-1;
+  background:linear-gradient(105deg,rgba(255,255,255,0),rgba(255,255,255,.20) 48%,rgba(0,128,128,.055) 72%,rgba(255,255,255,0));
+  transform:skewX(28deg) translateX(-150%);
+  transition:transform .55s ease;
+  pointer-events:none;
+}
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button:hover:not(:disabled),
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button:focus-visible{
+  transform:translateY(-2px);
+  background:linear-gradient(110deg,rgba(248,241,231,.96),rgba(239,233,222,.94))!important;
+  border-color:rgba(22,140,145,.48)!important;
+  color:#126f73!important;
+  box-shadow:0 11px 22px rgba(18,43,43,.085),0 0 10px rgba(72,209,204,.085),inset 0 1px 0 rgba(255,255,255,.72)!important;
+}
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button:hover:not(:disabled)::before,
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button:focus-visible::before{
+  transform:skewX(28deg) translateX(280%);
+}
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button:focus-visible{
+  outline:2px solid var(--admin-accent)!important;
+  outline-offset:3px;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button{
+  border-color:rgba(238,229,218,.16)!important;
+  border-top-color:rgba(255,255,255,.22)!important;
+  border-bottom-color:rgba(0,0,0,.35)!important;
+  background:linear-gradient(110deg,rgba(58,54,52,.94),rgba(39,36,35,.94))!important;
+  color:var(--admin-accent)!important;
+  box-shadow:0 8px 18px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.12)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button:hover:not(:disabled),
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button:focus-visible{
+  background:linear-gradient(110deg,rgba(68,64,61,.98),rgba(43,40,38,.98))!important;
+  border-color:var(--admin-brand-border)!important;
+  color:var(--admin-accent)!important;
+  box-shadow:0 12px 24px rgba(0,0,0,.34),0 0 14px rgba(72,209,204,.12),inset 0 1px 0 rgba(255,255,255,.16)!important;
+}
+@media(prefers-reduced-motion:reduce){
+  .admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button,
+  .admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-refresh-button::before{
+    transition:none!important;
+  }
+}
+
+/* Shamseh admin unified content-card standard.
+   The dashboard stat tiles remain the only raised-card exception.
+   All other admin content surfaces follow the Priority/Needs-action panel language. */
+.admin-shell{
+  --admin-content-surface:var(--admin-card);
+  --admin-content-inner:var(--admin-inner);
+  --admin-content-border:var(--admin-border);
+  --admin-content-shadow:var(--admin-shadow);
+  --admin-content-radius:15px;
+}
+.admin-shell .admin-page-content :is(
+  .admin-legacy-page > section,
+  .admin-legacy-page > form,
+  .admin-legacy-page > div:not([data-admin-overlay]),
+  .admin-finance-registration-page > section,
+  .admin-finance-registration-page > article,
+  .admin-finance-registration-page > div > article,
+  .admin-finance-registration-page > div > section,
+  .accounts-card,
+  .course-card,
+  .expanded-panel,
+  .counseling-account-section,
+  .counseling-assignment-section,
+  .counseling-conversation-section,
+  .messages-ticket-section,
+  .messages-detail-section,
+  .mock-exam-list-card,
+  .notifications-form-card,
+  .offline-list-card,
+  .student-chart-card,
+  .student-form-card,
+  .student-import-card,
+  .student-list-card,
+  .course-form,
+  .course-list,
+  .course-stat,
+  .mock-exam-stats,
+  .mock-exam-list-card
+){
+  border-color:var(--admin-content-border)!important;
+  border-radius:var(--admin-content-radius)!important;
+  background:var(--admin-content-surface)!important;
+  background-image:none!important;
+  box-shadow:var(--admin-content-shadow)!important;
+  color:var(--admin-text)!important;
+}
+/* Nested content tiles use the same inset surface as action rows. */
+.admin-shell .admin-page-content :is(
+  .admin-action-row,
+  .admin-upcoming-row,
+  .admin-followup-card,
+  .admin-activity-row,
+  .accounts-admin-row,
+  .course-stat,
+  .mock-exam-stat,
+  .counseling-student-row,
+  .offline-request-row,
+  .student-term-legend-row,
+  .student-clickable-row,
+  .messages-table-status
+){
+  border-color:var(--admin-content-border)!important;
+  background:var(--admin-content-inner)!important;
+  background-image:none!important;
+  color:var(--admin-text)!important;
+}
+/* Preserve layout and semantic status colors; standardize only surface treatment. */
+.admin-shell .admin-page-content :is(
+  .admin-action-row,
+  .admin-upcoming-row,
+  .admin-followup-card,
+  .admin-activity-row,
+  .accounts-admin-row,
+  .course-stat,
+  .mock-exam-stat,
+  .counseling-student-row,
+  .offline-request-row,
+  .student-term-legend-row,
+  .student-clickable-row
+):hover{
+  border-color:var(--admin-accent)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-page-content .admin-finance-registration-page > div > article{
+  padding:14px 15px;
+}
+.admin-shell .admin-page-content .admin-finance-registration-page > section{
+  padding:14px;
+}
+.admin-shell .admin-page-content .admin-finance-registration-page > section > div,
+.admin-shell .admin-page-content .admin-finance-registration-page > div{
+  min-width:0;
+}
+.admin-shell .admin-page-content .admin-finance-registration-page article,
+.admin-shell .admin-page-content .admin-finance-registration-page section{
+  color:var(--admin-text);
+}
+.admin-shell .admin-page-content .admin-finance-registration-page article strong{
+  color:var(--admin-text);
+}
+/* Keep the top dashboard statistics on their dedicated raised-card pattern. */
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat{
+  background:var(--admin-card)!important;
+  box-shadow:0 8px 18px rgba(38,36,36,.10),0 2px 5px rgba(38,36,36,.055),inset 1px 1px 2px rgba(255,255,255,.68),inset -2px -2px 4px rgba(38,36,36,.055)!important;
+}
+
+
+
+/* Final dashboard content-row parity: daily follow-up tiles mirror action rows in both themes. */
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page .admin-operations-panel .admin-followup-grid > .admin-followup-card{
+  background:#E7E3DC!important;
+  background-color:#E7E3DC!important;
+  background-image:none!important;
+  border:1px solid rgba(255,255,255,.62)!important;
+  border-radius:12px!important;
+  box-shadow:inset 3px 3px 7px rgba(177,169,157,.38),inset -3px -3px 7px rgba(255,255,255,.82)!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page .admin-operations-panel .admin-followup-grid > .admin-followup-card:hover{
+  border-color:var(--admin-accent)!important;
+  box-shadow:inset 3px 3px 7px rgba(177,169,157,.38),inset -3px -3px 7px rgba(255,255,255,.82)!important;
+  transform:translateY(-1px)!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page .admin-operations-panel .admin-followup-grid .admin-followup-icon{
+  background:#E9E5DE!important;
+  border:1px solid rgba(255,255,255,.62)!important;
+  box-shadow:3px 3px 7px rgba(177,169,157,.38),-3px -3px 7px rgba(255,255,255,.86)!important;
+  color:var(--admin-accent)!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page .admin-operations-panel .admin-followup-card strong{
+  color:var(--admin-accent)!important;
+  font-size:16px!important;
+  font-weight:800!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page .admin-operations-panel .admin-followup-grid > .admin-followup-card{
+  background:#211F1F!important;
+  background-color:#211F1F!important;
+  background-image:none!important;
+  border:1px solid rgba(255,255,255,.045)!important;
+  border-radius:12px!important;
+  box-shadow:inset 3px 3px 7px rgba(12,11,11,.55),inset -3px -3px 7px rgba(52,48,48,.42)!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page .admin-operations-panel .admin-followup-grid > .admin-followup-card:hover{
+  border-color:var(--admin-accent)!important;
+  box-shadow:inset 3px 3px 7px rgba(12,11,11,.55),inset -3px -3px 7px rgba(52,48,48,.42)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page .admin-operations-panel .admin-followup-grid .admin-followup-icon{
+  background:#252323!important;
+  border:1px solid rgba(255,255,255,.055)!important;
+  box-shadow:3px 3px 7px rgba(13,12,12,.55),-3px -3px 7px rgba(51,47,47,.48)!important;
+  color:var(--admin-accent)!important;
+}
+
+
+/* Follow-up tiles: exact action-row surface and no turquoise hover frame. */
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page > .admin-operations-panel .admin-followup-grid > button.admin-followup-card,
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page > .admin-operations-panel .admin-followup-grid > button.admin-followup-card:hover{
+  background:#E7E3DC!important;
+  background-color:#E7E3DC!important;
+  background-image:none!important;
+  border:1px solid rgba(255,255,255,.62)!important;
+  border-color:rgba(255,255,255,.62)!important;
+  box-shadow:inset 3px 3px 7px rgba(177,169,157,.38),inset -3px -3px 7px rgba(255,255,255,.82)!important;
+  outline:0!important;
+  transform:none!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page > .admin-operations-panel .admin-followup-grid > button.admin-followup-card:hover{
+  border-color:rgba(255,255,255,.62)!important;
+  outline:0!important;
+  transform:translateY(-1px)!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page > .admin-operations-panel .admin-followup-grid > button.admin-followup-card:focus,
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page > .admin-operations-panel .admin-followup-grid > button.admin-followup-card:focus-visible{
+  outline:none!important;
+  box-shadow:inset 3px 3px 7px rgba(177,169,157,.38),inset -3px -3px 7px rgba(255,255,255,.82)!important;
+}
+
+
+/* Operations panel surface: use the warm raised dashboard surface, not the generic white card token. */
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page > section.admin-panel-card.admin-operations-panel{
+  background:var(--admin-bg)!important;
+  background-color:var(--admin-bg)!important;
+  background-image:none!important;
+  border:1px solid rgba(255,255,255,.56)!important;
+  box-shadow:8px 8px 18px rgba(174,166,154,.48),-8px -8px 18px rgba(255,255,255,.88),inset 1px 1px 0 rgba(255,255,255,.35)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page > section.admin-panel-card.admin-operations-panel{
+  background:#252323!important;
+  background-color:#252323!important;
+  background-image:none!important;
+  border:1px solid rgba(255,255,255,.055)!important;
+  box-shadow:8px 8px 18px rgba(13,12,12,.62),-8px -8px 18px rgba(48,45,45,.58),inset 1px 1px 0 rgba(255,255,255,.035)!important;
+}
+
+
+/* Management audit panel: same outer surface as operations, same inset rows as action center. */
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page > section.admin-panel-card.admin-recent-activity{
+  background:var(--admin-bg)!important;
+  background-color:var(--admin-bg)!important;
+  background-image:none!important;
+  border:1px solid rgba(255,255,255,.56)!important;
+  border-radius:17px!important;
+  box-shadow:8px 8px 18px rgba(174,166,154,.48),-8px -8px 18px rgba(255,255,255,.88),inset 1px 1px 0 rgba(255,255,255,.35)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page > section.admin-panel-card.admin-recent-activity{
+  background:#252323!important;
+  background-color:#252323!important;
+  background-image:none!important;
+  border:1px solid rgba(255,255,255,.055)!important;
+  border-radius:17px!important;
+  box-shadow:8px 8px 18px rgba(13,12,12,.62),-8px -8px 18px rgba(48,45,45,.58),inset 1px 1px 0 rgba(255,255,255,.035)!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page > section.admin-recent-activity .admin-activity-list > .admin-activity-row{
+  min-height:64px!important;
+  padding:12px!important;
+  background:var(--admin-inner)!important;
+  background-color:var(--admin-inner)!important;
+  background-image:none!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:12px!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page > section.admin-recent-activity .admin-activity-list > .admin-activity-row{
+  min-height:64px!important;
+  padding:12px!important;
+  background:var(--admin-inner)!important;
+  background-color:var(--admin-inner)!important;
+  background-image:none!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:12px!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page > section.admin-recent-activity .admin-activity-list > .admin-activity-row:hover{
+  border-color:var(--admin-accent)!important;
+  background:var(--admin-inner)!important;
+  box-shadow:none!important;
+  transform:translateY(-1px)!important;
+}
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page > section.admin-recent-activity .admin-activity-mark{
+  width:36px!important;
+  height:36px!important;
+  border-radius:10px!important;
+  background:var(--admin-accent-soft)!important;
+  color:var(--admin-accent)!important;
   border:0!important;
   box-shadow:none!important;
 }

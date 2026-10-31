@@ -12,11 +12,12 @@ import { ManageMockExams } from './pages/admin/ManageMockExams';
 import { ManageCounseling } from './pages/admin/ManageCounseling';
 import { ManageNotifications } from './pages/admin/ManageNotifications';
 import { ManagePublicContent } from './pages/admin/ManagePublicContent';
-import { Login } from './pages/user/Login';
+import { Login, InformationPage } from './pages/user/Login';
 import { UserDashboard } from './pages/user/UserDashboard';
 import { CounselorPortal } from './pages/counselor/CounselorPortal';
 import { RegistrationPage } from './pages/public/RegistrationPage';
 import { ManageRegistrations } from './pages/admin/ManageRegistrations';
+import { ManageBookstore } from './pages/admin/ManageBookstore';
 import type { Student, Admin } from './types';
 import './styles/AdminDesignSystem.css';
 
@@ -33,6 +34,7 @@ const ADMIN_PERMISSION_OPTIONS = [
   ['notifications', 'ارسال اطلاعیه'],
   ['rules', 'قوانین و تحلیل کنکور'],
   ['finance', 'مدیریت مالی، ثبت‌نام و بازپرداخت'],
+  ['books', 'مدیریت کتاب‌ها و سفارش‌ها'],
   ['logs', 'گزارش‌های سیستمی'],
 ] as const;
 
@@ -114,7 +116,7 @@ export function App() {
   } = useStore();
 
   const [view, setView] = useState<'checking' | 'login' | 'admin' | 'user' | 'counselor'>('checking');
-  type AdminTab = 'dashboard' | 'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'managementContact' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams' | 'counseling' | 'finance' | 'registrations';
+  type AdminTab = 'dashboard' | 'courses' | 'students' | 'admins' | 'logs' | 'messages' | 'managementContact' | 'notifications' | 'rules' | 'offlineRequests' | 'mockExams' | 'counseling' | 'finance' | 'registrations' | 'books';
   const [adminTab, setAdminTab] = useState<AdminTab>('dashboard');
   const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
 
@@ -200,6 +202,10 @@ export function App() {
     return <RegistrationPage />;
   }
 
+  if (window.location.pathname === '/public' || window.location.pathname === '/public/') {
+    return <InformationPage onBack={() => { window.location.href = '/'; }} />;
+  }
+
   if (view === 'checking') {
     return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: '#11181b', color: '#eef5f6', fontFamily: 'system-ui, sans-serif' }}>در حال بررسی نشست کاربری...</div>;
   }
@@ -240,6 +246,8 @@ export function App() {
           <ManageNotifications />
         ) : adminTab === 'rules' ? (
           <ManagePublicContent />
+        ) : adminTab === 'books' ? (
+          <ManageBookstore />
         ) : adminTab === 'finance' || adminTab === 'registrations' ? (
           <ManageRegistrations />
         ) : adminTab === 'admins' && currentAdmin?.role === 'super_admin' ? (
