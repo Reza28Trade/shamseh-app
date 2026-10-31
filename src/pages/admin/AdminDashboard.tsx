@@ -317,12 +317,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-activity-copy strong{font-size:11px;overflow-wrap:anywhere}
         .admin-activity-copy small,.admin-activity-row time{font-size:9px;color:var(--admin-sub)}
         .admin-activity-row time{white-space:nowrap;flex:none}
-        .admin-followup-card{min-width:0;min-height:76px;display:flex;align-items:center;gap:9px;text-align:right;padding:13px 14px;border:1px solid var(--admin-border);border-radius:15px;background:var(--admin-card);color:var(--admin-text);cursor:pointer;box-shadow:var(--admin-shadow);transition:transform .18s,border-color .18s,box-shadow .18s}\n        .admin-followup-card:hover{transform:translateY(-2px);border-color:var(--admin-accent);box-shadow:0 12px 28px rgba(0,128,128,.10)}
+        .admin-followup-card{min-width:0;min-height:64px;display:flex;align-items:center;gap:12px;text-align:right;padding:12px;cursor:pointer;transition:transform .18s}\n        
         .admin-followup-card>span:nth-child(2){display:flex;flex-direction:column;gap:5px;flex:1;min-width:0}
         .admin-followup-card small{font-size:9px;line-height:1.6;color:var(--admin-sub)}
         .admin-followup-card strong{font-size:18px;font-weight:900}
         .admin-followup-card>svg{color:var(--admin-sub);flex:none}
-        .admin-followup-icon{width:31px;height:31px;border-radius:10px;background:var(--admin-accent-soft);color:var(--admin-accent);display:grid;place-items:center;flex:none}
+        .admin-followup-icon{width:36px;height:36px;display:grid;place-items:center;border-radius:10px;flex:none}
         .admin-followup-icon.amber{background:rgba(202,145,49,.12);color:#c58a27}
         .admin-dashboard-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:12px}
         .admin-panel-card{min-width:0;border:1px solid var(--admin-border);background:var(--admin-card);border-radius:17px;padding:17px;box-shadow:var(--admin-shadow)}
