@@ -1902,90 +1902,6 @@
 .admin-shell .admin-page-content .admin-messages-page .messages-reply-form {
   padding:17px!important;
 }
-.admin-shell .admin-page-content .admin-accounts-page .accounts-card {
-  padding:18px!important;
-}
-.admin-shell .admin-page-content .admin-accounts-page .accounts-card-head h2 {
-  margin:4px 0 0!important;
-  color:var(--admin-text)!important;
-  font-size:16px!important;
-  font-weight:850!important;
-}
-.admin-shell .admin-page-content .admin-accounts-page .accounts-eyebrow {
-  color:var(--admin-accent)!important;
-  font-size:10px!important;
-  font-weight:850!important;
-}
-.admin-shell .admin-page-content .admin-accounts-page .accounts-description {
-  color:var(--admin-sub)!important;
-  font-size:11px!important;
-  line-height:1.8;
-}
-.admin-shell .admin-page-content .admin-accounts-page .accounts-fields {
-  display:grid!important;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:12px!important;
-}
-.admin-shell .admin-page-content .admin-accounts-page .accounts-fields label,
-.admin-shell .admin-page-content .admin-accounts-page .accounts-permissions label {
-  color:var(--admin-text)!important;
-  font-size:11px!important;
-}
-.admin-shell .admin-page-content .admin-accounts-page .accounts-fields input {
-  min-height:38px;
-  border:1px solid var(--admin-border)!important;
-  border-radius:9px!important;
-  background:var(--admin-control)!important;
-  color:var(--admin-text)!important;
-  padding:9px 11px!important;
-}
-.admin-shell .admin-page-content .admin-accounts-page .accounts-permissions {
-  display:grid!important;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:9px 12px!important;
-  padding:13px!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:11px!important;
-  background:var(--admin-inner)!important;
-}
-.admin-shell .admin-page-content .admin-accounts-page .accounts-permissions label {
-  min-width:0;
-  line-height:1.7;
-}
-.admin-shell .admin-page-content .admin-accounts-page .accounts-permissions input[type="checkbox"] {
-  accent-color:var(--admin-accent);
-  flex:none;
-}
-.admin-shell .admin-page-content .admin-accounts-page .accounts-admin-row {
-  padding:14px 0!important;
-  border-bottom:1px solid var(--admin-border)!important;
-}
-.admin-shell .admin-page-content .admin-accounts-page .accounts-admin-toolbar {
-  display:flex;
-  flex-wrap:wrap;
-  align-items:center;
-  gap:8px!important;
-  margin-bottom:10px;
-}
-.admin-shell .admin-page-content .admin-accounts-page .accounts-admin-toolbar strong {
-  color:var(--admin-text)!important;
-  font-size:13px!important;
-  margin-inline-end:auto;
-}
-.admin-shell .admin-page-content .admin-accounts-page :is(.accounts-primary-action,.accounts-admin-toolbar button) {
-  min-height:34px!important;
-  padding:7px 11px!important;
-  border:1px solid var(--admin-brand-border)!important;
-  border-radius:9px!important;
-  background:var(--admin-accent-soft)!important;
-  color:var(--admin-text)!important;
-  font-size:10px!important;
-  font-weight:800!important;
-}
-.admin-shell .admin-page-content .admin-accounts-page .accounts-admin-toolbar button:hover,
-.admin-shell .admin-page-content .admin-accounts-page .accounts-primary-action:hover {
-  border-color:var(--admin-accent)!important;
-}
 .admin-shell .admin-page-content .admin-dashboard-page {
   width:100%;
   max-width:1240px;
@@ -2016,12 +1932,6 @@
   .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-stats {
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
   }
-  .admin-shell .admin-page-content .admin-accounts-page .accounts-fields {
-    grid-template-columns:1fr;
-  }
-  .admin-shell .admin-page-content .admin-accounts-page .accounts-permissions {
-    grid-template-columns:repeat(2,minmax(0,1fr));
-  }
   .admin-shell .admin-page-content .admin-dashboard-page .admin-stat-grid,
   .admin-shell .admin-page-content .admin-dashboard-page .admin-followup-grid {
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
@@ -2039,9 +1949,6 @@
   .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-section-head {
     align-items:flex-start;
     flex-direction:column;
-  }
-  .admin-shell .admin-page-content .admin-accounts-page .accounts-permissions {
-    grid-template-columns:1fr;
   }
   .admin-shell .admin-page-content .admin-dashboard-page .admin-stat-grid,
   .admin-shell .admin-page-content .admin-dashboard-page .admin-followup-grid {
@@ -3592,7 +3499,7 @@
 .admin-shell .admin-main .admin-page-content .admin-accounts-page .accounts-page-head{
   width:100%;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:16px;
   padding:16px 19px;border:1px solid var(--admin-border);border-radius:15px;
-  background:var(--admin-card);box-shadow:var(--admin-shadow);
+  background:var(--admin-content-surface);box-shadow:var(--admin-content-shadow);
 }
 .admin-accounts-page .accounts-page-head h2{margin:3px 0;color:var(--admin-text);font-size:17px;font-weight:900}
 .admin-accounts-page .accounts-page-head p{margin:4px 0 0;color:var(--admin-sub);font-size:11px;line-height:1.7}
@@ -3604,8 +3511,8 @@
 }
 .admin-shell .admin-main .admin-page-content .admin-accounts-page .accounts-card{
   min-width:0;padding:18px!important;border:1px solid var(--admin-border)!important;
-  border-radius:15px!important;background:var(--admin-bg)!important;
-  box-shadow:var(--admin-shadow)!important;color:var(--admin-text)!important;
+  border-radius:15px!important;background:var(--admin-content-surface)!important;
+  box-shadow:var(--admin-content-shadow)!important;color:var(--admin-text)!important;
 }
 .admin-accounts-page .accounts-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
 .admin-accounts-page .accounts-card-head h2{margin:3px 0 0;color:var(--admin-text);font-size:15px;font-weight:900}
@@ -3653,7 +3560,7 @@
 .admin-accounts-page .accounts-admin-list{display:flex;flex-direction:column;gap:10px;min-width:0}
 .admin-shell .admin-main .admin-page-content .admin-accounts-page .accounts-admin-row{
   min-width:0;padding:12px!important;border:1px solid var(--admin-border)!important;border-radius:12px!important;
-  background:var(--admin-inner)!important;box-shadow:none!important;
+  background:var(--admin-content-inner)!important;box-shadow:none!important;
 }
 .admin-accounts-page .accounts-admin-toolbar{display:flex;flex-direction:column;align-items:stretch;gap:10px!important;margin:0 0 10px}
 .admin-accounts-page .accounts-admin-identity{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
