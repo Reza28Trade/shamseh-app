@@ -3566,3 +3566,20 @@
   outline:none!important;
   box-shadow:inset 3px 3px 7px rgba(177,169,157,.38),inset -3px -3px 7px rgba(255,255,255,.82)!important;
 }
+
+
+/* Operations panel surface: use the warm raised dashboard surface, not the generic white card token. */
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page > section.admin-panel-card.admin-operations-panel{
+  background:var(--admin-bg)!important;
+  background-color:var(--admin-bg)!important;
+  background-image:none!important;
+  border:1px solid rgba(255,255,255,.56)!important;
+  box-shadow:8px 8px 18px rgba(174,166,154,.48),-8px -8px 18px rgba(255,255,255,.88),inset 1px 1px 0 rgba(255,255,255,.35)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page > section.admin-panel-card.admin-operations-panel{
+  background:#252323!important;
+  background-color:#252323!important;
+  background-image:none!important;
+  border:1px solid rgba(255,255,255,.055)!important;
+  box-shadow:8px 8px 18px rgba(13,12,12,.62),-8px -8px 18px rgba(48,45,45,.58),inset 1px 1px 0 rgba(255,255,255,.035)!important;
+}
