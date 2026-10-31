@@ -79,10 +79,6 @@ function AdminAccounts() {
   };
   const permissionLabel = (key:string) => ADMIN_PERMISSION_OPTIONS.find(([option])=>option===key)?.[1] || key;
   return <section className="admin-legacy-page admin-accounts-page">
-    <header className="accounts-page-head">
-      <div><span className="accounts-eyebrow">امنیت و ساختار سازمانی</span><h2>مدیریت مدیران و دسترسی‌ها</h2><p>ایجاد حساب‌های مدیریتی و تعیین سطح دسترسی هر مدیر</p></div>
-      <div className="accounts-page-count"><strong>{admins.length.toLocaleString('fa-IR')}</strong><span>حساب مدیر</span></div>
-    </header>
     {error && <div className="accounts-feedback" role="alert">{error}</div>}
     <div className="accounts-workspace">
       <div className="accounts-card accounts-create-card">
