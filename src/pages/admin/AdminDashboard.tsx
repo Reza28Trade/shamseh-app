@@ -290,29 +290,29 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-stat-arrow{color:var(--admin-sub);flex:none}
         .admin-followup-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
         .admin-operations-panel,.admin-recent-activity{width:100%;min-width:0}
-        .admin-dashboard-page>.admin-operations-panel,.admin-dashboard-page>.admin-recent-activity{box-sizing:border-box!important;width:100%!important;max-width:none!important;min-width:0!important;margin:0!important;padding:17px!important;border:1px solid var(--admin-border)!important;border-radius:17px!important;background:var(--admin-card)!important;background-image:none!important;color:var(--admin-text)!important;box-shadow:0 8px 18px rgba(38,36,36,.10),0 2px 5px rgba(38,36,36,.055),inset 1px 1px 2px rgba(255,255,255,.68),inset -2px -2px 4px rgba(38,36,36,.055)!important}
-        .admin-dashboard-page>.admin-operations-panel .admin-panel-heading,.admin-dashboard-page>.admin-recent-activity .admin-panel-heading{padding:0 0 12px!important;margin:0 0 13px!important;border-bottom:1px solid var(--admin-border)!important}
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-card{min-height:76px!important;border:1px solid var(--admin-border)!important;border-radius:12px!important;background:var(--admin-inner)!important;color:var(--admin-text)!important;box-shadow:var(--admin-shadow),inset 1px 1px 2px rgba(255,255,255,.48),inset -1px -1px 2px rgba(0,0,0,.035)!important}
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-card:hover{border-color:var(--admin-accent)!important;background:var(--admin-accent-soft)!important;box-shadow:var(--admin-shadow)!important}
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-card{position:relative!important;min-height:108px!important;padding:17px 16px!important;gap:12px!important;border:1px solid var(--admin-border)!important;border-radius:16px!important;background:var(--admin-card)!important;color:var(--admin-text)!important;box-shadow:0 8px 18px rgba(38,36,36,.10),0 2px 5px rgba(38,36,36,.055),inset 1px 1px 2px rgba(255,255,255,.68),inset -2px -2px 4px rgba(38,36,36,.055)!important;transition:transform .18s,border-color .18s,box-shadow .18s!important}
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-card:hover{transform:translateY(-2px)!important;border-color:var(--admin-accent)!important;background:var(--admin-card)!important;box-shadow:0 12px 28px rgba(0,128,128,.12),var(--admin-shadow),inset 1px 1px 2px rgba(255,255,255,.58)!important}
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-icon{width:36px!important;height:36px!important;border-radius:11px!important;background:var(--admin-accent-soft)!important;color:var(--admin-accent)!important;box-shadow:none!important}
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-card>span:nth-child(2){gap:5px!important}
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-card small{font-size:10px!important;font-weight:700!important}
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-card strong{font-size:23px!important;line-height:1.2!important;font-weight:900!important}
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-card>svg{color:var(--admin-sub)!important}
-        .admin-dashboard-page>.admin-recent-activity .admin-activity-row{min-height:62px!important;padding:12px 14px!important;border:1px solid var(--admin-border)!important;border-radius:13px!important;background:var(--admin-card)!important;box-shadow:0 8px 18px rgba(38,36,36,.10),0 2px 5px rgba(38,36,36,.055),inset 1px 1px 2px rgba(255,255,255,.68),inset -2px -2px 4px rgba(38,36,36,.055)!important}
-        .admin-dashboard-page>.admin-recent-activity .admin-activity-row:hover{transform:translateY(-2px)!important;border-color:var(--admin-accent)!important;box-shadow:0 12px 28px rgba(0,128,128,.10),var(--admin-shadow),inset 1px 1px 2px rgba(255,255,255,.58)!important}
-        .admin-dashboard-page>.admin-recent-activity .admin-activity-mark{width:36px!important;height:36px!important;border-radius:11px!important;box-shadow:2px 2px 5px rgba(0,0,0,.08),-2px -2px 5px rgba(255,255,255,.62)!important}
-        @media(max-width:600px){.admin-dashboard-page>.admin-operations-panel .admin-followup-card{min-height:94px!important;padding:14px!important}.admin-dashboard-page>.admin-operations-panel .admin-followup-card strong{font-size:20px!important}}
-        .admin-dashboard-page .admin-stat,.admin-dashboard-page>.admin-operations-panel .admin-followup-card,.admin-dashboard-page>.admin-recent-activity .admin-activity-row{background:var(--admin-card)!important;background-image:none!important;border-color:var(--admin-border)!important;box-shadow:0 8px 18px rgba(38,36,36,.10),0 2px 5px rgba(38,36,36,.055),inset 1px 1px 2px rgba(255,255,255,.68),inset -2px -2px 4px rgba(38,36,36,.055)!important}
-        .admin-dashboard-page .admin-stat-icon,.admin-dashboard-page>.admin-operations-panel .admin-followup-icon,.admin-dashboard-page>.admin-recent-activity .admin-activity-mark{background:var(--admin-accent-soft)!important;color:var(--admin-accent)!important;box-shadow:none!important}
-        .admin-dashboard-page .admin-stat:hover,.admin-dashboard-page>.admin-operations-panel .admin-followup-card:hover,.admin-dashboard-page>.admin-recent-activity .admin-activity-row:hover{background:var(--admin-card)!important;border-color:var(--admin-accent)!important;box-shadow:0 12px 28px rgba(0,128,128,.12)!important}
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        @media(max-width:600px){}
+        .admin-dashboard-page .admin-stat,.admin-dashboard-page>.admin-operations-panel .admin-followup-card,
+        .admin-dashboard-page .admin-stat-icon,.admin-dashboard-page>.admin-operations-panel .admin-followup-icon,
+        .admin-dashboard-page .admin-stat:hover,.admin-dashboard-page>.admin-operations-panel .admin-followup-card:hover,
 
         .admin-activity-list{display:flex;flex-direction:column;gap:8px}
-        .admin-activity-row{display:flex;align-items:center;gap:10px;min-width:0;padding:12px;border:1px solid var(--admin-border);border-radius:12px;background:var(--admin-inner);box-shadow:var(--admin-shadow),inset 1px 1px 2px rgba(255,255,255,.48),inset -1px -1px 2px rgba(0,0,0,.035);transition:border-color .18s,transform .18s,box-shadow .18s}
-        .admin-activity-row:hover{border-color:var(--admin-accent);transform:translateY(-1px)}
-        .admin-activity-mark{width:29px;height:29px;display:grid;place-items:center;flex:none;border-radius:9px;background:var(--admin-accent-soft);color:var(--admin-accent)}
+        
+        
+        
         .admin-activity-copy{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
         .admin-activity-copy strong{font-size:11px;overflow-wrap:anywhere}
         .admin-activity-copy small,.admin-activity-row time{font-size:9px;color:var(--admin-sub)}
@@ -407,127 +407,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         @media(max-width:600px){.admin-stat-grid{grid-template-columns:1fr}.admin-action-center,.admin-upcoming-panel{padding:14px}.admin-action-row{gap:8px;padding:10px}}
 
 
-        /* Raised shell + recessed inner tiles for the daily operations panel */
-        .admin-dashboard-page{
-          --dashboard-card-surface:var(--admin-card);
-          --dashboard-card-border:var(--admin-border);
-          --dashboard-card-shadow:0 8px 18px rgba(38,36,36,.10),0 2px 5px rgba(38,36,36,.055),inset 1px 1px 2px rgba(255,255,255,.68),inset -2px -2px 4px rgba(38,36,36,.055);
-          --dashboard-card-shadow-hover:0 12px 28px rgba(0,128,128,.12),0 3px 7px rgba(38,36,36,.06),inset 1px 1px 2px rgba(255,255,255,.62);
-          --dashboard-icon-surface:var(--admin-accent-soft);
-        }
-        .admin-dashboard-page>.admin-operations-panel{
-          background:var(--dashboard-card-surface)!important;
-          border:1px solid var(--dashboard-card-border)!important;
-          border-radius:17px!important;
-          box-shadow:var(--dashboard-card-shadow)!important;
-          padding:17px!important;
-        }
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-card{
-          appearance:none!important;
-          -webkit-appearance:none!important;
-          background:var(--admin-inner)!important;
-          background-color:var(--admin-inner)!important;
-          background-image:none!important;
-          border:1px solid var(--dashboard-card-border)!important;
-          border-radius:13px!important;
-          box-shadow:inset 3px 3px 7px rgba(38,36,36,.10),inset -3px -3px 7px rgba(255,255,255,.72)!important;
-          color:var(--admin-text)!important;
-          min-height:108px!important;
-          padding:17px 16px!important;
-          transition:transform .18s,border-color .18s,box-shadow .18s!important;
-        }
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-card:hover{
-          transform:translateY(-2px)!important;
-          border-color:var(--admin-accent)!important;
-          box-shadow:inset 2px 2px 5px rgba(38,36,36,.08),inset -2px -2px 5px rgba(255,255,255,.7),0 7px 16px rgba(0,128,128,.10)!important;
-        }
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-icon{
-          width:36px!important;height:36px!important;border-radius:11px!important;
-          background:var(--dashboard-icon-surface)!important;color:var(--admin-accent)!important;
-          box-shadow:2px 2px 5px rgba(38,36,36,.10),-2px -2px 5px rgba(255,255,255,.72)!important;
-        }
-        /* Daily operations must use the same content-card language as the action center. */
-        .admin-dashboard-page>.admin-operations-panel{
-          min-width:0!important;
-          padding:19px!important;
-          border:1px solid var(--admin-border)!important;
-          border-radius:17px!important;
-          background:var(--admin-bg)!important;
-          box-shadow:var(--admin-shadow)!important;
-        }
+        
+        /* Dashboard card layout only; visual surfaces live in AdminDesignSystem.css. */
         .admin-dashboard-page>.admin-operations-panel .admin-followup-grid{
-          display:grid!important;
-          grid-template-columns:repeat(4,minmax(0,1fr))!important;
-          gap:9px!important;
+          display:grid;
+          grid-template-columns:repeat(4,minmax(0,1fr));
+          gap:9px;
         }
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-card{
-          appearance:none!important;
-          -webkit-appearance:none!important;
-          display:flex!important;
-          align-items:center!important;
-          gap:12px!important;
-          min-width:0!important;
-          min-height:64px!important;
-          padding:12px!important;
-          border:1px solid var(--admin-border)!important;
-          border-radius:12px!important;
-          background:var(--admin-inner)!important;
-          color:var(--admin-text)!important;
-          box-shadow:none!important;
-          transform:none!important;
-          transition:border-color .15s,background-color .15s!important;
+        @media(max-width:900px){
+          .admin-dashboard-page>.admin-operations-panel .admin-followup-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
         }
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-card:hover{
-          border-color:var(--admin-accent)!important;
-          background:var(--admin-inner)!important;
-          box-shadow:none!important;
-          transform:translateY(-1px)!important;
+        @media(max-width:600px){
+          .admin-dashboard-page>.admin-operations-panel{padding:14px}
+          .admin-dashboard-page>.admin-operations-panel .admin-followup-grid{grid-template-columns:minmax(0,1fr)}
         }
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-icon{
-          width:36px!important;height:36px!important;flex:none!important;
-          border-radius:10px!important;
-          background:var(--admin-accent-soft)!important;
-          color:var(--admin-accent)!important;
-          box-shadow:none!important;
-        }
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-card>span:nth-child(2){
-          display:flex!important;flex:1 1 auto!important;flex-direction:column!important;
-          gap:3px!important;min-width:0!important;
-        }
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-card small{
-          color:var(--admin-sub)!important;font-size:10px!important;font-weight:700!important;
-        }
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-card strong{
-          color:var(--admin-accent)!important;font-size:16px!important;line-height:1.4!important;font-weight:800!important;
-        }
-        .admin-dashboard-page>.admin-operations-panel .admin-followup-card>svg{color:var(--admin-sub)!important;flex:none!important}
-        @media(max-width:900px){.admin-dashboard-page>.admin-operations-panel .admin-followup-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
-        @media(max-width:600px){.admin-dashboard-page>.admin-operations-panel{padding:14px!important}.admin-dashboard-page>.admin-operations-panel .admin-followup-grid{grid-template-columns:minmax(0,1fr)!important}}
-        /* Final high-specificity surface reset: follow-up tiles are content rows, never raised stat cards. */
-        .admin-shell .admin-page-content .admin-dashboard-page > section.admin-operations-panel .admin-followup-grid > button.admin-followup-card{
-          background:var(--admin-inner)!important;
-          background-color:var(--admin-inner)!important;
-          background-image:none!important;
-          border:1px solid var(--admin-border)!important;
-          border-radius:12px!important;
-          box-shadow:none!important;
-          filter:none!important;
-          transform:none!important;
-          text-shadow:none!important;
-        }
-        .admin-shell .admin-page-content .admin-dashboard-page > section.admin-operations-panel .admin-followup-grid > button.admin-followup-card:hover{
-          background:var(--admin-inner)!important;
-          border-color:var(--admin-accent)!important;
-          box-shadow:none!important;
-          filter:none!important;
-          transform:translateY(-1px)!important;
-        }
-        .admin-shell .admin-page-content .admin-dashboard-page > section.admin-operations-panel .admin-followup-grid > button.admin-followup-card:focus-visible{
-          outline:2px solid var(--admin-accent)!important;
-          outline-offset:2px!important;
-        }
-        @media(prefers-reduced-motion:reduce){.admin-dashboard-page *{transition:none!important;animation:none!important}}
-      `}</style>
+      </style>
     </div>
   );
 };
