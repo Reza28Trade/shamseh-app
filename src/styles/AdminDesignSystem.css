@@ -3645,7 +3645,7 @@
 }
 
 
-.admin-shell.admin-main .admin-page-content .admin-legacy-page.admin-accounts-page > .accounts-workspace > .accounts-card{
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-accounts-page > .accounts-workspace > .accounts-card{
   background:var(--admin-raised-panel-bg)!important;
   background-color:var(--admin-raised-panel-bg)!important;
   background-image:none!important;
