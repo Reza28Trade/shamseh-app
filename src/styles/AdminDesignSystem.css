@@ -3496,15 +3496,6 @@
   color:var(--admin-text)!important;box-sizing:border-box!important;
 }
 .admin-accounts-page *,.admin-accounts-page *::before,.admin-accounts-page *::after{box-sizing:border-box}
-.admin-shell .admin-main .admin-page-content .admin-accounts-page .accounts-page-head{
-  width:100%;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:16px;
-  padding:16px 19px;border:1px solid var(--admin-border);border-radius:15px;
-  background:var(--admin-content-surface);box-shadow:var(--admin-content-shadow);
-}
-.admin-accounts-page .accounts-page-head h2{margin:3px 0;color:var(--admin-text);font-size:17px;font-weight:900}
-.admin-accounts-page .accounts-page-head p{margin:4px 0 0;color:var(--admin-sub);font-size:11px;line-height:1.7}
-.admin-accounts-page .accounts-page-count{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:var(--admin-inner);color:var(--admin-sub);font-size:10px;white-space:nowrap}
-.admin-accounts-page .accounts-page-count strong{font-size:17px;color:var(--admin-accent)}
 .admin-shell .admin-main .admin-page-content .admin-accounts-page .accounts-workspace{
   width:100%;min-width:0;display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);
   gap:14px;align-items:start;direction:rtl;
