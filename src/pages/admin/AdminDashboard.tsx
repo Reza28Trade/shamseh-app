@@ -452,7 +452,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
           padding:19px!important;
           border:1px solid var(--admin-border)!important;
           border-radius:17px!important;
-          background:var(--admin-card)!important;
+          background:var(--admin-bg)!important;
           box-shadow:var(--admin-shadow)!important;
         }
         .admin-dashboard-page>.admin-operations-panel .admin-followup-grid{
