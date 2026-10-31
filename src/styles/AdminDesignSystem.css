@@ -3615,9 +3615,9 @@
   box-shadow:none!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-accounts-page{
-  width:100%!important;max-width:1240px!important;min-width:0!important;margin-inline:auto!important;
+  width:100%!important;max-width:none!important;min-width:0!important;margin:0!important;
   padding:0!important;display:flex!important;flex-direction:column!important;gap:14px!important;
-  color:var(--admin-text)!important;box-sizing:border-box!important;
+  align-self:stretch!important;color:var(--admin-text)!important;box-sizing:border-box!important;
 }
 @media(max-width:900px){
  .admin-shell .admin-page-content .admin-legacy-page.admin-accounts-page > .accounts-workspace{
