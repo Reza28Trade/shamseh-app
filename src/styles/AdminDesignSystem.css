@@ -3464,14 +3464,30 @@
 
 /* Admin accounts workspace — dashboard-aligned layout and surfaces. */
 .admin-accounts-page *,.admin-accounts-page *::before,.admin-accounts-page *::after{box-sizing:border-box}
+/* Workspace is layout only: it must never render as a third panel behind the cards. */
 .admin-shell .admin-main .admin-page-content .admin-accounts-page .accounts-workspace{
-  width:100%;min-width:0;display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);
-  gap:14px;align-items:start;direction:rtl;
+  display:grid!important;
+  grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);
+  align-items:start;
+  gap:14px;
+  width:100%;
+  min-width:0;
+  max-width:none;
+  margin:0;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  direction:rtl;
 }
+/* Cards get their complete visual treatment only from .admin-master-panel. */
 .admin-shell .admin-main .admin-page-content .admin-accounts-page .accounts-card{
-  min-width:0;padding:18px!important;border:1px solid var(--admin-border)!important;
-  border-radius:15px!important;background:var(--admin-content-surface)!important;
-  box-shadow:var(--admin-content-shadow)!important;color:var(--admin-text)!important;
+  min-width:0;
+  padding:18px!important;
+  color:var(--admin-text)!important;
 }
 .admin-accounts-page .accounts-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
 .admin-accounts-page .accounts-card-head h2{margin:3px 0 0;color:var(--admin-text);font-size:15px;font-weight:900}
