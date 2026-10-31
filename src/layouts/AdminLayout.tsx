@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { Admin } from '../types';
 import { useStore } from '../store/useStore';
 import '../styles/AdminLegacy.css';
+import '../styles/AdminDesignSystem.css';
 import { LayoutDashboard, BookOpen, Users, MessageSquare, ShieldAlert, FileText, LogOut, Sun, Moon, Menu, X, CheckSquare, ClipboardList, Bell, Wallet, ShieldCheck, KeyRound, ShoppingBag } from 'lucide-react';
 
 interface AdminLayoutProps { admin?: Admin; onLogout: () => void; activeTab: string; setActiveTab: any; children: React.ReactNode; }
