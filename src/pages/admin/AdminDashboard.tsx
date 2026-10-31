@@ -211,7 +211,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
       </section>}
       </div>
 
-      {(isAllowed('offlineRequests') || isAllowed('counseling') || admin?.role === 'super_admin') && <section className="admin-panel-card admin-operations-panel">
+      {(isAllowed('offlineRequests') || isAllowed('counseling') || admin?.role === 'super_admin') && <section className="admin-panel-card admin-operations-panel admin-master-panel">
         <div className="admin-panel-heading"><div><span>پیگیری عملیات روزانه</span><h2>وضعیت درخواست‌ها</h2></div></div>
         <div className="admin-followup-grid">
           {isAllowed('offlineRequests') && <button className="admin-followup-card" onClick={() => onNavigate('offlineRequests')}><span className="admin-followup-icon"><CalendarClock size={16}/></span><span><small>درخواست آفلاین</small><strong>{pendingOfflineRequests === null ? '—' : numberFa(pendingOfflineRequests.length)}</strong></span><ArrowLeft size={14}/></button>}
@@ -221,7 +221,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         </div>
       </section>}
 
-      {isAllowed('logs') && <section className="admin-panel-card admin-recent-activity">
+      {isAllowed('logs') && <section className="admin-panel-card admin-recent-activity admin-master-panel">
         <div className="admin-panel-heading"><div><span>ردپای مدیریتی</span><h2>آخرین فعالیت‌های سامانه</h2></div><button onClick={() => onNavigate('logs')}>مشاهده گزارش‌ها <ArrowLeft size={13}/></button></div>
         {recentLogs === null ? <div className="admin-empty">گزارش فعالیت‌ها در دسترس نیست.</div> : recentLogs.length === 0 ? <div className="admin-empty">هنوز فعالیتی ثبت نشده است.</div> :
           <div className="admin-activity-list">{recentLogs.map(log => <div className="admin-activity-row" key={log.id}>
