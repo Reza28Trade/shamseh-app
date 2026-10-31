@@ -3583,3 +3583,59 @@
   border:1px solid rgba(255,255,255,.055)!important;
   box-shadow:8px 8px 18px rgba(13,12,12,.62),-8px -8px 18px rgba(48,45,45,.58),inset 1px 1px 0 rgba(255,255,255,.035)!important;
 }
+
+
+/* Management audit panel: same outer surface as operations, same inset rows as action center. */
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page > section.admin-panel-card.admin-recent-activity{
+  background:var(--admin-bg)!important;
+  background-color:var(--admin-bg)!important;
+  background-image:none!important;
+  border:1px solid rgba(255,255,255,.56)!important;
+  border-radius:17px!important;
+  box-shadow:8px 8px 18px rgba(174,166,154,.48),-8px -8px 18px rgba(255,255,255,.88),inset 1px 1px 0 rgba(255,255,255,.35)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page > section.admin-panel-card.admin-recent-activity{
+  background:#252323!important;
+  background-color:#252323!important;
+  background-image:none!important;
+  border:1px solid rgba(255,255,255,.055)!important;
+  border-radius:17px!important;
+  box-shadow:8px 8px 18px rgba(13,12,12,.62),-8px -8px 18px rgba(48,45,45,.58),inset 1px 1px 0 rgba(255,255,255,.035)!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page > section.admin-recent-activity .admin-activity-list > .admin-activity-row{
+  min-height:64px!important;
+  padding:12px!important;
+  background:var(--admin-inner)!important;
+  background-color:var(--admin-inner)!important;
+  background-image:none!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:12px!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page > section.admin-recent-activity .admin-activity-list > .admin-activity-row{
+  min-height:64px!important;
+  padding:12px!important;
+  background:var(--admin-inner)!important;
+  background-color:var(--admin-inner)!important;
+  background-image:none!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:12px!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page > section.admin-recent-activity .admin-activity-list > .admin-activity-row:hover{
+  border-color:var(--admin-accent)!important;
+  background:var(--admin-inner)!important;
+  box-shadow:none!important;
+  transform:translateY(-1px)!important;
+}
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page > section.admin-recent-activity .admin-activity-mark{
+  width:36px!important;
+  height:36px!important;
+  border-radius:10px!important;
+  background:var(--admin-accent-soft)!important;
+  color:var(--admin-accent)!important;
+  border:0!important;
+  box-shadow:none!important;
+}
