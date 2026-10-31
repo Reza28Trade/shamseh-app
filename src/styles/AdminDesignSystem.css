@@ -3405,37 +3405,6 @@
 
 
 
-/* Shared raised-panel tokens: dashboard and manager cards must use one source. */
-.admin-shell.admin-theme-light{
-  --admin-raised-panel-bg:var(--admin-bg);
-  --admin-raised-panel-border:rgba(255,255,255,.56);
-  --admin-raised-panel-shadow:8px 8px 18px rgba(174,166,154,.48),-8px -8px 18px rgba(255,255,255,.88),inset 1px 1px 0 rgba(255,255,255,.35);
-  --admin-raised-panel-radius:17px;
-}
-.admin-shell.admin-theme-dark{
-  --admin-raised-panel-bg:#252323;
-  --admin-raised-panel-border:rgba(255,255,255,.055);
-  --admin-raised-panel-shadow:8px 8px 18px rgba(13,12,12,.62),-8px -8px 18px rgba(48,45,45,.58),inset 1px 1px 0 rgba(255,255,255,.035);
-  --admin-raised-panel-radius:17px;
-}
-
-/* Dashboard content surfaces: one source of truth for operations and audit panels. */
-.admin-shell.admin-theme-light .admin-main .admin-page-content > :is(.admin-dashboard-page,.admin-legacy-page.admin-accounts-page) > :is(section.admin-panel-card:is(.admin-operations-panel,.admin-recent-activity),.accounts-workspace > .accounts-card){
-  background:var(--admin-raised-panel-bg)!important;
-  background-color:var(--admin-raised-panel-bg)!important;
-  background-image:none!important;
-  border:1px solid var(--admin-raised-panel-border)!important;
-  border-radius:var(--admin-raised-panel-radius)!important;
-  box-shadow:var(--admin-raised-panel-shadow)!important;
-}
-.admin-shell.admin-theme-dark .admin-main .admin-page-content > :is(.admin-dashboard-page,.admin-legacy-page.admin-accounts-page) > :is(section.admin-panel-card:is(.admin-operations-panel,.admin-recent-activity),.accounts-workspace > .accounts-card){
-  background:var(--admin-raised-panel-bg)!important;
-  background-color:var(--admin-raised-panel-bg)!important;
-  background-image:none!important;
-  border:1px solid var(--admin-raised-panel-border)!important;
-  border-radius:var(--admin-raised-panel-radius)!important;
-  box-shadow:var(--admin-raised-panel-shadow)!important;
-}
 /* Both panels use the same inset content-row treatment. */
 .admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page > section:is(.admin-operations-panel,.admin-recent-activity) :is(.admin-followup-card,.admin-activity-row){
   background:#E7E3DC!important;
@@ -3589,75 +3558,6 @@
  .admin-accounts-page .accounts-admin-actions button{flex:1 1 auto}
 }
 
-/* Manager page: workspace is layout only; only its two children are visual cards. */
-.admin-shell .admin-page-content .admin-legacy-page.admin-accounts-page > .accounts-workspace{
-  display:grid!important;
-  grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr)!important;
-  gap:14px!important;
-  align-items:start!important;
-  width:100%!important;
-  min-width:0!important;
-  margin:0!important;
-  padding:0!important;
-  border:0!important;
-  border-radius:0!important;
-  background:transparent!important;
-  background-image:none!important;
-  box-shadow:none!important;
-  direction:rtl;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-accounts-page > .accounts-workspace > .accounts-card{
-  min-width:0!important;
-  margin:0!important;
-  padding:17px!important;
-  border:1px solid var(--admin-content-border)!important;
-  border-radius:17px!important;
-  background:var(--admin-content-surface)!important;
-  background-image:none!important;
-  box-shadow:var(--admin-content-shadow)!important;
-  color:var(--admin-text)!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-accounts-page .accounts-admin-row{
-  border:1px solid var(--admin-content-border)!important;
-  border-radius:12px!important;
-  background:var(--admin-content-inner)!important;
-  background-image:none!important;
-  box-shadow:none!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-accounts-page .accounts-admin-row:hover{
-  border-color:var(--admin-content-border)!important;
-  box-shadow:none!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-accounts-page{
-  width:100%!important;max-width:none!important;min-width:0!important;margin:0!important;
-  padding:0!important;display:flex!important;flex-direction:column!important;gap:14px!important;
-  align-self:stretch!important;color:var(--admin-text)!important;box-sizing:border-box!important;
-}
-@media(max-width:900px){
- .admin-shell .admin-page-content .admin-legacy-page.admin-accounts-page > .accounts-workspace{
-  grid-template-columns:minmax(0,1fr)!important;
- }
-}
-@media(max-width:560px){
- .admin-shell .admin-page-content .admin-legacy-page.admin-accounts-page > .accounts-workspace > .accounts-card{
-  padding:14px!important;
- }
-}
-
-
-
-.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-legacy-page.admin-accounts-page .accounts-admin-row{
-  background:#E5DED5!important;
-  border:1px solid rgba(64,55,48,.10)!important;
-  box-shadow:inset 3px 3px 7px rgba(174,166,154,.24),inset -3px -3px 7px rgba(255,255,255,.72)!important;
-}
-.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-legacy-page.admin-accounts-page .accounts-admin-row{
-  background:#302D2D!important;
-  border:1px solid rgba(238,229,218,.08)!important;
-  box-shadow:inset 3px 3px 7px rgba(13,12,12,.34),inset -3px -3px 7px rgba(48,45,45,.24)!important;
-}
-
-
 /* Dashboard master stylesheet — extracted from AdminDashboard.tsx. */
 
         .admin-page-content:has(> .admin-dashboard-page){width:100%;max-width:none;margin:0}
@@ -3776,11 +3676,7 @@
         
         
         @media(max-width:600px){}
-        .admin-dashboard-page .admin-stat,.admin-dashboard-page>.admin-operations-panel .admin-followup-card,
-        .admin-dashboard-page .admin-stat-icon,.admin-dashboard-page>.admin-operations-panel .admin-followup-icon,
-        .admin-dashboard-page .admin-stat:hover,.admin-dashboard-page>.admin-operations-panel .admin-followup-card:hover,
-
-        .admin-activity-list{display:flex;flex-direction:column;gap:8px}
+        .admin-dashboard-page .admin-activity-list{display:flex;flex-direction:column;gap:8px}
         
         
         
