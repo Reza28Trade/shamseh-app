@@ -3574,8 +3574,6 @@
  .admin-accounts-page .accounts-list-card{order:1}
 }
 @media(max-width:560px){
- .admin-accounts-page .accounts-page-head{align-items:flex-start;padding:14px!important}
- .admin-accounts-page .accounts-page-head h2{font-size:15px}
  .admin-accounts-page .accounts-page-count{flex-direction:column;gap:2px;padding:7px}
  .admin-shell .admin-main .admin-page-content .admin-accounts-page .accounts-card{padding:14px!important}
  .admin-accounts-page .accounts-permission-options,.admin-accounts-page .accounts-saved-permissions{grid-template-columns:minmax(0,1fr)}
