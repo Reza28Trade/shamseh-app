@@ -3629,3 +3629,32 @@
   padding:14px!important;
  }
 }
+
+
+/* Manager page: match the dashboard's approved raised panel treatment exactly. */
+.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-legacy-page.admin-accounts-page > .accounts-workspace > .accounts-card{
+  background:var(--admin-bg)!important;
+  background-color:var(--admin-bg)!important;
+  background-image:none!important;
+  border:1px solid rgba(255,255,255,.56)!important;
+  border-radius:17px!important;
+  box-shadow:8px 8px 18px rgba(174,166,154,.48),-8px -8px 18px rgba(255,255,255,.88),inset 1px 1px 0 rgba(255,255,255,.35)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-legacy-page.admin-accounts-page > .accounts-workspace > .accounts-card{
+  background:#252323!important;
+  background-color:#252323!important;
+  background-image:none!important;
+  border:1px solid rgba(255,255,255,.055)!important;
+  border-radius:17px!important;
+  box-shadow:8px 8px 18px rgba(13,12,12,.62),-8px -8px 18px rgba(48,45,45,.58),inset 1px 1px 0 rgba(255,255,255,.035)!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-legacy-page.admin-accounts-page .accounts-admin-row{
+  background:#E5DED5!important;
+  border:1px solid rgba(64,55,48,.10)!important;
+  box-shadow:inset 3px 3px 7px rgba(174,166,154,.24),inset -3px -3px 7px rgba(255,255,255,.72)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-legacy-page.admin-accounts-page .accounts-admin-row{
+  background:#302D2D!important;
+  border:1px solid rgba(238,229,218,.08)!important;
+  box-shadow:inset 3px 3px 7px rgba(13,12,12,.34),inset -3px -3px 7px rgba(48,45,45,.24)!important;
+}
