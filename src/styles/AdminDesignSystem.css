@@ -3405,22 +3405,36 @@
 
 
 
+/* Shared raised-panel tokens: dashboard and manager cards must use one source. */
+.admin-shell.admin-theme-light{
+  --admin-raised-panel-bg:var(--admin-bg);
+  --admin-raised-panel-border:rgba(255,255,255,.56);
+  --admin-raised-panel-shadow:8px 8px 18px rgba(174,166,154,.48),-8px -8px 18px rgba(255,255,255,.88),inset 1px 1px 0 rgba(255,255,255,.35);
+  --admin-raised-panel-radius:17px;
+}
+.admin-shell.admin-theme-dark{
+  --admin-raised-panel-bg:#252323;
+  --admin-raised-panel-border:rgba(255,255,255,.055);
+  --admin-raised-panel-shadow:8px 8px 18px rgba(13,12,12,.62),-8px -8px 18px rgba(48,45,45,.58),inset 1px 1px 0 rgba(255,255,255,.035);
+  --admin-raised-panel-radius:17px;
+}
+
 /* Dashboard content surfaces: one source of truth for operations and audit panels. */
 .admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page > section.admin-panel-card:is(.admin-operations-panel,.admin-recent-activity){
-  background:var(--admin-bg)!important;
-  background-color:var(--admin-bg)!important;
+  background:var(--admin-raised-panel-bg)!important;
+  background-color:var(--admin-raised-panel-bg)!important;
   background-image:none!important;
-  border:1px solid rgba(255,255,255,.56)!important;
-  border-radius:17px!important;
-  box-shadow:8px 8px 18px rgba(174,166,154,.48),-8px -8px 18px rgba(255,255,255,.88),inset 1px 1px 0 rgba(255,255,255,.35)!important;
+  border:1px solid var(--admin-raised-panel-border)!important;
+  border-radius:var(--admin-raised-panel-radius)!important;
+  box-shadow:var(--admin-raised-panel-shadow)!important;
 }
 .admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page > section.admin-panel-card:is(.admin-operations-panel,.admin-recent-activity){
-  background:#252323!important;
-  background-color:#252323!important;
+  background:var(--admin-raised-panel-bg)!important;
+  background-color:var(--admin-raised-panel-bg)!important;
   background-image:none!important;
-  border:1px solid rgba(255,255,255,.055)!important;
-  border-radius:17px!important;
-  box-shadow:8px 8px 18px rgba(13,12,12,.62),-8px -8px 18px rgba(48,45,45,.58),inset 1px 1px 0 rgba(255,255,255,.035)!important;
+  border:1px solid var(--admin-raised-panel-border)!important;
+  border-radius:var(--admin-raised-panel-radius)!important;
+  box-shadow:var(--admin-raised-panel-shadow)!important;
 }
 /* Both panels use the same inset content-row treatment. */
 .admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page > section:is(.admin-operations-panel,.admin-recent-activity) :is(.admin-followup-card,.admin-activity-row){
@@ -3631,22 +3645,13 @@
 }
 
 
-/* Manager page: match the dashboard's approved raised panel treatment exactly. */
-.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-legacy-page.admin-accounts-page > .accounts-workspace > .accounts-card{
-  background:var(--admin-bg)!important;
-  background-color:var(--admin-bg)!important;
+.admin-shell.admin-main .admin-page-content .admin-legacy-page.admin-accounts-page > .accounts-workspace > .accounts-card{
+  background:var(--admin-raised-panel-bg)!important;
+  background-color:var(--admin-raised-panel-bg)!important;
   background-image:none!important;
-  border:1px solid rgba(255,255,255,.56)!important;
-  border-radius:17px!important;
-  box-shadow:8px 8px 18px rgba(174,166,154,.48),-8px -8px 18px rgba(255,255,255,.88),inset 1px 1px 0 rgba(255,255,255,.35)!important;
-}
-.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-legacy-page.admin-accounts-page > .accounts-workspace > .accounts-card{
-  background:#252323!important;
-  background-color:#252323!important;
-  background-image:none!important;
-  border:1px solid rgba(255,255,255,.055)!important;
-  border-radius:17px!important;
-  box-shadow:8px 8px 18px rgba(13,12,12,.62),-8px -8px 18px rgba(48,45,45,.58),inset 1px 1px 0 rgba(255,255,255,.035)!important;
+  border:1px solid var(--admin-raised-panel-border)!important;
+  border-radius:var(--admin-raised-panel-radius)!important;
+  box-shadow:var(--admin-raised-panel-shadow)!important;
 }
 .admin-shell.admin-theme-light .admin-main .admin-page-content .admin-legacy-page.admin-accounts-page .accounts-admin-row{
   background:#E5DED5!important;
