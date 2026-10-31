@@ -3309,7 +3309,7 @@
 .admin-shell .admin-page-content :is(
   .admin-legacy-page > section,
   .admin-legacy-page > form,
-  .admin-legacy-page > div:not([data-admin-overlay]),
+  .admin-legacy-page > div:not([data-admin-overlay]):not(.accounts-workspace),
   .admin-finance-registration-page > section,
   .admin-finance-registration-page > article,
   .admin-finance-registration-page > div > article,
@@ -3490,6 +3490,45 @@
 
 
 /* Admin accounts workspace — dashboard-aligned layout and surfaces. */
+/* Manager page: workspace is layout only; only its two children are visual cards. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-accounts-page > .accounts-workspace{
+  display:grid!important;
+  grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr)!important;
+  gap:14px!important;
+  align-items:start!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  direction:rtl;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-accounts-page > .accounts-workspace > .accounts-card{
+  min-width:0!important;
+  margin:0!important;
+  padding:17px!important;
+  border:1px solid var(--admin-content-border)!important;
+  border-radius:17px!important;
+  background:var(--admin-content-surface)!important;
+  background-image:none!important;
+  box-shadow:var(--admin-content-shadow)!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-accounts-page .accounts-admin-row{
+  border:1px solid var(--admin-content-border)!important;
+  border-radius:12px!important;
+  background:var(--admin-content-inner)!important;
+  background-image:none!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page.admin-accounts-page .accounts-admin-row:hover{
+  border-color:var(--admin-content-border)!important;
+  box-shadow:none!important;
+}
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-accounts-page{
   width:100%!important;max-width:1240px!important;min-width:0!important;margin-inline:auto!important;
   padding:0!important;display:flex!important;flex-direction:column!important;gap:14px!important;
