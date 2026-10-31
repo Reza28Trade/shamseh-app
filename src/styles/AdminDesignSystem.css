@@ -3420,7 +3420,7 @@
 }
 
 /* Dashboard content surfaces: one source of truth for operations and audit panels. */
-.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page > section.admin-panel-card:is(.admin-operations-panel,.admin-recent-activity){
+.admin-shell.admin-theme-light .admin-main .admin-page-content > :is(.admin-dashboard-page,.admin-legacy-page.admin-accounts-page) > :is(section.admin-panel-card:is(.admin-operations-panel,.admin-recent-activity),.accounts-workspace > .accounts-card){
   background:var(--admin-raised-panel-bg)!important;
   background-color:var(--admin-raised-panel-bg)!important;
   background-image:none!important;
@@ -3428,7 +3428,7 @@
   border-radius:var(--admin-raised-panel-radius)!important;
   box-shadow:var(--admin-raised-panel-shadow)!important;
 }
-.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page > section.admin-panel-card:is(.admin-operations-panel,.admin-recent-activity){
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > :is(.admin-dashboard-page,.admin-legacy-page.admin-accounts-page) > :is(section.admin-panel-card:is(.admin-operations-panel,.admin-recent-activity),.accounts-workspace > .accounts-card){
   background:var(--admin-raised-panel-bg)!important;
   background-color:var(--admin-raised-panel-bg)!important;
   background-image:none!important;
@@ -3645,14 +3645,7 @@
 }
 
 
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-accounts-page > .accounts-workspace > .accounts-card{
-  background:var(--admin-raised-panel-bg)!important;
-  background-color:var(--admin-raised-panel-bg)!important;
-  background-image:none!important;
-  border:1px solid var(--admin-raised-panel-border)!important;
-  border-radius:var(--admin-raised-panel-radius)!important;
-  box-shadow:var(--admin-raised-panel-shadow)!important;
-}
+
 .admin-shell.admin-theme-light .admin-main .admin-page-content .admin-legacy-page.admin-accounts-page .accounts-admin-row{
   background:#E5DED5!important;
   border:1px solid rgba(64,55,48,.10)!important;
