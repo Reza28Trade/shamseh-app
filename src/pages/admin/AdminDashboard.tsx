@@ -288,6 +288,47 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ admin, onNavigat
         .admin-stat-copy span{font-size:12px;font-weight:800;line-height:1.6}
         .admin-stat-copy small{font-size:10px;color:var(--admin-sub);line-height:1.6}
         .admin-stat-arrow{color:var(--admin-sub);flex:none}
+        /* Explicit dashboard component layout: prevent legacy button styles from stacking content. */
+        .admin-dashboard-page .admin-stat,
+        .admin-dashboard-page .admin-followup-card,
+        .admin-dashboard-page .admin-activity-row,
+        .admin-dashboard-page .admin-action-row,
+        .admin-dashboard-page .admin-upcoming-row{
+          flex-direction:row!important;
+          align-items:center!important;
+          min-width:0;
+          direction:rtl;
+        }
+        .admin-dashboard-page .admin-stat{justify-content:flex-start!important;text-align:right!important;gap:12px!important}
+        .admin-dashboard-page .admin-stat-icon,
+        .admin-dashboard-page .admin-followup-icon,
+        .admin-dashboard-page .admin-activity-mark,
+        .admin-dashboard-page .admin-action-icon,
+        .admin-dashboard-page .admin-upcoming-icon{
+          width:36px!important;height:36px!important;min-width:36px;min-height:36px;
+          display:grid!important;place-items:center!important;flex:0 0 36px!important;
+        }
+        .admin-dashboard-page .admin-stat-copy,
+        .admin-dashboard-page .admin-action-copy,
+        .admin-dashboard-page .admin-activity-copy{
+          display:flex!important;flex:1 1 auto!important;flex-direction:column!important;
+          align-items:flex-start!important;justify-content:center!important;
+          min-width:0;text-align:right!important;gap:3px;
+        }
+        .admin-dashboard-page .admin-stat-copy strong{font-size:22px!important;line-height:1.35!important}
+        .admin-dashboard-page .admin-stat-copy span{font-size:12px!important;line-height:1.65!important}
+        .admin-dashboard-page .admin-stat-copy small{font-size:10px!important;line-height:1.6!important}
+        .admin-dashboard-page .admin-followup-card{min-height:76px!important;padding:12px!important;gap:10px!important}
+        .admin-dashboard-page .admin-followup-card>span:nth-child(2){flex:1 1 auto!important;min-width:0;align-items:flex-start!important}
+        .admin-dashboard-page .admin-followup-card small{font-size:10px!important;line-height:1.6!important}
+        .admin-dashboard-page .admin-followup-card strong{font-size:17px!important;line-height:1.4!important}
+        .admin-dashboard-page .admin-activity-list{display:flex!important;flex-direction:column!important;gap:8px!important;min-width:0}
+        .admin-dashboard-page .admin-activity-row{display:flex!important;min-height:68px!important;padding:12px!important;gap:12px!important;text-align:right!important}
+        .admin-dashboard-page .admin-activity-copy{gap:4px!important}
+        .admin-dashboard-page .admin-activity-copy strong{font-size:12px!important;line-height:1.6!important;overflow-wrap:anywhere}
+        .admin-dashboard-page .admin-activity-copy small{font-size:10px!important;line-height:1.6!important;overflow-wrap:anywhere}
+        .admin-dashboard-page .admin-activity-row time{font-size:10px!important;white-space:nowrap;flex:0 0 auto}
+        .admin-dashboard-page .admin-action-row,.admin-dashboard-page .admin-upcoming-row{min-height:64px!important}
         .admin-followup-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
         .admin-operations-panel,.admin-recent-activity{width:100%;min-width:0}
         
