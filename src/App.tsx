@@ -19,7 +19,7 @@ import { RegistrationPage } from './pages/public/RegistrationPage';
 import { ManageRegistrations } from './pages/admin/ManageRegistrations';
 import { ManageBookstore } from './pages/admin/ManageBookstore';
 import type { Student, Admin } from './types';
-import './styles/AdminDesignSystem.css';
+
 
 type AuthUser = { id: string; username: string; role: 'SUPER_ADMIN' | 'STAFF' | 'STUDENT' | 'COUNSELOR'; studentId: string | null; permissions?: string[]; student?: { fullName: string; nationalId: string } | null };
 
