@@ -544,9 +544,8 @@ padding:0!important}
   scrollbar-width:thin;
   scrollbar-color:var(--admin-border) transparent}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table {
-  width:100%;
-  border-collapse:separate;
-  border-spacing:0;
+  width:100%
+
   table-layout:auto}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table thead {
   position:sticky;
