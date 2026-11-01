@@ -681,3 +681,15 @@
     margin-inline-start:26px!important;
   }
 }
+
+/* Page-owned rules migrated from AdminDesignSystem.css. */
+.admin-shell .admin-page-content .admin-counseling-page {
+  color:var(--admin-text);
+  font-size:12px;
+  line-height:1.8;
+}
+
+@media(max-width:760px)
+.admin-shell .admin-page-content .admin-counseling-page .admin-counseling-conversations-grid {
+    grid-template-columns:minmax(0,1fr)!important;
+  }
