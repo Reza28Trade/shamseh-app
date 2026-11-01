@@ -1,3 +1,28 @@
+/* Module-owned compatibility rules migrated from AdminLegacy.css. */
+.admin-public-content-page > header {
+  padding:20px 22px!important;
+  border-radius:17px!important;
+}
+
+.admin-public-content-page > header h2 {font-size:20px!important;letter-spacing:-.2px}
+
+.admin-public-content-page > form,
+.admin-public-content-page > div[style*="grid"] {
+  border-radius:15px!important;
+}
+
+.admin-public-content-page table {width:100%;border-collapse:separate;border-spacing:0}
+
+.admin-public-content-page th {background:var(--admin-inner)!important;color:var(--admin-sub)!important}
+
+.admin-public-content-page td {border-bottom:1px solid var(--admin-border)!important;color:var(--admin-text)}
+
+@media(max-width:700px) {
+.admin-public-content-page > header {padding:17px!important}
+
+.admin-public-content-page {gap:13px!important}
+}
+
 
 
 /* Page-owned rules migrated from AdminDesignSystem.css. */
