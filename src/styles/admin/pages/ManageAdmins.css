@@ -119,8 +119,8 @@
 .admin-accounts-page .accounts-admin-identity strong{min-width:0;color:var(--admin-text);font-size:13px;font-weight:900;overflow-wrap:anywhere}
 .admin-accounts-page .accounts-admin-identity>span{display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:800;white-space:nowrap}
 .admin-accounts-page .accounts-admin-identity>span i{width:7px;height:7px;border-radius:50%;background:currentColor}
-.admin-accounts-page .accounts-admin-identity .is-active{color:#27846b}
-.admin-accounts-page .accounts-admin-identity .is-inactive{color:#bd795d}
+.admin-accounts-page .accounts-admin-identity .is-active{color:var(--admin-status-active)}
+.admin-accounts-page .accounts-admin-identity .is-inactive{color:var(--admin-status-inactive)}
 .admin-accounts-page .accounts-admin-actions{display:flex;flex-wrap:wrap;gap:6px}
 .admin-accounts-page .accounts-admin-actions button{min-height:31px;padding:6px 9px;border:1px solid var(--admin-border);border-radius:8px;background:var(--admin-control);color:var(--admin-text);font:inherit;font-size:9px;font-weight:700;cursor:pointer}
 .admin-accounts-page .accounts-admin-actions button:hover{border-color:var(--admin-accent);background:var(--admin-accent-soft)}
