@@ -4,8 +4,7 @@
   width: 100%;
   max-width: 1240px;
   margin-inline: auto;
-  gap: 16px;
-}
+  gap: 16px}
 
 .admin-notifications-page > header.notifications-page-head {
   min-height: 76px;
@@ -13,50 +12,42 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
-}
+  gap: 14px}
 
 .admin-notifications-page .notifications-eyebrow {
   display: flex;
   align-items: center;
   gap: 7px;
-  margin-bottom: 5px;
-}
+  margin-bottom: 5px}
 
 .admin-notifications-page h2 {
   display: flex;
   align-items: center;
   gap: 9px;
-  margin: 0;
-}
+  margin: 0}
 
 .admin-notifications-page .notifications-page-head p {
-  margin: 5px 0 0;
-}
+  margin: 5px 0 0}
 
 .admin-notifications-page .notifications-form-card {
   min-width: 0;
-  padding: clamp(14px,2vw,22px);
-}
+  padding: clamp(14px,2vw,22px)}
 
 .admin-notifications-page .notifications-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
+  gap: 16px}
 
 .admin-notifications-page .notifications-field {
   display: flex;
   flex-direction: column;
   gap: 7px;
-  min-width: 0;
-}
+  min-width: 0}
 
 .admin-notifications-page .notifications-target-grid {
   display: grid;
   grid-template-columns: repeat(4,minmax(0,1fr));
-  gap: 10px;
-}
+  gap: 10px}
 
 .admin-notifications-page .notifications-target {
   display: flex;
@@ -66,31 +57,26 @@
   min-width: 0;
   min-height: 40px;
   padding: 10px 12px;
-  cursor: pointer;
-}
+  cursor: pointer}
 
 .admin-notifications-page .notifications-target svg {
-  flex: 0 0 auto;
-}
+  flex: 0 0 auto}
 
 .admin-notifications-page .notifications-field :is(input,select,textarea) {
   width: 100%;
   min-width: 0;
-  min-height: 39px;
-}
+  min-height: 39px}
 
 .admin-notifications-page .notifications-field textarea {
   min-height: 110px;
-  resize: vertical;
-}
+  resize: vertical}
 
 .admin-notifications-page .notifications-form-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding-top: 14px;
-}
+  padding-top: 14px}
 
 .admin-notifications-page .notifications-submit {
   display: inline-flex;
@@ -99,49 +85,39 @@
   gap: 8px;
   min-height: 40px;
   padding-inline: 17px;
-  cursor: pointer;
-}
+  cursor: pointer}
 
 .admin-notifications-page .notifications-submit:disabled {
   opacity: .6;
-  cursor: not-allowed;
-}
+  cursor: not-allowed}
 
 .admin-notifications-page .notifications-feedback {
   margin-bottom: 16px;
-  padding: 11px 13px;
-}
+  padding: 11px 13px}
 
 .admin-notifications-page .notifications-recipient-hint {
-  margin-top: 6px;
-}
+  margin-top: 6px}
 
 @media(max-width:900px) {
   .admin-notifications-page .notifications-target-grid {
-    grid-template-columns: repeat(2,minmax(0,1fr));
-  }
+    grid-template-columns: repeat(2,minmax(0,1fr))}
 }
 
 @media(max-width:760px) {
   .admin-notifications-page {
-    gap: 12px;
-  }
+    gap: 12px}
 
   .admin-notifications-page > header.notifications-page-head,
   .admin-notifications-page .notifications-form-card {
-    padding: 14px;
-  }
+    padding: 14px}
 
   .admin-notifications-page .notifications-target-grid {
-    grid-template-columns: minmax(0,1fr);
-  }
+    grid-template-columns: minmax(0,1fr)}
 
   .admin-notifications-page .notifications-form-footer {
     align-items: stretch;
-    flex-direction: column;
-  }
+    flex-direction: column}
 
   .admin-notifications-page .notifications-submit {
-    width: 100%;
-  }
+    width: 100%}
 }
