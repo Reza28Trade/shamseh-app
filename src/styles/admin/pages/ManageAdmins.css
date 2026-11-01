@@ -278,3 +278,25 @@
     transition:none!important;
   }
 }
+
+/* Page-owned rules migrated from AdminDesignSystem.css. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-accounts-page {
+  display:flex!important;
+  flex-direction:column!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  gap:15px!important;
+  align-self:stretch!important;
+  color:var(--admin-text);
+  font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-accounts-page .accounts-permissions label {
+  border:1px solid var(--admin-border)!important;
+  border-radius:9px!important;
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+}
