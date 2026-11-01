@@ -139,9 +139,9 @@
   display:grid;
   place-items:center;
   grid-row:1 / span 2;
-  color:var(--admin-accent);
-  background:var(--admin-accent-soft);
-  border-radius:9px;
+  ;
+  ;
+  ;
 }
 .offline-stat-copy{
   display:flex;
@@ -229,9 +229,9 @@
   cursor:pointer;
 }
 .offline-filter-group button.active{
-  color:var(--admin-accent)!important;
-  background:var(--admin-accent-soft)!important;
-  border-color:var(--admin-accent)!important;
+  ;
+  ;
+  ;
 }
 .offline-request-list{
   display:flex;
@@ -336,11 +336,11 @@
   gap:7px;
   min-width:0;
 }
-.offline-link-field svg{color:var(--admin-accent);flex:0 0 auto}
+.offline-link-field svg{;flex:0 0 auto}
 .offline-link-field input{
   width:100%;
   padding:8px 10px!important;
-  font-size:10px!important;
+  ;
 }
 .offline-review-actions{
   display:flex;
@@ -483,7 +483,7 @@
 
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-icon{
-  border-radius:10px;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-list-card{
 }
@@ -642,10 +642,10 @@
   grid-row:1!important;
   width:32px!important;
   height:32px!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:9px!important;
-  background:var(--admin-inner)!important;
-  color:var(--admin-accent)!important;
+  ;
+  ;
+  ;
+  ;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-copy {
   grid-column:2!important;
@@ -738,9 +738,9 @@
   ;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-filter-group button.active {
-  border-color:var(--admin-accent)!important;
-  background:var(--admin-accent-soft)!important;
-  color:var(--admin-text)!important;
+  ;
+  ;
+  ;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-request-list {
   width:100%!important;
@@ -834,11 +834,11 @@
   min-width:0!important;
   min-height:36px!important;
   padding:8px 10px!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:9px!important;
-  background:var(--admin-control)!important;
-  color:var(--admin-text)!important;
-  font-size:11px!important;
+  ;
+  ;
+  ;
+  ;
+  ;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-review-actions {
   display:flex!important;
@@ -1031,8 +1031,8 @@
 }
 
 .admin-shell .admin-page-content .admin-offline-page .offline-stat-icon {
-  background:var(--admin-accent-soft)!important;
-  color:var(--admin-accent)!important;
+  ;
+  ;
 }
 
 .admin-shell .admin-page-content .admin-offline-page .offline-list-card {
@@ -1070,9 +1070,9 @@
 }
 
 .admin-shell .admin-page-content .admin-offline-page .offline-link-field input {
-  background:var(--admin-control)!important;
-  color:var(--admin-text)!important;
-  border-color:var(--admin-border)!important;
+  ;
+  ;
+  ;
 }
 
 .admin-shell .admin-page-content .admin-offline-page .offline-filter-group button {
@@ -1083,9 +1083,9 @@
 }
 
 .admin-shell .admin-page-content .admin-offline-page .offline-filter-group button.active {
-  border-color:var(--admin-accent)!important;
-  background:var(--admin-accent-soft)!important;
-  color:var(--admin-text)!important;
+  ;
+  ;
+  ;
 }
 
 @media (max-width: 900px) {
