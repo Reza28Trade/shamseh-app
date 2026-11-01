@@ -224,7 +224,7 @@
 }
 
 .admin-students-page .import-actions input {
-  position:absolute!important;
+  position:absolute;
   inset:0;
   opacity:0;
   cursor:pointer;
