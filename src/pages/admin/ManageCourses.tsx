@@ -75,7 +75,7 @@ export const ManageCourses:React.FC=()=>{
   </div>}</div>}
  </article>};
 
- return <div className="admin-legacy-page admin-courses-page">
+ return <div className="admin-courses-page">
   <div className="course-toolbar course-toolbar-actions-only"><div className="course-toolbar-actions"><button className="course-btn" type="button" onClick={()=>importRef.current?.click()}><Upload size={13}/> ورود Excel</button><button className="course-btn" type="button" onClick={()=>void exportCourses()}><Download size={13}/> خروجی Excel</button><button className="course-btn" type="button" onClick={()=>void loadCourses()}><RefreshCw size={13}/> بروزرسانی</button><input ref={importRef} hidden type="file" accept=".xlsx" onChange={e=>{const f=e.target.files?.[0];if(f)void importCourses(f);e.currentTarget.value=''}}/></div></div>
   {error&&<div className="course-message error">{error}</div>}{success&&<div className="course-message success">{success}</div>}
   <div className="course-stats">
