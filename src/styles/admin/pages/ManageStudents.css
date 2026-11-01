@@ -294,3 +294,56 @@ box-shadow:var(--admin-content-shadow)!important;
     width:150px!important;
   }
 }
+
+/* Page-owned rules migrated from AdminDesignSystem.css. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .students-page-head {
+  min-height:76px!important;
+  padding:16px 18px!important;
+  border:1px solid var(--admin-border)!important;
+  border-top:1px solid var(--admin-border)!important;
+  border-radius:14px!important;
+  background:linear-gradient(120deg,var(--admin-accent-soft),var(--admin-card) 78%)!important;
+  box-shadow:var(--admin-shadow)!important;
+  overflow:visible!important;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .students-page-head:before {
+  display:none!important;
+  content:none!important;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .students-page-head h2 {
+  margin:0!important;
+  color:var(--admin-text)!important;
+  font-size:19px!important;
+  font-weight:850!important;
+  line-height:1.5!important;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .students-page-head p {
+  margin:4px 0 0!important;
+  color:var(--admin-sub)!important;
+  font-size:11px!important;
+  line-height:1.8!important;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .student-stat {
+  min-height:78px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:13px!important;
+  background:var(--admin-card)!important;
+  box-shadow:var(--admin-shadow)!important;
+  outline:0!important;
+  transform:none!important;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .student-stat:before,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .student-stat:after {
+  display:none!important;
+  content:none!important;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .student-stat:nth-child(n) {
+  border-inline:1px solid var(--admin-border)!important;
+  background:var(--admin-card)!important;
+}
