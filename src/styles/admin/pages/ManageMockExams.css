@@ -1,182 +1,86 @@
 .admin-mock-exams-page{
   max-width:1320px!important;
   gap:16px!important;
-  padding:0!important;
-}
+  padding:0!important}
 .admin-mock-exams-page > div:first-child{
-  padding:20px 22px!important;
-
-
-
-}
+  padding:20px 22px!important}
 .admin-mock-exams-page > div:first-child h2{
 
-  gap:9px;
-}
-.admin-mock-exams-page > div:first-child h2 svg,
-.admin-mock-exams-page form > div:first-child svg,
-.admin-mock-exams-page > div:last-child > div:first-child svg{
-  ;
-}
+  gap:9px}
 .admin-mock-exams-page > div:first-child p{
-  margin-top:5px!important;
-}
+  margin-top:5px!important}
 .admin-mock-exams-page > form,
 .admin-mock-exams-page > div:last-child{
-  padding:20px!important;
-
-
-
-}
-.admin-mock-exams-page form > div:first-child,
-.admin-mock-exams-page > div:last-child > div:first-child{
-}
+  padding:20px!important}
 .admin-mock-exams-page form > div[style*="grid-template-columns"]{
   grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  gap:14px!important;
-}
+  gap:14px!important}
 .admin-mock-exams-page input,
 .admin-mock-exams-page select{
-  min-height:40px;
-}
+  min-height:40px}
 .admin-mock-exams-page form button[type="submit"]{
   ;
-  ;
-  ;
-}
-.admin-mock-exams-page form button[type="button"],
-.admin-mock-exams-page > div:first-child button,
-.admin-mock-exams-page > div:last-child button{
-  ;
-}
-.admin-mock-exams-page > div:last-child > div[style*="display: grid"] > div{
-}
-.admin-mock-exams-page [style*="rgba(109,0,26"],
-.admin-mock-exams-page [style*="rgba(109, 0, 26"]{
-}
-.admin-mock-exams-page [style*="linear-gradient(135deg"]{
-}
+  }
 @media(max-width:760px){
   .admin-mock-exams-page > div:first-child{
     align-items:flex-start!important;
     flex-direction:column!important;
-    padding:16px!important;
-  }
+    padding:16px!important}
   .admin-mock-exams-page > form,
   .admin-mock-exams-page > div:last-child{
-    padding:15px!important;
-  }
+    padding:15px!important}
   .admin-mock-exams-page form > div[style*="grid-template-columns"]{
-    grid-template-columns:minmax(0,1fr)!important;
-  }
+    grid-template-columns:minmax(0,1fr)!important}
   .admin-mock-exams-page > div:last-child > div[style*="display: grid"] > div > div:first-child{
-    flex-direction:column!important;
-  }
+    flex-direction:column!important}
 }
 
 
-.mock-exam-dashboard{display:grid;gap:16px;;;;;;;padding:0!important}
+.mock-exam-dashboard{display:grid;gap:16px;padding:0!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard{
-padding:0!important;
-}
-.mock-exam-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));overflow:hidden;;;;}
-.mock-exam-stat{padding:16px 18px;}
-.mock-exam-stat:last-child{}
+padding:0!important}
+.mock-exam-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));overflow:hidden}
+.mock-exam-stat{padding:16px 18px}
 .mock-exam-stat span{display:block;margin-bottom:7px}
-.mock-exam-stat strong{}
 .mock-exam-list-card{min-width:0}
 .mock-exam-list-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .mock-exam-list-head button{display:inline-flex;align-items:center;gap:7px}
-.mock-exam-filters{display:flex;gap:10px;align-items:end;margin:14px 0;padding:12px;;;}
-.mock-exam-filters label{display:grid;gap:6px;min-width:150px;;;}
-.mock-exam-filters select{width:100%;min-height:38px;padding:8px 10px;;;;;}
+.mock-exam-filters{display:flex;gap:10px;align-items:end;margin:14px 0;padding:12px}
+.mock-exam-filters label{display:grid;gap:6px;min-width:150px}
+.mock-exam-filters select{width:100%;min-height:38px;padding:8px 10px}
 .mock-exam-scroll-list{display:grid;gap:12px;height:1100px;max-height:1100px;align-content:start;overflow-y:auto;overflow-x:hidden;padding:2px 3px 2px 6px;scrollbar-width:thin;scrollbar-color:var(--admin-border) transparent}
 .mock-exam-scroll-list::-webkit-scrollbar{width:7px}
-.mock-exam-scroll-list::-webkit-scrollbar-thumb{;}
-.mock-exam-scroll-list::-webkit-scrollbar-thumb:hover{}
-@media(max-width:760px){.mock-exam-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.mock-exam-stat:nth-child(2){}.mock-exam-stat:nth-child(-n+2){}.mock-exam-list-head{align-items:stretch;flex-direction:column}.mock-exam-list-head button{justify-content:center}.mock-exam-filters{align-items:stretch;flex-direction:column}.mock-exam-filters label{min-width:0}.mock-exam-scroll-list{height:1100px;max-height:1100px;align-content:start}}
-
-/* Keep mock-exam controls and cards readable in both themes. */
-.admin-mock-exams-page,
-.admin-mock-exams-page p,
-.admin-mock-exams-page label,
-.admin-mock-exams-page strong,
-.admin-mock-exams-page span,
-.admin-mock-exams-page h2,
-.admin-mock-exams-page h3{
-}
-.admin-mock-exams-page > div:first-child p{}
+@media(max-width:760px){.mock-exam-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.mock-exam-list-head{align-items:stretch;flex-direction:column}.mock-exam-list-head button{justify-content:center}.mock-exam-filters{align-items:stretch;flex-direction:column}.mock-exam-filters label{min-width:0}.mock-exam-scroll-list{height:1100px;max-height:1100px;align-content:start}}
 .admin-mock-exams-page input,
 .admin-mock-exams-page select,
 .admin-mock-exams-page textarea{
   ;
-  ;
-  ;
-}
-.admin-mock-exams-page input::placeholder{;opacity:1}
-.admin-mock-exams-page option{}
+  }
+.admin-mock-exams-page input::placeholder{opacity:1}
 .admin-mock-exams-page .mock-exam-scroll-list > div{
   height:auto!important;
   min-height:0!important;
-  align-self:start;
-}
-.admin-mock-exams-page .mock-exam-scroll-list > div,
-.admin-mock-exams-page .mock-exam-scroll-list > div *{
-}
-.admin-mock-exams-page .mock-exam-scroll-list > div a{}
+  align-self:start}
 .admin-mock-exams-page .mock-exam-scroll-list > div button{
   ;
-  ;
-  ;
-}
-.admin-mock-exams-page .mock-exam-scroll-list > div button svg{}
-
-/* Explicitly override legacy inline colors: these were winning over the theme rules. */
-.admin-mock-exams-page h2,
-.admin-mock-exams-page h3,
-.admin-mock-exams-page p,
-.admin-mock-exams-page label,
-.admin-mock-exams-page strong,
-.admin-mock-exams-page span,
-.admin-mock-exams-page form > div,
-.admin-mock-exams-page .mock-exam-list-card > div,
-.admin-mock-exams-page .mock-exam-scroll-list > div > div,
-.admin-mock-exams-page .mock-exam-scroll-list > div > div > div{
-}
-.admin-mock-exams-page > div:first-child p,
-.admin-mock-exams-page .mock-exam-scroll-list > div > div[style*="marginTop"],
-.admin-mock-exams-page .mock-exam-scroll-list > div > div[style*="margin-top"]{
-}
-.admin-mock-exams-page h2 svg,
-.admin-mock-exams-page .mock-exam-list-head svg{}
-.admin-mock-exams-page .mock-exam-scroll-list > div strong{}
-.admin-mock-exams-page .mock-exam-scroll-list > div a{}
-.admin-mock-exams-page button:not([type="submit"]){
-  ;
-}
+  }
 .admin-mock-exams-page .mock-exam-list-head button{
   ;
-  ;
-  opacity:1!important;
-}
+  opacity:1!important}
 .admin-mock-exams-page .mock-exam-scroll-list > div{
   display:block!important;
   height:auto!important;
   min-height:0!important;
-  align-content:initial!important;
-}
+  align-content:initial!important}
 .admin-mock-exams-page .mock-exam-scroll-list > div > div:first-child{
   display:flex!important;
   justify-content:space-between!important;
   align-items:flex-start!important;
-  gap:16px!important;
-}
+  gap:16px!important}
 .admin-mock-exams-page .mock-exam-scroll-list > div > div:first-child > div:first-child{
-  min-width:0;
-}
+  min-width:0}
 .admin-mock-exams-page .mock-exam-scroll-list > div > div:first-child > div:last-child{
-  flex-shrink:0;
-}
+  flex-shrink:0}
 @media(max-width:760px){
   .admin-mock-exams-page .mock-exam-scroll-list > div > div:first-child{flex-direction:column!important}
   .admin-mock-exams-page .mock-exam-scroll-list > div > div:first-child > div:last-child{flex-direction:row!important}
@@ -185,47 +89,20 @@ padding:0!important;
 /* Fix the inline-styled section heading whose white color persisted in light mode. */
 .admin-mock-exams-page .mock-exam-list-head > div,
 .admin-mock-exams-page .mock-exam-list-head > div *{
-  opacity:1!important;
-}
-.admin-mock-exams-page .mock-exam-list-head > div svg{
-  ;
-}
+  opacity:1!important}
 
 
 /* Shamseh visual finish for Mock Exams: subtle gradients and the shared multicolor accents. */
 .admin-shell .admin-page-content .admin-mock-exams-page{
-  gap:16px!important;
-}
+  gap:16px!important}
 .admin-shell .admin-page-content .admin-mock-exams-page > div:first-child{
   position:relative;
   overflow:hidden;
-  padding:18px 20px!important;
-
-
-
-}
+  padding:18px 20px!important}
 .admin-shell .admin-page-content .admin-mock-exams-page .mock-exam-stats{
   position:relative;
   overflow:hidden;
-  padding-top:3px!important;
-
-
-
-}
-.admin-shell .admin-page-content .admin-mock-exams-page .mock-exam-stat{
-}
-.admin-shell .admin-page-content .admin-mock-exams-page .mock-exam-list-card{
-
-
-
-
-}
-.admin-shell .admin-page-content .admin-mock-exams-page .mock-exam-form-card{
-
-
-
-
-}
+  padding-top:3px!important}
 @media(max-width:760px){
   .admin-shell .admin-page-content .admin-mock-exams-page > div:first-child{padding:16px!important}
 }
@@ -234,48 +111,35 @@ padding:0!important;
 /* Final cross-module sizing pass: consistent page width, surfaces and scroll area. */
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page{
   max-width:1240px!important;
-  gap:16px!important;
-}
+  gap:16px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div:first-child{
   min-height:82px;
-  padding:18px 20px!important;
-}
+  padding:18px 20px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stats{
-  min-height:81px;
-}
+  min-height:81px}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat{
   min-height:78px;
-  padding:13px 16px!important;
-}
+  padding:13px 16px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-form-card,
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-list-card{
-  padding:16px!important;
-}
+  padding:16px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list{
   height:510px!important;
-  max-height:510px!important;
-}
+  max-height:510px!important}
 @media(max-width:760px){
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page{gap:14px!important}
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div:first-child{
-    min-height:0;padding:16px!important;
-  }
+    min-height:0;padding:16px!important}
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-form-card,
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-list-card{padding:14px!important}
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list{
-    height:min(510px,65vh)!important;max-height:min(510px,65vh)!important;
-  }
+    height:min(510px,65vh)!important;max-height:min(510px,65vh)!important}
 }
 
 
 /* The form is a direct child (not a .mock-exam-form-card), so style the real element. */
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > form{
-  padding:16px!important;
-
-
-
-
-}
+  padding:16px!important}
 @media(max-width:760px){
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > form{padding:14px!important}
 }
@@ -288,14 +152,11 @@ padding:0!important;
 
 
   justify-content: flex-end !important;
-  min-height: 0;
-}
+  min-height: 0}
 .admin-shell .admin-page-content .admin-mock-exams-page > div:first-child > div:first-child {
-  display: none !important;
-}
+  display: none !important}
 .admin-shell .admin-page-content .admin-mock-exams-page > div:first-child > button {
-  margin-inline-start: auto;
-}
+  margin-inline-start: auto}
 
 
 /* Final shared admin design pass for Mock Exams: compact, neutral and consistent. */
@@ -303,61 +164,31 @@ padding:0!important;
   width:100%!important;
   max-width:1240px!important;
   margin-inline:auto!important;
-  gap:16px!important;
-}
+  gap:16px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard {
   display:block!important;
   width:100%!important;
-  margin:0!important;
-}
+  margin:0!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stats {
   display:grid!important;
   grid-template-columns:repeat(4,minmax(0,1fr))!important;
   gap:0!important;
   min-height:0!important;
   overflow:hidden!important;
-  padding:0!important;
-
-
-
-}
+  padding:0!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat {
   min-width:0!important;
   min-height:74px!important;
-  padding:13px 16px!important;
-
-
-
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat:last-child {
-}
+  padding:13px 16px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat span {
   display:block!important;
-  margin-bottom:7px!important;
-
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat strong {
-
-
-}
+  margin-bottom:7px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > form {
   gap:16px!important;
-  padding:17px!important;
-
-
-
-}
+  padding:17px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > form > div:first-child {
   margin:0!important;
-  padding-bottom:12px!important;
-
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > form > div:first-child svg {
-  ;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page label {
-
-}
+  padding-bottom:12px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page input,
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page select {
   box-sizing:border-box!important;
@@ -366,91 +197,48 @@ padding:0!important;
   ;
   ;
   ;
-  ;
-}
+  }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page input:focus,
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page select:focus {
-  ;
   outline:0!important;
-  ;
-}
+  }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > form button[type="submit"] {
   ;
   ;
-  ;
-  ;
-}
+  }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-list-card {
   min-width:0!important;
-  padding:17px!important;
-
-
-
-}
+  padding:17px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-list-head {
   gap:12px!important;
-  padding-bottom:12px!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-list-head > div,
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-list-head > div * {
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-list-head svg {
-  ;
-}
+  padding-bottom:12px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-filters {
   display:flex!important;
   flex-wrap:wrap!important;
   gap:10px!important;
-  padding:12px!important;
-
-
-}
+  padding:12px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list {
   gap:9px!important;
-  padding:2px!important;
-}
+  padding:2px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list > div {
-  padding:13px!important;
-
-
-
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list > div strong,
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list > div span,
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list > div div {
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list > div a {
-}
+  padding:13px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page button:not([type="submit"]) {
   ;
   ;
-  ;
-  ;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page button svg {
-  ;
-}
+  }
 @media(max-width:900px) {
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stats {
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  }
-  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat:nth-child(2) {
-  }
-  .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat:nth-child(-n+2) {
-  }
+    grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 @media(max-width:600px) {
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > form,
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-list-card {
-    padding:13px!important;
-  }
+    padding:13px!important}
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stats {
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  }
+    grid-template-columns:repeat(2,minmax(0,1fr))!important}
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-list-head {
     align-items:stretch!important;
-    flex-direction:column!important;
-  }
+    flex-direction:column!important}
 }
 
 
@@ -461,16 +249,12 @@ padding:0!important;
   max-width:none!important;
   margin:0!important;
   padding:0!important;
-  box-sizing:border-box!important;
-}
+  box-sizing:border-box!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div:first-child {
   width:100%!important;
   min-width:0!important;
   margin:0!important;
-  padding:0!important;
-
-
-}
+  padding:0!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div:first-child > button {
   min-height:36px!important;
   margin:0!important;
@@ -479,58 +263,31 @@ padding:0!important;
   ;
   ;
   ;
-  ;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div:first-child > button svg {
-  ;
-}
+  }
 /* Calendar overlay */
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] {
-  backdrop-filter:blur(3px);
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div {
-
-
-
-
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div strong,
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div span,
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div div {
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div div[style*="grid-template-columns"] > div {
-}
+  backdrop-filter:blur(3px)}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div button {
   min-width:0!important;
   ;
   ;
   ;
   ;
-  ;
-}
+  }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div button:disabled {
-  ;
-  opacity:.48!important;
-}
+  opacity:.48!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div button[style*="rgba(56,189,248"] {
   ;
-  ;
-  ;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div > div:last-child {
-}
+  }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div > div:last-child button {
   ;
-  ;
-  ;
-}
+  }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div > div:first-child button {
   width:36px!important;
   height:36px!important;
   ;
   ;
-  ;
-}
+  }
 
 
 /* Compact final pass: separated stat cards, no inert refresh control, tidy registered exams. */
@@ -538,54 +295,36 @@ padding:0!important;
   grid-template-columns:repeat(4,minmax(0,1fr))!important;
   gap:12px!important;
   overflow:visible!important;
-  padding:0!important;
-
-
-
-}
+  padding:0!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat {
   min-height:68px!important;
-  padding:12px 14px!important;
-
-
-
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat:last-child {
-}
+  padding:12px 14px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list {
   height:auto!important;
   max-height:420px!important;
   min-height:0!important;
   gap:8px!important;
-  padding:2px!important;
-}
+  padding:2px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list > div {
   min-height:0!important;
   padding:10px 12px!important;
-  gap:8px!important;
-}
+  gap:8px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list > div > div:first-child {
-  gap:10px!important;
-}
+  gap:10px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list > div > div:first-child > div:first-child > div[style*="marginTop"] {
-  margin-top:5px!important;
-}
+  margin-top:5px!important}
 @media(max-width:900px) {
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stats {
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  }
+    grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 @media(max-width:600px) {
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stats {
-    gap:8px!important;
-  }
+    gap:8px!important}
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat {
     min-height:62px!important;
-    padding:10px!important;
-  }
+    padding:10px!important}
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list {
-    max-height:360px!important;
-  }
+    max-height:360px!important}
 }
 
 
@@ -597,8 +336,7 @@ padding:0!important;
   min-height:0!important;
   margin:0!important;
   padding:0!important;
-  overflow:visible!important;
-}
+  overflow:visible!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard:first-of-type > .mock-exam-stats {
   display:grid!important;
   grid-template-columns:repeat(4,minmax(0,1fr))!important;
@@ -608,10 +346,7 @@ padding:0!important;
   min-height:0!important;
   margin:0!important;
   padding:0!important;
-  overflow:visible!important;
-
-
-}
+  overflow:visible!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard:first-of-type > .mock-exam-stats > .mock-exam-stat {
   display:flex!important;
   flex-direction:column!important;
@@ -620,40 +355,25 @@ padding:0!important;
   min-width:0!important;
   min-height:76px!important;
   margin:0!important;
-  padding:14px 16px!important;
-
-
-
-}
+  padding:14px 16px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard:first-of-type > .mock-exam-stats > .mock-exam-stat span {
-  margin:0!important;
-
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard:first-of-type > .mock-exam-stats > .mock-exam-stat strong {
-
-
-}
+  margin:0!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard:first-of-type + form {
-  margin-top:0!important;
-}
+  margin-top:0!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-filters {
   margin:12px 0!important;
   padding:10px 12px!important;
-  gap:10px!important;
-}
+  gap:10px!important}
 @media(max-width:900px) {
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard:first-of-type > .mock-exam-stats {
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  }
+    grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 @media(max-width:600px) {
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard:first-of-type > .mock-exam-stats {
-    gap:8px!important;
-  }
+    gap:8px!important}
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard:first-of-type > .mock-exam-stats > .mock-exam-stat {
     min-height:64px!important;
-    padding:10px 12px!important;
-  }
+    padding:10px 12px!important}
 }
 
 
@@ -664,13 +384,11 @@ padding:0!important;
   justify-content:space-between;
   gap:12px;
   flex-wrap:wrap;
-  margin:0 0 12px;
-}
+  margin:0 0 12px}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-levels {
   display:flex;
   gap:7px;
-  flex-wrap:wrap;
-}
+  flex-wrap:wrap}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-levels button,
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-selected-toggle {
   display:inline-flex!important;
@@ -685,33 +403,20 @@ padding:0!important;
   ;
   ;
   ;
-  cursor:pointer!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-levels button span {
-  ;
-  ;
-}
+  cursor:pointer!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-levels button.is-active,
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-selected-toggle.is-active {
   ;
-  ;
-  ;
-}
+  }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-summary {
   display:flex;
   align-items:baseline;
-  gap:5px;
-
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-summary strong {
-
-}
+  gap:5px}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-search-row {
   display:flex;
   align-items:center;
   gap:9px;
-  margin-bottom:8px;
-}
+  margin-bottom:8px}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-search {
   display:flex!important;
   align-items:center!important;
@@ -719,15 +424,10 @@ padding:0!important;
   flex:1 1 260px!important;
   min-width:0!important;
   margin:0!important;
-  padding:0 11px!important;
-
-
-
-}
+  padding:0 11px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-search svg {
   flex-shrink:0;
-  ;
-}
+  }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-search input {
   width:100%!important;
   min-width:0!important;
@@ -738,15 +438,9 @@ padding:0!important;
   ;
   ;
   ;
-  ;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-search input::placeholder {
-  ;
-}
+  }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-results-count {
-  margin:0 0 7px;
-
-}
+  margin:0 0 7px}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-list {
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
@@ -755,8 +449,7 @@ padding:0!important;
   overflow:auto;
   padding:2px 2px 4px;
   scrollbar-width:thin;
-  scrollbar-color:var(--admin-border) transparent;
-}
+  scrollbar-color:var(--admin-border) transparent}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-option {
   display:flex!important;
   align-items:center!important;
@@ -767,68 +460,43 @@ padding:0!important;
 
 
   text-align:right!important;
-  cursor:pointer!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-option.is-selected {
-  ;
-  ;
-}
+  cursor:pointer!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-check {
   display:flex;
   align-items:center;
   justify-content:center;
   flex:0 0 20px;
   width:20px;
-  height:20px;
-
-
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-option.is-selected .mock-participant-check {
-  ;
-  ;
-}
+  height:20px}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-identity {
   display:grid;
   gap:4px;
   flex:1;
-  min-width:0;
-}
+  min-width:0}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-identity strong {
   overflow:hidden;
 
 
   text-overflow:ellipsis;
-  white-space:nowrap;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-identity small {
-
-}
+  white-space:nowrap}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-level {
   flex-shrink:0;
-  padding:3px 6px;
-
-
-
-}
+  padding:3px 6px}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-empty {
   grid-column:1/-1;
   padding:24px 12px;
 
 
-  text-align:center;
-}
+  text-align:center}
 @media(max-width:700px) {
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-list {
     grid-template-columns:minmax(0,1fr);
-    max-height:320px;
-  }
+    max-height:320px}
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-search-row {
     align-items:stretch;
-    flex-direction:column;
-  }
+    flex-direction:column}
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-selected-toggle {
-    align-self:flex-start;
-  }
+    align-self:flex-start}
 }
 
 
@@ -842,8 +510,7 @@ padding:0!important;
   padding:10px;
   ;
   ;
-  ;
-}
+  }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-bulk-actions button {
   display:inline-flex!important;
   align-items:center!important;
@@ -857,21 +524,15 @@ padding:0!important;
   ;
   ;
   ;
-  cursor:pointer!important;
-}
+  cursor:pointer!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-bulk-actions button:first-child {
   ;
-  ;
-  ;
-}
+  }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-bulk-actions button:disabled {
   opacity:.45!important;
-  cursor:not-allowed!important;
-}
+  cursor:not-allowed!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-bulk-actions span {
-  margin-inline-start:auto;
-
-}
+  margin-inline-start:auto}
 
 
 /* Dense participant table: show roughly ten rows and scroll within the picker. */
@@ -881,48 +542,34 @@ padding:0!important;
 
 
   scrollbar-width:thin;
-  scrollbar-color:var(--admin-border) transparent;
-}
+  scrollbar-color:var(--admin-border) transparent}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table {
   width:100%;
   border-collapse:separate;
   border-spacing:0;
-  table-layout:auto;
-
-}
+  table-layout:auto}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table thead {
   position:sticky;
   top:0;
-  z-index:2;
-}
+  z-index:2}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table th {
   padding:10px 12px;
 
   text-align:right;
-  white-space:nowrap;
-
-}
+  white-space:nowrap}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table th:first-child,
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table td:first-child {
   width:64px;
-  text-align:center;
-}
+  text-align:center}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table td {
   height:35px;
   padding:5px 12px;
 
-  white-space:nowrap;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table tbody tr:last-child td {
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table tbody tr:hover td {
-}
+  white-space:nowrap}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table tbody tr.is-selected td {
-  background:var(--admin-accent-soft);
-}
+  background:var(--admin-accent-soft)}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table .mock-participant-name {
-  min-width:180px;
-}
+  min-width:180px}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-row-toggle {
   display:inline-flex!important;
   align-items:center!important;
@@ -935,34 +582,21 @@ padding:0!important;
 
 
 
-  vertical-align:middle;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-row-toggle.is-selected {
-  ;
-  ;
-}
+  vertical-align:middle}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table .mock-participant-level {
   display:inline-block;
-  padding:3px 7px;
-
-
-
-}
+  padding:3px 7px}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table .mock-participant-empty {
   padding:22px 12px;
-  text-align:center;
-}
+  text-align:center}
 @media(max-width:600px) {
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table-wrap {
-    max-height:390px;
-  }
+    max-height:390px}
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table th,
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table td {
-    padding:7px 8px;
-  }
+    padding:7px 8px}
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table .mock-participant-name {
-    min-width:145px;
-  }
+    min-width:145px}
 }
 
 
@@ -971,37 +605,21 @@ padding:0!important;
   text-align:right!important;
   direction:ltr;
   unicode-bidi:plaintext;
-  ;
-}
+  }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-savebar {
   display:flex;
   justify-content:flex-start;
   align-items:center;
   gap:8px;
   margin-top:12px;
-  padding-top:12px;
-}
+  padding-top:12px}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-savebar button {
   min-height:36px!important;
   padding:8px 15px!important;
   ;
   ;
   ;
-  ;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-savebar .mock-participant-save {
-
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-savebar .mock-participant-cancel {
-
-}
+  }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-savebar button:disabled {
   opacity:.6!important;
-  cursor:wait!important;
-}
-
-/* Page-owned rules migrated from AdminDesignSystem.css. */
-.admin-shell .admin-page-content .admin-mock-exams-page {
-
-
-}
+  cursor:wait!important}
