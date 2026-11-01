@@ -232,7 +232,7 @@ backdrop-filter:blur(8px);cursor:pointer
 .admin-legacy-page.admin-messages-page .messages-table-wrap {
   width:100%;overflow-x:auto}
 
-.admin-legacy-page.admin-messages-page .messages-table {width:100%;min-width:720px;border-collapse:separate;border-spacing:0}
+.admin-legacy-page.admin-messages-page .messages-table {width:100%;min-width:720pxborder-spacing:0}
 
 .admin-legacy-page.admin-messages-page .messages-table thead th {
   padding:11px 12px!important;text-align:right;white-space:nowrap}
