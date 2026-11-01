@@ -613,3 +613,87 @@
   border-color: var(--admin-accent);
   box-shadow: 0 0 0 3px var(--admin-accent-soft);
 }
+
+
+/* Shared controls and nested module surfaces. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) button:not(.primary-action):not(.course-btn.primary):not(.messages-send):not(.notifications-submit):not([data-variant="primary"]) {
+  border: 1px solid var(--admin-border);
+  background: var(--admin-inner);
+  color: var(--admin-text);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
+  .course-picker,.student-filters,.mock-exam-filters,.counseling-account-item,
+  .mock-exam-scroll-list > div,.messages-search,.messages-reply-form
+) {
+  border: 1px solid var(--admin-content-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-content-inner);
+  color: var(--admin-text);
+  box-shadow: none;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
+  .offline-error,.messages-error
+) {
+  border: 1px solid var(--admin-status-error);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-status-error-soft);
+  color: var(--admin-text);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
+  .offline-filter-group button,.messages-pagination button,.messages-refresh,
+  .messages-open-ticket,.messages-detail-close,.messages-cancel,
+  .notifications-target,.notifications-submit
+) {
+  border-radius: var(--admin-control-radius);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
+  .notifications-target,.offline-filter-group button
+) {
+  background: var(--admin-control);
+  color: var(--admin-sub);
+  border: 1px solid var(--admin-border);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
+  .notifications-target.is-active,.offline-filter-group button.active
+) {
+  background: var(--admin-accent-soft);
+  border-color: var(--admin-accent);
+  color: var(--admin-accent);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .notifications-submit {
+  background: var(--admin-accent);
+  border: 1px solid var(--admin-accent);
+  color: var(--admin-on-accent);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .messages-reply-form textarea {
+  background: var(--admin-control);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-control-radius);
+  color: var(--admin-text);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .messages-table-status {
+  border-radius: 8px;
+  background: var(--admin-control);
+  color: var(--admin-text);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .mock-exam-filters label {
+  color: var(--admin-sub);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .offline-list-head {
+  border-bottom: 1px solid var(--admin-border);
+}
