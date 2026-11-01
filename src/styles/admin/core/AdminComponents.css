@@ -959,6 +959,6 @@
   outline-offset: 2px;
 }
 
-.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .counseling-assignment-status.is-assigned {
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-status.is-assigned {
   color: var(--admin-accent);
 }
