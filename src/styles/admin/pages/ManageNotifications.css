@@ -7,35 +7,30 @@
   min-height:82px!important;
   padding:18px 20px!important;
   overflow:hidden;
-  background:linear-gradient(112deg,var(--admin-card) 0%,var(--admin-inner) 100%)!important;
-  color:var(--admin-text)!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:16px!important;
-  box-shadow:var(--admin-shadow)!important;
+
+
+
+
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head:before {
   content:"";
   position:absolute;
   top:0;bottom:0;left:0;width:4px;
-  background:linear-gradient(180deg,var(--admin-module-series-1),var(--admin-module-series-2),var(--admin-module-series-3),var(--admin-module-series-4));
   pointer-events:none;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head h2,
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head h2 svg,
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head p {
-  color:var(--admin-text)!important;
   opacity:1!important;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head .notifications-eyebrow,
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head h2 svg {
-  color:var(--admin-accent)!important;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head p {
-  color:var(--admin-sub)!important;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page {
@@ -56,15 +51,14 @@
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-page-head p {
-  margin:5px 0 0!important;font-size:12px!important;color:var(--admin-sub)!important;
+  margin:5px 0 0!important;color:var(--admin-sub)!important;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-card {
   min-width:0;padding:20px!important;
-  background:linear-gradient(145deg,color-mix(in srgb,var(--admin-module-series-1) 6%,var(--admin-card)),var(--admin-card) 64%)!important;
-  border:1px solid var(--admin-border)!important;
-  border-top:2px solid color-mix(in srgb,var(--admin-module-series-1) 70%,var(--admin-border))!important;
-  border-radius:16px!important;box-shadow:var(--admin-shadow)!important;
+
+
+box-shadow:var(--admin-shadow)!important;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form {
@@ -182,35 +176,30 @@
   min-height:82px!important;
   padding:18px 20px!important;
   overflow:hidden;
-  background:linear-gradient(112deg,var(--admin-card) 0%,var(--admin-inner) 100%)!important;
-  color:var(--admin-text)!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:16px!important;
-  box-shadow:var(--admin-shadow)!important;
+
+
+
+
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head:before {
   content:"";
   position:absolute;
   top:0;bottom:0;left:0;width:4px;
-  background:linear-gradient(180deg,var(--admin-module-series-1),var(--admin-module-series-2),var(--admin-module-series-3),var(--admin-module-series-4));
   pointer-events:none;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head h2,
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head h2 svg,
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head p {
-  color:var(--admin-text)!important;
   opacity:1!important;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head .notifications-eyebrow,
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head h2 svg {
-  color:var(--admin-accent)!important;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head p {
-  color:var(--admin-sub)!important;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page {
@@ -231,15 +220,14 @@
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-page-head p {
-  margin:5px 0 0!important;font-size:12px!important;color:var(--admin-sub)!important;
+  margin:5px 0 0!important;color:var(--admin-sub)!important;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-card {
   min-width:0;padding:20px!important;
-  background:linear-gradient(145deg,color-mix(in srgb,var(--admin-module-series-1) 6%,var(--admin-card)),var(--admin-card) 64%)!important;
-  border:1px solid var(--admin-border)!important;
-  border-top:2px solid color-mix(in srgb,var(--admin-module-series-1) 70%,var(--admin-border))!important;
-  border-radius:16px!important;box-shadow:var(--admin-shadow)!important;
+
+
+box-shadow:var(--admin-shadow)!important;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form {
@@ -382,10 +370,9 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head {
   min-height:76px!important;
   padding:16px 18px!important;
-  background:var(--admin-card)!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:14px!important;
-  box-shadow:none!important;
+
+
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head:before {
   display:none!important;
@@ -400,16 +387,14 @@
   font-size:10px!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-page-head p {
-  font-size:11px!important;
-  line-height:1.8!important;
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-card {
   padding:18px!important;
-  background:var(--admin-card)!important;
-  border:1px solid var(--admin-border)!important;
-  border-top:1px solid var(--admin-border)!important;
-  border-radius:14px!important;
-  box-shadow:none!important;
+
+
+
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field > label {
   font-size:12px!important;
@@ -445,10 +430,9 @@
 /* Page-owned rules migrated from AdminDesignSystem.css. */
 .admin-shell .admin-page-content .admin-notifications-page .notifications-form-card {
   padding:18px!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:14px!important;
-  background:var(--admin-card)!important;
-  box-shadow:none!important;
+
+
+
 }
 
 .admin-shell .admin-page-content .admin-notifications-page .notifications-form {
