@@ -2,29 +2,24 @@
 .admin-shell .admin-page-content .admin-logs-page {
   gap: var(--shamseh-space-4) !important;
   max-width: 1240px;
-  font-size: var(--shamseh-font-size) !important;
-  color: var(--shamseh-text-primary) !important;
+
 }
 .admin-shell .admin-page-content .admin-logs-page > section:first-child {
   padding: 0 !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
+
+
+
 }
 .admin-shell .admin-page-content .admin-logs-page > section:first-child h2 {
   margin: 0 0 var(--shamseh-space-1) !important;
-  font-size: 18px !important;
-  font-weight: 800 !important;
-  line-height: 1.6 !important;
-  color: var(--shamseh-text-primary) !important;
+
+
+
 }
 .admin-shell .admin-page-content .admin-logs-page > section:first-child h2 svg {
-  color: var(--shamseh-accent-primary) !important;
 }
 .admin-shell .admin-page-content .admin-logs-page > section:first-child p {
-  color: var(--shamseh-text-secondary) !important;
-  font-size: 11px !important;
+
 }
 .admin-shell .admin-page-content .admin-logs-page > section:first-child button {
   min-height: var(--shamseh-control-height) !important;
@@ -37,27 +32,23 @@
   font-weight: 750 !important;
 }
 .admin-shell .admin-page-content .admin-logs-page > section:nth-child(2) {
-  border: 1px solid var(--shamseh-border-default) !important;
-  border-radius: var(--shamseh-radius-md) !important;
-  background: var(--shamseh-surface-card) !important;
-  color: var(--shamseh-text-primary) !important;
-  box-shadow: none !important;
+
+
+
+
 }
 .admin-shell .admin-page-content .admin-logs-page > section:nth-child(2)[role="alert"] {
   border-color: color-mix(in srgb, var(--shamseh-burgundy) 42%, var(--shamseh-border-default)) !important;
-  background: color-mix(in srgb, var(--shamseh-burgundy) 9%, var(--shamseh-surface-card)) !important;
-  color: var(--shamseh-text-primary) !important;
+
 }
 .admin-shell .admin-page-content .admin-logs-page > section:nth-child(2)[role="alert"] svg {
-  color: var(--shamseh-burgundy) !important;
 }
 .admin-shell .admin-page-content .admin-logs-page > section:last-child {
   padding: var(--shamseh-space-4) !important;
-  border: 1px solid var(--shamseh-border-default) !important;
-  border-radius: var(--shamseh-radius-md) !important;
-  background: var(--shamseh-surface-card) !important;
-  color: var(--shamseh-text-primary) !important;
-  box-shadow: none !important;
+
+
+
+
 }
 .admin-shell .admin-page-content .admin-logs-page :is(input, select) {
   min-width: 0 !important;
@@ -76,35 +67,28 @@
   opacity: 1;
 }
 .admin-shell .admin-page-content .admin-logs-page > section:last-child > div[style*="overflow-x: auto"] {
-  border: 1px solid var(--shamseh-border-default) !important;
-  border-radius: var(--shamseh-radius-sm) !important;
+
 }
 .admin-shell .admin-page-content .admin-logs-page table {
-  color: var(--shamseh-text-primary) !important;
-  font-size: 11px !important;
+
 }
 .admin-shell .admin-page-content .admin-logs-page thead tr {
-  background: var(--shamseh-surface-inner) !important;
 }
 .admin-shell .admin-page-content .admin-logs-page :is(th, td) {
   border-color: var(--shamseh-border-default) !important;
-  color: var(--shamseh-text-primary);
 }
 .admin-shell .admin-page-content .admin-logs-page th {
   padding: var(--shamseh-space-3) var(--shamseh-space-2) !important;
-  background: var(--shamseh-surface-inner) !important;
-  color: var(--shamseh-text-secondary) !important;
-  font-size: 10px !important;
-  font-weight: 800 !important;
+
+
+
   white-space: nowrap;
 }
 .admin-shell .admin-page-content .admin-logs-page td {
   padding: var(--shamseh-space-3) var(--shamseh-space-2) !important;
-  font-size: 11px !important;
-  line-height: 1.7;
+
 }
 .admin-shell .admin-page-content .admin-logs-page tbody tr:hover td {
-  background: var(--shamseh-accent-soft) !important;
 }
 .admin-shell .admin-page-content .admin-logs-page pre {
   white-space: pre-wrap;
@@ -178,9 +162,8 @@
 
 .admin-shell .admin-page-content .admin-logs-page > section:not([role="alert"]) {
   border-color:var(--admin-border)!important;
-  border-radius:14px!important;
-  background:var(--admin-card)!important;
-  box-shadow:none!important;
+
+
 }
 
 .admin-shell .admin-page-content .admin-logs-page > section:first-child {
@@ -188,8 +171,7 @@
 }
 
 .admin-shell .admin-page-content .admin-logs-page h2 {
-  font-size:16px!important;
-  color:var(--admin-text)!important;
+
 }
 
 .admin-shell .admin-page-content .admin-logs-page table {
@@ -198,19 +180,16 @@
 }
 
 .admin-shell .admin-page-content .admin-logs-page :is(th,td) {
-  border-bottom:1px solid var(--admin-border)!important;
-  font-size:11px;
+
 }
 
 .admin-shell .admin-page-content .admin-logs-page th {
-  background:var(--admin-inner)!important;
-  color:var(--admin-sub)!important;
-  font-weight:850;
+
+
   white-space:nowrap;
 }
 
 .admin-shell .admin-page-content .admin-logs-page tbody tr:hover {
-  background:var(--admin-accent-soft)!important;
 }
 
 .admin-shell .admin-page-content .admin-logs-page input,
@@ -231,7 +210,6 @@
 }
 
 .admin-shell .admin-page-content .admin-logs-page [role="alert"] {
-  border-radius:11px!important;
 }
 
 @media(max-width:640px) {
