@@ -3486,7 +3486,7 @@
 /* Cards get their complete visual treatment only from .admin-master-panel. */
 .admin-shell .admin-main .admin-page-content .admin-accounts-page .accounts-card{
   min-width:0;
-  padding:18px!important;
+  padding:15px!important;
   color:var(--admin-text)!important;
 }
 .admin-accounts-page .accounts-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
