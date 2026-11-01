@@ -20,6 +20,8 @@
   --shamseh-font-size: 12px;
   /* Semantic elevations and status surfaces reused by admin modules. */
   --admin-shadow-stat: 0 5px 16px rgba(0,0,0,.035);
+  --admin-shadow-control: 0 2px 5px rgba(0,0,0,.035);
+  --admin-shadow-control-hover: 0 8px 18px rgba(75,53,30,.075), inset 0 1px 0 rgba(255,255,255,.72);
   --admin-shadow-section: 0 4px 18px rgba(0,0,0,.025);
   --admin-shadow-dialog: 0 24px 80px rgba(0,0,0,.3);
   --admin-danger-text: #c94b57;
