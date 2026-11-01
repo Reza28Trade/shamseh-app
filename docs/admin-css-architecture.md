@@ -52,12 +52,13 @@ All admin module-owned styles live under `src/styles/admin/pages/`.
 2. Keep module-specific grids, ordering, spacing and responsive composition in that module's page stylesheet.
 3. Do not duplicate shared component appearance in page files. Use shared tokens and shared patterns.
 4. Do not introduce new hard-coded brand colors or page-local shadow/radius systems.
+5. Historical module-specific color literals and repeated compatibility overrides are migration debt, not patterns to copy. Preserve their exact appearance during structural refactors; promote shared semantics to core tokens, and retire legacy values only after light/dark and responsive visual verification.
 5. Preserve semantic status colors (success, warning, error) through shared semantic tokens rather than arbitrary page palettes.
 6. Do not delete compatibility selectors based on a text search alone. Confirm JSX usage and test both themes and responsive breakpoints.
 7. Dashboard and Manage Admins remain the visual baselines; other modules should align to their visual language without copying their workflows or layouts.
 
 ## Migration status
 
-The central tokens, theme, common component patterns and shell layout have been separated. Student- and course-specific compatibility patterns have also been extracted from the shared component sheet into module-named stylesheets without changing their cascade position. Student and counselor portal rules have also been removed from the admin-only stylesheet and returned to their own entry points. The clearly identifiable module-owned sections have been moved into page files, and the original root-level Courses, Students and Mock Exams stylesheets have been relocated into the module directory.
+The central tokens, theme, common component patterns and shell layout have been separated. Semantic content-surface aliases are defined centrally, and the student/course modules consume those tokens rather than referencing undefined variables. Student- and course-specific compatibility patterns have also been extracted from the shared component sheet into module-named stylesheets without changing their cascade position. Student and counselor portal rules have also been removed from the admin-only stylesheet and returned to their own entry points. The clearly identifiable module-owned sections have been moved into page files, and the original root-level Courses, Students and Mock Exams stylesheets have been relocated into the module directory. Historical color literals and repeated compatibility overrides remain in several legacy modules; they are intentionally retained until visual parity can be verified.
 
 Historical cross-module cascade rules remain in the shared compatibility layers intentionally. They must be removed only as their target modules are verified against the central system. No business logic, API behavior, permissions, data models or workflows are changed by this CSS refactor.
