@@ -184,7 +184,7 @@
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-table-row:hover,
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-table-row.is-selected {
-  background:var(--admin-accent-soft)!important;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-table-subject,
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-table-student {
@@ -372,9 +372,9 @@
   transform:translateY(-1px)!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page button.messages-stat.is-active {
-  border-color:var(--admin-accent)!important;
-  background:var(--admin-accent-soft)!important;
-  box-shadow:inset 0 0 0 1px var(--admin-accent-soft)!important;
+  ;
+  ;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-table-tools {
   display:flex!important;
@@ -565,10 +565,10 @@
 
 /* Ensure active feedback stat border is visible on every edge. */
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page button.messages-stat.is-active {
-  border:1px solid var(--admin-accent)!important;
+  ;
   outline:1px solid var(--admin-accent)!important;
   outline-offset:-1px!important;
-  box-shadow:inset 0 0 0 1px var(--admin-accent-soft)!important;
+  ;
   transform:none!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-stats {
