@@ -346,8 +346,7 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-status {
   flex:0 0 auto!important;
   }
-.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-status.is-assigned {
-  color:var(--admin-accent)!important}
+
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-pagination,
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-pagination {
   margin-top:12px!important;
