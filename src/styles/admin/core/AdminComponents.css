@@ -288,9 +288,10 @@
   line-height: 1.8;
 }
 
-.admin-shell .admin-main .admin-page-content .admin-finance-registration-page :is(
-  > section,> article,> div > article,> div > section
-) {
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page > section,
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page > article,
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page > div > article,
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page > div > section {
   border: 1px solid var(--admin-content-border);
   border-radius: var(--admin-content-radius);
   background: var(--admin-content-surface);
