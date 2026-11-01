@@ -95,10 +95,10 @@
   border:0!important;box-shadow:none!important;border-radius:0!important;padding:0!important;
 }
 .mock-exam-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));overflow:hidden;background:var(--admin-card);border:1px solid var(--admin-border);box-shadow:var(--admin-shadow);border-radius:16px}
-.mock-exam-stat{padding:16px 18px;border-left:1px solid var(--admin-border)}
-.mock-exam-stat:last-child{border-left:0}
-.mock-exam-stat span{display:block;font-size:11px;color:var(--admin-sub);margin-bottom:7px}
-.mock-exam-stat strong{font-size:24px;line-height:1;color:var(--admin-text)}
+.mock-exam-stat{padding:16px 18px;}
+.mock-exam-stat:last-child{}
+.mock-exam-stat span{display:block;color:var(--admin-sub);margin-bottom:7px}
+.mock-exam-stat strong{line-height:1;}
 .mock-exam-list-card{min-width:0}
 .mock-exam-list-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .mock-exam-list-head button{display:inline-flex;align-items:center;gap:7px}
@@ -109,7 +109,7 @@
 .mock-exam-scroll-list::-webkit-scrollbar{width:7px}
 .mock-exam-scroll-list::-webkit-scrollbar-thumb{background:var(--admin-border);border-radius:99px}
 .mock-exam-scroll-list::-webkit-scrollbar-thumb:hover{background:var(--admin-accent)}
-@media(max-width:760px){.mock-exam-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.mock-exam-stat:nth-child(2){border-left:0}.mock-exam-stat:nth-child(-n+2){border-bottom:1px solid var(--admin-border)}.mock-exam-list-head{align-items:stretch;flex-direction:column}.mock-exam-list-head button{justify-content:center}.mock-exam-filters{align-items:stretch;flex-direction:column}.mock-exam-filters label{min-width:0}.mock-exam-scroll-list{height:1100px;max-height:1100px;align-content:start}}
+@media(max-width:760px){.mock-exam-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.mock-exam-stat:nth-child(2){}.mock-exam-stat:nth-child(-n+2){}.mock-exam-list-head{align-items:stretch;flex-direction:column}.mock-exam-list-head button{justify-content:center}.mock-exam-filters{align-items:stretch;flex-direction:column}.mock-exam-filters label{min-width:0}.mock-exam-scroll-list{height:1100px;max-height:1100px;align-content:start}}
 
 /* Keep mock-exam controls and cards readable in both themes. */
 .admin-mock-exams-page,
@@ -161,7 +161,6 @@
 .admin-mock-exams-page .mock-exam-list-card > div,
 .admin-mock-exams-page .mock-exam-scroll-list > div > div,
 .admin-mock-exams-page .mock-exam-scroll-list > div > div > div{
-  color:var(--admin-text)!important;
 }
 .admin-mock-exams-page > div:first-child p,
 .admin-mock-exams-page .mock-exam-scroll-list > div > div[style*="marginTop"],
@@ -251,14 +250,12 @@
   pointer-events:none;
 }
 .admin-shell .admin-page-content .admin-mock-exams-page .mock-exam-stat{
-  background:linear-gradient(180deg,color-mix(in srgb,var(--admin-accent) 7%,var(--admin-card)),var(--admin-card) 75%)!important;
 }
 .admin-shell .admin-page-content .admin-mock-exams-page .mock-exam-list-card{
-  background:linear-gradient(145deg,color-mix(in srgb,var(--admin-module-series-2) 7%,var(--admin-card)),var(--admin-card) 62%)!important;
-  border:1px solid var(--admin-border)!important;
-  border-top:2px solid color-mix(in srgb,var(--admin-module-series-2) 70%,var(--admin-border))!important;
-  border-radius:16px!important;
-  box-shadow:var(--admin-shadow)!important;
+
+
+
+
 }
 .admin-shell .admin-page-content .admin-mock-exams-page .mock-exam-form-card{
   background:linear-gradient(145deg,color-mix(in srgb,var(--admin-module-series-1) 8%,var(--admin-card)),var(--admin-card) 62%)!important;
@@ -293,7 +290,6 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-form-card,
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-list-card{
   padding:16px!important;
-  border-radius:16px!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list{
   height:510px!important;
@@ -377,24 +373,20 @@
   min-width:0!important;
   min-height:74px!important;
   padding:13px 16px!important;
-  border:0!important;
-  border-left:1px solid var(--admin-border)!important;
-  border-radius:0!important;
-  background:var(--admin-card)!important;
+
+
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat:last-child {
-  border-left:0!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat span {
   display:block!important;
   margin-bottom:7px!important;
-  color:var(--admin-sub)!important;
-  font-size:11px!important;
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat strong {
-  color:var(--admin-text)!important;
-  font-size:22px!important;
-  line-height:1.1!important;
+
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > form {
   gap:16px!important;
@@ -442,10 +434,9 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-list-card {
   min-width:0!important;
   padding:17px!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:15px!important;
-  background:var(--admin-card)!important;
-  box-shadow:var(--admin-shadow)!important;
+
+
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-list-head {
   gap:12px!important;
@@ -501,10 +492,8 @@
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
   }
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat:nth-child(2) {
-    border-left:0!important;
   }
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat:nth-child(-n+2) {
-    border-bottom:1px solid var(--admin-border)!important;
   }
 }
 @media(max-width:600px) {
@@ -626,13 +615,11 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat {
   min-height:68px!important;
   padding:12px 14px!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:12px!important;
-  background:var(--admin-card)!important;
-  box-shadow:var(--admin-shadow)!important;
+
+
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat:last-child {
-  border-left:1px solid var(--admin-border)!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list {
   height:auto!important;
@@ -705,20 +692,17 @@
   min-height:76px!important;
   margin:0!important;
   padding:14px 16px!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:12px!important;
-  background:var(--admin-card)!important;
-  box-shadow:var(--admin-shadow)!important;
+
+
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard:first-of-type > .mock-exam-stats > .mock-exam-stat span {
   margin:0!important;
-  font-size:11px!important;
-  color:var(--admin-sub)!important;
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard:first-of-type > .mock-exam-stats > .mock-exam-stat strong {
-  font-size:22px!important;
-  line-height:1.2!important;
-  color:var(--admin-text)!important;
+
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard:first-of-type + form {
   margin-top:0!important;
