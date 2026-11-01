@@ -50,7 +50,7 @@
 }
 .admin-mock-exams-page form button[type="submit"]{
   background:var(--admin-accent)!important;
-  color:#fff!important;
+  color:var(--admin-on-accent)!important;
   border:1px solid var(--admin-accent)!important;
 }
 .admin-mock-exams-page form button[type="button"],
@@ -437,7 +437,7 @@
   border:1px solid var(--admin-accent)!important;
   border-radius:9px!important;
   background:var(--admin-accent)!important;
-  color:#fff!important;
+  color:var(--admin-on-accent)!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-list-card {
   min-width:0!important;
@@ -601,7 +601,7 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div > div:last-child button {
   border:1px solid var(--admin-accent)!important;
   background:var(--admin-accent)!important;
-  color:#fff!important;
+  color:var(--admin-on-accent)!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div > div:first-child button {
   width:36px!important;
@@ -1103,7 +1103,7 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-savebar .mock-participant-save {
   border-color:var(--admin-accent)!important;
   background:var(--admin-accent)!important;
-  color:#fff!important;
+  color:var(--admin-on-accent)!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-savebar .mock-participant-cancel {
   background:var(--admin-control)!important;
