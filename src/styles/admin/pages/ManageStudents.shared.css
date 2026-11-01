@@ -127,3 +127,7 @@
     padding:14px!important;
   }
 }
+
+@media(prefers-reduced-motion:reduce){
+  .admin-shell .admin-page-content .admin-legacy-page *{transition:none!important;scroll-behavior:auto!important}
+}
