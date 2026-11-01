@@ -128,7 +128,7 @@
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-term-switch button.active {
   background:var(--admin-accent)!important;
-  color:#fff!important;
+  color:var(--admin-on-accent)!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-term-donut {
   border:1px solid var(--admin-border)!important;
