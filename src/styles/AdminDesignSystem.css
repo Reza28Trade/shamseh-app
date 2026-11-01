@@ -3796,6 +3796,50 @@
         }
       
 
+/* Manager accounts page follows the dashboard typography and component rhythm. */
+.admin-shell .admin-main .admin-page-content .admin-accounts-page{
+  font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif!important;
+  color:var(--admin-text);
+}
+.admin-shell .admin-main .admin-page-content .admin-accounts-page :is(
+  .accounts-card-head,.accounts-description,.accounts-fields,.accounts-picker-heading,
+  .accounts-permission-disclosure,.accounts-selected-permissions,.accounts-form-hint,
+  .accounts-list-empty,.accounts-admin-row
+){
+  font-family:inherit!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-accounts-page .accounts-card-head h2{
+  font-size:15px!important;
+  line-height:1.55!important;
+  font-weight:900!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-accounts-page .accounts-description{
+  font-size:11px!important;
+  line-height:1.9!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-accounts-page .accounts-picker-heading>span,
+.admin-shell .admin-main .admin-page-content .admin-accounts-page .accounts-list-total{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:27px;
+  padding:5px 10px!important;
+  border:1px solid rgba(255,255,255,.58)!important;
+  border-radius:9px!important;
+  background:var(--admin-bg)!important;
+  color:var(--admin-accent)!important;
+  box-shadow:3px 3px 7px rgba(174,166,154,.30),-3px -3px 7px rgba(255,255,255,.78),inset 1px 1px 0 rgba(255,255,255,.32)!important;
+  font-size:10px!important;
+  font-weight:900!important;
+  line-height:1.4!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-accounts-page .accounts-picker-heading>span,
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-accounts-page .accounts-list-total{
+  border-color:rgba(255,255,255,.055)!important;
+  background:#252323!important;
+  box-shadow:3px 3px 7px rgba(13,12,12,.52),-3px -3px 7px rgba(48,45,45,.48),inset 1px 1px 0 rgba(255,255,255,.035)!important;
+}
+
 /* Single master panel component: dashboard content panels and manager cards share this exact surface. */
 .admin-shell.admin-theme-light .admin-main .admin-page-content .admin-master-panel{
   background:var(--admin-bg)!important;
