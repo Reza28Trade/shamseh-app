@@ -30,9 +30,6 @@
 }
 .admin-mock-exams-page form > div:first-child,
 .admin-mock-exams-page > div:last-child > div:first-child{
-
-
-  border-color:var(--admin-border)!important;
 }
 .admin-mock-exams-page form > div[style*="grid-template-columns"]{
   grid-template-columns:repeat(2,minmax(0,1fr))!important;
@@ -53,11 +50,9 @@
   border-color:var(--admin-border)!important;
 }
 .admin-mock-exams-page > div:last-child > div[style*="display: grid"] > div{
-  border-color:var(--admin-border)!important;
 }
 .admin-mock-exams-page [style*="rgba(109,0,26"],
 .admin-mock-exams-page [style*="rgba(109, 0, 26"]{
-  border-color:var(--admin-brand-border)!important;
 }
 .admin-mock-exams-page [style*="linear-gradient(135deg"]{
 }
@@ -81,8 +76,8 @@
 
 
 .mock-exam-dashboard{display:grid;gap:16px;background:transparent!important;background-color:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important;border-radius:0!important;padding:0!important}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard{background-color:transparent!important;
-box-shadow:none!important;padding:0!important;
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .mock-exam-dashboard{
+padding:0!important;
 }
 .mock-exam-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));overflow:hidden;background:var(--admin-card);border:1px solid var(--admin-border);box-shadow:var(--admin-shadow);border-radius:16px}
 .mock-exam-stat{padding:16px 18px;}
@@ -119,12 +114,11 @@ box-shadow:none!important;padding:0!important;
   border-color:var(--admin-border)!important;
 }
 .admin-mock-exams-page input::placeholder{color:var(--admin-sub)!important;opacity:1}
-.admin-mock-exams-page option{background:var(--admin-card)}
+.admin-mock-exams-page option{}
 .admin-mock-exams-page .mock-exam-scroll-list > div{
   height:auto!important;
   min-height:0!important;
   align-self:start;
-  border-color:var(--admin-border)!important;
 }
 .admin-mock-exams-page .mock-exam-scroll-list > div,
 .admin-mock-exams-page .mock-exam-scroll-list > div *{
@@ -1017,7 +1011,6 @@ box-shadow:none!important;padding:0!important;
   font-weight:800!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-savebar .mock-participant-save {
-  border-color:var(--admin-accent)!important;
 
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-savebar .mock-participant-cancel {
