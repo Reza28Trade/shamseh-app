@@ -7,7 +7,7 @@
 
 }
 .admin-counseling-page > .counseling-page-head h2{}
-.admin-counseling-page > .counseling-page-head button{min-height:38px;border-radius:10px!important}
+.admin-counseling-page > .counseling-page-head button{min-height:38px;}
 @media(max-width:700px){.admin-counseling-page > .counseling-page-head{padding:16px!important;min-height:0}}
 
 /* Counseling — dedicated compact management layout */
@@ -273,7 +273,7 @@
   column-gap:12px!important;
   row-gap:3px!important;
   padding:9px 11px!important;
-  border-radius:10px!important;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button > strong,
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button > span{
@@ -393,22 +393,22 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button {
   box-sizing:border-box!important;
   padding:10px 11px!important;
-  border-radius:9px!important;
-  border-color:var(--admin-border)!important;
-  background:var(--admin-inner)!important;
-  box-shadow:none!important;
+  ;
+  ;
+  ;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button[style*="var(--admin-accent)"] {
-  border-color:var(--admin-accent)!important;
-  background:var(--admin-accent-soft)!important;
+  ;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button > strong {
-  font-size:11px!important;
-  line-height:1.7!important;
+  ;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button > span {
-  font-size:10px!important;
-  line-height:1.7!important;
+  ;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-selected-student {
   padding-bottom:10px!important;
