@@ -151,12 +151,6 @@
   border-color:var(--admin-border)!important;
 }
 
-.admin-counseling-page > div[style*="position: fixed"] button[style*="#38bdf8"]{
-  background:var(--admin-accent)!important;
-  color:var(--admin-on-accent)!important;
-  border-color:var(--admin-accent)!important;
-}
-
 @media(max-width:700px){
   .admin-counseling-page > section:nth-of-type(1) > div{
     align-items:stretch!important;
