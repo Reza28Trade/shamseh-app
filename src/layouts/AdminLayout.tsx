@@ -49,25 +49,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
     return Boolean(admin?.permissions?.includes(item.id));
   });
   const activeItem = menuItems.find((item) => item.id === activeTab || (activeTab === 'finance' && item.id === 'registrations')) ?? menuItems[0];
-  const vars = {
-    '--admin-bg': isDark ? 'var(--shamseh-charcoal)' : '#EEECE4',
-    '--admin-card': isDark ? '#1D1B1B' : '#F7F3EC',
-    '--admin-inner': isDark ? '#302D2D' : '#E5DED5',
-    '--admin-text': isDark ? 'var(--shamseh-almond)' : '#302D2A',
-    '--admin-sub': isDark ? '#B9B0A6' : '#70665D',
-    '--admin-border': isDark ? 'rgba(238,229,218,.13)' : 'rgba(64,55,48,.14)',
-    '--admin-accent': isDark ? 'var(--shamseh-turquoise)' : 'var(--shamseh-teal)',
-    '--admin-accent-soft': isDark ? 'rgba(72,209,204,.13)' : 'rgba(0,128,128,.10)',
-    '--admin-brand-soft': isDark ? 'rgba(0,128,128,.18)' : 'rgba(0,128,128,.08)',
-    '--admin-brand-border': isDark ? 'rgba(72,209,204,.30)' : 'rgba(0,128,128,.27)',
-    '--admin-control': isDark ? '#211F1F' : '#F8F5EF',
-    '--admin-gold': 'var(--shamseh-gold)',
-    '--admin-burgundy': 'var(--shamseh-burgundy)',
-    '--admin-shadow': isDark ? '0 16px 38px rgba(0,0,0,.22)' : '0 10px 28px rgba(55,46,38,.09), 0 2px 7px rgba(55,46,38,.045)',
-  } as React.CSSProperties;
+
 
   return (
-    <div className={'admin-shell ' + (isDark ? 'admin-theme-dark' : 'admin-theme-light')} style={vars} dir="rtl">
+    <div className={'admin-shell ' + (isDark ? 'admin-theme-dark' : 'admin-theme-light')} dir="rtl">
       <aside className={'admin-sidebar ' + (isSidebarOpen ? 'open' : '')}>
         <div className="admin-sidebar-main">
           <div className="admin-sidebar-brand">

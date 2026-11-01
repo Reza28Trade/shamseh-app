@@ -1,0 +1,47 @@
+/* Shamseh Admin Design Reference
+   Shared design tokens are the source of truth. Theme-dependent surfaces map to
+   the existing shell variables, so dark/light mode remains controlled by AdminLayout. */
+:root {
+  --shamseh-almond: #EEE5DA;
+  --shamseh-charcoal: #262424;
+  --shamseh-turquoise: #48D1CC;
+  --shamseh-teal: #008080;
+  --shamseh-burgundy: #7A2038;
+  --shamseh-gold: #C4984C;
+  --shamseh-radius-sm: 9px;
+  --shamseh-radius-md: 12px;
+  --shamseh-radius-lg: 14px;
+  --shamseh-space-1: 4px;
+  --shamseh-space-2: 8px;
+  --shamseh-space-3: 12px;
+  --shamseh-space-4: 16px;
+  --shamseh-space-5: 20px;
+  --shamseh-control-height: 38px;
+  --shamseh-font-size: 12px;
+}
+.admin-shell {
+  --shamseh-surface-page: var(--admin-bg);
+  --shamseh-surface-card: var(--admin-card);
+  --shamseh-surface-inner: var(--admin-inner);
+  --shamseh-surface-control: var(--admin-control);
+  --shamseh-text-primary: var(--admin-text);
+  --shamseh-text-secondary: var(--admin-sub);
+  --shamseh-border-default: var(--admin-border);
+  --shamseh-accent-primary: var(--admin-accent);
+  --shamseh-accent-soft: var(--admin-accent-soft);
+  --shamseh-accent-border: var(--admin-brand-border);
+}
+.admin-shell .admin-page-content .admin-legacy-page {
+  font-size: var(--shamseh-font-size);
+  color: var(--shamseh-text-primary);
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(input,select,textarea) {
+  min-height: var(--shamseh-control-height);
+  border-radius: var(--shamseh-radius-sm);
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(button,.course-btn,.primary-action,.secondary-action) {
+  border-radius: var(--shamseh-radius-sm) !important;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(th,td) {
+  border-color: var(--shamseh-border-default);
+}
