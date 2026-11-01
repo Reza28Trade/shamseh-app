@@ -30,8 +30,7 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
-  flex: 1;
-  overflow: hidden}
+  flex: 1}
 
 .admin-sidebar-brand {
   display: flex;
@@ -146,10 +145,8 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding: 2px 0 8px;
-  scrollbar-width: none;
+  scrollbar-width: thin;
   scrollbar-color: var(--admin-border) transparent}
-
-.admin-nav::-webkit-scrollbar { width: 0; height: 0}
 
 .admin-nav button {
   position: relative;
@@ -301,63 +298,11 @@
 .admin-sidebar-backdrop,
 .admin-mobile-topbar { display: none}
 
-/* Preserve the approved light-mode sidebar treatment. */
-.admin-shell.admin-theme-light .admin-main {
-  background: var(--admin-bg);
-  color: var(--admin-text)}
-
-.admin-shell.admin-theme-light .admin-sidebar {
-  background: var(--admin-shell-light-sidebar);
-  border-left: 1px solid var(--admin-border);
-  box-shadow: var(--admin-shell-sidebar-shadow)}
-
-.admin-shell.admin-theme-light .admin-sidebar-profile {
-  background: var(--admin-shell-light-profile);
-  border-color: var(--admin-border);
-  box-shadow: var(--admin-shell-profile-shadow)}
-
-.admin-shell.admin-theme-light :is(.admin-sidebar-heading,.admin-sidebar-status) {
-  color: var(--admin-sub)}
-
-.admin-shell.admin-theme-light .admin-nav button {
-  color: var(--admin-shell-light-nav-text);
-  border-color: transparent;
-  border-radius: 11px}
-
-.admin-shell.admin-theme-light .admin-nav button:hover {
-  background: var(--admin-shell-light-nav-hover);
-  color: var(--admin-text)}
-
-.admin-shell.admin-theme-light .admin-nav button.active {
-  background: var(--admin-accent-soft);
-  color: var(--admin-text);
-  border-color: var(--admin-brand-border);
-  box-shadow: var(--admin-shell-nav-active-inset)}
-
-.admin-shell.admin-theme-light .admin-nav button.active .admin-nav-icon,
-.admin-shell.admin-theme-light .admin-nav-indicator {
-  color: var(--admin-accent);
-  background: var(--admin-accent)}
-
-/* Preserve the approved dark-mode charcoal sidebar treatment. */
-.admin-shell.admin-theme-dark .admin-sidebar {
-  background: var(--admin-shell-dark-sidebar);
-  border-left-color: var(--admin-shell-dark-border)}
-
-.admin-shell.admin-theme-dark .admin-sidebar-profile {
-  background: var(--admin-shell-dark-profile);
-  border-color: var(--admin-shell-dark-border);
-  box-shadow: none}
-
-.admin-shell.admin-theme-dark .admin-nav button.active {
-  background: var(--admin-shell-dark-active);
-  color: var(--admin-shell-dark-active-text);
-  border-color: var(--admin-shell-dark-active-border)}
-
-.admin-shell.admin-theme-dark .admin-nav button.active .admin-nav-icon,
-.admin-shell.admin-theme-dark .admin-nav-indicator {
-  color: var(--shamseh-turquoise);
-  background: var(--shamseh-turquoise)}
+@media (max-width: 1200px) {
+  .admin-sidebar { width: 280px; flex-basis: 280px; padding-inline: 11px; }
+  .admin-main { padding: 25px 23px 36px; }
+  .admin-brand-logo { width: 52px; height: 52px; flex-basis: 52px; }
+}
 
 @media (max-width: 900px) {
   .admin-shell { display: block}
@@ -432,6 +377,8 @@
   .admin-main { padding-inline: 12px}
   .admin-mobile-topbar { margin-inline: -12px; padding-inline: 11px}
   .admin-page-heading h1 { font-size: 18px}
+  .admin-sidebar { padding: 15px 12px; }
+  .admin-brand-logo { width: 65px; height: 65px; flex-basis: 65px; }
   .admin-sidebar-actions { grid-template-columns: 1fr}
   .admin-change-password,.admin-logout { padding: 9px}
 }
@@ -463,7 +410,9 @@
   .admin-nav {
     min-height: 0;
     overflow-y: auto;
-    overscroll-behavior: contain}
+    overscroll-behavior: contain;
+    scrollbar-width: none}
+  .admin-nav::-webkit-scrollbar { width: 0; height: 0; }
 
   .admin-main {
     height: 100vh;
