@@ -23,6 +23,12 @@ The admin panel has one visual source of truth and independent module structure.
 - `AdminDesignSystem.css`: shared cross-module visual normalization and historical cascade rules that still need gradual consolidation. Do not add new module-specific layout rules here.
 - `AdminLegacy.css`: compatibility layer for legacy page wrappers and inline-styled markup. Do not add new page designs here. Retire rules only after the affected module has been migrated and verified.
 
+## Separate authenticated portals
+
+- `src/styles/StudentDesignSystem.css` belongs to `UserDashboard.tsx` and is loaded by the student portal itself.
+- `src/styles/CounselorDesignSystem.css` belongs to `CounselorPortal.tsx` and is loaded by the counselor portal itself.
+- Portal-specific selectors must not be placed in the admin shell stylesheet.
+
 ## Module styles
 
 All admin module-owned styles live under `src/styles/admin/pages/`.
@@ -48,6 +54,6 @@ All admin module-owned styles live under `src/styles/admin/pages/`.
 
 ## Migration status
 
-The central tokens, theme, common component patterns and shell layout have been separated. The clearly identifiable module-owned sections have been moved into page files, and the original root-level Courses, Students and Mock Exams stylesheets have been relocated into the module directory.
+The central tokens, theme, common component patterns and shell layout have been separated. Student and counselor portal rules have also been removed from the admin-only stylesheet and returned to their own entry points. The clearly identifiable module-owned sections have been moved into page files, and the original root-level Courses, Students and Mock Exams stylesheets have been relocated into the module directory.
 
 Historical cross-module cascade rules remain in the shared compatibility layers intentionally. They must be removed only as their target modules are verified against the central system. No business logic, API behavior, permissions, data models or workflows are changed by this CSS refactor.
