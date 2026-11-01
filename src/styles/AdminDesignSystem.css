@@ -3900,6 +3900,130 @@
 }
 
 
+
+/* Course management: shared dashboard card, inset-row and button components. */
+.admin-shell .admin-main .admin-page-content .admin-courses-page{
+  width:100%!important;
+  max-width:1240px!important;
+  margin-inline:auto!important;
+  gap:14px!important;
+  font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-form,.course-list){
+  border-radius:15px!important;
+  padding:17px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-stats{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:12px!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat{
+  min-width:0!important;
+  min-height:104px!important;
+  padding:15px 16px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:15px!important;
+  background:var(--admin-card)!important;
+  color:var(--admin-text)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat :is(.course-stat-label,.course-stat-value){
+  font-family:inherit!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat-value{
+  font-size:22px!important;
+  line-height:1.4!important;
+  font-weight:900!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat-icon,
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat-head svg{
+  color:var(--admin-accent)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-section-head{
+  border-bottom:1px solid var(--admin-border)!important;
+  padding-bottom:10px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-section-head h3{
+  font-family:inherit!important;
+  font-size:15px!important;
+  font-weight:900!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-title,.course-section-head p,.course-field label,.course-card-title,.course-card-sub,.course-pill,.course-status){
+  font-family:inherit!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-card{
+  border:1px solid rgba(255,255,255,.62)!important;
+  border-radius:12px!important;
+  background:#E7E3DC!important;
+  box-shadow:inset 3px 3px 7px rgba(177,169,157,.38),inset -3px -3px 7px rgba(255,255,255,.82)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-courses-page .course-card{
+  border-color:rgba(255,255,255,.045)!important;
+  background:#211F1F!important;
+  box-shadow:inset 3px 3px 7px rgba(12,11,11,.55),inset -3px -3px 7px rgba(52,48,48,.42)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-expand{
+  border-top:1px solid var(--admin-border)!important;
+  background:transparent!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-courses-page .expanded-panel{
+  border:1px solid var(--admin-border)!important;
+  border-radius:12px!important;
+  background:var(--admin-card)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-btn,.day-chip,.cover-file){
+  position:relative!important;
+  isolation:isolate;
+  overflow:hidden!important;
+  transition:transform .28s ease,background .28s ease,border-color .28s ease,box-shadow .28s ease,color .28s ease!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-btn,.day-chip,.cover-file)::before{
+  content:""!important;
+  position:absolute;
+  inset:0 auto 0 0;
+  width:34%;
+  z-index:-1;
+  background:linear-gradient(105deg,rgba(255,255,255,0),rgba(255,255,255,.2) 48%,rgba(0,128,128,.055) 72%,rgba(255,255,255,0));
+  transform:skewX(28deg) translateX(-150%);
+  transition:transform .55s ease;
+  pointer-events:none;
+}
+.admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-btn,.day-chip,.cover-file):hover:not(:disabled){
+  transform:translateY(-2px);
+  border-color:var(--admin-brand-border)!important;
+  box-shadow:0 8px 18px rgba(75,53,30,.075),inset 0 1px 0 rgba(255,255,255,.72)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-btn,.day-chip,.cover-file):hover:not(:disabled)::before{
+  transform:skewX(28deg) translateX(280%);
+}
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn.primary{
+  background:var(--admin-accent)!important;
+  color:#fff!important;
+  border-color:var(--admin-accent)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-courses-page .course-card{
+  color:var(--admin-text)!important;
+}
+@media(max-width:900px){
+  .admin-shell .admin-main .admin-page-content .admin-courses-page .course-stats{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:760px){
+  .admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-form,.course-list){padding:14px!important}
+  .admin-shell .admin-main .admin-page-content .admin-courses-page .course-stats{gap:9px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-btn,.day-chip,.cover-file),
+  .admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-btn,.day-chip,.cover-file)::before{transition:none!important}
+}
+
 /* Manager-account actions use the exact animated glass-button language of dashboard refresh. */
 .admin-shell .admin-main .admin-page-content .admin-accounts-page :is(.accounts-primary-action,.accounts-admin-actions button){
   position:relative!important;
