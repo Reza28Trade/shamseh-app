@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { AlertCircle, FileText, RefreshCw, Search, ShieldAlert } from 'lucide-react';
+import '../../styles/admin/pages/AuditLogs.css';
 
 type AuditLogEntry = {
   id: string;
