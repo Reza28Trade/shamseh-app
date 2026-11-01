@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Archive, BarChart3, CheckCircle2, Download, Trash2, FileSpreadsheet, Filter, Pencil, Search, Upload, UserPlus, Users, X, Wallet } from 'lucide-react';
 import type { Student, Course } from '../../types';
-import '../../styles/AdminStudents.css';
+import '../../styles/admin/pages/ManageStudents.layout.css';
 import '../../styles/admin/pages/ManageStudents.css';
 
 interface ManageStudentsProps {
