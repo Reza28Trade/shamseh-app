@@ -1,5 +1,6 @@
 /* Unified admin design system — shared by every legacy management page */
-.admin-legacy-page{
+
+.admin-legacy-page {
   --legacy-accent:var(--admin-accent);
   width:100%;
   max-width:1240px;
@@ -11,13 +12,14 @@
   direction:rtl;
   font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
+
 .admin-legacy-page,
-.admin-legacy-page *{box-sizing:border-box}
+.admin-legacy-page * {box-sizing:border-box}
 
 .admin-legacy-page[style*="#0e0e11"],
 .admin-legacy-page[style*="#141419"],
 .admin-legacy-page[style*="rgba(14,14,17"],
-.admin-legacy-page[style*="rgba(14, 14, 17"]{
+.admin-legacy-page[style*="rgba(14, 14, 17"] {
   background:var(--admin-card)!important;
   background-color:var(--admin-card)!important;
   background-image:none!important;
@@ -28,7 +30,7 @@
 
 .admin-legacy-page > div,
 .admin-legacy-page > form,
-.admin-legacy-page > section{
+.admin-legacy-page > section {
   color:var(--admin-text)!important;
 }
 
@@ -36,6 +38,7 @@
    The legacy wrapper must not turn layout containers into cards. */
 
 /* Legacy hard-coded dark surfaces are neutralized in both themes. */
+
 .admin-legacy-page [style*="#0e0e11"],
 .admin-legacy-page [style*="#111116"],
 .admin-legacy-page [style*="#141419"],
@@ -52,7 +55,7 @@
 .admin-legacy-page [style*="rgba(10,10,10"],
 .admin-legacy-page [style*="rgba(10, 10, 10"],
 .admin-legacy-page [style*="rgba(0,0,0,.15"],
-.admin-legacy-page [style*="rgba(0, 0, 0, 0.15"]{
+.admin-legacy-page [style*="rgba(0, 0, 0, 0.15"] {
   background:var(--admin-inner)!important;
   background-color:var(--admin-inner)!important;
   background-image:none!important;
@@ -61,18 +64,20 @@
 }
 
 /* Burgundy legacy hero gradients become a restrained brand surface. */
+
 .admin-legacy-page [style*="linear-gradient(135deg"],
 .admin-legacy-page [style*="linear-gradient(135deg,rgba(109,0,26"],
-.admin-legacy-page [style*="linear-gradient(135deg, rgba(109, 0, 26"]{
+.admin-legacy-page [style*="linear-gradient(135deg, rgba(109, 0, 26"] {
   background:linear-gradient(135deg,var(--admin-brand-soft),var(--admin-card))!important;
   border-color:var(--admin-brand-border)!important;
   box-shadow:var(--admin-shadow)!important;
 }
 
 /* Inputs and controls share one component language. */
+
 .admin-legacy-page input,
 .admin-legacy-page select,
-.admin-legacy-page textarea{
+.admin-legacy-page textarea {
   background:var(--admin-control)!important;
   color:var(--admin-text)!important;
   border:1px solid var(--admin-border)!important;
@@ -80,272 +85,210 @@
   outline:none;
   box-shadow:none!important;
 }
+
 .admin-legacy-page input:focus,
 .admin-legacy-page select:focus,
-.admin-legacy-page textarea:focus{
+.admin-legacy-page textarea:focus {
   border-color:var(--admin-accent)!important;
   box-shadow:0 0 0 3px var(--admin-accent-soft)!important;
 }
+
 .admin-legacy-page input::placeholder,
-.admin-legacy-page textarea::placeholder{color:var(--admin-sub)!important}
+.admin-legacy-page textarea::placeholder {color:var(--admin-sub)!important}
 
 /* Preserve semantic status colors, but remove old white/dark text assumptions from content. */
+
 .admin-legacy-page h1,
 .admin-legacy-page h2,
 .admin-legacy-page h3,
-.admin-legacy-page h4{
+.admin-legacy-page h4 {
   color:var(--admin-text)!important;
   letter-spacing:-.2px;
 }
-.admin-legacy-page p{color:var(--admin-sub)!important}
-.admin-legacy-page label{color:var(--admin-text)!important}
-.admin-legacy-page strong{color:var(--admin-text)}
-.admin-legacy-page a{color:var(--admin-accent)}
-.admin-legacy-page hr{border-color:var(--admin-border)!important}
 
-.admin-legacy-page button{
+.admin-legacy-page p {color:var(--admin-sub)!important}
+
+.admin-legacy-page label {color:var(--admin-text)!important}
+
+.admin-legacy-page strong {color:var(--admin-text)}
+
+.admin-legacy-page a {color:var(--admin-accent)}
+
+.admin-legacy-page hr {border-color:var(--admin-border)!important}
+
+.admin-legacy-page button {
   font-family:inherit;
   border-radius:10px!important;
   transition:transform .16s ease,background .16s ease,border-color .16s ease,box-shadow .16s ease;
 }
-.admin-legacy-page button:hover{transform:translateY(-1px)}
-.admin-legacy-page button:disabled{cursor:not-allowed;transform:none;opacity:.62}
 
-.admin-legacy-page table{
+.admin-legacy-page button:hover {transform:translateY(-1px)}
+
+.admin-legacy-page button:disabled {cursor:not-allowed;transform:none;opacity:.62}
+
+.admin-legacy-page table {
   width:100%;
   border-collapse:separate;
   border-spacing:0;
 }
-.admin-legacy-page th{
+
+.admin-legacy-page th {
   color:var(--admin-sub)!important;
   background:var(--admin-inner)!important;
   border-color:var(--admin-border)!important;
 }
-.admin-legacy-page td{
+
+.admin-legacy-page td {
   color:var(--admin-text)!important;
   border-color:var(--admin-border)!important;
 }
 
 /* Old burgundy buttons become the same primary action everywhere. */
+
 .admin-legacy-page button[style*="#6D001A"],
 .admin-legacy-page [style*="background:'#6D001A'"],
 .admin-legacy-page [style*="background: #6D001A"],
 .admin-legacy-page [style*="backgroundColor: '#6D001A'"],
 .admin-legacy-page [style*="background-color: #6D001A"],
-.admin-legacy-page [style*="background: 'linear-gradient(135deg, #6D001A"]{
+.admin-legacy-page [style*="background: 'linear-gradient(135deg, #6D001A"] {
   background:var(--admin-accent)!important;
   border-color:var(--admin-accent)!important;
   color:#fff!important;
 }
 
 /* Responsive foundations */
-@media(max-width:900px){
-  .admin-legacy-page{max-width:none}
-}
-@media(max-width:620px){
-  .admin-legacy-page{gap:14px}
+
+@media(max-width:900px) {
+.admin-legacy-page {max-width:none}
 }
 
+@media(max-width:620px) {
+.admin-legacy-page {gap:14px}
+}
 
 /* Shamseh admin redesign — shared finishing layer */
-.admin-legacy-page{
+
+.admin-legacy-page {
   font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif;
   font-size:12px;
   line-height:1.75;
   gap:20px;
 }
-.admin-page-heading.is-dashboard{display:none}
+
+.admin-page-heading.is-dashboard {display:none}
+
 .admin-legacy-page input,
 .admin-legacy-page select,
-.admin-legacy-page textarea{
+.admin-legacy-page textarea {
   min-height:40px;
   padding:9px 12px!important;
   font:inherit;
   font-size:12px!important;
   line-height:1.5;
 }
-.admin-legacy-page textarea{min-height:100px;resize:vertical}
+
+.admin-legacy-page textarea {min-height:100px;resize:vertical}
+
 .admin-legacy-page button:focus-visible,
-.admin-legacy-page a:focus-visible{
+.admin-legacy-page a:focus-visible {
   outline:2px solid var(--admin-accent)!important;
   outline-offset:3px;
 }
-.admin-legacy-page table thead th:first-child{border-top-right-radius:10px}
-.admin-legacy-page table thead th:last-child{border-top-left-radius:10px}
-.admin-legacy-page tbody tr{transition:background .16s ease}
-.admin-legacy-page tbody tr:hover td{background:var(--admin-accent-soft)}
+
+.admin-legacy-page table thead th:first-child {border-top-right-radius:10px}
+
+.admin-legacy-page table thead th:last-child {border-top-left-radius:10px}
+
+.admin-legacy-page tbody tr {transition:background .16s ease}
+
+.admin-legacy-page tbody tr:hover td {background:var(--admin-accent-soft)}
+
 .admin-legacy-page td,
-.admin-legacy-page th{padding:12px 13px}
+.admin-legacy-page th {padding:12px 13px}
+
 .admin-legacy-page .admin-page-head,
-.admin-legacy-page .page-header{gap:14px}
-.admin-shell ::selection{background:rgba(57,138,144,.3);color:var(--admin-text)}
-.admin-shell ::-webkit-scrollbar{width:8px;height:8px}
-.admin-shell ::-webkit-scrollbar-track{background:transparent}
-.admin-shell ::-webkit-scrollbar-thumb{background:var(--admin-border);border-radius:99px}
-.admin-shell ::-webkit-scrollbar-thumb:hover{background:var(--admin-accent)}
-@media(max-width:620px){
-  .admin-legacy-page{gap:14px}
-  .admin-legacy-page input,
-  .admin-legacy-page select,
-  .admin-legacy-page textarea{font-size:12px!important}
-}
-@media(prefers-reduced-motion:reduce){
-  .admin-legacy-page *,
-  .admin-legacy-page *::before,
-  .admin-legacy-page *::after{transition:none!important;animation:none!important}
+.admin-legacy-page .page-header {gap:14px}
+
+.admin-shell ::selection {background:rgba(57,138,144,.3);color:var(--admin-text)}
+
+.admin-shell ::-webkit-scrollbar {width:8px;height:8px}
+
+.admin-shell ::-webkit-scrollbar-track {background:transparent}
+
+.admin-shell ::-webkit-scrollbar-thumb {background:var(--admin-border);border-radius:99px}
+
+.admin-shell ::-webkit-scrollbar-thumb:hover {background:var(--admin-accent)}
+
+@media(max-width:620px) {
+.admin-legacy-page {gap:14px}
+
+.admin-legacy-page input,
+.admin-legacy-page select,
+.admin-legacy-page textarea {font-size:12px!important}
 }
 
+@media(prefers-reduced-motion:reduce) {
+.admin-legacy-page *,
+.admin-legacy-page *::before,
+.admin-legacy-page *::after {transition:none!important;animation:none!important}
+}
 
 /* Cohesive Shamseh palette for every admin module, including inline-styled legacy screens. */
-.admin-shell .admin-page-content .admin-legacy-page{
+
+.admin-shell .admin-page-content .admin-legacy-page {
   color:var(--admin-text)!important;
   font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif!important;
 }
+
 .admin-shell .admin-page-content .admin-legacy-page > header,
 .admin-shell .admin-page-content .admin-legacy-page > div[style*="linear-gradient"],
 .admin-shell .admin-page-content .admin-legacy-page > div[style*="rgba(14,14,17"],
-.admin-shell .admin-page-content .admin-legacy-page > div[style*="rgba(14, 14, 17"]{
+.admin-shell .admin-page-content .admin-legacy-page > div[style*="rgba(14, 14, 17"] {
   background:var(--admin-card)!important;
   background-image:linear-gradient(135deg,var(--admin-card),var(--admin-inner))!important;
   border-color:var(--admin-border)!important;
   box-shadow:var(--admin-shadow)!important;
   color:var(--admin-text)!important;
 }
+
 .admin-shell .admin-page-content .admin-legacy-page section,
 .admin-shell .admin-page-content .admin-legacy-page form,
-.admin-shell .admin-page-content .admin-legacy-page article{
+.admin-shell .admin-page-content .admin-legacy-page article {
   border-color:var(--admin-border)!important;
 }
+
 .admin-shell .admin-page-content .admin-legacy-page input,
 .admin-shell .admin-page-content .admin-legacy-page select,
-.admin-shell .admin-page-content .admin-legacy-page textarea{
+.admin-shell .admin-page-content .admin-legacy-page textarea {
   background:var(--admin-control)!important;
   color:var(--admin-text)!important;
   border:1px solid var(--admin-border)!important;
   border-radius:10px!important;
 }
+
 .admin-shell .admin-page-content .admin-legacy-page input::placeholder,
-.admin-shell .admin-page-content .admin-legacy-page textarea::placeholder{color:var(--admin-sub)!important;opacity:1}
-.admin-shell .admin-page-content .admin-legacy-page button{
+.admin-shell .admin-page-content .admin-legacy-page textarea::placeholder {color:var(--admin-sub)!important;opacity:1}
+
+.admin-shell .admin-page-content .admin-legacy-page button {
   font-family:inherit;
   transition:background-color .16s,border-color .16s,color .16s,transform .16s;
 }
-.admin-shell .admin-page-content .admin-legacy-page button:focus-visible{
+
+.admin-shell .admin-page-content .admin-legacy-page button:focus-visible {
   outline:2px solid var(--admin-accent)!important;outline-offset:2px;
 }
+
 .admin-shell .admin-page-content .admin-legacy-page button[style*="#ff3366"],
 .admin-shell .admin-page-content .admin-legacy-page button[style*="#ff6688"],
-.admin-shell .admin-page-content .admin-legacy-page button[style*="#38bdf8"]{
+.admin-shell .admin-page-content .admin-legacy-page button[style*="#38bdf8"] {
   border-color:var(--admin-accent)!important;
 }
-.admin-shell .admin-page-content .admin-legacy-page h2,
-.admin-shell .admin-page-content .admin-legacy-page h3{color:var(--admin-text)}
-.admin-shell .admin-page-content .admin-legacy-page p{line-height:1.9}
-.admin-finance-page > header,
-.admin-public-content-page > header{
-  padding:20px 22px!important;
-  border-radius:17px!important;
-}
-.admin-finance-page > header h2,
-.admin-public-content-page > header h2{font-size:20px!important;letter-spacing:-.2px}
-.admin-finance-page > section,
-.admin-public-content-page > form,
-.admin-public-content-page > div[style*="grid"]{
-  border-radius:15px!important;
-}
-.admin-finance-page table,
-.admin-public-content-page table{width:100%;border-collapse:separate;border-spacing:0}
-.admin-finance-page th,
-.admin-public-content-page th{background:var(--admin-inner)!important;color:var(--admin-sub)!important}
-.admin-finance-page td,
-.admin-public-content-page td{border-bottom:1px solid var(--admin-border)!important;color:var(--admin-text)}
-@media(max-width:700px){
-  .admin-finance-page > header,
-  .admin-public-content-page > header{padding:17px!important}
-  .admin-finance-page{gap:13px!important}
-  .admin-public-content-page{gap:13px!important}
-  .admin-finance-page > section{padding:12px!important}
-}
 
+.admin-shell .admin-page-content .admin-legacy-page h2,
+.admin-shell .admin-page-content .admin-legacy-page h3 {color:var(--admin-text)}
+
+.admin-shell .admin-page-content .admin-legacy-page p {line-height:1.9}
 
 /* Dashboard statistics: independent soft-elevated cards; no decorative color strip. */
-.admin-shell .admin-page-content .admin-dashboard-page .admin-stat-grid{
-  display:grid;
-  position:relative;
-  overflow:visible;
-  padding:0!important;
-  background:transparent!important;
-  border:0!important;
-  border-radius:0!important;
-  box-shadow:none!important;
-  gap:12px!important;
-}
-.admin-shell .admin-page-content .admin-dashboard-page .admin-stat-grid::before,
-.admin-shell .admin-page-content .admin-dashboard-page .admin-stat-grid::after{
-  content:none!important;
-  display:none!important;
-}
-.admin-shell .admin-page-content .admin-dashboard-page .admin-stat{
-  background:var(--admin-card)!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:15px!important;
-  box-shadow:var(--admin-shadow)!important;
-}
-.admin-shell .admin-page-content .admin-dashboard-page .admin-stat:hover{
-  background:var(--admin-accent-soft)!important;
-  border-color:var(--admin-brand-border)!important;
-}
-
 
 /* Cross-module sizing: offline requests and dashboard statistics use the same rhythm. */
-.admin-shell .admin-page-content .admin-legacy-page.admin-offline-page{
-  max-width:1240px!important;
-  gap:16px!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head{
-  min-height:82px;
-  padding:18px 20px!important;
-  align-items:center!important;
-  background:linear-gradient(112deg,var(--admin-card) 0%,var(--admin-inner) 100%)!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:16px!important;
-  box-shadow:var(--admin-shadow)!important;
-  position:relative;
-  overflow:hidden;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head:before{
-  content:"";position:absolute;top:0;bottom:0;left:0;width:4px;
-  background:linear-gradient(180deg,#398A90,#528bd8,#d69b42,#E58A70);
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-stats{
-  min-height:81px;
-  border-radius:16px!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card{
-  min-height:78px;
-  padding:13px 16px!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-list-card{
-  border-radius:16px!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-list-head{
-  padding:14px 16px!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-request-list{
-  height:510px!important;max-height:510px!important;
-}
-.admin-shell .admin-page-content .admin-dashboard-page .admin-stat-grid{
-  min-height:81px;
-  border-radius:16px!important;
-}
-.admin-shell .admin-page-content .admin-dashboard-page .admin-stat{
-  min-height:78px;
-  padding:13px 16px!important;
-}
-@media(max-width:620px){
-  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page{gap:14px!important}
-  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head{
-    min-height:0;align-items:stretch!important;flex-direction:column!important;padding:16px!important;
-  }
-  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card{min-height:70px;padding:11px 12px!important}
-}
