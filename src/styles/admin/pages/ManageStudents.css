@@ -334,7 +334,7 @@
 }
 
 .admin-students-page .student-table-wrap td:first-child {
-  text-align:center;
+
 }
 
 .admin-students-page .student-clickable-row {
@@ -365,7 +365,7 @@
 
 .admin-students-page .students-empty {
   padding:28px;
-  text-align:center;
+
 }
 
 .admin-students-page .student-detail-backdrop {
