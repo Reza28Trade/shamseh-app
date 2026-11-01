@@ -39,7 +39,6 @@
   transition: border-color .18s ease, transform .18s ease;
 }
 .admin-finance-registration-page > div:first-child > article:hover {
-  border-color: var(--admin-brand-border) !important;
   transform: translateY(-1px);
 }
 .admin-finance-registration-page > div:first-child > article > span {
