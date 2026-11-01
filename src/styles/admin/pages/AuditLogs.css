@@ -171,16 +171,6 @@
 }
 
 /* Page-owned rules migrated from AdminDesignSystem.css. */
-.admin-shell .admin-page-content :is(
-  .admin-public-content-page,
-  .admin-notifications-page,
-  .admin-logs-page
-) {
-  color:var(--admin-text);
-  font-size:12px;
-  line-height:1.8;
-}
-
 .admin-shell .admin-page-content .admin-logs-page button:focus-visible {
   outline:2px solid var(--admin-accent)!important;
   outline-offset:2px;
@@ -223,15 +213,7 @@
   background:var(--admin-accent-soft)!important;
 }
 
-.admin-shell .admin-page-content .admin-logs-page input {
-  min-height:38px;
-  border:1px solid var(--admin-border)!important;
-  border-radius:9px!important;
-  background:var(--admin-control)!important;
-  color:var(--admin-text)!important;
-  font:inherit;
-}
-
+.admin-shell .admin-page-content .admin-logs-page input,
 .admin-shell .admin-page-content .admin-logs-page select {
   min-height:38px;
   border:1px solid var(--admin-border)!important;
@@ -241,12 +223,7 @@
   font:inherit;
 }
 
-.admin-shell .admin-page-content .admin-logs-page input:focus {
-  outline:none;
-  border-color:var(--admin-accent)!important;
-  box-shadow:0 0 0 3px var(--admin-accent-soft);
-}
-
+.admin-shell .admin-page-content .admin-logs-page input:focus,
 .admin-shell .admin-page-content .admin-logs-page select:focus {
   outline:none;
   border-color:var(--admin-accent)!important;
@@ -257,30 +234,14 @@
   border-radius:11px!important;
 }
 
-@media(max-width:640px)
+@media(max-width:640px) {
 .admin-shell .admin-page-content .admin-logs-page {
     gap:12px!important;
   }
+}
 
-@media(max-width:640px)
+@media(max-width:640px) {
 .admin-shell .admin-page-content .admin-logs-page > section:not([role="alert"]) {
     padding:12px!important;
   }
-
-.admin-shell .admin-page-content .admin-legacy-page :is(
-  .mock-exam-dashboard > div,
-  .mock-exam-list-card,
-  .counseling-account-section,
-  .counseling-conversation-section,
-  .messages-ticket-section,
-  .messages-detail-section,
-  .offline-list-card,
-  .notifications-form-card,
-  .admin-public-content-page form,
-  .admin-logs-page > section
-) {
-  border: 1px solid var(--admin-border) !important;
-  border-radius: 14px !important;
-  background: var(--admin-card) !important;
-  box-shadow: none !important;
 }
