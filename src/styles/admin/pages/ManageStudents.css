@@ -17,9 +17,6 @@
 .admin-shell .admin-page-content .admin-legacy-page .students-head-actions{gap:7px}
 .admin-shell .admin-page-content .admin-legacy-page :is(.student-chart-card,.student-form-card,.student-import-card,.student-list-card){
   padding:17px!important}
-.admin-shell .admin-page-content .admin-legacy-page .section-title h3{
-  ;
-  }
 
 /* Tables use the same readable header, row separators and compact spacing. */
 .admin-shell .admin-page-content .admin-legacy-page .student-table-wrap{
@@ -147,9 +144,7 @@ padding:15px 18px}}
  .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-stat{padding:13px!important}
 }
 .admin-students-page .primary-action:hover{filter:brightness(1.08);transform:translateY(-1px)}
-.admin-students-page .import-actions:focus-within{outline:2px solid var(--admin-data-series-3);outline-offset:2px}.admin-students-page .level-badge{
-;
-}
+.admin-students-page .import-actions:focus-within{outline:2px solid var(--admin-data-series-3);outline-offset:2px}
 @media(prefers-reduced-motion:reduce){
   .admin-students-page .student-stat,.admin-students-page .primary-action{transition:none}
 }
@@ -362,7 +357,6 @@ padding:15px 18px!important}
   min-height:35px!important;
   padding:7px 11px!important;
   ;
-  ;
   }
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page > .students-stats {
   grid-template-columns:repeat(4,minmax(0,1fr))!important;
@@ -393,28 +387,20 @@ padding:16px!important}
   ;
   ;
   ;
-  ;
   }
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-search {
   min-width:220px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-term-switch button {
   min-height:29px!important;
   padding:5px 8px!important;
-  ;
   }
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-list-card .list-head {
   gap:12px!important;
   margin-bottom:12px!important}
-.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .level-badge,
-.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .enrollment-chips span {
-  ;
-  ;
-  }
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .row-actions button {
   width:32px!important;
   height:32px!important;
   min-height:32px!important;
-  ;
   ;
   ;
   }
