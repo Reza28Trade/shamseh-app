@@ -57,9 +57,14 @@
 
 /* Historical accent literals are mapped to the shared turquoise/teal accent. */
 .admin-shell .admin-page-content .admin-legacy-page button[style*="#ff3366"],
-.admin-shell .admin-page-content .admin-legacy-page button[style*="#ff6688"],
-.admin-shell .admin-page-content .admin-legacy-page button[style*="#38bdf8"] {
+.admin-shell .admin-page-content .admin-legacy-page button[style*="#ff6688"] {
   border-color: var(--admin-accent) !important;
+}
+
+.admin-shell .admin-page-content .admin-legacy-page button[style*="#38bdf8"] {
+  background: var(--admin-accent) !important;
+  border-color: var(--admin-accent) !important;
+  color: var(--admin-on-accent) !important;
 }
 
 @media (max-width: 900px) {
