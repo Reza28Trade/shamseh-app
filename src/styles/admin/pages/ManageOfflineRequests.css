@@ -54,9 +54,6 @@
   display:flex;
   align-items:center;
   gap:7px;
-  ;
-  ;
-  ;
   margin-bottom:5px}
 .offline-page-head h2{
   margin:0!important}
@@ -68,16 +65,9 @@
   align-items:center;
   gap:7px;
   padding:9px 13px;
-  ;
-  ;
-  ;
-  ;
   }
 .offline-error{
   padding:10px 13px!important;
-  ;
-  ;
-  ;
   }
 .offline-stats{
   display:grid;
@@ -109,7 +99,6 @@
   display:grid;
   place-items:center;
   grid-row:1 / span 2;
-  ;
   }
 .offline-stat-copy{
   display:flex;
@@ -152,7 +141,6 @@
   align-items:center;
   gap:7px;
   margin:0!important;
-  ;
   white-space:nowrap}
 .offline-list-head > div:first-child span{
   white-space:nowrap}
@@ -163,11 +151,6 @@
   flex-wrap:wrap}
 .offline-filter-group button{
   padding:6px 10px;
-  ;
-  ;
-  ;
-  ;
-  ;
   cursor:pointer}
 .offline-request-list{
   display:flex;
@@ -207,9 +190,6 @@
   gap:5px;
   width:max-content;
   padding:6px 9px;
-  ;
-  ;
-  ;
   white-space:nowrap}
 .offline-approved-link{
   display:block;
@@ -250,12 +230,9 @@
   align-items:center;
   gap:5px;
   padding:8px 10px;
-  ;
-  ;
   cursor:pointer}
 .offline-empty{
   padding:42px 20px;
-  ;
   text-align:center}
 @media(max-width:900px){
   .offline-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -438,8 +415,6 @@
   grid-row:1!important;
   width:32px!important;
   height:32px!important;
-  ;
-  ;
   }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-copy {
   grid-column:2!important;
@@ -492,10 +467,6 @@
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-filter-group button {
   min-height:30px!important;
   padding:5px 10px!important;
-  ;
-  ;
-  ;
-  ;
   }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-request-list {
   width:100%!important;
@@ -537,10 +508,6 @@
   max-width:100%!important;
   width:max-content!important;
   padding:6px 9px!important;
-  ;
-  ;
-  ;
-  ;
   }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-approved-link {
   max-width:100%!important;
@@ -565,9 +532,6 @@
   min-width:0!important;
   min-height:36px!important;
   padding:8px 10px!important;
-  ;
-  ;
-  ;
   }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-review-actions {
   display:flex!important;
@@ -576,7 +540,6 @@
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-review-actions button {
   min-height:35px!important;
   padding:7px 10px!important;
-  ;
   }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-empty {
   padding:34px 16px!important;
