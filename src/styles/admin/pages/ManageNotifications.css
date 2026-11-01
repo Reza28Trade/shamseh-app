@@ -41,13 +41,11 @@
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-eyebrow {
-  display:flex;align-items:center;gap:7px;margin-bottom:5px;
-  color:var(--admin-accent);font-size:11px;font-weight:800;
+  display:flex;align-items:center;gap:7px;margin-bottom:5px;font-size:11px;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page h2 {
-  display:flex;align-items:center;gap:9px;margin:0!important;
-  color:var(--admin-text)!important;font-size:20px!important;font-weight:850!important;
+  display:flex;align-items:center;gap:9px;margin:0!important;font-size:20px!important;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-page-head p {
@@ -66,8 +64,7 @@
   display:flex;flex-direction:column;gap:7px;min-width:0;
 }
 
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field > label {
-  color:var(--admin-text)!important;font-size:11px;font-weight:800;
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field > label {font-size:11px;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target-grid {
@@ -76,18 +73,15 @@
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target {
   display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;
-  padding:10px 12px!important;border:1px solid var(--admin-border)!important;
-  border-radius:11px!important;background:var(--admin-control)!important;
-  color:var(--admin-text)!important;font-size:11px;font-weight:800;cursor:pointer;
+  padding:10px 12px!important;
+background:var(--admin-control)!important;font-size:11px;cursor:pointer;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target svg {
   color:var(--admin-sub);
 }
 
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target.is-active {
-  background:var(--admin-accent-soft)!important;border-color:var(--admin-accent)!important;
-  color:var(--admin-accent)!important;box-shadow:inset 0 0 0 1px var(--admin-accent-soft);
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target.is-active {border-color:var(--admin-accent)!important;box-shadow:inset 0 0 0 1px var(--admin-accent-soft);
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target.is-active svg {
@@ -113,24 +107,21 @@
   border-color:var(--admin-accent)!important;box-shadow:0 0 0 3px var(--admin-accent-soft)!important;
 }
 
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field option {
-  color:var(--admin-text);background:var(--admin-card);
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field option {background:var(--admin-card);
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-footer {
   display:flex;align-items:center;justify-content:space-between;gap:12px;
-  padding-top:14px;border-top:1px solid var(--admin-border);
+  padding-top:14px;
 }
 
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-footer > span {
-  color:var(--admin-sub);font-size:10px;
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-footer > span {font-size:10px;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-submit {
   display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;
-  padding:0 17px!important;background:var(--admin-accent)!important;
-  color:var(--admin-on-accent)!important;border:1px solid var(--admin-accent)!important;
-  border-radius:10px!important;font-size:11px;font-weight:850;cursor:pointer;
+  padding:0 17px!important;
+border:1px solid var(--admin-accent)!important;font-size:11px;cursor:pointer;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-submit:disabled {
@@ -138,15 +129,13 @@
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback {
-  margin-bottom:16px;padding:11px 13px;border-radius:10px;font-size:11px;
+  margin-bottom:16px;padding:11px 13px;font-size:11px;
 }
 
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback.is-success {
-  background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.22);color:var(--admin-status-success-strong);
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback.is-success {border:1px solid rgba(16,185,129,.22);
 }
 
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback.is-error {
-  background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--admin-status-danger-muted);
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback.is-error {border:1px solid rgba(239,68,68,.2);
 }
 
 @media(max-width:760px) {
@@ -207,13 +196,11 @@
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-eyebrow {
-  display:flex;align-items:center;gap:7px;margin-bottom:5px;
-  color:var(--admin-accent);font-size:11px;font-weight:800;
+  display:flex;align-items:center;gap:7px;margin-bottom:5px;font-size:11px;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page h2 {
-  display:flex;align-items:center;gap:9px;margin:0!important;
-  color:var(--admin-text)!important;font-size:20px!important;font-weight:850!important;
+  display:flex;align-items:center;gap:9px;margin:0!important;font-size:20px!important;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-page-head p {
@@ -232,8 +219,7 @@
   display:flex;flex-direction:column;gap:7px;min-width:0;
 }
 
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field > label {
-  color:var(--admin-text)!important;font-size:11px;font-weight:800;
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field > label {font-size:11px;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target-grid {
@@ -242,18 +228,15 @@
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target {
   display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;
-  padding:10px 12px!important;border:1px solid var(--admin-border)!important;
-  border-radius:11px!important;background:var(--admin-control)!important;
-  color:var(--admin-text)!important;font-size:11px;font-weight:800;cursor:pointer;
+  padding:10px 12px!important;
+background:var(--admin-control)!important;font-size:11px;cursor:pointer;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target svg {
   color:var(--admin-sub);
 }
 
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target.is-active {
-  background:var(--admin-accent-soft)!important;border-color:var(--admin-accent)!important;
-  color:var(--admin-accent)!important;box-shadow:inset 0 0 0 1px var(--admin-accent-soft);
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target.is-active {border-color:var(--admin-accent)!important;box-shadow:inset 0 0 0 1px var(--admin-accent-soft);
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target.is-active svg {
@@ -279,24 +262,21 @@
   border-color:var(--admin-accent)!important;box-shadow:0 0 0 3px var(--admin-accent-soft)!important;
 }
 
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field option {
-  color:var(--admin-text);background:var(--admin-card);
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field option {background:var(--admin-card);
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-footer {
   display:flex;align-items:center;justify-content:space-between;gap:12px;
-  padding-top:14px;border-top:1px solid var(--admin-border);
+  padding-top:14px;
 }
 
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-footer > span {
-  color:var(--admin-sub);font-size:10px;
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-footer > span {font-size:10px;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-submit {
   display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;
-  padding:0 17px!important;background:var(--admin-accent)!important;
-  color:var(--admin-on-accent)!important;border:1px solid var(--admin-accent)!important;
-  border-radius:10px!important;font-size:11px;font-weight:850;cursor:pointer;
+  padding:0 17px!important;
+border:1px solid var(--admin-accent)!important;font-size:11px;cursor:pointer;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-submit:disabled {
@@ -304,15 +284,13 @@
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback {
-  margin-bottom:16px;padding:11px 13px;border-radius:10px;font-size:11px;
+  margin-bottom:16px;padding:11px 13px;font-size:11px;
 }
 
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback.is-success {
-  background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.22);color:var(--admin-status-success-strong);
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback.is-success {border:1px solid rgba(16,185,129,.22);
 }
 
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback.is-error {
-  background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--admin-status-danger-muted);
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback.is-error {border:1px solid rgba(239,68,68,.2);
 }
 
 @media(max-width:760px) {
@@ -343,8 +321,7 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target-grid{
   grid-template-columns:repeat(4,minmax(0,1fr));
 }
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-recipient-hint{
-  color:var(--admin-sub);font-size:10px;line-height:1.8;
+.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-recipient-hint{font-size:10px;
 }
 @media(max-width:900px){
   .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target-grid{
@@ -359,7 +336,6 @@
   max-width:none!important;
   margin:0!important;
   gap:16px!important;
-  font-size:12px!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head {
   min-height:76px!important;
@@ -373,12 +349,10 @@
   content:none!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page h2 {
-  font-size:18px!important;
-  line-height:1.5!important;
-  font-weight:850!important;
+
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-eyebrow {
-  font-size:10px!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-page-head p {
 
@@ -391,28 +365,20 @@
 
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field > label {
-  font-size:12px!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target {
-  font-size:11px!important;
   min-height:40px!important;
-  border-radius:9px!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field :is(input,select,textarea) {
   font-size:12px!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-footer > span {
-  font-size:11px!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback.is-success {
-  background:color-mix(in srgb,var(--admin-status-success-strong) 10%,var(--admin-card))!important;
   border-color:color-mix(in srgb,var(--admin-status-success-strong) 24%,var(--admin-border))!important;
-  color:var(--admin-text)!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback.is-error {
-  background:color-mix(in srgb,var(--shamseh-burgundy) 10%,var(--admin-card))!important;
   border-color:color-mix(in srgb,var(--shamseh-burgundy) 24%,var(--admin-border))!important;
-  color:var(--admin-text)!important;
 }
 @media(max-width:760px) {
   .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head,
@@ -434,9 +400,8 @@
 }
 
 .admin-shell .admin-page-content .admin-notifications-page .notifications-field label {
-  color:var(--admin-text);
-  font-size:11px;
-  font-weight:800;
+
+
 }
 
 .admin-shell .admin-page-content .admin-notifications-page :is(input,select,textarea) {
@@ -488,16 +453,14 @@
 
 .admin-shell .admin-page-content .admin-notifications-page .notifications-target {
   min-width:0;
-  border:1px solid var(--admin-border)!important;
-  border-radius:10px!important;
-  background:var(--admin-inner)!important;
-  color:var(--admin-text)!important;
+
+
+
 }
 
 .admin-shell .admin-page-content .admin-notifications-page .notifications-target.is-active {
   border-color:var(--admin-brand-border)!important;
-  background:var(--admin-accent-soft)!important;
-  color:var(--admin-text)!important;
+
 }
 
 @media(max-width:640px) {
