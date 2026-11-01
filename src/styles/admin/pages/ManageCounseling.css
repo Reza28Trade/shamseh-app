@@ -6,7 +6,7 @@
 
 
 }
-.admin-counseling-page > .counseling-page-head h2{font-weight:900!important}
+.admin-counseling-page > .counseling-page-head h2{}
 .admin-counseling-page > .counseling-page-head button{min-height:38px;border-radius:10px!important}
 @media(max-width:700px){.admin-counseling-page > .counseling-page-head{padding:16px!important;min-height:0}}
 
@@ -14,23 +14,20 @@
 .admin-counseling-page{
   max-width:none;
   padding:0!important;
-  background:transparent!important;
-  border:0!important;
-  box-shadow:none!important;
+
+
   gap:20px!important;
 }
 
 .admin-counseling-page > div:first-child{
-  background:transparent!important;
-  border:0!important;
-  box-shadow:none!important;
+
+
   padding:4px 2px 0!important;
   margin:0!important;
 }
 
 .admin-counseling-page > div:first-child h2{
-  font-size:20px!important;
-  font-weight:800!important;
+
 }
 
 .admin-counseling-page > div:first-child h2 svg{
@@ -38,7 +35,6 @@
 }
 
 .admin-counseling-page > div:first-child p{
-  font-size:12px!important;
   margin-top:5px!important;
 }
 
@@ -50,10 +46,9 @@
 }
 
 .admin-counseling-page > section{
-  background:var(--admin-card)!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:16px!important;
-  box-shadow:var(--admin-shadow)!important;
+
+
+
 }
 
 .admin-counseling-page > section:nth-of-type(1){
@@ -63,8 +58,7 @@
 
 .admin-counseling-page > section:nth-of-type(1) h3,
 .admin-counseling-page > section h3{
-  font-size:14px!important;
-  font-weight:800!important;
+
 }
 
 .admin-counseling-page > section:nth-of-type(1) > div{
@@ -95,17 +89,15 @@
 .admin-counseling-page > section:nth-of-type(2),
 .admin-counseling-page > section:nth-of-type(3){
   padding:0!important;
-  background:transparent!important;
-  border:0!important;
-  box-shadow:none!important;
+
+
 }
 
 .admin-counseling-page > section:nth-of-type(2) > div > div,
 .admin-counseling-page > section:nth-of-type(3) > div > div{
-  background:var(--admin-card)!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:14px!important;
-  box-shadow:none!important;
+
+
+
 }
 
 .admin-counseling-page > section:nth-of-type(2) > div > div{
@@ -118,7 +110,6 @@
 
 .admin-counseling-page > section:nth-of-type(2) strong,
 .admin-counseling-page > section:nth-of-type(3) strong{
-  font-size:13px!important;
 }
 
 .admin-counseling-page > section:nth-of-type(2) > div > div > div:last-child{
@@ -136,11 +127,9 @@
 .admin-counseling-page > section:nth-of-type(3) > div > div > div:last-child{
   margin-top:10px!important;
   padding-top:10px;
-  border-top:1px solid var(--admin-border);
 }
 
 .admin-counseling-page > section:nth-of-type(3) > div > div span{
-  font-size:11px!important;
 }
 
 .admin-counseling-page > section:nth-of-type(3) button{
@@ -148,14 +137,12 @@
 }
 
 .admin-counseling-page > div[style*="position: fixed"]{
-  background:rgba(15,23,28,.58)!important;
   backdrop-filter:blur(5px);
 }
 
 .admin-counseling-page > div[style*="position: fixed"] > div{
-  background:var(--admin-card)!important;
-  border:1px solid var(--admin-border)!important;
-  box-shadow:0 24px 70px rgba(0,0,0,.22)!important;
+
+
 }
 
 .admin-counseling-page > div[style*="position: fixed"] button{
@@ -197,7 +184,7 @@
 
 
 }
-.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head h2{font-weight:900!important;
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head h2{
 }
 @media(max-width:700px){
   .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head{
@@ -219,32 +206,30 @@
 
 
 }
-.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head h2{font-weight:900!important;
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head h2{
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head p{}
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid{
   grid-template-columns:repeat(3,minmax(0,1fr))!important;
   gap:0!important;
   overflow:hidden;
-  border:1px solid var(--admin-border)!important;
-  border-radius:16px!important;
-  background:var(--admin-card)!important;
-  box-shadow:var(--admin-shadow)!important;
+
+
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid > div{
   min-height:70px!important;
   padding:11px 15px!important;
-  border:0!important;
-  border-left:1px solid var(--admin-border)!important;
-  border-radius:0!important;
-  box-shadow:none!important;
-  background:linear-gradient(180deg,color-mix(in srgb,var(--admin-accent) 7%,var(--admin-card)),var(--admin-card) 78%)!important;
+
+
+
+
 }
-.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid > div:last-child{border-left:0!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid > div:last-child{}
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid > div > div:first-child{
-  width:32px!important;height:32px!important;border-radius:9px!important;
+  width:32px!important;height:32px!important;
 }
-.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid strong{font-size:19px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid strong{}
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-account-section,
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-conversation-section{
   padding:16px!important;
@@ -260,8 +245,7 @@
   flex-wrap:wrap!important;
   gap:10px 16px!important;
   padding:10px 13px!important;
-  border-radius:11px!important;
-  background:linear-gradient(110deg,color-mix(in srgb,var(--admin-accent) 6%,var(--admin-card)),var(--admin-card) 75%)!important;
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-item > div:first-child{
   flex:1 1 230px!important;
@@ -315,8 +299,8 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-selected-student > div{display:inline!important}
 @media(max-width:760px){
   .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid{grid-template-columns:minmax(0,1fr)!important}
-  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid > div{border-left:0!important;border-bottom:1px solid var(--admin-border)!important}
-  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid > div:last-child{border-bottom:0!important}
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid > div{border-bottom:1px solid var(--admin-border)!important}
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid > div:last-child{}
   .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-item{align-items:flex-start!important}
   .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button{grid-template-columns:minmax(0,1fr)!important}
   .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button > span:nth-of-type(2){grid-column:1;grid-row:auto;text-align:right}
@@ -325,16 +309,14 @@
 /* Counselor management: align with the shared feedback/support inbox design. */
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page {
   gap:14px!important;
-  color:var(--admin-text)!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid {
   grid-template-columns:repeat(4,minmax(0,1fr))!important;
   gap:10px!important;
   margin:0!important;
   padding:0!important;
-  background:transparent!important;
-  border:0!important;
-  box-shadow:none!important;
+
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid > div {
   min-width:0!important;
@@ -342,42 +324,36 @@
   box-sizing:border-box!important;
   padding:13px 15px!important;
   gap:12px!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:12px!important;
-  background:var(--admin-card)!important;
-  box-shadow:none!important;
+
+
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid > div > div:first-child {
   flex:0 0 36px!important;
   width:36px!important;
   height:36px!important;
-  border-radius:10px!important;
-  background:var(--admin-accent-soft)!important;
-  color:var(--admin-accent)!important;
+
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid strong {
-  color:var(--admin-text)!important;
-  font-size:18px!important;
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > section {
   min-width:0!important;
   box-sizing:border-box!important;
   padding:17px!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:13px!important;
-  background:var(--admin-card)!important;
-  box-shadow:none!important;
+
+
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > section > div:first-child {
   gap:12px!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > section h3 {
-  color:var(--admin-text)!important;
-  font-size:13px!important;
-  line-height:1.8!important;
+
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > section p {
-  line-height:1.8!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page button {
   min-height:34px!important;
@@ -403,12 +379,9 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-item {
   min-width:0!important;
   padding:11px!important;
-  border-radius:10px!important;
   border-color:var(--admin-border)!important;
-  background:var(--admin-inner)!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-item strong {
-  font-size:12px!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-item button {
   min-height:30px!important;
@@ -458,7 +431,6 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page table td {
   padding:8px!important;
   border-color:var(--admin-border)!important;
-  line-height:1.7!important;
 }
 @media(max-width:900px) {
   .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid {
@@ -503,15 +475,13 @@
   box-sizing:border-box!important;
   padding:0 12px!important;
   margin:0 0 12px!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:10px!important;
-  background:var(--admin-control)!important;
-  color:var(--admin-sub)!important;
+
+
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-search:focus-within,
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-search:focus-within {
   border-color:var(--admin-accent)!important;
-  box-shadow:0 0 0 3px var(--admin-accent-soft)!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-search input,
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-search input {
@@ -542,8 +512,7 @@
   flex-direction:column!important;
   gap:5px!important;
   min-width:0!important;
-  color:var(--admin-sub)!important;
-  font-size:10px!important;
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-filter select,
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-submit select {
@@ -559,8 +528,7 @@
   justify-content:space-between!important;
   flex-wrap:wrap!important;
   gap:10px!important;
-  color:var(--admin-sub)!important;
-  font-size:10px!important;
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-list-head {
   margin:10px 0!important;
@@ -600,12 +568,10 @@
   min-width:0!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-copy strong {
-  color:var(--admin-text)!important;
-  font-size:11px!important;
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-copy small {
-  color:var(--admin-sub)!important;
-  font-size:9px!important;
+
   overflow-wrap:anywhere!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-status {
@@ -620,7 +586,6 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-pagination {
   margin-top:12px!important;
   padding-top:12px!important;
-  border-top:1px solid var(--admin-border)!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-pagination > div,
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-pagination > div {
@@ -650,11 +615,9 @@
   gap:10px!important;
   margin-top:14px!important;
   padding-top:14px!important;
-  border-top:1px solid var(--admin-border)!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-submit label {
   display:block!important;
-  color:var(--admin-text)!important;
 }
 @media(max-width:760px) {
   .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-tools {
@@ -674,9 +637,8 @@
 
 /* Page-owned rules migrated from AdminDesignSystem.css. */
 .admin-shell .admin-page-content .admin-counseling-page {
-  color:var(--admin-text);
-  font-size:12px;
-  line-height:1.8;
+
+
 }
 
 @media(max-width:760px) {
