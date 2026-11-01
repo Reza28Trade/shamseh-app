@@ -536,7 +536,7 @@
 
 @keyframes admin-spin {to{transform:rotate(360deg)}}
 
-.admin-dashboard-notice {border:1px solid #c38b37;background:rgba(195,139,55,.09);color:var(--admin-text);border-radius:12px;padding:10px 13px;font-size:11px;line-height:1.8}
+.admin-dashboard-notice {border:1px solid var(--admin-status-notice);background:var(--admin-status-notice-soft);color:var(--admin-text);border-radius:12px;padding:10px 13px;font-size:11px;line-height:1.8}
 
 .admin-stat-grid {position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));justify-content:stretch;gap:14px;width:100%;min-width:0;padding:0!important;margin:0!important;background:transparent!important;background-color:transparent!important;background-image:none!important;border:0!important;border-top:0!important;border-radius:0!important;outline:0!important;box-shadow:none!important;filter:none!important}
 
