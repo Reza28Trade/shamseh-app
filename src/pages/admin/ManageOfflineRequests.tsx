@@ -1,7 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { CheckCircle, XCircle, Clock, BookOpen, Link, RefreshCw, Users, Activity } from 'lucide-react';
-import '../../styles/admin/pages/ManageOfflineRequests.css';
-
 
 type Status = 'PENDING' | 'APPROVED' | 'REJECTED';
 
