@@ -617,21 +617,7 @@
 ) {
   display: none !important;
 }
-.admin-shell .admin-page-content .course-toolbar {
-  min-height: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
-}
-.admin-shell .admin-page-content .course-toolbar > div:first-child {
-  display: none !important;
-}
-.admin-shell .admin-page-content .course-toolbar-actions {
-  justify-content: flex-start;
-  margin-bottom: 2px;
-}
+/* Course toolbar is a real dashboard-style panel; do not strip its surface or hide its actions. */
 
 
 /* Shamseh finance, registration and refunds — reference-page design */
@@ -4026,6 +4012,37 @@
 
 
 /* Course management visual system: the single source of truth for all course surfaces. */
+
+/* Course toolbar — same raised panel treatment as dashboard action surfaces. */
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-toolbar{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  min-height:66px!important;
+  padding:13px 16px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:15px!important;
+  background:var(--admin-card)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-toolbar-actions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  flex-wrap:wrap!important;
+  gap:8px!important;
+  margin:0!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-toolbar-actions .course-btn{
+  min-height:34px!important;
+  padding:7px 11px!important;
+}
+@media(max-width:700px){
+ .admin-shell .admin-main .admin-page-content .admin-courses-page .course-toolbar{min-height:0!important;padding:12px!important}
+ .admin-shell .admin-main .admin-page-content .admin-courses-page .course-toolbar-actions{width:100%!important}
+ .admin-shell .admin-main .admin-page-content .admin-courses-page .course-toolbar-actions .course-btn{flex:1 1 auto}
+}
+
 .admin-shell .admin-main .admin-page-content .admin-courses-page{color:var(--admin-text)!important;font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif!important}
 .admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-toolbar,.course-form,.course-list,.course-stat,.expanded-panel,.modal){border:1px solid var(--admin-border)!important;border-radius:15px!important;background:var(--admin-card)!important;color:var(--admin-text)!important;box-shadow:var(--admin-shadow)!important}
 .admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-toolbar,.course-form,.course-list,.expanded-panel,.modal){background:var(--admin-card)!important}
