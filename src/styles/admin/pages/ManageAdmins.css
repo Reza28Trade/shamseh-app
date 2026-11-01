@@ -92,12 +92,12 @@
 /* Account rows and permission disclosures reuse the dashboard's inset-row surface. */
 .admin-shell.admin-theme-light .admin-main .admin-page-content .admin-accounts-page :is(.accounts-admin-row,.accounts-permission-disclosure,.accounts-saved-permission-details){
   border:1px solid rgba(255,255,255,.62)!important;
-  background:#E7E3DC!important;
+  background:var(--admin-dashboard-row-surface)!important;
   box-shadow:inset 3px 3px 7px rgba(177,169,157,.38),inset -3px -3px 7px rgba(255,255,255,.82)!important;
 }
 .admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-accounts-page :is(.accounts-admin-row,.accounts-permission-disclosure,.accounts-saved-permission-details){
   border:1px solid rgba(255,255,255,.045)!important;
-  background:#211F1F!important;
+  background:var(--admin-dashboard-row-surface)!important;
   box-shadow:inset 3px 3px 7px rgba(12,11,11,.55),inset -3px -3px 7px rgba(52,48,48,.42)!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-accounts-page .accounts-permission-disclosure,
@@ -181,7 +181,7 @@
 .admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-accounts-page .accounts-picker-heading>span,
 .admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-accounts-page .accounts-list-total{
   border-color:rgba(255,255,255,.055)!important;
-  background:#252323!important;
+  background:var(--admin-dashboard-icon-surface)!important;
   box-shadow:3px 3px 7px rgba(13,12,12,.52),-3px -3px 7px rgba(48,45,45,.48),inset 1px 1px 0 rgba(255,255,255,.035)!important;
 }
 
@@ -195,8 +195,8 @@
   box-shadow:8px 8px 18px rgba(174,166,154,.48),-8px -8px 18px rgba(255,255,255,.88),inset 1px 1px 0 rgba(255,255,255,.35)!important;
 }
 .admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-master-panel{
-  background:#252323!important;
-  background-color:#252323!important;
+  background:var(--admin-dashboard-icon-surface)!important;
+  background-color:var(--admin-dashboard-icon-surface)!important;
   background-image:none!important;
   border:1px solid rgba(255,255,255,.055)!important;
   border-radius:17px!important;
@@ -216,7 +216,7 @@
   gap:7px!important;
   border:1px solid rgba(223,207,186,.92)!important;
   border-top-color:rgba(255,255,255,.88)!important;
-  border-bottom-color:#d9c7af!important;
+  border-bottom-color:var(--admin-dashboard-refresh-border)!important;
   border-radius:10px!important;
   background:linear-gradient(110deg,rgba(248,241,231,.92),rgba(239,229,215,.88))!important;
   color:var(--admin-accent)!important;
@@ -241,7 +241,7 @@
   transform:translateY(-2px);
   background:linear-gradient(110deg,rgba(248,241,231,.96),rgba(239,233,222,.94))!important;
   border-color:rgba(22,140,145,.48)!important;
-  color:#126f73!important;
+  color:var(--admin-dashboard-accent-strong)!important;
   box-shadow:0 11px 22px rgba(18,43,43,.085),0 0 10px rgba(72,209,204,.085),inset 0 1px 0 rgba(255,255,255,.72)!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-accounts-page :is(.accounts-primary-action,.accounts-admin-actions button):hover:not(:disabled)::before,
