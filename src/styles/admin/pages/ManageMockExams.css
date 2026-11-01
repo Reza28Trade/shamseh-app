@@ -370,9 +370,9 @@ padding:0!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page input:focus,
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page select:focus {
-  border-color:var(--admin-accent)!important;
+  ;
   outline:0!important;
-  box-shadow:0 0 0 3px var(--admin-accent-soft)!important;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > form button[type="submit"] {
   ;
@@ -509,7 +509,7 @@ padding:0!important;
   ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div button:disabled {
-  color:var(--admin-sub)!important;
+  ;
   opacity:.48!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div button[style*="rgba(56,189,248"] {
