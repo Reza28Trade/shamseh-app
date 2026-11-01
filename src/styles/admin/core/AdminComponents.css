@@ -361,3 +361,21 @@
   outline: 2px solid var(--admin-accent);
   outline-offset: 2px;
 }
+
+
+/* Shared feedback surfaces retain semantic meaning without page-local palettes. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) [role="alert"],
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page [role="alert"] {
+  border: 1px solid var(--admin-status-error);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-status-error-soft);
+  color: var(--admin-text);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) [role="status"],
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page [role="status"] {
+  border: 1px solid var(--admin-status-success);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-status-success-soft);
+  color: var(--admin-text);
+}
