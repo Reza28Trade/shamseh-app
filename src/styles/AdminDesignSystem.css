@@ -3875,3 +3875,43 @@
  .admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-form,.course-list){padding:14px!important}
 }
 @media(prefers-reduced-motion:reduce){.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn,.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn::before{transition:none!important}}
+
+
+/* Course summary tiles: match the dashboard's raised statistic cards in both themes. */
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-stats{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:12px!important;
+  background:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-courses-page .course-stat{
+  background:var(--admin-card)!important;
+  background-color:var(--admin-card)!important;
+  background-image:none!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:16px!important;
+  box-shadow:var(--admin-shadow)!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-courses-page .course-stat{
+  background:var(--admin-card)!important;
+  background-color:var(--admin-card)!important;
+  background-image:none!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:16px!important;
+  box-shadow:var(--admin-shadow)!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat::before,
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat::after{
+  content:none!important;
+  display:none!important;
+  background:none!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat-value{
+  color:var(--admin-text)!important;
+}
