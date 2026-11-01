@@ -54,7 +54,7 @@
 .admin-courses-page .course-list{height:auto;max-height:none;overflow:visible}
 .admin-courses-page .course-list-grid{display:flex;flex:0 0 420px;flex-direction:column;align-items:stretch;gap:8px;width:100%;height:420px;max-height:420px;min-width:0;min-height:0;overflow-x:hidden;overflow-y:auto;padding:0 3px 3px 4px;scrollbar-width:thin}
 .admin-courses-page .course-filters{display:grid;grid-template-columns:minmax(210px,1.5fr) repeat(4,minmax(115px,1fr));gap:8px;margin-bottom:12px}
-.admin-courses-page .course-filters :is(input,select){box-sizing:border-box;width:100%;min-height:36px;padding:7px 9px;font:inherit;font-size:10px}
+.admin-courses-page .course-filters :is(input,select){box-sizing:border-box;width:100%;min-height:36px;padding:7px 9px;font:inherit;}
 .admin-courses-page .course-card{flex:0 0 auto;min-width:0;overflow:hidden}
 .admin-courses-page .course-card-main{display:grid;grid-template-columns:56px minmax(0,1fr) minmax(170px,auto) auto;align-items:center;gap:12px;min-height:72px;padding:9px 11px}
 .admin-courses-page .course-card-cover{display:grid;place-items:center;width:56px;height:56px;overflow:hidden}
@@ -130,9 +130,9 @@
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-section-head h3{}
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-section-head p,
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-field label{}
-.admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-field input,.course-field select,.course-field textarea,.course-filters input,.course-filters select,.modal input,.modal select){border-radius:10px!important;color:var(--admin-text)!important;
+.admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-field input,.course-field select,.course-field textarea,.course-filters input,.course-filters select,.modal input,.modal select){color:var(--admin-text)!important;
 }
-.admin-shell .admin-main .admin-page-content .admin-courses-page :is(input,select,textarea):focus{outline:0!important;border-color:var(--admin-accent)!important;box-shadow:0 0 0 3px var(--admin-accent-soft)!important}
+.admin-shell .admin-main .admin-page-content .admin-courses-page :is(input,select,textarea):focus{border-color:var(--admin-accent)!important;}
 /* Course rows reuse the dashboard's recessed inner-surface color tokens. */
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-card{
 }
@@ -142,11 +142,11 @@
 .admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-card-title,.course-section-head h3,.course-field label,.course-pill,.course-status){}
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-card-title{}
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-card-sub{}
-.admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-pill,.course-status){border-radius:8px!important;color:var(--admin-sub)!important}
+.admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-pill,.course-status){color:var(--admin-sub)!important}
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-pill.accent,
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-status{border-color:var(--admin-brand-border)!important;}
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-status.archived{color:var(--admin-sub)!important}
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-status.draft{color:var(--admin-gold)!important}
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-status{}
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-status.archived{}
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-status.draft{}
 .admin-shell .admin-main .admin-page-content .admin-courses-page .mini-row{}
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn{
   position:relative!important;isolation:isolate;overflow:hidden!important;
@@ -167,7 +167,7 @@
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn.blue{}
 .admin-shell .admin-main .admin-page-content .admin-courses-page :is(.day-chip,.cover-file){transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease!important}
 .admin-shell .admin-main .admin-page-content .admin-courses-page .day-chip{}
-.admin-shell .admin-main .admin-page-content .admin-courses-page .day-chip.selected{color:var(--admin-accent)!important;}
+.admin-shell .admin-main .admin-page-content .admin-courses-page .day-chip.selected{}
 .admin-shell .admin-main .admin-page-content .admin-courses-page :is(.cover-thumb,.course-card-cover){}
 .admin-shell .admin-main .admin-page-content .admin-courses-page .cover-file{}
 .admin-shell .admin-main .admin-page-content .admin-courses-page .modal{}
