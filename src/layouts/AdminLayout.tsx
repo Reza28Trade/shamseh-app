@@ -8,6 +8,10 @@ import '../styles/admin/pages/ManageMessages.css';
 import '../styles/admin/pages/ManageNotifications.css';
 import '../styles/admin/pages/ManageManagementContact.css';
 import '../styles/AdminDesignSystem.css';
+import '../styles/admin/core/AdminTokens.css';
+import '../styles/admin/core/AdminTheme.css';
+import '../styles/admin/core/AdminComponents.css';
+import '../styles/admin/core/AdminLayout.css';
 import { LayoutDashboard, BookOpen, Users, MessageSquare, ShieldAlert, FileText, LogOut, Sun, Moon, Menu, X, CheckSquare, ClipboardList, Bell, Wallet, ShieldCheck, KeyRound, ShoppingBag } from 'lucide-react';
 
 interface AdminLayoutProps { admin?: Admin; onLogout: () => void; activeTab: string; setActiveTab: any; children: React.ReactNode; }
