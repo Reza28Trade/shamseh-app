@@ -1,5 +1,4 @@
-/* Course management layout only.
-   All colors, borders, shadows, surfaces and interaction states are owned by AdminDesignSystem.css. */
+/* Course management layout only. Shared colors, surfaces, borders, shadows and states come from admin core tokens. */
 .admin-courses-page{display:flex;flex-direction:column;min-width:0;width:100%;max-width:1240px;margin-inline:auto;gap:14px;padding:0}
 .admin-courses-page .course-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:72px;padding:16px 20px}
 .admin-courses-page .course-toolbar-actions,.admin-courses-page .course-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
