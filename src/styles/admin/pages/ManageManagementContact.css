@@ -394,10 +394,7 @@
 }
 
 
-/* Feedback inbox: remove page title block and make summary cards usable status filters. */
-.admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page > header.messages-page-head {
-  display:none!important;
-}
+/* Feedback inbox: summary cards act as status filters. */
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page > .messages-stats {
   margin:0!important;
   padding:0!important;
