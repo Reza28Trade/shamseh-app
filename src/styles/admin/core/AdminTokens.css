@@ -26,6 +26,24 @@
   --admin-shadow-dialog: 0 24px 80px rgba(0,0,0,.3);
   --admin-danger-text: #c94b57;
   --admin-warning-soft: rgba(184,135,47,.1);
+  --admin-warning-text: #b7791f;
+  --admin-danger-strong: #c55;
+  --admin-danger-soft: rgba(220,70,70,.08);
+  --admin-status-danger: #D4777D;
+  --admin-status-attention: #E58A70;
+  --admin-on-accent: #fff;
+  --admin-action-gradient-start: #398A90;
+  --admin-overlay-backdrop: rgba(5,10,12,.72);
+  --admin-shadow-modal: 0 28px 90px rgba(0,0,0,.42);
+  /* Shared data-visualization palette; modules consume these instead of defining local palettes. */
+  --admin-data-series-1: #4BA6A1;
+  --admin-data-series-1-highlight: #70C4BC;
+  --admin-data-series-2: #829BCB;
+  --admin-data-series-2-highlight: #A6B8DD;
+  --admin-data-series-3: #D8B477;
+  --admin-data-series-3-highlight: #E8CB96;
+  --admin-data-series-4: #78B99A;
+  --admin-data-series-4-highlight: #A0D2B5;
 }
 .admin-shell {
   --shamseh-surface-page: var(--admin-bg);
