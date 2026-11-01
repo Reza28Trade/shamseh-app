@@ -16,6 +16,7 @@ The admin panel has one visual source of truth and independent module structure.
 - `AdminTokens.css`: canonical Shamseh brand, spacing, radius and control tokens.
 - `AdminTokens.css` also owns shared semantic status, overlay, modal-elevation and data-visualization colors; modules must consume these tokens rather than define local palettes.
 - `AdminTheme.css`: canonical light/dark values for the `--admin-*` surface variables. These values were moved unchanged from the former inline style object in `AdminLayout.tsx`.
+- `AdminTheme.css` also maps semantic content-surface aliases (`--admin-content-*`) and course-panel surfaces to the canonical theme values, so page styles do not reference undefined surface tokens.
 - `AdminComponents.css`: shared admin controls and common page foundations.
 - `AdminComponents.extended.css`: cross-module responsive and compatibility patterns, loaded after module compatibility styles to preserve the original cascade.
 - `pages/ManageStudents.shared.css` and `pages/ManageCourses.shared.css`: legacy module patterns extracted from the former mixed component sheet. They are imported at the same cascade position in `AdminLayout.tsx` so the refactor does not reorder existing CSS; each module's own layout and overrides remain in its page stylesheets.
