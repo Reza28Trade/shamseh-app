@@ -1,4 +1,4 @@
-/* Course management — canonical page styles. Layout lives in AdminCourses.css; surfaces live here only. */
+/* Course management — canonical surface and component styles. Layout lives in ManageCourses.layout.css. */
 .admin-shell .admin-main .admin-page-content .admin-courses-page{
   width:100%!important;max-width:1240px!important;margin-inline:auto!important;
   color:var(--admin-text)!important;font-family:inherit!important;
@@ -22,7 +22,7 @@
 }
 .admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-courses-page :is(.course-form,.course-list){
   padding:17px!important;border:1px solid var(--admin-course-panel-border)!important;
-  border-radius:17px!important;background:#252323!important;background-image:none!important;
+  border-radius:17px!important;background:var(--admin-course-panel-surface)!important;background-image:none!important;
   color:var(--admin-text)!important;
   box-shadow:var(--admin-course-panel-shadow)!important;
 }
@@ -87,7 +87,7 @@
   box-shadow:var(--admin-shadow-control-hover)!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn:hover:not(:disabled)::before{transform:skewX(28deg) translateX(280%)}
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn.primary{background:var(--admin-accent)!important;color:#fff!important;border-color:var(--admin-accent)!important}
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn.primary{background:var(--admin-accent)!important;color:var(--admin-on-accent)!important;border-color:var(--admin-accent)!important}
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn.danger{color:var(--admin-danger-text)!important}
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn.blue{color:var(--admin-accent)!important}
 .admin-shell .admin-main .admin-page-content .admin-courses-page :is(.day-chip,.cover-file){transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease!important}
