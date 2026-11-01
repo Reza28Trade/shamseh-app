@@ -286,9 +286,9 @@
   display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:5px 14px!important;
   padding:0 0 8px!important;margin:0 0 8px!important;
 }
-.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-selected-student > strong{font-size:13px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-selected-student > strong{}
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-selected-student > div{
-  margin:0!important;font-size:10px!important;
+  margin:0!important;;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-selected-student > div{display:inline!important}
 @media(max-width:760px){
@@ -415,10 +415,10 @@
   margin-bottom:10px!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-selected-student > strong {
-  font-size:12px!important;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-selected-student > div {
-  line-height:1.8!important;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page table th,
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page table td {
@@ -588,11 +588,11 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-pagination button {
   min-height:30px!important;
   padding:5px 9px!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:8px!important;
-  background:var(--admin-control)!important;
-  color:var(--admin-text)!important;
-  font-size:10px!important;
+  ;
+  ;
+  ;
+  ;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-pagination button:disabled,
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-pagination button:disabled {
