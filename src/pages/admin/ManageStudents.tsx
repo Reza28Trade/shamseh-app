@@ -402,7 +402,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
 
   return (
     <div className="admin-legacy-page admin-students-page">
-      <section className="students-page-head">
+      <section className="students-page-head admin-master-panel">
         <div>
           <h2><Users size={19} /> مدیریت هنرجویان</h2>
           <p>مدیریت هنرجویان، دوره‌ها و ثبت‌نام‌ها بر اساس مقطع و ترم تحصیلی</p>
@@ -414,14 +414,14 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
       </section>
 
       <section className="students-stats">
-        <div className="student-stat"><span>کل هنرجویان</span><strong>{apiStudents.length}</strong></div>
-        <div className="student-stat"><span>ارشد</span><strong>{masterCount}</strong></div>
-        <div className="student-stat"><span>دکتری</span><strong>{doctorateCount}</strong></div>
-        <div className="student-stat"><span>ثبت‌نام فعال</span><strong>{activeEnrollments}</strong></div>
+        <div className="student-stat admin-master-panel"><span>کل هنرجویان</span><strong>{apiStudents.length}</strong></div>
+        <div className="student-stat admin-master-panel"><span>ارشد</span><strong>{masterCount}</strong></div>
+        <div className="student-stat admin-master-panel"><span>دکتری</span><strong>{doctorateCount}</strong></div>
+        <div className="student-stat admin-master-panel"><span>ثبت‌نام فعال</span><strong>{activeEnrollments}</strong></div>
       </section>
 
       <div className="students-main-grid">
-        <section className="student-chart-card">
+        <section className="student-chart-card admin-master-panel">
           <div className="student-chart-heading">
             <div className="section-title"><BarChart3 size={17}/><h3>توزیع هنرجویان بر اساس ترم</h3></div>
             <div className="student-term-switch">
@@ -442,7 +442,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
           <p className="student-term-note">هر هنرجو در هر ترم فقط یک‌بار شمرده می‌شود.</p>
         </section>
 
-        <section className="student-form-card">
+        <section className="student-form-card admin-master-panel">
           <div className="section-title"><UserPlus size={17}/><h3>{editingStudentId ? 'ویرایش هنرجو' : 'ثبت هنرجوی جدید'}</h3></div>
           <form onSubmit={handleSubmit} className="student-form">
             <input placeholder="نام و نام خانوادگی" value={fullName} onChange={e=>setFullName(e.target.value)} required/>
@@ -465,13 +465,13 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
         </section>
       </div>
 
-      <section className="student-import-card">
+      <section className="student-import-card admin-master-panel">
         <div className="import-copy"><div className="section-title"><Upload size={17}/><h3>ورود گروهی از Excel</h3></div><p>فرمت نمونه را دانلود کنید، سپس فایل را انتخاب کنید. ابتدا پیش‌نمایش انجام می‌شود و بعد ثبت نهایی.</p></div>
         <div className="import-actions"><input ref={importRef} type="file" accept=".xlsx" onChange={e=>{const file=e.target.files?.[0]; if(file) void importFile(file,true);}}/><span>{importing ? 'در حال بررسی...' : 'فایل .xlsx را انتخاب کنید'}</span></div>
         {importPreview && <div className="import-preview"><strong>{importPreview.valid} ردیف آماده ثبت از {importPreview.total}</strong>{importPreview.skipped>0 && <span className="warning-text">{importPreview.skipped} ردیف دارای خطا</span>}<div className="preview-list">{importPreview.rows.slice(0,8).map(row=><div key={row.row}><span>{row.name}</span><span>{row.course}</span><span>{row.term} {row.academicYear}</span><b>{row.status}</b></div>)}</div>{importPreview.errors.length>0 && <div className="import-errors">{importPreview.errors.slice(0,5).map((e,i)=><span key={i}>{e}</span>)}</div>}<div className="preview-actions"><button type="button" className="primary-action" disabled={importing || !importPreview.valid} onClick={()=>{const file=importRef.current?.files?.[0]; if(file) void importFile(file,false);}}>ثبت نهایی</button><button type="button" className="secondary-action" onClick={()=>setImportPreview(null)}>بستن</button></div></div>}
       </section>
 
-      <section className="student-list-card">
+      <section className="student-list-card admin-master-panel">
         <div className="list-head"><div><div className="section-title"><Users size={17}/><h3>{studentSection==='ACTIVE'?'فهرست هنرجویان فعال':'بایگانی هنرجویان'}</h3></div><span>{filteredStudents.length} نفر نمایش داده می‌شود</span></div><div className="student-search"><Search size={15}/><input placeholder="جستجوی نام، کد ملی یا موبایل" value={search} onChange={e=>setSearch(e.target.value)}/></div></div>
         <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}><button type="button" className={studentSection==='ACTIVE'?'primary-action':'secondary-action'} onClick={()=>{setStudentSection('ACTIVE');setSelectedStudentIds([]);}}><Users size={14}/> هنرجویان فعال ({apiStudents.filter(s=>!s.isArchived).length})</button><button type="button" className={studentSection==='ARCHIVED'?'primary-action':'secondary-action'} onClick={()=>{setStudentSection('ARCHIVED');setSelectedStudentIds([]);}}><Archive size={14}/> بایگانی ({apiStudents.filter(s=>s.isArchived).length})</button></div><div className="student-filters"><Filter size={15}/><select value={studentLevelFilter} onChange={e=>setStudentLevelFilter(e.target.value as any)}><option value="ALL">همه مقاطع</option><option value="MASTER">ارشد</option><option value="DOCTORATE">دکتری</option></select><select value={yearFilter} onChange={e=>setYearFilter(e.target.value)}><option value="ALL">همه سال‌ها</option>{availableYears.map(y=><option key={y} value={y}>{y}</option>)}</select><select value={termFilter} onChange={e=>setTermFilter(e.target.value)}><option value="ALL">همه ترم‌ها</option>{availableTerms.map(t=><option key={t} value={t}>{t}</option>)}</select><select value={studentCourseFilter} onChange={e=>setStudentCourseFilter(e.target.value)}><option value="ALL">همه دوره‌ها</option>{apiCourses.map(course=><option key={course.id} value={course.id}>{course.title}</option>)}</select><select value={studentEnrollmentFilter} onChange={e=>setStudentEnrollmentFilter(e.target.value as 'ALL'|'ENROLLED'|'NONE')}><option value="ALL">همه وضعیت ثبت‌نام</option><option value="ENROLLED">دارای دوره فعال</option><option value="NONE">بدون دوره فعال</option></select></div>
         {error && <div className="students-error">{error}</div>}
