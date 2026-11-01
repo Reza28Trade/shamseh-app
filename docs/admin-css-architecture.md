@@ -5,7 +5,7 @@
 The admin panel has one visual source of truth and independent page composition.
 
 - The central design system owns brand colors, light/dark surfaces, typography, controls, card surfaces, borders, radii, shadows, focus states and shared component states.
-- Each module stylesheet owns only its page composition: grids, columns, ordering, spacing, dimensions, overflow, filters, tables' data layout and responsive arrangement.
+- Each module stylesheet owns page composition: grids, columns, ordering, spacing, dimensions, overflow, filters, table data layout and responsive arrangement. It may also own genuinely domain-specific data visualizations and semantic states that are not shared components (for example, a chart series or a speaker-specific message bubble).
 - Module styles must consume the central tokens. They must not create a local palette, card treatment, typography scale, control appearance or shadow/radius system.
 - Dashboard and Manage Admins are approved visual baselines. Their CSS and appearance are excluded from the cross-module component normalization.
 
@@ -38,16 +38,16 @@ All admin module styles live under `src/styles/admin/pages/`.
 
 - `Dashboard.css`: approved dashboard composition and appearance.
 - `ManageAdmins.css`: approved manager-account composition and appearance.
-- `ManageCourses.css`, `ManageStudents.css`, `ManageOfflineRequests.css`, `ManageCounseling.css`, `ManageMessages.css`, `ManageNotifications.css`, `ManageManagementContact.css`, `ManageMockExams.css`, `ManageRegistrations.css`, `ManagePublicContent.css`, and `AuditLogs.css`: page-specific composition only; common visual properties are centralized.
+- `ManageCourses.css`, `ManageStudents.css`, `ManageOfflineRequests.css`, `ManageCounseling.css`, `ManageMessages.css`, `ManageNotifications.css`, `ManageManagementContact.css`, `ManageMockExams.css`, `ManageRegistrations.css`, `ManagePublicContent.css`, and `AuditLogs.css`: page composition and domain-specific visualizations/status states only; shared cards, controls, typography, tables and component appearance are centralized.
 
 The messages inbox and management-feedback inbox remain separate modules with distinct page roots: `.admin-messages-page` and `.admin-management-contact-page`.
 
-Student and counselor portals remain separate authenticated experiences. Their stylesheets are not part of the admin design-system cascade.
+Student and counselor portals remain separate authenticated experiences with their own composition. They consume the same Shamseh/Admin theme tokens where appropriate, but are not forced into the admin page-component cascade.
 
 ## Rules for future CSS changes
 
 1. Change a shared visual property once, in the central token/theme/component layer.
-2. Page CSS may set layout properties such as `display`, `grid-template`, `gap`, `padding` where it is genuinely part of composition, `width`, `min-width`, `max-width`, `overflow`, `order`, `align` and responsive layout.
+2. Page CSS may set layout properties such as `display`, `grid-template`, `gap`, `padding` where it is genuinely part of composition, `width`, `min-width`, `max-width`, `overflow`, `order`, `align` and responsive layout. It may retain unique data-viz colors and semantic states only when they are not reusable shared components.
 3. Page CSS must not redefine shared card backgrounds, borders, radii, shadows, typography, control surfaces or focus states.
 4. Do not add a new compatibility or override layer to solve a cascade conflict. Fix ownership at the source.
 5. Do not use blanket selectors that turn every child into a card.
@@ -58,4 +58,4 @@ Student and counselor portals remain separate authenticated experiences. Their s
 
 ## Current refactor boundary
 
-This refactor centralizes shared visual ownership, removes the duplicate late override stylesheet, reduces the legacy stylesheet to inline-style compatibility, and keeps the extended layer structural. It does not change page workflows or the approved Dashboard/Manage Admins reference designs. Remaining module CSS cleanup should remove obsolete visual declarations as those pages are migrated, while preserving their individual layouts.
+This refactor centralizes shared visual ownership, removes the duplicate late override stylesheet, reduces the legacy stylesheet to inline-style compatibility, and keeps the extended layer structural. Shared component appearance has been removed from module stylesheets; remaining page-local visual rules are limited to domain-specific data visualization, semantic states and separators. It does not change page workflows or the approved Dashboard/Manage Admins reference designs.
