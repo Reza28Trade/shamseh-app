@@ -18,9 +18,19 @@ The admin panel has one visual source of truth and independent module structure.
 - `AdminTheme.css`: canonical light/dark values for the `--admin-*` surface variables. These values were moved unchanged from the former inline style object in `AdminLayout.tsx`.
 - `AdminTheme.css` also maps semantic content-surface aliases (`--admin-content-*`) and course-panel surfaces to the canonical theme values, so page styles do not reference undefined surface tokens.
 - `AdminComponents.css`: shared admin controls and common page foundations.
-- `AdminComponents.extended.css`: cross-module responsive and compatibility patterns, loaded after module compatibility styles to preserve the original cascade.
-- `pages/ManageStudents.shared.css` and `pages/ManageCourses.shared.css`: legacy module patterns extracted from the former mixed component sheet. They are imported at the same cascade position in `AdminLayout.tsx` so the refactor does not reorder existing CSS; each module's own layout and overrides remain in its page stylesheets.
+- `AdminComponents.extended.css`: cross-module responsive and compatibility patterns, loaded before page-owned styles so a module can retain control of its own composition.
+- `pages/ManageStudents.shared.css` and `pages/ManageCourses.shared.css`: shared module patterns extracted from the former mixed component sheet. They are loaded with the shared foundation before the owning page stylesheets.
 - `AdminLayout.css`: shell, sidebar, mobile header and responsive layout rules formerly mixed into the large design-system stylesheet.
+
+### Import and ownership order
+
+The admin shell loads shared styles in this order: `AdminTokens.css`, `AdminTheme.css`, `AdminComponents.css`, the student/course shared styles, `AdminComponents.extended.css`, the `AdminLegacy.css` and `AdminDesignSystem.css` compatibility layers, then `AdminLayout.css`.
+
+Each page imports its own stylesheet from its page component. Page-owned CSS follows the shared compatibility layers and owns the final composition of that module. Dashboard and Manage Admins retain their dedicated imports from `App.tsx`.
+
+The legacy wrapper is structural only. It must not assign card backgrounds, shadows or border radii to every direct child; each page stylesheet decides which elements are panels, grids, headers or transparent layout containers.
+
+The messages inbox and management-feedback inbox are separate modules. Their root classes are `.admin-messages-page` and `.admin-management-contact-page`; they must not share a page-root selector because both stylesheets are part of the same application.
 
 ### Shared compatibility layers
 
@@ -59,6 +69,6 @@ All admin module-owned styles live under `src/styles/admin/pages/`.
 
 ## Migration status
 
-The central tokens, theme, common component patterns and shell layout have been separated. Semantic content-surface aliases are defined centrally, and the student/course modules consume those tokens rather than referencing undefined variables. Student- and course-specific compatibility patterns have also been extracted from the shared component sheet into module-named stylesheets without changing their cascade position. Student and counselor portal rules have also been removed from the admin-only stylesheet and returned to their own entry points. The clearly identifiable module-owned sections have been moved into page files, and the original root-level Courses, Students and Mock Exams stylesheets have been relocated into the module directory. Historical color literals and repeated compatibility overrides remain in several legacy modules; they are intentionally retained until visual parity can be verified.
+The central tokens, theme, common component patterns and shell layout have been separated. Semantic content-surface aliases are defined centrally, and the student/course modules consume those tokens rather than referencing undefined variables. Student- and course-specific compatibility patterns have also been extracted from the shared component sheet into module-named stylesheets. Student and counselor portal rules have also been removed from the admin-only stylesheet and returned to their own entry points. Page stylesheets are imported by their owning page components after the shared shell layers. The legacy wrapper no longer assigns card surfaces to every first-level child, leaving panel ownership to each module. The messages and management-feedback inboxes now have distinct page-root classes to prevent their global stylesheets from colliding. Historical color literals and repeated compatibility overrides remain in several legacy modules; they are intentionally retained until visual parity can be verified.
 
 Historical cross-module cascade rules remain in the shared compatibility layers intentionally. They must be removed only as their target modules are verified against the central system. No business logic, API behavior, permissions, data models or workflows are changed by this CSS refactor.
