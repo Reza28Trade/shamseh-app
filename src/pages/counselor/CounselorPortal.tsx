@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { LogOut, MessageCircle, Search, Send, UserRound, ArrowRight, Circle, Mic, Square, Paperclip, Download, Sun, Moon, Clock3, Check, CheckCheck } from 'lucide-react';
+import '../../styles/CounselorDesignSystem.css';
 
 type Conversation = {
   id: string;
