@@ -3534,8 +3534,35 @@
 .admin-accounts-page .accounts-list-empty{padding:24px 12px;border:1px dashed var(--admin-border);border-radius:11px;color:var(--admin-sub);font-size:11px;text-align:center}
 .admin-accounts-page .accounts-admin-list{display:flex;flex-direction:column;gap:10px;min-width:0}
 .admin-shell .admin-main .admin-page-content .admin-accounts-page .accounts-admin-row{
-  min-width:0;padding:12px!important;border:1px solid var(--admin-border)!important;border-radius:12px!important;
-  background:var(--admin-content-inner)!important;box-shadow:none!important;
+  min-width:0;
+  padding:12px!important;
+  border-radius:12px!important;
+  color:var(--admin-text)!important;
+}
+/* Account rows and permission disclosures reuse the dashboard's inset-row surface. */
+.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-accounts-page :is(.accounts-admin-row,.accounts-permission-disclosure,.accounts-saved-permission-details){
+  border:1px solid rgba(255,255,255,.62)!important;
+  background:#E7E3DC!important;
+  box-shadow:inset 3px 3px 7px rgba(177,169,157,.38),inset -3px -3px 7px rgba(255,255,255,.82)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-accounts-page :is(.accounts-admin-row,.accounts-permission-disclosure,.accounts-saved-permission-details){
+  border:1px solid rgba(255,255,255,.045)!important;
+  background:#211F1F!important;
+  box-shadow:inset 3px 3px 7px rgba(12,11,11,.55),inset -3px -3px 7px rgba(52,48,48,.42)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-accounts-page .accounts-permission-disclosure,
+.admin-shell .admin-main .admin-page-content .admin-accounts-page .accounts-saved-permission-details{
+  border-radius:12px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-accounts-page :is(.accounts-fields input,.accounts-permission-search){
+  font-family:inherit!important;
+  font-size:12px!important;
+  line-height:1.6!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-accounts-page :is(.accounts-admin-actions button,.accounts-permission-disclosure>summary,.accounts-saved-permission-details>summary){
+  font-family:inherit!important;
+  font-size:11px!important;
+  line-height:1.6!important;
 }
 .admin-accounts-page .accounts-admin-toolbar{display:flex;flex-direction:column;align-items:stretch;gap:10px!important;margin:0 0 10px}
 .admin-accounts-page .accounts-admin-identity{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
