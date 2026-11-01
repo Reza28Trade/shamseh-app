@@ -22,11 +22,6 @@
 .admin-counseling-page > div:first-child p{
   margin-top:5px!important}
 
-.admin-counseling-page > div:first-child button{
-  ;
-  ;
-  }
-
 .admin-counseling-page > section:nth-of-type(1){
   padding:18px 20px!important;
   margin:0!important}
@@ -47,7 +42,6 @@
   padding:9px 10px!important}
 
 .admin-counseling-page > section:nth-of-type(1) > div > button:last-child{
-  ;
   ;
   padding:10px 16px!important}
 
@@ -79,10 +73,6 @@
 
 .admin-counseling-page > div[style*="position: fixed"]{
   backdrop-filter:blur(5px)}
-
-.admin-counseling-page > div[style*="position: fixed"] button{
-  ;
-  }
 
 @media(max-width:700px){
   .admin-counseling-page > section:nth-of-type(1) > div{
@@ -162,8 +152,7 @@
   align-items:center!important;
   column-gap:12px!important;
   row-gap:3px!important;
-  padding:9px 11px!important;
-  }
+  padding:9px 11px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button > strong,
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button > span{
   margin-top:0!important;min-width:0!important}
@@ -211,13 +200,11 @@
   min-height:34px!important;
   padding:7px 11px!important;
   ;
-  ;
   }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page input,
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page select {
   min-height:36px!important;
   box-sizing:border-box!important;
-  ;
   ;
   ;
   ;
@@ -242,7 +229,6 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button {
   box-sizing:border-box!important;
   padding:10px 11px!important;
-  ;
   ;
   ;
   }
@@ -298,7 +284,6 @@
   padding:7px 0!important;
   ;
   outline:0!important;
-  ;
   ;
   }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-tools {
@@ -360,7 +345,6 @@
   overflow-wrap:anywhere!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-status {
   flex:0 0 auto!important;
-  ;
   }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-status.is-assigned {
   color:var(--admin-accent)!important}
@@ -377,7 +361,6 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-pagination button {
   min-height:30px!important;
   padding:5px 9px!important;
-  ;
   ;
   ;
   ;
