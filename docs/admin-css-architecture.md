@@ -19,23 +19,21 @@ The admin panel has one visual source of truth and independent module structure.
 - `AdminTheme.css` also maps semantic content-surface aliases (`--admin-content-*`) and course-panel surfaces to the canonical theme values, so page styles do not reference undefined surface tokens.
 - `AdminComponents.css`: shared admin controls and common page foundations.
 - `AdminComponents.extended.css`: cross-module responsive and compatibility patterns, loaded before page-owned styles so a module can retain control of its own composition.
-- `pages/ManageStudents.shared.css` and `pages/ManageCourses.shared.css`: shared module patterns extracted from the former mixed component sheet. They are loaded with the shared foundation before the owning page stylesheets.
 - `AdminLayout.css`: shell, sidebar, mobile header and responsive layout rules formerly mixed into the large design-system stylesheet.
 
 ### Import and ownership order
 
-The admin shell loads shared styles in this order: `AdminTokens.css`, `AdminTheme.css`, `AdminComponents.css`, the student/course shared styles, `AdminComponents.extended.css`, the `AdminLegacy.css` and `AdminDesignSystem.css` compatibility layers, then `AdminLayout.css`.
+The admin shell loads shared styles in this order: `AdminTokens.css`, `AdminTheme.css`, `AdminComponents.css`, `AdminComponents.extended.css`, `AdminLegacy.css`, then `AdminLayout.css`. `AdminDesignSystem.css` has been retired: shell presentation now lives in `AdminLayout.css`, while shared legacy compatibility rules live in `AdminLegacy.css`.
 
 Each page imports its own stylesheet from its page component. Page-owned CSS follows the shared compatibility layers and owns the final composition of that module. Dashboard and Manage Admins retain their dedicated imports from `App.tsx`.
 
-The legacy wrapper is structural only. It must not assign card backgrounds, shadows or border radii to every direct child; each page stylesheet decides which elements are panels, grids, headers or transparent layout containers.
+The legacy wrapper is structural only. It must not assign card backgrounds, shadows or border radii to every direct child; each page stylesheet decides which elements are panels, grids, headers or transparent layout containers. Each module has one page-owned stylesheet; former layout/shared/legacy split files for Students, Courses and Offline Requests have been consolidated.
 
 The messages inbox and management-feedback inbox are separate modules. Their root classes are `.admin-messages-page` and `.admin-management-contact-page`; they must not share a page-root selector because both stylesheets are part of the same application.
 
 ### Shared compatibility layers
 
-- `AdminDesignSystem.css`: shared cross-module visual normalization and historical cascade rules that still need gradual consolidation. Do not add new module-specific layout rules here.
-- `AdminLegacy.css`: compatibility layer for legacy page wrappers and inline-styled markup. Do not add new page designs here. Retire rules only after the affected module has been migrated and verified.
+- `AdminLegacy.css`: compatibility layer for legacy page wrappers, inline-styled markup and cross-module historical cascade rules. Do not add new page designs here. Retire rules only after the affected module has been migrated and verified.
 
 ## Separate authenticated portals
 
@@ -49,11 +47,11 @@ All admin module-owned styles live under `src/styles/admin/pages/`.
 
 - `Dashboard.css`: dashboard composition and its approved visual treatment.
 - `ManageAdmins.css`: manager-account workspace, permission picker and admin rows.
-- `ManageCourses.layout.css` and `ManageCourses.css`: course-specific layout and approved surface treatment.
-- `ManageStudents.layout.css` and `ManageStudents.css`: student-specific layout and approved surface treatment.
+- `ManageCourses.css`: complete course-management module stylesheet, including layout and approved surface treatment.
+- `ManageStudents.css`: complete student-management module stylesheet, including layout and approved surface treatment.
 - `ManageMockExams.css`: mock-exam module layout and controls.
 - `ManageRegistrations.css`: registration, payment and refund workspace.
-- `ManageOfflineRequests.css` and `ManageOfflineRequests.legacy.css`: offline-request module styling split by its former cascade origin.
+- `ManageOfflineRequests.css`: complete offline-request module stylesheet; former legacy and final styles are consolidated in their original cascade order.
 - `ManageCounseling.css`, `ManageMessages.css`, `ManageNotifications.css`, `ManageManagementContact.css`, and `AuditLogs.css`: module-specific presentation.
 
 ## Rules for future changes
@@ -69,6 +67,6 @@ All admin module-owned styles live under `src/styles/admin/pages/`.
 
 ## Migration status
 
-The central tokens, theme, common component patterns and shell layout have been separated. Semantic content-surface aliases are defined centrally, and the student/course modules consume those tokens rather than referencing undefined variables. Student- and course-specific compatibility patterns have also been extracted from the shared component sheet into module-named stylesheets. Student and counselor portal rules have also been removed from the admin-only stylesheet and returned to their own entry points. Page stylesheets are imported by their owning page components after the shared shell layers. The legacy wrapper no longer assigns card surfaces to every first-level child, leaving panel ownership to each module. The messages and management-feedback inboxes now have distinct page-root classes to prevent their global stylesheets from colliding. Historical color literals and repeated compatibility overrides remain in several legacy modules; they are intentionally retained until visual parity can be verified.
+The central tokens, theme, common component patterns and shell layout have been separated. Semantic content-surface aliases are defined centrally, and the student/course modules consume those tokens rather than referencing undefined variables. Student and counselor portal rules remain in their own entry points. Page stylesheets are imported by their owning page components after the shared shell layers. The legacy wrapper no longer assigns card surfaces to every first-level child, leaving panel ownership to each module. The messages and management-feedback inboxes now have distinct page-root classes to prevent their global stylesheets from colliding. Page-owned rules have been removed from the former AdminDesignSystem.css entry point and relocated to their respective module stylesheets; shell rules now live in AdminLayout.css and shared compatibility rules in AdminLegacy.css. Student, course and offline-request split stylesheets have been consolidated into one stylesheet per module. Historical color literals and repeated compatibility overrides remain in several legacy modules; they are intentionally retained until visual parity can be verified.
 
 Historical cross-module cascade rules remain in the shared compatibility layers intentionally. They must be removed only as their target modules are verified against the central system. No business logic, API behavior, permissions, data models or workflows are changed by this CSS refactor.
