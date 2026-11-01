@@ -13,7 +13,7 @@
   border:1px solid var(--admin-border)!important;
   border-top:1px solid var(--admin-border)!important;
   border-radius:var(--admin-surface-radius)!important;
-  background:linear-gradient(120deg,var(--admin-accent-soft),var(--admin-card) 78%)!important;
+  background:var(--admin-content-surface)!important;
   box-shadow:var(--admin-shadow)!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page .students-page-head:before{display:none!important;content:none!important}
