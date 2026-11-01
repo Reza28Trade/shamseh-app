@@ -12,6 +12,7 @@ import '../styles/admin/core/AdminTheme.css';
 import '../styles/admin/core/AdminComponents.css';
 import '../styles/admin/pages/ManageStudents.shared.css';
 import '../styles/admin/pages/ManageCourses.shared.css';
+import '../styles/admin/core/AdminComponents.extended.css';
 import '../styles/AdminDesignSystem.css';
 import '../styles/admin/core/AdminLayout.css';
 import { LayoutDashboard, BookOpen, Users, MessageSquare, ShieldAlert, FileText, LogOut, Sun, Moon, Menu, X, CheckSquare, ClipboardList, Bell, Wallet, ShieldCheck, KeyRound, ShoppingBag } from 'lucide-react';
