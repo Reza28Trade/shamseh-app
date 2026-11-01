@@ -72,11 +72,9 @@
   ;
   ;
   ;
-  ;
   }
 .offline-error{
   padding:10px 13px!important;
-  ;
   ;
   ;
   ;
@@ -112,7 +110,6 @@
   place-items:center;
   grid-row:1 / span 2;
   ;
-  ;
   }
 .offline-stat-copy{
   display:flex;
@@ -120,10 +117,8 @@
   gap:1px;
   min-width:0}
 .offline-stat-copy small{
-  ;
   white-space:nowrap}
 .offline-stat-percent{
-  ;
   direction:ltr}
 .offline-stat-meter{
   grid-column:2 / span 2;
@@ -146,8 +141,7 @@
   align-items:center;
   justify-content:space-between;
   gap:14px;
-  padding:14px 16px;
-  }
+  padding:14px 16px}
 .offline-list-head > div:first-child{
   display:flex;
   align-items:center;
@@ -161,7 +155,6 @@
   ;
   white-space:nowrap}
 .offline-list-head > div:first-child span{
-  ;
   white-space:nowrap}
 .offline-filter-group{
   display:flex;
@@ -176,9 +169,6 @@
   ;
   ;
   cursor:pointer}
-.offline-filter-group button.active{
-  ;
-  }
 .offline-request-list{
   display:flex;
   flex-direction:column;
@@ -206,7 +196,6 @@
 .offline-student span,
 .offline-course span,
 .offline-date span{
-  ;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis}
@@ -222,15 +211,6 @@
   ;
   ;
   white-space:nowrap}
-.status-pending{
-  ;
-  }
-.status-approved{
-  ;
-  }
-.status-rejected{
-  ;
-  }
 .offline-approved-link{
   display:block;
   margin-top:9px;
@@ -260,8 +240,7 @@
 .offline-link-field svg{flex:0 0 auto}
 .offline-link-field input{
   width:100%;
-  padding:8px 10px!important;
-  }
+  padding:8px 10px!important}
 .offline-review-actions{
   display:flex;
   gap:6px;
@@ -274,17 +253,10 @@
   ;
   ;
   cursor:pointer}
-.offline-review-actions .approve{
-  ;
-  }
-.offline-review-actions .reject{
-  ;
-  }
 .offline-empty{
   padding:42px 20px;
   ;
-  text-align:center;
-  }
+  text-align:center}
 @media(max-width:900px){
   .offline-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .offline-request-main{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -468,7 +440,6 @@
   height:32px!important;
   ;
   ;
-  ;
   }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-copy {
   grid-column:2!important;
@@ -525,10 +496,6 @@
   ;
   ;
   ;
-  ;
-  }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-filter-group button.active {
-  ;
   }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-request-list {
   width:100%!important;
@@ -574,7 +541,6 @@
   ;
   ;
   ;
-  ;
   }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-approved-link {
   max-width:100%!important;
@@ -602,7 +568,6 @@
   ;
   ;
   ;
-  ;
   }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-review-actions {
   display:flex!important;
@@ -611,7 +576,6 @@
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-review-actions button {
   min-height:35px!important;
   padding:7px 10px!important;
-  ;
   ;
   }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-empty {
@@ -735,19 +699,6 @@
 
 .admin-shell .admin-page-content .admin-offline-page .offline-request-row {
   padding:14px 0!important}
-
-.admin-shell .admin-page-content .admin-offline-page .offline-link-field input {
-  ;
-  }
-
-.admin-shell .admin-page-content .admin-offline-page .offline-filter-group button {
-  ;
-  ;
-  }
-
-.admin-shell .admin-page-content .admin-offline-page .offline-filter-group button.active {
-  ;
-  }
 
 @media (max-width: 900px) {
 .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-stats {
