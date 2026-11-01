@@ -12,12 +12,8 @@
   padding: 16px}
 
 .admin-public-content-page table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0}
+  width: 100%
 
-.admin-public-content-page :is(input,select,textarea) {
-  min-width: 0;
   max-width: 100%;
   width: 100%}
 
