@@ -36,16 +36,9 @@
   top:0;
   z-index:2;
   padding:11px 10px!important;
-  ;
-  ;
-  ;
-  ;
-  ;
   white-space:nowrap}
 .admin-shell .admin-page-content .admin-legacy-page .student-table-wrap td{
   padding:10px!important;
-  ;
-  ;
   vertical-align:middle}
 
 /* Responsive behavior is shared while each page retains its own content arrangement. */
@@ -280,7 +273,6 @@ padding:15px 18px!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .secondary-action {
   min-height:35px!important;
   padding:7px 11px!important;
-  ;
   }
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page > .students-stats {
   grid-template-columns:repeat(4,minmax(0,1fr))!important;
@@ -307,10 +299,6 @@ padding:16px!important}
   margin:0!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page :is(input,select) {
   min-height:36px!important;
-  ;
-  ;
-  ;
-  ;
   }
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-search {
   min-width:220px!important}
@@ -325,8 +313,6 @@ padding:16px!important}
   width:32px!important;
   height:32px!important;
   min-height:32px!important;
-  ;
-  ;
   }
 @media(max-width:900px) {
   .admin-shell .admin-page-content .admin-legacy-page.admin-students-page > .students-main-grid {
