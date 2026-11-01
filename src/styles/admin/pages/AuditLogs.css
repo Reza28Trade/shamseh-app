@@ -169,3 +169,11 @@
     max-width: none !important;
   }
 }
+
+/* Page-owned rules migrated from AdminDesignSystem.css. */
+.admin-shell .admin-page-content .admin-logs-page > section:not([role="alert"]) {
+  border: 1px solid var(--admin-border) !important;
+  border-radius: 14px !important;
+  background: var(--admin-card) !important;
+  box-shadow: none !important;
+}
