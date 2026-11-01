@@ -1113,3 +1113,10 @@
   opacity:.6!important;
   cursor:wait!important;
 }
+
+/* Page-owned rules migrated from AdminDesignSystem.css. */
+.admin-shell .admin-page-content .admin-mock-exams-page {
+  color:var(--admin-text);
+  font-size:12px;
+  line-height:1.8;
+}
