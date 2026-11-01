@@ -15,10 +15,6 @@
   overflow:hidden;
 }
 
-.admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head:before {
-  content:"";position:absolute;top:0;bottom:0;left:0;width:4px;
-}
-
 .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-stats {
   min-height:81px;
 }
@@ -94,12 +90,12 @@
   align-items:center;
   gap:7px;
   padding:9px 13px;
-  background:var(--admin-card)!important;
-  color:var(--admin-text)!important;
-  border:1px solid var(--admin-border)!important;
-  box-shadow:none!important;
-  font-size:11px;
-  font-weight:700;
+  ;
+  ;
+  ;
+  ;
+  ;
+  ;
 }
 .offline-error{
   padding:10px 13px!important;
@@ -195,7 +191,7 @@
   justify-content:space-between;
   gap:14px;
   padding:14px 16px;
-  border-bottom:1px solid var(--admin-border);
+  ;
 }
 .offline-list-head > div:first-child{
   display:flex;
@@ -208,13 +204,13 @@
   align-items:center;
   gap:7px;
   margin:0!important;
-  font-size:13px!important;
+  ;
   white-space:nowrap;
 }
-.offline-list-head h3 svg{color:var(--admin-accent)}
+.offline-list-head h3 svg{}
 .offline-list-head > div:first-child span{
-  color:var(--admin-sub);
-  font-size:10px;
+  ;
+  ;
   white-space:nowrap;
 }
 .offline-filter-group{
@@ -225,11 +221,11 @@
 }
 .offline-filter-group button{
   padding:6px 10px;
-  background:var(--admin-control)!important;
-  color:var(--admin-sub)!important;
-  border:1px solid transparent!important;
-  font-size:10px;
-  font-weight:700;
+  ;
+  ;
+  ;
+  ;
+  ;
   cursor:pointer;
 }
 .offline-filter-group button.active{
@@ -453,11 +449,6 @@
 
 
 }
-.admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head:before{
-  content:"";
-  position:absolute;
-  top:0;bottom:0;left:0;width:4px;
-}
 .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-eyebrow{display:none}
 .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head h2{
 
@@ -479,12 +470,6 @@
 
 
 
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-stats:before{
-  content:"";
-  position:absolute;
-  z-index:2;
-  top:0;left:0;right:0;height:3px;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card{
 
@@ -569,10 +554,6 @@
 
   overflow:hidden!important;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head:before {
-  display:none!important;
-  content:none!important;
-}
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head > div:first-child {
   display:block!important;
   flex:1 1 auto!important;
@@ -629,11 +610,6 @@
 
 
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stats:before,
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stats:after {
-  display:none!important;
-  content:none!important;
-}
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card {
   position:relative!important;
   width:100%!important;
@@ -653,11 +629,6 @@
   text-align:right!important;
   transform:none!important;
   outline:0!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card:before,
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card:after {
-  display:none!important;
-  content:none!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card:hover {
   transform:translateY(-1px)!important;
@@ -744,7 +715,7 @@
 
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-list-head h3 svg {
-  color:var(--admin-accent)!important;
+  ;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-list-head > div:first-child span {
 
@@ -759,12 +730,12 @@
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-filter-group button {
   min-height:30px!important;
   padding:5px 10px!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:8px!important;
-  background:var(--admin-inner)!important;
-  color:var(--admin-sub)!important;
-  box-shadow:none!important;
-  font-size:10px!important;
+  ;
+  ;
+  ;
+  ;
+  ;
+  ;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-filter-group button.active {
   border-color:var(--admin-accent)!important;
@@ -1105,10 +1076,10 @@
 }
 
 .admin-shell .admin-page-content .admin-offline-page .offline-filter-group button {
-  border:1px solid var(--admin-border)!important;
-  border-radius:9px!important;
-  background:var(--admin-inner)!important;
-  color:var(--admin-text)!important;
+  ;
+  ;
+  ;
+  ;
 }
 
 .admin-shell .admin-page-content .admin-offline-page .offline-filter-group button.active {
@@ -1147,11 +1118,6 @@
   overflow:visible!important;
 }
 
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head:before {
-  display:none!important;
-  content:none!important;
-}
-
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head h2 {
   margin:0!important;
 
@@ -1172,12 +1138,6 @@
 
   outline:0!important;
   transform:none!important;
-}
-
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card:before,
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card:after {
-  display:none!important;
-  content:none!important;
 }
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-list-card {
