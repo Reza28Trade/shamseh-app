@@ -18,6 +18,12 @@
   --shamseh-space-5: 20px;
   --shamseh-control-height: 38px;
   --shamseh-font-size: 12px;
+  /* Semantic elevations and status surfaces reused by admin modules. */
+  --admin-shadow-stat: 0 5px 16px rgba(0,0,0,.035);
+  --admin-shadow-section: 0 4px 18px rgba(0,0,0,.025);
+  --admin-shadow-dialog: 0 24px 80px rgba(0,0,0,.3);
+  --admin-danger-text: #c94b57;
+  --admin-warning-soft: rgba(184,135,47,.1);
 }
 .admin-shell {
   --shamseh-surface-page: var(--admin-bg);
