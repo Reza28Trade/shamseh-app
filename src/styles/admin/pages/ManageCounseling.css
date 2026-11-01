@@ -689,7 +689,8 @@
   line-height:1.8;
 }
 
-@media(max-width:760px)
+@media(max-width:760px) {
 .admin-shell .admin-page-content .admin-counseling-page .admin-counseling-conversations-grid {
     grid-template-columns:minmax(0,1fr)!important;
   }
+}
