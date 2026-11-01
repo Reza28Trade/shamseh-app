@@ -2884,12 +2884,11 @@
 /* Typography specimen-inspired card treatment: warm paper, quiet border, soft shadow. */
 .admin-shell .admin-main .admin-page-content .admin-legacy-page :is(
   .students-stats,.student-chart-card,.student-form-card,.student-import-card,.student-list-card,
-  .course-stat,.course-form,.course-list,.admin-stat,.offline-stat-card,.messages-stat,
   .mock-exam-stat,.offline-list-card,.messages-ticket-section,.messages-detail-section,
   .notifications-form-card,.admin-page-heading,
   .admin-page-head,.page-header,.messages-page-head,.notifications-page-head,
   .student-stat,.student-home-panel,.student-home-stat,.student-home-exam,
-  .expanded-panel,.course-card
+  .expanded-panel
 ){
   border-radius:18px!important;
   border:1px solid var(--admin-border)!important;
@@ -2899,21 +2898,19 @@
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page :is(
   .students-stats,.student-chart-card,.student-form-card,.student-import-card,.student-list-card,
-  .course-stat,.course-form,.course-list,.admin-stat,.offline-stat-card,.messages-stat,
   .mock-exam-stat,.offline-list-card,.messages-ticket-section,.messages-detail-section,
   .notifications-form-card,.admin-page-heading,
   .admin-page-head,.page-header,.messages-page-head,.notifications-page-head,
   .student-stat,.student-home-panel,.student-home-stat,.student-home-exam,
-  .expanded-panel,.course-card
+  .expanded-panel
 )::before,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page :is(
   .students-stats,.student-chart-card,.student-form-card,.student-import-card,.student-list-card,
-  .course-stat,.course-form,.course-list,.admin-stat,.offline-stat-card,.messages-stat,
   .mock-exam-stat,.offline-list-card,.messages-ticket-section,.messages-detail-section,
   .accounts-card,.accounts-create-card,.notifications-form-card,.admin-page-heading,
   .admin-page-head,.page-header,.messages-page-head,.notifications-page-head,
   .student-stat,.student-home-panel,.student-home-stat,.student-home-exam,
-  .expanded-panel,.course-card
+  .expanded-panel
 )::after{
   display:none!important;
   content:none!important;
@@ -3092,7 +3089,6 @@
   .admin-finance-registration-page > article,
   .admin-finance-registration-page > div > article,
   .admin-finance-registration-page > div > section,
-  .course-card,
   .expanded-panel,
   .counseling-account-section,
   .counseling-assignment-section,
@@ -3106,9 +3102,6 @@
   .student-form-card,
   .student-import-card,
   .student-list-card,
-  .course-form,
-  .course-list,
-  .course-stat,
   .mock-exam-stats,
   .mock-exam-list-card
 ){
@@ -3126,7 +3119,6 @@
   .admin-followup-card,
   .admin-activity-row,
   .accounts-admin-row,
-  .course-stat,
   .mock-exam-stat,
   .counseling-student-row,
   .offline-request-row,
@@ -3146,7 +3138,6 @@
   .admin-followup-card,
   .admin-activity-row,
   .accounts-admin-row,
-  .course-stat,
   .mock-exam-stat,
   .counseling-student-row,
   .offline-request-row,
