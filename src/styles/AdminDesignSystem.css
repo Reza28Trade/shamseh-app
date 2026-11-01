@@ -3810,13 +3810,13 @@
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat::before,
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat::after,
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-stats::before{display:none!important;content:none!important}
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat-value{font:900 22px/1.4 inherit!important;color:var(--admin-text)!important}
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat-value{font-family:inherit!important;font-size:22px!important;line-height:1.4!important;font-weight:900!important;color:var(--admin-text)!important}
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat-label{color:var(--admin-sub)!important}
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat-head svg{color:var(--admin-accent)!important}
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-section-head{
   padding-bottom:10px!important;border-bottom:1px solid var(--admin-border)!important;
 }
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-section-head h3{color:var(--admin-text)!important;font:850 14px/1.6 inherit!important}
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-section-head h3{color:var(--admin-text)!important;font-family:inherit!important;font-size:14px!important;line-height:1.6!important;font-weight:850!important}
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-section-head p,
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-field label{color:var(--admin-sub)!important}
 .admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-field input,.course-field select,.course-field textarea,.course-filters input,.course-filters select,.modal input,.modal select){
