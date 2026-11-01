@@ -157,7 +157,7 @@ gap:16px;
 .student-chart-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
 .student-term-switch{display:flex;gap:3px;padding:3px;;;;flex-shrink:0}
 .student-term-switch button{;;;padding:6px 8px;;;;cursor:pointer;white-space:nowrap}
-.student-term-switch button.active{background:var(--admin-accent);color:var(--admin-on-accent)}
+.student-term-switch button.active{;}
 .student-term-chart-layout{display:grid;grid-template-columns:minmax(100px,.75fr) minmax(0,1.25fr);align-items:center;gap:14px;margin-top:8px}
 .student-term-donut{width:min(100%,142px);aspect-ratio:1;border-radius:50%;margin:0 auto;display:grid;place-items:center;position:relative}
 .student-term-donut:after{content:"";position:absolute;inset:19%;border-radius:50%;background:var(--admin-card);box-shadow:0 0 0 1px var(--admin-border)}
@@ -224,8 +224,8 @@ padding:15px 18px;
 .admin-students-page .term-bar-row:nth-child(4n+3) i{}
 .admin-students-page .term-bar-row:nth-child(4n) i{}.admin-students-page .course-picker{
 }.admin-students-page .course-choice.selected{
-border-color:var(--admin-accent)!important;
-background:var(--admin-accent-soft)!important;
+;
+;
 }.admin-students-page .primary-action{
 
 }
@@ -233,9 +233,9 @@ background:var(--admin-accent-soft)!important;
 
 }
 .admin-students-page .import-actions:focus-within{outline:2px solid var(--admin-data-series-3);outline-offset:2px}.admin-students-page .level-badge{
-background:var(--admin-accent-soft);
-color:var(--admin-accent);
-border:1px solid var(--admin-border);
+;
+;
+;
 }
 .admin-students-page .row-actions button.danger{color:var(--admin-status-danger);border-color:color-mix(in srgb,var(--admin-status-danger) 35%,var(--admin-border));background:color-mix(in srgb,var(--admin-status-danger) 7%,var(--admin-control))}
 .admin-students-page .students-error{}.admin-students-page .warning-text{
@@ -607,8 +607,8 @@ padding:16px!important;
   ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-term-switch button.active {
-  background:var(--admin-accent)!important;
-  color:var(--admin-on-accent)!important;
+  ;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-term-donut {
 }
@@ -621,8 +621,8 @@ padding:16px!important;
 
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .course-choice.selected {
-  border-color:var(--admin-accent)!important;
-  background:var(--admin-accent-soft)!important;
+  ;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-list-card .list-head {
   gap:12px!important;
@@ -640,19 +640,19 @@ padding:16px!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .level-badge,
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .enrollment-chips span {
-  border:1px solid var(--admin-border)!important;
-  border-radius:7px!important;
-  background:var(--admin-inner)!important;
-  color:var(--admin-text)!important;
+  ;
+  ;
+  ;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .row-actions button {
   width:32px!important;
   height:32px!important;
   min-height:32px!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:8px!important;
-  background:var(--admin-control)!important;
-  color:var(--admin-text)!important;
+  ;
+  ;
+  ;
+  ;
 }.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-detail-modal{
 
 }
