@@ -20,24 +20,10 @@
   --shamseh-font-size: 12px;
 
   /* Admin shell surfaces and semantic actions; values preserve the approved shell. */
-  --admin-shell-light-sidebar: #E8E3DA;
-  --admin-shell-light-profile: #F7F3EC;
-  --admin-shell-light-nav-text: #514940;
-  --admin-shell-light-nav-hover: rgba(255,255,255,.48);
-  --admin-shell-dark-sidebar: #171616;
-  --admin-shell-dark-profile: #202020;
-  --admin-shell-dark-active: #303030;
-  --admin-shell-dark-active-text: #EEE5DA;
-  --admin-shell-dark-active-border: rgba(238,229,218,.06);
-  --admin-shell-dark-border: rgba(238,229,218,.10);
   --admin-shell-logout-border: rgba(255,107,0,.28);
   --admin-shell-logout-surface: rgba(255,107,0,.06);
   --admin-shell-logout-hover: rgba(255,107,0,.13);
   --admin-shell-logout-text: #E58A4B;
-  --admin-shell-nav-active-inset: inset 0 0 0 1px rgba(0,128,128,.035);
-  --admin-shell-sidebar-shadow: 4px 0 22px rgba(55,46,38,.045);
-  --admin-shell-profile-shadow: 0 5px 16px rgba(55,46,38,.045);
-  --admin-shell-sidebar-overlay: rgba(0,0,0,.28);
   --admin-shell-sidebar-mobile-shadow: -18px 0 48px rgba(0,0,0,.28);
   --admin-shell-backdrop: rgba(0,0,0,.48);
   /* Semantic elevations and status surfaces reused by admin modules. */
