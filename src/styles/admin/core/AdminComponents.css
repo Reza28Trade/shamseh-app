@@ -801,3 +801,104 @@
   border-color: var(--admin-accent);
   background: var(--admin-accent-soft);
 }
+
+
+/* Shared compact controls used by student, mock-exam and counseling workflows. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
+  .primary-action,.messages-send,.messages-reply-trigger
+) {
+  border: 1px solid var(--admin-accent);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-accent);
+  color: var(--admin-on-accent);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
+  .secondary-action,.messages-refresh,.messages-open-ticket,.messages-detail-close,
+  .messages-cancel,.counseling-student-pagination button,.offline-review-actions button,
+  .mock-participant-savebar button
+) {
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-inner);
+  color: var(--admin-text);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .student-term-switch,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .mock-participant-levels {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-inner);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
+  .student-term-switch button,.mock-participant-levels button
+) {
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--admin-sub);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
+  .student-term-switch button.active,.mock-participant-levels button.is-active
+) {
+  background: var(--admin-accent);
+  color: var(--admin-on-accent);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .mock-participant-bulk-actions {
+  border: 1px solid var(--admin-content-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-content-inner);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .mock-participant-bulk-actions button {
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-control);
+  color: var(--admin-text);
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .mock-participant-search input {
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-control);
+  color: var(--admin-text);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
+  .messages-total,.messages-count-pill
+) {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  background: var(--admin-inner);
+  color: var(--admin-sub);
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .students-error {
+  border: 1px solid var(--admin-status-error);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-status-error-soft);
+  color: var(--admin-text);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
+  .messages-page-title h2 svg,.admin-mock-exams-page h2 svg,
+  .admin-mock-exams-page .mock-exam-list-head svg
+) {
+  color: var(--admin-accent);
+}
