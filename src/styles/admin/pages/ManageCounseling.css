@@ -2,12 +2,11 @@
 .admin-counseling-page > .counseling-page-head{
   min-height:82px;
   padding:18px 20px!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:16px!important;
-  background:linear-gradient(120deg,var(--admin-accent-soft),var(--admin-card) 78%)!important;
-  box-shadow:var(--admin-shadow)!important;
+
+
+
 }
-.admin-counseling-page > .counseling-page-head h2{font-size:20px!important;font-weight:900!important}
+.admin-counseling-page > .counseling-page-head h2{font-weight:900!important}
 .admin-counseling-page > .counseling-page-head button{min-height:38px;border-radius:10px!important}
 @media(max-width:700px){.admin-counseling-page > .counseling-page-head{padding:16px!important;min-height:0}}
 
@@ -194,13 +193,11 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head{
   min-height:82px!important;
   padding:18px 20px!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:16px!important;
-  background:linear-gradient(120deg,var(--admin-accent-soft),var(--admin-card) 78%)!important;
-  box-shadow:var(--admin-shadow)!important;
+
+
+
 }
-.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head h2{
-  font-size:20px!important;font-weight:900!important;
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head h2{font-weight:900!important;
 }
 @media(max-width:700px){
   .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head{
@@ -217,16 +214,14 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head{
   min-height:82px!important;
   padding:18px 20px!important;
-  border:1px solid var(--admin-border)!important;
-  border-top:3px solid var(--admin-accent)!important;
-  border-radius:16px!important;
-  background:linear-gradient(120deg,var(--admin-accent-soft),var(--admin-card) 78%)!important;
-  box-shadow:var(--admin-shadow)!important;
+
+
+
+
 }
-.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head h2{
-  font-size:20px!important;font-weight:900!important;
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head h2{font-weight:900!important;
 }
-.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head p{font-size:12px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head p{}
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid{
   grid-template-columns:repeat(3,minmax(0,1fr))!important;
   gap:0!important;
@@ -253,8 +248,7 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-account-section,
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-conversation-section{
   padding:16px!important;
-  border-radius:16px!important;
-  background:linear-gradient(145deg,color-mix(in srgb,var(--admin-module-series-2) 5%,var(--admin-card)),var(--admin-card) 65%)!important;
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-list{
   grid-template-columns:minmax(0,1fr)!important;
@@ -582,9 +576,8 @@
   gap:10px!important;
   min-width:0!important;
   padding:10px 12px!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:9px!important;
-  background:var(--admin-inner)!important;
+
+
   cursor:pointer!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-row:has(input:checked) {
