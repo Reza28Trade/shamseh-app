@@ -206,17 +206,17 @@
   scrollbar-width: thin;
   scrollbar-color: var(--admin-border) transparent}
 
-.admin-shell ::selection {
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) ::selection {
   background: var(--admin-accent-soft);
   color: var(--admin-text)}
 
-.admin-shell ::-webkit-scrollbar {
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) ::-webkit-scrollbar {
   width: 8px;
   height: 8px}
 
-.admin-shell ::-webkit-scrollbar-track { background: transparent}
-.admin-shell ::-webkit-scrollbar-thumb { background: var(--admin-border); border-radius: 99px}
-.admin-shell ::-webkit-scrollbar-thumb:hover { background: var(--admin-accent)}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) ::-webkit-scrollbar-track { background: transparent}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) ::-webkit-scrollbar-thumb { background: var(--admin-border); border-radius: 99px}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) ::-webkit-scrollbar-thumb:hover { background: var(--admin-accent)}
 
 @media (max-width: 760px) {
   .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) {
