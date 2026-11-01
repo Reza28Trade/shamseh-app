@@ -436,3 +436,9 @@
             background:rgba(247,241,232,.94);
           }
         }
+
+/* Student portal keyboard focus treatment; kept outside admin styles. */
+.student-dashboard :is(button,input,textarea,select):focus-visible {
+  outline:2px solid var(--student-accent, var(--admin-accent));
+  outline-offset:2px;
+}
