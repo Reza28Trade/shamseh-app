@@ -1,61 +1,61 @@
 # Admin CSS Architecture
 
-## Goal
+## Objective
 
-The admin panel has one visual source of truth and independent module structure.
+The admin panel has one visual source of truth and independent page composition.
 
-- Shared visual identity is centralized: brand colors, light/dark surfaces, typography scale, controls, cards, borders, radii, shadows, focus states and responsive shell behavior.
-- Each module owns its content structure and layout: grids, ordering, filters, forms, tables, workflows and module-specific composition.
-- A module stylesheet may control placement and dimensions, but must consume the shared tokens and shared component language rather than inventing its own palette or component appearance.
-- Dashboard and Manage Admins are approved reference modules. Their existing composition and appearance must be preserved unless explicitly approved for change.
+- The central design system owns brand colors, light/dark surfaces, typography, controls, card surfaces, borders, radii, shadows, focus states and shared component states.
+- Each module stylesheet owns page composition: grids, columns, ordering, spacing, dimensions, overflow, filters, table data layout and responsive arrangement. It may also own genuinely domain-specific data visualizations and semantic states that are not shared components (for example, a chart series or a speaker-specific message bubble).
+- Module styles must consume the central tokens. They must not create a local palette, card treatment, typography scale, control appearance or shadow/radius system.
+- Dashboard and Manage Admins are approved visual baselines. Their CSS and appearance are excluded from the cross-module component normalization.
 
-## Central styles
+## Central ownership
 
 ### `src/styles/admin/core/`
 
-- `AdminTokens.css`: canonical Shamseh brand, spacing, radius and control tokens.
-- `AdminTheme.css`: canonical light/dark values for the `--admin-*` surface variables. These values were moved unchanged from the former inline style object in `AdminLayout.tsx`.
-- `AdminComponents.css`: shared admin controls and common page foundations.
-- `AdminComponents.extended.css`: cross-module responsive and compatibility patterns, loaded after module compatibility styles to preserve the original cascade.
-- `pages/ManageStudents.shared.css` and `pages/ManageCourses.shared.css`: legacy module patterns extracted from the former mixed component sheet. They are imported at the same cascade position in `AdminLayout.tsx` so the refactor does not reorder existing CSS; each module's own layout and overrides remain in its page stylesheets.
-- `AdminLayout.css`: shell, sidebar, mobile header and responsive layout rules formerly mixed into the large design-system stylesheet.
+- `AdminTokens.css`: Shamseh brand tokens, spacing/radius primitives, semantic status colors, data-series colors, approved shell surfaces/actions and elevation tokens. It contains variables only; it does not style components.
+- `AdminTheme.css`: canonical light/dark values and semantic surface aliases. All theme-dependent component colors resolve through these variables.
+- `AdminComponents.css`: the single canonical visual component layer. It is loaded after module styles so shared appearance wins over legacy declarations. It owns page typography, controls, buttons, tables, cards, headers, statistic tiles, row surfaces, focus states and common responsive visual treatment.
+- `AdminComponents.extended.css`: structural compatibility only. It may define grid/flex behavior, min-width, overflow, table minimum widths and responsive column arrangements. It must not define colors, backgrounds, borders, radii, shadows, typography or control appearance.
+- `AdminLayout.css`: admin shell, sidebar, mobile header and responsive shell layout.
+- `AdminLegacy.css`: narrow compatibility layer for historical inline styles that cannot yet be removed from markup. It must not define general component styles or page surfaces.
 
-### Shared compatibility layers
+### Load and ownership order
 
-- `AdminDesignSystem.css`: shared cross-module visual normalization and historical cascade rules that still need gradual consolidation. Do not add new module-specific layout rules here.
-- `AdminLegacy.css`: compatibility layer for legacy page wrappers and inline-styled markup. Do not add new page designs here. Retire rules only after the affected module has been migrated and verified.
+1. `AdminTokens.css`
+2. `AdminTheme.css`
+3. `AdminLegacy.css`
+4. `AdminComponents.extended.css`
+5. `AdminLayout.css`
+6. Page-owned module styles
+7. `AdminComponents.css` as the final shared visual layer
 
-## Separate authenticated portals
+The former `AdminComponents.overrides.css` was removed. Shared appearance must never be split across multiple late override files.
 
-- `src/styles/StudentDesignSystem.css` belongs to `UserDashboard.tsx` and is loaded by the student portal itself.
-- `src/styles/CounselorDesignSystem.css` belongs to `CounselorPortal.tsx` and is loaded by the counselor portal itself.
-- Portal-specific selectors must not be placed in the admin shell stylesheet.
+## Module ownership
 
-## Module styles
+All admin module styles live under `src/styles/admin/pages/`.
 
-All admin module-owned styles live under `src/styles/admin/pages/`.
+- `Dashboard.css`: approved dashboard composition and appearance.
+- `ManageAdmins.css`: approved manager-account composition and appearance.
+- `ManageCourses.css`, `ManageStudents.css`, `ManageOfflineRequests.css`, `ManageCounseling.css`, `ManageMessages.css`, `ManageNotifications.css`, `ManageManagementContact.css`, `ManageMockExams.css`, `ManageRegistrations.css`, `ManagePublicContent.css`, and `AuditLogs.css`: page composition and domain-specific visualizations/status states only; shared cards, controls, typography, tables and component appearance are centralized.
 
-- `Dashboard.css`: dashboard composition and its approved visual treatment.
-- `ManageAdmins.css`: manager-account workspace, permission picker and admin rows.
-- `ManageCourses.layout.css` and `ManageCourses.css`: course-specific layout and approved surface treatment.
-- `ManageStudents.layout.css` and `ManageStudents.css`: student-specific layout and approved surface treatment.
-- `ManageMockExams.css`: mock-exam module layout and controls.
-- `ManageRegistrations.css`: registration, payment and refund workspace.
-- `ManageOfflineRequests.css` and `ManageOfflineRequests.legacy.css`: offline-request module styling split by its former cascade origin.
-- `ManageCounseling.css`, `ManageMessages.css`, `ManageNotifications.css`, `ManageManagementContact.css`, and `AuditLogs.css`: module-specific presentation.
+The messages inbox and management-feedback inbox remain separate modules with distinct page roots: `.admin-messages-page` and `.admin-management-contact-page`.
 
-## Rules for future changes
+Student and counselor portals remain separate authenticated experiences with their own composition. They consume the same Shamseh/Admin theme tokens where appropriate, but are not forced into the admin page-component cascade.
 
-1. Change a shared color, surface, shadow, radius, typography value or common component in `core/` only.
-2. Keep module-specific grids, ordering, spacing and responsive composition in that module's page stylesheet.
-3. Do not duplicate shared component appearance in page files. Use shared tokens and shared patterns.
-4. Do not introduce new hard-coded brand colors or page-local shadow/radius systems.
-5. Preserve semantic status colors (success, warning, error) through shared semantic tokens rather than arbitrary page palettes.
-6. Do not delete compatibility selectors based on a text search alone. Confirm JSX usage and test both themes and responsive breakpoints.
-7. Dashboard and Manage Admins remain the visual baselines; other modules should align to their visual language without copying their workflows or layouts.
+## Rules for future CSS changes
 
-## Migration status
+1. Change a shared visual property once, in the central token/theme/component layer.
+2. Page CSS may set layout properties such as `display`, `grid-template`, `gap`, `padding` where it is genuinely part of composition, `width`, `min-width`, `max-width`, `overflow`, `order`, `align` and responsive layout. It may retain unique data-viz colors and semantic states only when they are not reusable shared components.
+3. Page CSS must not redefine shared card backgrounds, borders, radii, shadows, typography, control surfaces or focus states.
+4. Do not add a new compatibility or override layer to solve a cascade conflict. Fix ownership at the source.
+5. Do not use blanket selectors that turn every child into a card.
+6. Do not use `!important` to compensate for incorrect stylesheet order or duplicated ownership.
+7. Preserve semantic status colors through central semantic tokens.
+8. Preserve Dashboard and Manage Admins exactly as the approved reference screens.
+9. Do not change business logic, APIs, permissions, data models or workflows as part of CSS work.
 
-The central tokens, theme, common component patterns and shell layout have been separated. Student- and course-specific compatibility patterns have also been extracted from the shared component sheet into module-named stylesheets without changing their cascade position. Student and counselor portal rules have also been removed from the admin-only stylesheet and returned to their own entry points. The clearly identifiable module-owned sections have been moved into page files, and the original root-level Courses, Students and Mock Exams stylesheets have been relocated into the module directory.
+## Current refactor boundary
 
-Historical cross-module cascade rules remain in the shared compatibility layers intentionally. They must be removed only as their target modules are verified against the central system. No business logic, API behavior, permissions, data models or workflows are changed by this CSS refactor.
+This refactor centralizes shared visual ownership, removes the duplicate late override stylesheet, reduces the legacy stylesheet to inline-style compatibility, and keeps the extended layer structural. Shared component appearance has been removed from module stylesheets; remaining page-local visual rules are limited to domain-specific data visualization, semantic states and separators. It does not change page workflows or the approved Dashboard/Manage Admins reference designs.

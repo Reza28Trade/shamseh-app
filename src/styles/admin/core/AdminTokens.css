@@ -18,6 +18,14 @@
   --shamseh-space-5: 20px;
   --shamseh-control-height: 38px;
   --shamseh-font-size: 12px;
+
+  /* Admin shell surfaces and semantic actions; values preserve the approved shell. */
+  --admin-shell-logout-border: rgba(255,107,0,.28);
+  --admin-shell-logout-surface: rgba(255,107,0,.06);
+  --admin-shell-logout-hover: rgba(255,107,0,.13);
+  --admin-shell-logout-text: #E58A4B;
+  --admin-shell-sidebar-mobile-shadow: -18px 0 48px rgba(0,0,0,.28);
+  --admin-shell-backdrop: rgba(0,0,0,.48);
   /* Semantic elevations and status surfaces reused by admin modules. */
   --admin-shadow-stat: 0 5px 16px rgba(0,0,0,.035);
   --admin-shadow-control: 0 2px 5px rgba(0,0,0,.035);
@@ -26,7 +34,80 @@
   --admin-shadow-dialog: 0 24px 80px rgba(0,0,0,.3);
   --admin-danger-text: #c94b57;
   --admin-warning-soft: rgba(184,135,47,.1);
-}
+  --admin-warning-text: #b7791f;
+  --admin-danger-strong: #c55;
+  --admin-danger-soft: rgba(220,70,70,.08);
+  --admin-status-danger: #D4777D;
+  --admin-status-attention: #E58A70;
+  --admin-on-accent: #fff;
+  --admin-action-gradient-start: #398A90;
+  --admin-overlay-backdrop: rgba(5,10,12,.72);
+  --admin-shadow-modal: 0 28px 90px rgba(0,0,0,.42);
+  /* Shared semantic status colors; literal values are retained from the approved modules. */
+  --admin-status-active: #27846b;
+  --admin-status-inactive: #bd795d;
+  --admin-status-open: #d97706;
+  --admin-status-open-soft: rgba(217,119,6,.12);
+  --admin-status-answered: #059669;
+  --admin-status-answered-soft: rgba(5,150,105,.12);
+  --admin-status-closed: #64748b;
+  --admin-status-closed-soft: rgba(100,116,139,.12);
+  --admin-status-success: #23946e;
+  --admin-status-success-soft: rgba(35,148,110,.12);
+  --admin-status-success-strong: #16805d;
+  --admin-status-warning: #c58a27;
+  --admin-status-warning-soft: rgba(197,138,39,.12);
+  --admin-status-error: #cf6262;
+  --admin-status-error-soft: rgba(207,98,98,.12);
+  --admin-status-student: #be185d;
+  --admin-status-student-strong: #db2777;
+  --admin-status-student-soft: rgba(190,24,93,.07);
+  --admin-status-support: #059669;
+  --admin-status-support-soft: rgba(5,150,105,.07);
+  --admin-status-notice: #c38b37;
+  --admin-status-notice-soft: rgba(195,139,55,.09);
+  --admin-status-amber-soft: rgba(202,145,49,.12);
+  --admin-status-warning-strong: #b7791f;
+  --admin-status-warning-highlight: #e9b949;
+  --admin-status-success-highlight: #39ae86;
+  --admin-status-closed-highlight: #94a3b8;
+  --admin-message-hero-middle: #85334b;
+  --admin-message-hero-end: #24484b;
+  --admin-message-gold: #f0d6a2;
+  --admin-message-gold-light: #fff0cf;
+  --admin-message-rose: #b76c82;
+  --admin-message-rose-strong: #a14b62;
+  --admin-message-rose-soft: #b66a83;
+  --admin-message-student-border: #c58a36;
+  --admin-message-support-border: #2a9b73;
+  --admin-message-support-mix: #9f526b;
+  --admin-status-danger-strong: #d92d20;
+  --admin-status-danger-muted: #c65353;
+  /* Shared module accent sequence and legacy semantic status aliases. */
+  --admin-module-series-1: #398A90;
+  --admin-module-series-2: #528bd8;
+  --admin-module-series-3: #d69b42;
+  --admin-module-series-4: #E58A70;
+  --admin-status-warning-inline: #b77912;
+  --admin-status-success-inline: #23856a;
+  --admin-status-danger-inline: #dc5c5c;
+  --admin-status-danger-legacy: #b94a48;
+  --admin-status-danger-button: #a94442;
+  --admin-message-error: #ef7777;
+  --admin-message-hero-start: #6d001a;
+  --admin-message-hero-deep: #281326;
+  --admin-message-gold-bright: #f1d6a1;
+  --admin-dashboard-refresh-border: #d9c7af;
+  --admin-dashboard-accent-strong: #126f73;
+  /* Shared data-visualization palette; modules consume these instead of defining local palettes. */
+  --admin-data-series-1: #4BA6A1;
+  --admin-data-series-1-highlight: #70C4BC;
+  --admin-data-series-2: #829BCB;
+  --admin-data-series-2-highlight: #A6B8DD;
+  --admin-data-series-3: #D8B477;
+  --admin-data-series-3-highlight: #E8CB96;
+  --admin-data-series-4: #78B99A;
+  --admin-data-series-4-highlight: #A0D2B5}
 .admin-shell {
   --shamseh-surface-page: var(--admin-bg);
   --shamseh-surface-card: var(--admin-card);
@@ -37,19 +118,4 @@
   --shamseh-border-default: var(--admin-border);
   --shamseh-accent-primary: var(--admin-accent);
   --shamseh-accent-soft: var(--admin-accent-soft);
-  --shamseh-accent-border: var(--admin-brand-border);
-}
-.admin-shell .admin-page-content .admin-legacy-page {
-  font-size: var(--shamseh-font-size);
-  color: var(--shamseh-text-primary);
-}
-.admin-shell .admin-page-content .admin-legacy-page :is(input,select,textarea) {
-  min-height: var(--shamseh-control-height);
-  border-radius: var(--shamseh-radius-sm);
-}
-.admin-shell .admin-page-content .admin-legacy-page :is(button,.course-btn,.primary-action,.secondary-action) {
-  border-radius: var(--shamseh-radius-sm) !important;
-}
-.admin-shell .admin-page-content .admin-legacy-page :is(th,td) {
-  border-color: var(--shamseh-border-default);
-}
+  --shamseh-accent-border: var(--admin-brand-border)}

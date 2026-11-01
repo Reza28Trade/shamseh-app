@@ -1,84 +1,123 @@
-/* Recipient picker supports mock-exam participants as a fourth destination. */
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target-grid{
-  grid-template-columns:repeat(4,minmax(0,1fr));
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-recipient-hint{
-  color:var(--admin-sub);font-size:10px;line-height:1.8;
-}
-@media(max-width:900px){
-  .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-  }
+/* Notifications page composition only. Shared appearance is owned by AdminComponents.css. */
+
+.admin-notifications-page {
+  width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
+  gap: 16px}
+
+.admin-notifications-page > header.notifications-page-head {
+  min-height: 76px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px}
+
+.admin-notifications-page .notifications-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 5px}
+
+.admin-notifications-page h2 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0}
+
+.admin-notifications-page .notifications-page-head p {
+  margin: 5px 0 0}
+
+.admin-notifications-page .notifications-form-card {
+  min-width: 0;
+  padding: clamp(14px,2vw,22px)}
+
+.admin-notifications-page .notifications-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px}
+
+.admin-notifications-page .notifications-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0}
+
+.admin-notifications-page .notifications-target-grid {
+  display: grid;
+  grid-template-columns: repeat(4,minmax(0,1fr));
+  gap: 10px}
+
+.admin-notifications-page .notifications-target {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 40px;
+  padding: 10px 12px;
+  cursor: pointer}
+
+.admin-notifications-page .notifications-target svg {
+  flex: 0 0 auto}
+
+.admin-notifications-page .notifications-field :is(input,select,textarea) {
+  width: 100%;
+  min-width: 0;
+  min-height: 39px}
+
+.admin-notifications-page .notifications-field textarea {
+  min-height: 110px;
+  resize: vertical}
+
+.admin-notifications-page .notifications-form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 14px}
+
+.admin-notifications-page .notifications-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding-inline: 17px;
+  cursor: pointer}
+
+.admin-notifications-page .notifications-submit:disabled {
+  opacity: .6;
+  cursor: not-allowed}
+
+.admin-notifications-page .notifications-feedback {
+  margin-bottom: 16px;
+  padding: 11px 13px}
+
+.admin-notifications-page .notifications-recipient-hint {
+  margin-top: 6px}
+
+@media(max-width:900px) {
+  .admin-notifications-page .notifications-target-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr))}
 }
 
-
-/* Final shared-style alignment for the notification composer. */
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page {
-  width:100%!important;
-  max-width:none!important;
-  margin:0!important;
-  gap:16px!important;
-  font-size:12px!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head {
-  min-height:76px!important;
-  padding:16px 18px!important;
-  background:var(--admin-card)!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:14px!important;
-  box-shadow:none!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head:before {
-  display:none!important;
-  content:none!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page h2 {
-  font-size:18px!important;
-  line-height:1.5!important;
-  font-weight:850!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-eyebrow {
-  font-size:10px!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-page-head p {
-  font-size:11px!important;
-  line-height:1.8!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-card {
-  padding:18px!important;
-  background:var(--admin-card)!important;
-  border:1px solid var(--admin-border)!important;
-  border-top:1px solid var(--admin-border)!important;
-  border-radius:14px!important;
-  box-shadow:none!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field > label {
-  font-size:12px!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target {
-  font-size:11px!important;
-  min-height:40px!important;
-  border-radius:9px!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field :is(input,select,textarea) {
-  font-size:12px!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-footer > span {
-  font-size:11px!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback.is-success {
-  background:color-mix(in srgb,#16805d 10%,var(--admin-card))!important;
-  border-color:color-mix(in srgb,#16805d 24%,var(--admin-border))!important;
-  color:var(--admin-text)!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback.is-error {
-  background:color-mix(in srgb,var(--shamseh-burgundy) 10%,var(--admin-card))!important;
-  border-color:color-mix(in srgb,var(--shamseh-burgundy) 24%,var(--admin-border))!important;
-  color:var(--admin-text)!important;
-}
 @media(max-width:760px) {
-  .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page > header.notifications-page-head,
-  .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-card {
-    padding:14px!important;
-  }
+  .admin-notifications-page {
+    gap: 12px}
+
+  .admin-notifications-page > header.notifications-page-head,
+  .admin-notifications-page .notifications-form-card {
+    padding: 14px}
+
+  .admin-notifications-page .notifications-target-grid {
+    grid-template-columns: minmax(0,1fr)}
+
+  .admin-notifications-page .notifications-form-footer {
+    align-items: stretch;
+    flex-direction: column}
+
+  .admin-notifications-page .notifications-submit {
+    width: 100%}
 }
