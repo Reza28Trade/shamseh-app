@@ -151,7 +151,7 @@
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback.is-success {
-  background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.22);color:#16805d;
+  background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.22);color:var(--admin-status-success-strong);
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback.is-error {
@@ -326,7 +326,7 @@
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback.is-success {
-  background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.22);color:#16805d;
+  background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.22);color:var(--admin-status-success-strong);
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-feedback.is-error {
