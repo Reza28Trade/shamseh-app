@@ -84,8 +84,9 @@
   box-shadow:none!important;
 }
 
-@media(max-width:900px)
+@media(max-width:900px) {
 .admin-shell .admin-sidebar {border-left:1px solid var(--admin-border)}
+}
 
 /* Page headers are owned by their module stylesheets.
    Do not globally hide headings: each module decides its own header composition. */
@@ -269,7 +270,7 @@
   outline-offset:2px;
 }
 
-@media(max-width:760px)
+@media(max-width:760px) {
 .admin-shell .admin-page-content :is(
     .messages-ticket-section,.offline-list-card,.mock-exam-list-card,
     .admin-counseling-page .counseling-account-section,
@@ -278,8 +279,9 @@
   ) {
     padding:12px!important;
   }
+}
 
-@media(max-width:760px)
+@media(max-width:760px) {
 .admin-shell .admin-page-content :is(
     .admin-messages-page .messages-stats,
     .admin-offline-page .offline-stats,
@@ -288,8 +290,9 @@
   ) {
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
   }
+}
 
-@media(max-width:440px)
+@media(max-width:440px) {
 .admin-shell .admin-page-content :is(
     .admin-messages-page .messages-stats,
     .admin-offline-page .offline-stats,
@@ -298,6 +301,7 @@
   ) {
     grid-template-columns:minmax(0,1fr)!important;
   }
+}
 
 /* Phase 4: finish the shared system for public content, notifications and audit history.
    Presentation-only overrides: preserve all handlers, forms, permissions and data flows. */
@@ -455,12 +459,13 @@
   max-width: 100%;
 }
 
-@media(max-width:760px)
+@media(max-width:760px) {
 .admin-shell .admin-page-content .admin-legacy-page {
     gap: 12px !important;
   }
+}
 
-@media(max-width:760px)
+@media(max-width:760px) {
 .admin-shell .admin-page-content .admin-legacy-page :is(
     .mock-exam-dashboard > div,
     .mock-exam-list-card,
@@ -475,11 +480,13 @@
   ) {
     padding: 13px !important;
   }
+}
 
-@media(max-width:760px)
+@media(max-width:760px) {
 .admin-shell .admin-page-content .admin-legacy-page :is(.mock-exam-scroll-list,.messages-table-wrap) {
     overflow-x: auto;
   }
+}
 
 /* Phase 2 — unify remaining admin sections with the approved compact Shamseh UI. */
 
