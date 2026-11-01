@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState, type CSSProperties } from 'react';
 import { JalaliDatePicker } from '../../components/JalaliDatePicker';
+import '../../styles/admin/pages/ManageRegistrations.css';
 
 type Payment = { id: string; purpose: string; status: string; claimedAmount: number; approvedAmount: number | null; rejectionReason: string | null; paymentDate?: string; createdAt?: string; trackingCode?: string | null; receipts: Array<{ id: string; mimeType: string; uploadedAt: string }> };
 type Registration = {
