@@ -565,8 +565,7 @@ padding:0!important}
   padding:5px 12px;
 
   white-space:nowrap}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table tbody tr.is-selected td {
-  background:var(--admin-accent-soft)}
+
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table .mock-participant-name {
   min-width:180px}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-row-toggle {
