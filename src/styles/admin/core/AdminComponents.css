@@ -902,3 +902,48 @@
 ) {
   color: var(--admin-accent);
 }
+
+
+/* Canonical selected, active and compact badge states. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
+  .student-term-switch button.active,.course-choice.selected,
+  .offline-filter-group button.active,.notifications-target.is-active,
+  .mock-participant-levels button.is-active
+) {
+  border-color: var(--admin-accent);
+  background: var(--admin-accent-soft);
+  color: var(--admin-accent);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
+  .messages-stat.is-active,.messages-table-row.is-selected,
+  .messages-table tbody tr.is-selected td,
+  .counseling-student-row:has(input:checked),
+  .mock-participant-option.is-selected,.mock-participant-row-toggle.is-selected
+) {
+  border-color: var(--admin-accent);
+  background: var(--admin-accent-soft);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
+  .level-badge,.enrollment-chips span
+) {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--admin-border);
+  border-radius: 7px;
+  background: var(--admin-inner);
+  color: var(--admin-text);
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .level-badge {
+  background: var(--admin-accent-soft);
+  border-color: var(--admin-brand-border);
+  color: var(--admin-accent);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .messages-stat.is-active {
+  box-shadow: inset 0 0 0 1px var(--admin-accent-soft);
+}
