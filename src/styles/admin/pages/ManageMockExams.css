@@ -97,8 +97,8 @@
 .mock-exam-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));overflow:hidden;background:var(--admin-card);border:1px solid var(--admin-border);box-shadow:var(--admin-shadow);border-radius:16px}
 .mock-exam-stat{padding:16px 18px;}
 .mock-exam-stat:last-child{}
-.mock-exam-stat span{display:block;color:var(--admin-sub);margin-bottom:7px}
-.mock-exam-stat strong{line-height:1;}
+.mock-exam-stat span{display:block;margin-bottom:7px}
+.mock-exam-stat strong{}
 .mock-exam-list-card{min-width:0}
 .mock-exam-list-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .mock-exam-list-head button{display:inline-flex;align-items:center;gap:7px}
