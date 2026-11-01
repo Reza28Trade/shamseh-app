@@ -947,3 +947,59 @@
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .messages-stat.is-active {
   box-shadow: inset 0 0 0 1px var(--admin-accent-soft);
 }
+
+
+/* Semantic request states are shared status components, not page-local palettes. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .offline-status {
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  background: var(--admin-inner);
+  color: var(--admin-text);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .offline-status.status-pending,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .status-pending {
+  border-color: var(--admin-status-warning);
+  background: var(--admin-status-warning-soft);
+  color: var(--admin-status-warning-inline);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .offline-status.status-approved,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .status-approved {
+  border-color: var(--admin-status-success);
+  background: var(--admin-status-success-soft);
+  color: var(--admin-status-success-inline);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .offline-status.status-rejected,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .status-rejected {
+  border-color: var(--admin-status-error);
+  background: var(--admin-status-error-soft);
+  color: var(--admin-status-danger-muted);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .offline-review-actions .approve {
+  border-color: var(--admin-status-success);
+  background: var(--admin-status-success-soft);
+  color: var(--admin-status-success-inline);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .offline-review-actions .reject {
+  border-color: var(--admin-status-error);
+  background: var(--admin-status-error-soft);
+  color: var(--admin-status-danger-muted);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .offline-course strong {
+  color: var(--admin-accent);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
+  .offline-eyebrow,.students-eyebrow,.notifications-eyebrow
+) {
+  color: var(--admin-accent);
+  font-size: 10px;
+  font-weight: 800;
+}
