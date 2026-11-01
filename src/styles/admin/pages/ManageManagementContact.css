@@ -69,7 +69,6 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-open-ticket:hover,
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-close:hover,
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-cancel:hover {
-  border-color:var(--admin-accent)!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-stats {
   display:grid!important;
@@ -412,7 +411,6 @@
 
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-search:focus-within {
-  border-color:var(--admin-accent)!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-search input {
   width:100%!important;
