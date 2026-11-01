@@ -15,7 +15,8 @@ The admin panel has one visual source of truth and independent module structure.
 
 - `AdminTokens.css`: canonical Shamseh brand, spacing, radius and control tokens.
 - `AdminTheme.css`: canonical light/dark values for the `--admin-*` surface variables. These values were moved unchanged from the former inline style object in `AdminLayout.tsx`.
-- `AdminComponents.css`: shared admin page patterns and common visual treatments for headings, cards, stats, controls and tables.
+- `AdminComponents.css`: genuinely shared admin controls, common page foundations and cross-module responsive patterns.
+- `pages/ManageStudents.shared.css` and `pages/ManageCourses.shared.css`: legacy module patterns extracted from the former mixed component sheet. They are imported at the same cascade position in `AdminLayout.tsx` so the refactor does not reorder existing CSS; each module's own layout and overrides remain in its page stylesheets.
 - `AdminLayout.css`: shell, sidebar, mobile header and responsive layout rules formerly mixed into the large design-system stylesheet.
 
 ### Shared compatibility layers
@@ -54,6 +55,6 @@ All admin module-owned styles live under `src/styles/admin/pages/`.
 
 ## Migration status
 
-The central tokens, theme, common component patterns and shell layout have been separated. Student and counselor portal rules have also been removed from the admin-only stylesheet and returned to their own entry points. The clearly identifiable module-owned sections have been moved into page files, and the original root-level Courses, Students and Mock Exams stylesheets have been relocated into the module directory.
+The central tokens, theme, common component patterns and shell layout have been separated. Student- and course-specific compatibility patterns have also been extracted from the shared component sheet into module-named stylesheets without changing their cascade position. Student and counselor portal rules have also been removed from the admin-only stylesheet and returned to their own entry points. The clearly identifiable module-owned sections have been moved into page files, and the original root-level Courses, Students and Mock Exams stylesheets have been relocated into the module directory.
 
 Historical cross-module cascade rules remain in the shared compatibility layers intentionally. They must be removed only as their target modules are verified against the central system. No business logic, API behavior, permissions, data models or workflows are changed by this CSS refactor.
