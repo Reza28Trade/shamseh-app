@@ -907,3 +907,58 @@
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .messages-pagination button:hover:not(:disabled) {
   border-color: var(--admin-accent);
   background: var(--admin-accent-soft)}
+
+
+/* Student bulk-selection checkbox is a shared form-control exception. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap input.student-select-checkbox,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap th input.student-select-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  display: inline-grid;
+  place-content: center;
+  position: static;
+  inset: auto;
+  width: 16px;
+  min-width: 16px;
+  max-width: 16px;
+  height: 16px;
+  min-height: 16px;
+  max-height: 16px;
+  margin: 0;
+  padding: 0;
+  border: 1.5px solid var(--admin-border);
+  border-radius: 4px;
+  background: var(--admin-inner);
+  transform: none;
+  zoom: 1;
+  opacity: 1;
+  cursor: pointer;
+  vertical-align: middle;
+  transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap input.student-select-checkbox:checked,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap th input.student-select-checkbox:checked {
+  border-color: var(--admin-accent);
+  background: var(--admin-accent);
+}
+
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap input.student-select-checkbox:checked::after,
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap th input.student-select-checkbox:checked::after {
+  content: "";
+  width: 7px;
+  height: 4px;
+  border: solid var(--admin-on-accent);
+  border-width: 0 0 2px 2px;
+  transform: rotate(-45deg) translate(1px,-1px);
+}
+
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-table-wrap input.student-select-checkbox:focus-visible {
+  outline: 2px solid var(--admin-accent);
+  outline-offset: 2px;
+}
+
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .counseling-assignment-status.is-assigned {
+  color: var(--admin-accent);
+}
