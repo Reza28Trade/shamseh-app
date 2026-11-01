@@ -61,12 +61,12 @@
 }
 
 .admin-messages-page .messages-stat:before {
-  content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--messages-stat-color);
+  content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--admin-accent);
 }
 
 .admin-messages-page .messages-stat-icon {
   width:36px;height:36px;display:grid;place-items:center;flex:0 0 auto;
-  border-radius:11px;color:var(--messages-stat-color);background:var(--messages-stat-soft);
+  border-radius:11px;color:var(--admin-accent);background:var(--admin-accent-soft);
 }
 
 .admin-messages-page .messages-stat-copy {display:flex;flex-direction:column;gap:3px;min-width:0}
@@ -79,7 +79,7 @@
 
 .admin-messages-page .messages-stat-open {--messages-stat-color:#d97706;--messages-stat-soft:rgba(217,119,6,.12)}
 
-.admin-messages-page .messages-stat-answered {--messages-stat-color:#059669;--messages-stat-soft:rgba(5,150,105,.12)}
+.admin-messages-page .messages-stat-answered {--messages-stat-color:var(--admin-status-support);--messages-stat-soft:rgba(5,150,105,.12)}
 
 .admin-messages-page .messages-stat-closed {--messages-stat-color:#64748b;--messages-stat-soft:rgba(100,116,139,.12)}
 
@@ -157,20 +157,20 @@
 }
 
 .admin-messages-page .messages-bubble-student {
-  align-self:flex-start;background:rgba(190,24,93,.07);border-inline-start:3px solid #be185d;
+  align-self:flex-start;background:var(--admin-status-student-soft);border-inline-start:3px solid var(--admin-status-student);
 }
 
 .admin-messages-page .messages-bubble-support {
-  align-self:flex-end;background:rgba(5,150,105,.07);border-inline-start:3px solid #059669;
+  align-self:flex-end;background:var(--admin-status-support-soft);border-inline-start:3px solid var(--admin-status-support);
 }
 
 .admin-messages-page .messages-bubble-meta {display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:5px}
 
 .admin-messages-page .messages-bubble-meta strong {font-size:10px;color:var(--admin-text)}
 
-.admin-messages-page .messages-bubble-student .messages-bubble-meta strong {color:#db2777}
+.admin-messages-page .messages-bubble-student .messages-bubble-meta strong {color:var(--admin-status-student-strong)}
 
-.admin-messages-page .messages-bubble-support .messages-bubble-meta strong {color:#059669}
+.admin-messages-page .messages-bubble-support .messages-bubble-meta strong {color:var(--admin-status-support)}
 
 .admin-messages-page .messages-bubble-meta time {font-size:9px;color:var(--admin-sub)}
 
