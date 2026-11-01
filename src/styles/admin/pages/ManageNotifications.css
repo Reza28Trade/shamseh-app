@@ -82,3 +82,93 @@
     padding:14px!important;
   }
 }
+
+/* Page-owned rules migrated from AdminDesignSystem.css. */
+.admin-shell .admin-page-content .admin-notifications-page .notifications-form-card {
+  padding:18px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:14px!important;
+  background:var(--admin-card)!important;
+  box-shadow:none!important;
+}
+
+.admin-shell .admin-page-content .admin-notifications-page .notifications-form {
+  gap:16px;
+}
+
+.admin-shell .admin-page-content .admin-notifications-page .notifications-field label {
+  color:var(--admin-text);
+  font-size:11px;
+  font-weight:800;
+}
+
+.admin-shell .admin-page-content .admin-notifications-page :is(input,select,textarea) {
+  min-height:39px;
+  border:1px solid var(--admin-border);
+  border-radius:9px;
+  background:var(--admin-control);
+  color:var(--admin-text);
+  font:inherit;
+}
+
+.admin-shell .admin-page-content .admin-notifications-page textarea {
+  min-height:110px;
+}
+
+.admin-shell .admin-page-content .admin-notifications-page button:focus-visible {
+  outline:2px solid var(--admin-accent)!important;
+  outline-offset:2px;
+}
+
+.admin-shell .admin-page-content .admin-notifications-page .notifications-form-card {
+  padding:clamp(14px,2vw,22px)!important;
+}
+
+.admin-shell .admin-page-content .admin-notifications-page .notifications-field {
+  min-width:0;
+}
+
+.admin-shell .admin-page-content .admin-notifications-page :is(input,select,textarea) {
+  width:100%;
+  min-width:0;
+  min-height:39px;
+  border:1px solid var(--admin-border)!important;
+  border-radius:9px!important;
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+  font:inherit;
+}
+
+.admin-shell .admin-page-content .admin-notifications-page textarea {
+  resize:vertical;
+}
+
+.admin-shell .admin-page-content .admin-notifications-page :is(input,select,textarea):focus {
+  outline:none;
+  border-color:var(--admin-accent)!important;
+  box-shadow:0 0 0 3px var(--admin-accent-soft);
+}
+
+.admin-shell .admin-page-content .admin-notifications-page .notifications-target {
+  min-width:0;
+  border:1px solid var(--admin-border)!important;
+  border-radius:10px!important;
+  background:var(--admin-inner)!important;
+  color:var(--admin-text)!important;
+}
+
+.admin-shell .admin-page-content .admin-notifications-page .notifications-target.is-active {
+  border-color:var(--admin-brand-border)!important;
+  background:var(--admin-accent-soft)!important;
+  color:var(--admin-text)!important;
+}
+
+@media(max-width:640px)
+.admin-shell .admin-page-content .admin-notifications-page {
+    gap:12px!important;
+  }
+
+@media(max-width:640px)
+.admin-shell .admin-page-content .admin-notifications-page .notifications-form-card {
+    padding:12px!important;
+  }
