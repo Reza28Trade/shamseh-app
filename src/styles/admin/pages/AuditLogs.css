@@ -38,7 +38,6 @@
 
 }
 .admin-shell .admin-page-content .admin-logs-page > section:nth-child(2)[role="alert"] {
-  border-color: color-mix(in srgb, var(--shamseh-burgundy) 42%, var(--shamseh-border-default)) !important;
 
 }
 .admin-shell .admin-page-content .admin-logs-page > section:nth-child(2)[role="alert"] svg {
@@ -75,7 +74,6 @@
 .admin-shell .admin-page-content .admin-logs-page thead tr {
 }
 .admin-shell .admin-page-content .admin-logs-page :is(th, td) {
-  border-color: var(--shamseh-border-default) !important;
 }
 .admin-shell .admin-page-content .admin-logs-page th {
   padding: var(--shamseh-space-3) var(--shamseh-space-2) !important;
@@ -161,7 +159,6 @@
 }
 
 .admin-shell .admin-page-content .admin-logs-page > section:not([role="alert"]) {
-  border-color:var(--admin-border)!important;
 
 
 }
