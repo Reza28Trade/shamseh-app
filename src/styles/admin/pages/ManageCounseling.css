@@ -333,9 +333,6 @@
   gap:14px!important;
   color:var(--admin-text)!important;
 }
-.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head {
-  display:none!important;
-}
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid {
   grid-template-columns:repeat(4,minmax(0,1fr))!important;
   gap:10px!important;
