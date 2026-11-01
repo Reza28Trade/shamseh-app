@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { MessageSquare, Send, RefreshCw, X, Clock3, CheckCircle2, CircleDot, MessagesSquare } from 'lucide-react';
-import '../../styles/admin/pages/ManageMessages.css';
 
 interface SupportMessage {
   id: string;
