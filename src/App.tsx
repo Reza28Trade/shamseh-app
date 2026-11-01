@@ -101,7 +101,7 @@ function AdminAccounts() {
           </details>
           <div className="accounts-selected-permissions">{permissions.length===0 ? <span className="accounts-no-selection">هنوز دسترسی‌ای انتخاب نشده است.</span> : permissions.map(key=><span key={key}>{permissionLabel(key)}</span>)}</div>
         </div>
-        <button className="accounts-primary-action" disabled={busy||username.trim().length<3||password.length<12} onClick={()=>void create()}>{busy?'در حال ذخیره…':'ایجاد حساب مدیر'}</button>
+        <div className="accounts-primary-action-wrap"><button className="accounts-primary-action" disabled={busy||username.trim().length<3||password.length<12} onClick={()=>void create()}>{busy?'در حال ذخیره…':'ایجاد حساب مدیر'}</button></div>
         <small className="accounts-form-hint">رمز عبور باید حداقل ۱۲ کاراکتر داشته باشد.</small>
       </div>
       <div className="accounts-card accounts-list-card admin-panel-card admin-master-panel">
