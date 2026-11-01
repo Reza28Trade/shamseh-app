@@ -1,7 +1,6 @@
 /* Unified admin design system — shared by every legacy management page */
 
 .admin-legacy-page {
-  --legacy-accent:var(--admin-accent);
   width:100%;
   max-width:1240px;
   margin:0 auto;
