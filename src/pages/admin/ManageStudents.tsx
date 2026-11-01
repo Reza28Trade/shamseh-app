@@ -279,7 +279,14 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
   const doctorateCount = apiStudents.filter(s => s.academicLevel === 'DOCTORATE').length;
   const latestAcademicYear = availableYears[0];
   const termCounts = useMemo(() => {
-    const colors = ['#FF6838', '#FFC820', '#97C95C', '#1CB2F6', '#9B7BDE', '#1685B8'];
+    const colors = [
+      'var(--admin-data-series-1)',
+      'var(--admin-data-series-2)',
+      'var(--admin-data-series-3)',
+      'var(--admin-data-series-4)',
+      'var(--admin-data-series-1-highlight)',
+      'var(--admin-data-series-2-highlight)',
+    ];
     const grouped = new Map<string, Set<string>>();
     apiStudents.forEach(student => {
       student.enrollments.filter(enrollment => {
