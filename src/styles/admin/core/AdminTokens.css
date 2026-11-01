@@ -38,6 +38,7 @@
   --admin-shell-sidebar-shadow: 4px 0 22px rgba(55,46,38,.045);
   --admin-shell-profile-shadow: 0 5px 16px rgba(55,46,38,.045);
   --admin-shell-sidebar-overlay: rgba(0,0,0,.28);
+  --admin-shell-sidebar-mobile-shadow: -18px 0 48px rgba(0,0,0,.28);
   --admin-shell-backdrop: rgba(0,0,0,.48);
   /* Semantic elevations and status surfaces reused by admin modules. */
   --admin-shadow-stat: 0 5px 16px rgba(0,0,0,.035);
