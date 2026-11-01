@@ -52,10 +52,10 @@ All admin module-owned styles live under `src/styles/admin/pages/`.
 2. Keep module-specific grids, ordering, spacing and responsive composition in that module's page stylesheet.
 3. Do not duplicate shared component appearance in page files. Use shared tokens and shared patterns.
 4. Do not introduce new hard-coded brand colors or page-local shadow/radius systems.
-5. Historical module-specific color literals and repeated compatibility overrides are migration debt, not patterns to copy. Preserve their exact appearance during structural refactors; promote shared semantics to core tokens, and retire legacy values only after light/dark and responsive visual verification.
 5. Preserve semantic status colors (success, warning, error) through shared semantic tokens rather than arbitrary page palettes.
-6. Do not delete compatibility selectors based on a text search alone. Confirm JSX usage and test both themes and responsive breakpoints.
-7. Dashboard and Manage Admins remain the visual baselines; other modules should align to their visual language without copying their workflows or layouts.
+6. Historical module-specific color literals and repeated compatibility overrides are migration debt, not patterns to copy. Preserve their exact appearance during structural refactors; promote shared semantics to core tokens, and retire legacy values only after light/dark and responsive visual verification.
+7. Do not delete compatibility selectors based on a text search alone. Confirm JSX usage and test both themes and responsive breakpoints.
+8. Dashboard and Manage Admins remain the visual baselines; other modules should align to their visual language without copying their workflows or layouts.
 
 ## Migration status
 
