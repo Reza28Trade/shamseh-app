@@ -693,9 +693,9 @@ padding:0!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-levels button.is-active,
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-selected-toggle.is-active {
-  border-color:var(--admin-accent)!important;
-  background:var(--admin-accent-soft)!important;
-  color:var(--admin-accent)!important;
+  ;
+  ;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-summary {
   display:flex;
@@ -770,8 +770,8 @@ padding:0!important;
   cursor:pointer!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-option.is-selected {
-  border-color:var(--admin-accent)!important;
-  background:var(--admin-accent-soft)!important;
+  ;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-check {
   display:flex;
@@ -784,8 +784,8 @@ padding:0!important;
 
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-option.is-selected .mock-participant-check {
-  border-color:var(--admin-accent);
-  background:var(--admin-card);
+  ;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-identity {
   display:grid;
@@ -938,8 +938,8 @@ padding:0!important;
   vertical-align:middle;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-row-toggle.is-selected {
-  border-color:var(--admin-accent)!important;
-  background:var(--admin-accent-soft)!important;
+  ;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-table .mock-participant-level {
   display:inline-block;
