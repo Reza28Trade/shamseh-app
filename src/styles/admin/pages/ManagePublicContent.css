@@ -1,85 +1,43 @@
-/* Module-owned compatibility rules migrated from AdminLegacy.css. */
-.admin-public-content-page > header {
-  padding:20px 22px!important;
-}
+/* Public content page composition only. Shared surfaces and controls are centralized. */
 
-.admin-public-content-page > header h2 {letter-spacing:-.2px}
+.admin-public-content-page { gap: 16px; }
+
+.admin-public-content-page > header { display: none; }
 
 .admin-public-content-page > form,
-.admin-public-content-page > div[style*="grid"] {
+.admin-public-content-page > div:has(> button),
+.admin-public-content-page > div[style*="overflow"] {
+  min-width: 0;
+  max-width: 100%;
+  padding: 16px;
 }
 
-.admin-public-content-page table {width:100%;border-collapse:separate;border-spacing:0}
+.admin-public-content-page table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
 
-.admin-public-content-page th {}
+.admin-public-content-page :is(input,select,textarea) {
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+}
 
-.admin-public-content-page td {}
+.admin-public-content-page button,
+.admin-public-content-page a {
+  transition: transform .15s ease;
+}
 
 @media(max-width:700px) {
-.admin-public-content-page > header {padding:17px!important}
-
-.admin-public-content-page {gap:13px!important}
-}
-
-
-
-/* Page-owned rules migrated from AdminDesignSystem.css. */
-.admin-shell .admin-page-content .admin-public-content-page {
-
-
-}
-
-.admin-shell .admin-page-content .admin-public-content-page > header {
-  display:none!important;
-}
-
-.admin-shell .admin-page-content .admin-public-content-page > div:has(> button),
-.admin-shell .admin-page-content .admin-public-content-page form,
-.admin-shell .admin-page-content .admin-public-content-page > div[style*="overflow"] {
-  border-color:var(--admin-border)!important;
-  border-radius:14px!important;
-  box-shadow:none!important;
-}
-
-.admin-shell .admin-page-content .admin-public-content-page form {
-
-}
-
-.admin-shell .admin-page-content .admin-public-content-page label {
-}
-
-.admin-shell .admin-page-content .admin-public-content-page input,
-.admin-shell .admin-page-content .admin-public-content-page select,
-.admin-shell .admin-page-content .admin-public-content-page textarea {
-  min-width:0;
-  max-width:100%;
-  border:1px solid var(--admin-border)!important;
-  border-radius:9px!important;
-  background:var(--admin-control)!important;
-  color:var(--admin-text)!important;
-  font:inherit;
-}
-
-.admin-shell .admin-page-content .admin-public-content-page input:focus,
-.admin-shell .admin-page-content .admin-public-content-page select:focus,
-.admin-shell .admin-page-content .admin-public-content-page textarea:focus {
-  border-color:var(--admin-accent)!important;
-  box-shadow:0 0 0 3px var(--admin-accent-soft)!important;
-  outline:none;
-}
-
-.admin-shell .admin-page-content .admin-public-content-page button {
-  transition:background .15s ease,border-color .15s ease,transform .15s ease;
-}
-
-.admin-shell .admin-page-content .admin-public-content-page button:focus-visible,
-.admin-shell .admin-page-content .admin-public-content-page a:focus-visible {
-  outline:2px solid var(--admin-accent)!important;
-  outline-offset:2px;
+  .admin-public-content-page { gap: 13px; }
+  .admin-public-content-page > form,
+  .admin-public-content-page > div:has(> button),
+  .admin-public-content-page > div[style*="overflow"] {
+    padding: 13px;
+  }
 }
 
 @media(max-width:640px) {
-.admin-shell .admin-page-content .admin-public-content-page {
-    gap:12px!important;
-  }
+  .admin-public-content-page { gap: 12px; }
 }
