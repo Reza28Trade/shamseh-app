@@ -89,6 +89,8 @@
   --admin-message-hero-start: #6d001a;
   --admin-message-hero-deep: #281326;
   --admin-message-gold-bright: #f1d6a1;
+  --admin-dashboard-refresh-border: #d9c7af;
+  --admin-dashboard-accent-strong: #126f73;
   /* Shared data-visualization palette; modules consume these instead of defining local palettes. */
   --admin-data-series-1: #4BA6A1;
   --admin-data-series-1-highlight: #70C4BC;
