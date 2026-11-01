@@ -5,8 +5,7 @@
 
 .admin-legacy-page,
 .admin-legacy-page * {
-  box-sizing: border-box;
-}
+  box-sizing: border-box}
 
 /* Historical near-black inline panels use the current theme surface tokens. */
 .admin-legacy-page [style*="#0e0e11"],
@@ -31,8 +30,7 @@
   background-image: none !important;
   border-color: var(--admin-border) !important;
   box-shadow: none !important;
-  color: var(--admin-text) !important;
-}
+  color: var(--admin-text) !important}
 
 /* Replace old burgundy hero treatments with the Shamseh brand surface. */
 .admin-legacy-page [style*="linear-gradient(135deg"],
@@ -40,8 +38,7 @@
 .admin-legacy-page [style*="linear-gradient(135deg, rgba(109, 0, 26"] {
   background: linear-gradient(135deg,var(--admin-brand-soft),var(--admin-card)) !important;
   border-color: var(--admin-brand-border) !important;
-  box-shadow: var(--admin-shadow) !important;
-}
+  box-shadow: var(--admin-shadow) !important}
 
 /* Historical inline burgundy action buttons use the shared accent. */
 .admin-legacy-page button[style*="#6D001A"],
@@ -52,21 +49,18 @@
 .admin-legacy-page [style*="background: 'linear-gradient(135deg, #6D001A"] {
   background: var(--admin-accent) !important;
   border-color: var(--admin-accent) !important;
-  color: var(--admin-on-accent) !important;
-}
+  color: var(--admin-on-accent) !important}
 
 /* Historical accent literals are mapped to the shared turquoise/teal accent. */
 .admin-shell .admin-page-content .admin-legacy-page button[style*="#ff3366"],
 .admin-shell .admin-page-content .admin-legacy-page button[style*="#ff6688"] {
-  border-color: var(--admin-accent) !important;
-}
+  border-color: var(--admin-accent) !important}
 
 .admin-shell .admin-page-content .admin-legacy-page button[style*="#38bdf8"] {
   background: var(--admin-accent) !important;
   border-color: var(--admin-accent) !important;
-  color: var(--admin-on-accent) !important;
-}
+  color: var(--admin-on-accent) !important}
 
 @media (max-width: 900px) {
-  .admin-legacy-page { max-width: none; }
+  .admin-legacy-page { max-width: none}
 }
