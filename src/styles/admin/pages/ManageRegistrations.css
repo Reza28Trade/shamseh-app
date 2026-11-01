@@ -13,11 +13,9 @@
 
 .admin-shell .admin-page-content .admin-finance-registration-page article,
 .admin-shell .admin-page-content .admin-finance-registration-page section {
-  color:var(--admin-text);
 }
 
 .admin-shell .admin-page-content .admin-finance-registration-page article strong {
-  color:var(--admin-text);
 }
 
 /* Shamseh finance, registration and refunds — reference-page design */
@@ -25,8 +23,7 @@
   gap: 18px !important;
   max-width: 100%;
   min-width: 0;
-  font-size: 12px;
-  line-height: 1.75;
+
 }
 .admin-finance-registration-page > div:first-child {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)) !important;
@@ -37,9 +34,8 @@
   min-height: 92px;
   align-content: space-between;
   padding: 14px 15px !important;
-  border-radius: 13px !important;
-  background: var(--admin-card) !important;
-  box-shadow: var(--admin-shadow-stat);
+
+
   transition: border-color .18s ease, transform .18s ease;
 }
 .admin-finance-registration-page > div:first-child > article:hover {
@@ -47,63 +43,53 @@
   transform: translateY(-1px);
 }
 .admin-finance-registration-page > div:first-child > article > span {
-  font-size: 11px !important;
-  font-weight: 650;
+
   letter-spacing: .01em;
 }
 .admin-finance-registration-page > div:first-child > article > strong {
-  font-size: clamp(14px, 1.1vw, 17px) !important;
-  line-height: 1.6;
+
   font-variant-numeric: tabular-nums;
 }
 .admin-finance-registration-page > section {
   padding: 17px !important;
   gap: 13px !important;
-  border-radius: 14px !important;
-  background: var(--admin-card) !important;
-  box-shadow: var(--admin-shadow-section);
+
+
   min-width: 0;
 }
 .admin-finance-registration-page > section h3 {
-  font-size: 14px !important;
-  line-height: 1.8;
-  font-weight: 800;
+
+
   letter-spacing: -.01em;
 }
 .admin-finance-registration-page > section p {
   max-width: 760px;
 }
 .admin-finance-registration-page > section > div[style*="overflowX"] {
-  border: 1px solid var(--admin-border);
-  border-radius: 10px;
+
 }
 .admin-finance-registration-page table {
-  font-size: 11px !important;
 }
 .admin-finance-registration-page table th {
-  font-size: 11px;
-  font-weight: 800;
-  color: var(--admin-text);
-  background: var(--admin-inner) !important;
+
+
+
 }
 .admin-finance-registration-page table td {
   vertical-align: top;
-  line-height: 1.8;
 }
 .admin-finance-registration-page table tbody tr {
   transition: background .15s ease;
 }
 .admin-finance-registration-page table tbody tr:hover {
-  background: var(--admin-accent-soft);
 }
 .admin-finance-registration-page > div:nth-of-type(2) {
   display: flex;
   align-items: center;
   gap: 7px !important;
   padding: 5px;
-  border: 1px solid var(--admin-border);
-  border-radius: 12px;
-  background: var(--admin-card);
+
+
   width: fit-content;
   max-width: 100%;
 }
@@ -120,9 +106,8 @@
   grid-template-columns: minmax(220px, 1fr) minmax(155px, 220px);
   gap: 10px !important;
   padding: 12px;
-  border: 1px solid var(--admin-border);
-  border-radius: 12px;
-  background: var(--admin-card);
+
+
 }
 .admin-finance-registration-page input:not([type="checkbox"]),
 .admin-finance-registration-page select,
@@ -147,19 +132,15 @@
   border-radius: 10px !important;
 }
 .admin-finance-registration-page > div[role="dialog"] > form {
-  box-shadow: var(--admin-shadow-dialog);
 }
 .admin-finance-registration-page > div[role="dialog"] > form h3 {
-  font-size: 15px !important;
 }
 .admin-finance-registration-page > div[role="dialog"] > form label {
-  line-height: 1.8;
 }
 .admin-finance-registration-page > div[role="dialog"] > form textarea {
   min-height: 76px;
 }
 .admin-finance-registration-page > div:last-child article {
-  border-radius: 12px !important;
 }
 .admin-finance-registration-page button {
   font-family: inherit;
@@ -184,7 +165,6 @@
     padding: 11px !important;
   }
   .admin-finance-registration-page > div:first-child > article > strong {
-    font-size: 13px !important;
   }
   .admin-finance-registration-page > section { padding: 12px !important; }
   .admin-finance-registration-page > div:nth-of-type(2) {
@@ -229,9 +209,7 @@
 
 .admin-shell .admin-page-content .admin-finance-registration-page article,
 .admin-shell .admin-page-content .admin-finance-registration-page section {
-  color:var(--admin-text);
 }
 
 .admin-shell .admin-page-content .admin-finance-registration-page article strong {
-  color:var(--admin-text);
 }
