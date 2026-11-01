@@ -1,157 +1,97 @@
 /* Light admin theme: warm neutral surfaces with the original Shamseh turquoise identity. */
-.admin-shell.admin-theme-light .admin-main{
+
+.admin-shell.admin-theme-light .admin-main {
   background:var(--admin-bg)!important;
   color:var(--admin-text)!important;
 }
-.admin-shell.admin-theme-light .admin-sidebar{
+
+.admin-shell.admin-theme-light .admin-sidebar {
   background:#E8E3DA!important;
   border-left:1px solid var(--admin-border)!important;
   box-shadow:4px 0 22px rgba(55,46,38,.045)!important;
 }
-.admin-shell.admin-theme-light .admin-sidebar-profile{
+
+.admin-shell.admin-theme-light .admin-sidebar-profile {
   background:#F7F3EC!important;
   border:1px solid var(--admin-border)!important;
   box-shadow:0 5px 16px rgba(55,46,38,.045)!important;
 }
+
 .admin-shell.admin-theme-light .admin-sidebar-heading,
-.admin-shell.admin-theme-light .admin-sidebar-status{
+.admin-shell.admin-theme-light .admin-sidebar-status {
   color:var(--admin-sub)!important;
 }
-.admin-shell.admin-theme-light .admin-nav button{
+
+.admin-shell.admin-theme-light .admin-nav button {
   color:#514940!important;
   border-color:transparent!important;
   border-radius:11px!important;
 }
-.admin-shell.admin-theme-light .admin-nav button:hover{
+
+.admin-shell.admin-theme-light .admin-nav button:hover {
   background:rgba(255,255,255,.48)!important;
   color:var(--admin-text)!important;
 }
-.admin-shell.admin-theme-light .admin-nav button.active{
+
+.admin-shell.admin-theme-light .admin-nav button.active {
   background:var(--admin-accent-soft)!important;
   color:var(--admin-text)!important;
   border-color:var(--admin-brand-border)!important;
   box-shadow:inset 0 0 0 1px rgba(0,128,128,.035)!important;
 }
+
 .admin-shell.admin-theme-light .admin-nav button.active .admin-nav-icon,
-.admin-shell.admin-theme-light .admin-nav-indicator{
+.admin-shell.admin-theme-light .admin-nav-indicator {
   color:var(--admin-accent)!important;
   background:var(--admin-accent)!important;
 }
-.admin-shell.admin-theme-light .admin-page-content .admin-dashboard-page :is(.admin-welcome,.admin-followup-card,.admin-panel-card,.admin-stat){
-  background:var(--admin-card)!important;
-  border:1px solid var(--admin-border)!important;
-  box-shadow:var(--admin-shadow)!important;
-}
-.admin-shell.admin-theme-light .admin-page-content .admin-dashboard-page .admin-stat-grid{
-  display:grid!important;
-  gap:12px!important;
-  padding:0!important;
-  border:0!important;
-  background:transparent!important;
-  box-shadow:none!important;
-}
-.admin-shell.admin-theme-light .admin-page-content .admin-dashboard-page .admin-stat{
-  border-radius:15px!important;
-}
-.admin-shell.admin-theme-light .admin-page-content .admin-dashboard-page .admin-stat-icon{
-  color:var(--admin-accent)!important;
-  background:var(--admin-accent-soft)!important;
-}
-.admin-shell.admin-theme-light .admin-page-content .admin-dashboard-page :is(.admin-panel-heading,.admin-transaction-row,.admin-audit-row){
-  border-color:var(--admin-border)!important;
-}
-.admin-shell.admin-theme-light .admin-page-content :is(input,select,textarea){
+
+.admin-shell.admin-theme-light .admin-page-content :is(input,select,textarea) {
   border-color:var(--admin-border);
   background:var(--admin-control);
   color:var(--admin-text);
 }
+
 \n/* Approved Shamseh palette + Orbit-inspired shell treatment (phase 1: admin). */
-.admin-shell.admin-theme-dark .admin-sidebar{
+.admin-shell.admin-theme-dark .admin-sidebar {
   background:#171616!important;
   border-left-color:rgba(238,229,218,.10)!important;
 }
-.admin-shell.admin-theme-dark .admin-sidebar-profile{
+
+.admin-shell.admin-theme-dark .admin-sidebar-profile {
   background:#202020!important;
   border-color:rgba(238,229,218,.10)!important;
   box-shadow:none!important;
 }
-.admin-shell.admin-theme-dark .admin-nav button{
+
+.admin-shell.admin-theme-dark .admin-nav button {
   border-radius:11px;
 }
-.admin-shell.admin-theme-dark .admin-nav button.active{
+
+.admin-shell.admin-theme-dark .admin-nav button.active {
   background:#303030!important;
   color:#EEE5DA!important;
   border-color:rgba(238,229,218,.06)!important;
 }
-.admin-shell.admin-theme-dark .admin-nav button.active .admin-nav-icon{
+
+.admin-shell.admin-theme-dark .admin-nav button.active .admin-nav-icon {
   color:#48D1CC!important;
 }
-.admin-shell.admin-theme-dark .admin-nav-indicator{
+
+.admin-shell.admin-theme-dark .admin-nav-indicator {
   width:3px;
   background:#48D1CC!important;
   box-shadow:none!important;
 }
-.admin-shell .admin-page-content .admin-dashboard-page .admin-welcome{
-  border-radius:17px!important;
-  box-shadow:none!important;
-}
-.admin-shell.admin-theme-dark .admin-page-content .admin-dashboard-page :is(.admin-welcome,.admin-followup-card,.admin-panel-card,.admin-stat){
-  background:#1D1B1B!important;
-  border-color:rgba(238,229,218,.13)!important;
-  box-shadow:none!important;
-}
-.admin-shell.admin-theme-dark .admin-page-content .admin-dashboard-page .admin-stat{
-  background:linear-gradient(145deg,#242222,#1D1B1B)!important;
-}
-.admin-shell .admin-page-content .admin-dashboard-page .admin-stat{
-  border-radius:14px!important;
-  padding:16px!important;
-}
-.admin-shell .admin-page-content .admin-dashboard-page .admin-stat:hover{
-  border-color:var(--admin-brand-border)!important;
-  transform:translateY(-1px);
-}
-.admin-shell .admin-page-content .admin-dashboard-page .admin-stat-icon{
-  border-radius:11px!important;
-}
-.admin-shell .admin-page-content .admin-dashboard-page :is(.admin-panel-card,.admin-followup-card){
-  border-radius:15px!important;
-}
-.admin-shell .admin-page-content .admin-dashboard-page .admin-panel-heading{
-  border-bottom-color:var(--admin-border)!important;
-}
-.admin-shell .admin-page-content .admin-dashboard-page .admin-followup-icon.amber{
-  color:var(--admin-gold)!important;
-  background:rgba(196,152,76,.13)!important;
-}
-.admin-shell .admin-page-content .admin-dashboard-page .admin-dashboard-notice{
-  border-color:rgba(196,152,76,.35)!important;
-  background:rgba(196,152,76,.09)!important;
-}
-.admin-shell .admin-page-content .admin-dashboard-page .admin-transaction-amount{
-  color:var(--admin-text);
-}
-.admin-shell .admin-page-content .admin-dashboard-page :is(.admin-stat-grid,.admin-followup-grid,.admin-dashboard-grid){
-  gap:12px;
-}
-@media(max-width:900px){
-  .admin-shell .admin-sidebar{border-left:1px solid var(--admin-border)}
-}
+
+@media(max-width:900px)
+.admin-shell .admin-sidebar {border-left:1px solid var(--admin-border)}
 
 /* Page headers are owned by their module stylesheets.
    Do not globally hide headings: each module decides its own header composition. */
 
-
 /* Phase 3: consistent surfaces and controls for operational admin workspaces. */
-.admin-shell .admin-page-content .admin-messages-page,
-.admin-shell .admin-page-content .admin-offline-page,
-.admin-shell .admin-page-content .admin-mock-exams-page,
-.admin-shell .admin-page-content .admin-counseling-page,
-.admin-shell .admin-page-content .admin-public-content-page {
-  color:var(--admin-text);
-  font-size:12px;
-  line-height:1.8;
-}
+
 .admin-shell .admin-page-content :is(
   .admin-messages-page .messages-stats,
   .admin-offline-page .offline-stats,
@@ -162,6 +102,7 @@
   grid-template-columns:repeat(auto-fit,minmax(min(100%,175px),1fr));
   gap:12px!important;
 }
+
 .admin-shell .admin-page-content :is(
   .admin-messages-page .messages-stat,
   .admin-offline-page .offline-stat-card,
@@ -176,6 +117,7 @@
   color:var(--admin-text)!important;
   box-shadow:none!important;
 }
+
 .admin-shell .admin-page-content :is(
   .messages-stat::before,.messages-stat::after,
   .offline-stat-card::before,.offline-stat-card::after,
@@ -184,6 +126,7 @@
   display:none!important;
   content:none!important;
 }
+
 .admin-shell .admin-page-content :is(
   .messages-stat-icon,.offline-stat-icon,.mock-exam-stat-icon
 ) {
@@ -191,6 +134,7 @@
   background:var(--admin-accent-soft)!important;
   color:var(--admin-accent)!important;
 }
+
 .admin-shell .admin-page-content :is(
   .messages-stat strong,.offline-stat-copy strong,.mock-exam-stat strong,
   .counseling-stats-grid strong
@@ -200,6 +144,7 @@
   font-weight:850!important;
   font-variant-numeric:tabular-nums;
 }
+
 .admin-shell .admin-page-content :is(
   .messages-ticket-section,.offline-list-card,.mock-exam-list-card,
   .admin-counseling-page .counseling-account-section,
@@ -213,6 +158,7 @@
   color:var(--admin-text)!important;
   box-shadow:none!important;
 }
+
 .admin-shell .admin-page-content :is(
   .messages-section-head,.offline-list-head,.mock-exam-list-head,
   .admin-counseling-page .counseling-account-section > h3,
@@ -226,6 +172,7 @@
   padding-bottom:11px;
   border-bottom:1px solid var(--admin-border);
 }
+
 .admin-shell .admin-page-content :is(
   .messages-table-wrap,.mock-exam-scroll-list,.offline-list-card
 ) {
@@ -235,6 +182,7 @@
   scrollbar-width:thin;
   scrollbar-color:var(--admin-border) transparent;
 }
+
 .admin-shell .admin-page-content :is(
   .messages-table,.messages-table-wrap table,.mock-exam-scroll-list table
 ) {
@@ -243,6 +191,7 @@
   border-collapse:separate;
   border-spacing:0;
 }
+
 .admin-shell .admin-page-content :is(
   .messages-table th,.messages-table-wrap th,.mock-exam-scroll-list th
 ) {
@@ -253,6 +202,7 @@
   font-weight:850!important;
   white-space:nowrap;
 }
+
 .admin-shell .admin-page-content :is(
   .messages-table td,.messages-table-wrap td,.mock-exam-scroll-list td
 ) {
@@ -260,11 +210,13 @@
   font-size:11px;
   vertical-align:middle;
 }
+
 .admin-shell .admin-page-content :is(
   .messages-table tbody tr:hover,.mock-exam-scroll-list tbody tr:hover
 ) {
   background:var(--admin-accent-soft)!important;
 }
+
 .admin-shell .admin-page-content :is(
   .messages-refresh,.offline-refresh,.messages-filter-group button,
   .offline-filter-group button,.mock-exam-filters button,
@@ -275,11 +227,13 @@
   border-radius:9px;
   font-size:11px;
 }
+
 .admin-shell .admin-page-content :is(
   .messages-refresh,.offline-refresh,.notifications-submit
 ) {
   min-height:36px;
 }
+
 .admin-shell .admin-page-content :is(
   .messages-filter-group,.offline-filter-group,.mock-exam-filters
 ) {
@@ -287,6 +241,7 @@
   flex-wrap:wrap;
   gap:6px;
 }
+
 .admin-shell .admin-page-content :is(
   .messages-filter-group button,.offline-filter-group button,.mock-exam-filters button
 ) {
@@ -296,6 +251,7 @@
   background:var(--admin-inner);
   color:var(--admin-sub);
 }
+
 .admin-shell .admin-page-content :is(
   .messages-filter-group button.active,.offline-filter-group button.active,
   .mock-exam-filters button.active
@@ -304,32 +260,7 @@
   color:var(--admin-accent)!important;
   border-color:var(--admin-brand-border)!important;
 }
-.admin-shell .admin-page-content .admin-notifications-page .notifications-form-card {
-  padding:18px!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:14px!important;
-  background:var(--admin-card)!important;
-  box-shadow:none!important;
-}
-.admin-shell .admin-page-content .admin-notifications-page .notifications-form {
-  gap:16px;
-}
-.admin-shell .admin-page-content .admin-notifications-page .notifications-field label {
-  color:var(--admin-text);
-  font-size:11px;
-  font-weight:800;
-}
-.admin-shell .admin-page-content .admin-notifications-page :is(input,select,textarea) {
-  min-height:39px;
-  border:1px solid var(--admin-border);
-  border-radius:9px;
-  background:var(--admin-control);
-  color:var(--admin-text);
-  font:inherit;
-}
-.admin-shell .admin-page-content .admin-notifications-page textarea {
-  min-height:110px;
-}
+
 .admin-shell .admin-page-content :is(
   .admin-messages-page,.admin-offline-page,.admin-mock-exams-page,
   .admin-counseling-page,.admin-notifications-page,.admin-public-content-page
@@ -337,8 +268,9 @@
   outline:2px solid var(--admin-accent)!important;
   outline-offset:2px;
 }
-@media(max-width:760px) {
-  .admin-shell .admin-page-content :is(
+
+@media(max-width:760px)
+.admin-shell .admin-page-content :is(
     .messages-ticket-section,.offline-list-card,.mock-exam-list-card,
     .admin-counseling-page .counseling-account-section,
     .admin-counseling-page .counseling-conversation-section,
@@ -346,7 +278,9 @@
   ) {
     padding:12px!important;
   }
-  .admin-shell .admin-page-content :is(
+
+@media(max-width:760px)
+.admin-shell .admin-page-content :is(
     .admin-messages-page .messages-stats,
     .admin-offline-page .offline-stats,
     .admin-mock-exams-page .mock-exam-stats,
@@ -354,12 +288,9 @@
   ) {
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
   }
-  .admin-shell .admin-page-content .admin-counseling-page .admin-counseling-conversations-grid {
-    grid-template-columns:minmax(0,1fr)!important;
-  }
-}
-@media(max-width:440px) {
-  .admin-shell .admin-page-content :is(
+
+@media(max-width:440px)
+.admin-shell .admin-page-content :is(
     .admin-messages-page .messages-stats,
     .admin-offline-page .offline-stats,
     .admin-mock-exams-page .mock-exam-stats,
@@ -367,11 +298,10 @@
   ) {
     grid-template-columns:minmax(0,1fr)!important;
   }
-}
-
 
 /* Phase 4: finish the shared system for public content, notifications and audit history.
    Presentation-only overrides: preserve all handlers, forms, permissions and data flows. */
+
 .admin-shell .admin-page-content :is(
   .admin-public-content-page,
   .admin-notifications-page,
@@ -381,153 +311,14 @@
   font-size:12px;
   line-height:1.8;
 }
-.admin-shell .admin-page-content .admin-public-content-page > header {
-  display:none!important;
-}
-.admin-shell .admin-page-content .admin-public-content-page > div:has(> button),
-.admin-shell .admin-page-content .admin-public-content-page form,
-.admin-shell .admin-page-content .admin-public-content-page > div[style*="overflow"] {
-  border-color:var(--admin-border)!important;
-  border-radius:14px!important;
-  box-shadow:none!important;
-}
-.admin-shell .admin-page-content .admin-public-content-page form {
-  background:var(--admin-card)!important;
-  color:var(--admin-text)!important;
-}
-.admin-shell .admin-page-content .admin-public-content-page label {
-  color:var(--admin-text)!important;
-}
-.admin-shell .admin-page-content .admin-public-content-page input,
-.admin-shell .admin-page-content .admin-public-content-page select,
-.admin-shell .admin-page-content .admin-public-content-page textarea {
-  min-width:0;
-  max-width:100%;
-  border:1px solid var(--admin-border)!important;
-  border-radius:9px!important;
-  background:var(--admin-control)!important;
-  color:var(--admin-text)!important;
-  font:inherit;
-}
-.admin-shell .admin-page-content .admin-public-content-page input:focus,
-.admin-shell .admin-page-content .admin-public-content-page select:focus,
-.admin-shell .admin-page-content .admin-public-content-page textarea:focus {
-  border-color:var(--admin-accent)!important;
-  box-shadow:0 0 0 3px var(--admin-accent-soft)!important;
-  outline:none;
-}
-.admin-shell .admin-page-content .admin-public-content-page button {
-  transition:background .15s ease,border-color .15s ease,transform .15s ease;
-}
-.admin-shell .admin-page-content .admin-public-content-page button:focus-visible,
-.admin-shell .admin-page-content .admin-notifications-page button:focus-visible,
-.admin-shell .admin-page-content .admin-logs-page button:focus-visible,
-.admin-shell .admin-page-content .admin-public-content-page a:focus-visible {
-  outline:2px solid var(--admin-accent)!important;
-  outline-offset:2px;
-}
-.admin-shell .admin-page-content .admin-notifications-page .notifications-form-card {
-  padding:clamp(14px,2vw,22px)!important;
-}
-.admin-shell .admin-page-content .admin-notifications-page .notifications-field {
-  min-width:0;
-}
-.admin-shell .admin-page-content .admin-notifications-page :is(input,select,textarea) {
-  width:100%;
-  min-width:0;
-  min-height:39px;
-  border:1px solid var(--admin-border)!important;
-  border-radius:9px!important;
-  background:var(--admin-control)!important;
-  color:var(--admin-text)!important;
-  font:inherit;
-}
-.admin-shell .admin-page-content .admin-notifications-page textarea {
-  resize:vertical;
-}
-.admin-shell .admin-page-content .admin-notifications-page :is(input,select,textarea):focus {
-  outline:none;
-  border-color:var(--admin-accent)!important;
-  box-shadow:0 0 0 3px var(--admin-accent-soft);
-}
-.admin-shell .admin-page-content .admin-notifications-page .notifications-target {
-  min-width:0;
-  border:1px solid var(--admin-border)!important;
-  border-radius:10px!important;
-  background:var(--admin-inner)!important;
-  color:var(--admin-text)!important;
-}
-.admin-shell .admin-page-content .admin-notifications-page .notifications-target.is-active {
-  border-color:var(--admin-brand-border)!important;
-  background:var(--admin-accent-soft)!important;
-  color:var(--admin-text)!important;
-}
-.admin-shell .admin-page-content .admin-logs-page > section:not([role="alert"]) {
-  border-color:var(--admin-border)!important;
-  border-radius:14px!important;
-  background:var(--admin-card)!important;
-  box-shadow:none!important;
-}
-.admin-shell .admin-page-content .admin-logs-page > section:first-child {
-  padding:16px!important;
-}
-.admin-shell .admin-page-content .admin-logs-page h2 {
-  font-size:16px!important;
-  color:var(--admin-text)!important;
-}
-.admin-shell .admin-page-content .admin-logs-page table {
-  border-collapse:separate;
-  border-spacing:0;
-}
-.admin-shell .admin-page-content .admin-logs-page :is(th,td) {
-  border-bottom:1px solid var(--admin-border)!important;
-  font-size:11px;
-}
-.admin-shell .admin-page-content .admin-logs-page th {
-  background:var(--admin-inner)!important;
-  color:var(--admin-sub)!important;
-  font-weight:850;
-  white-space:nowrap;
-}
-.admin-shell .admin-page-content .admin-logs-page tbody tr:hover {
-  background:var(--admin-accent-soft)!important;
-}
-.admin-shell .admin-page-content .admin-logs-page input,
-.admin-shell .admin-page-content .admin-logs-page select {
-  min-height:38px;
-  border:1px solid var(--admin-border)!important;
-  border-radius:9px!important;
-  background:var(--admin-control)!important;
-  color:var(--admin-text)!important;
-  font:inherit;
-}
-.admin-shell .admin-page-content .admin-logs-page input:focus,
-.admin-shell .admin-page-content .admin-logs-page select:focus {
-  outline:none;
-  border-color:var(--admin-accent)!important;
-  box-shadow:0 0 0 3px var(--admin-accent-soft);
-}
-.admin-shell .admin-page-content .admin-logs-page [role="alert"] {
-  border-radius:11px!important;
-}
+
 .admin-shell .admin-page-content .admin-legacy-page :is(button,a) {
   -webkit-tap-highlight-color:transparent;
 }
-@media(max-width:640px) {
-  .admin-shell .admin-page-content .admin-public-content-page,
-  .admin-shell .admin-page-content .admin-notifications-page,
-  .admin-shell .admin-page-content .admin-logs-page {
-    gap:12px!important;
-  }
-  .admin-shell .admin-page-content .admin-notifications-page .notifications-form-card,
-  .admin-shell .admin-page-content .admin-logs-page > section:not([role="alert"]) {
-    padding:12px!important;
-  }
-}
-
 
 /* Phase 5: enforce shared reference styling across legacy admin pages.
    Scoped to the admin content area; no data, handlers, permissions or workflows changed. */
+
 .admin-shell .admin-page-content .admin-legacy-page {
   --panel-gap: 14px;
   color: var(--admin-text);
@@ -536,22 +327,27 @@
   line-height: 1.8;
   min-width: 0;
 }
+
 .admin-shell .admin-page-content .admin-legacy-page :is(h1,h2,h3,h4) {
   color: var(--admin-text);
   line-height: 1.6;
   letter-spacing: 0;
 }
+
 .admin-shell .admin-page-content .admin-legacy-page :is(h1,h2) {
   font-size: 17px;
   font-weight: 850;
 }
+
 .admin-shell .admin-page-content .admin-legacy-page :is(h3,h4) {
   font-size: 13px;
   font-weight: 800;
 }
+
 .admin-shell .admin-page-content .admin-legacy-page :is(p,small,.muted,.subtitle) {
   line-height: 1.85;
 }
+
 .admin-shell .admin-page-content .admin-legacy-page :is(
   .mock-exam-dashboard > div,
   .mock-exam-list-card,
@@ -569,6 +365,7 @@
   background: var(--admin-card) !important;
   box-shadow: none !important;
 }
+
 .admin-shell .admin-page-content .admin-legacy-page :is(
   .mock-exam-dashboard > div,
   .mock-exam-list-card,
@@ -583,6 +380,7 @@
 ) {
   min-width: 0;
 }
+
 .admin-shell .admin-page-content .admin-legacy-page :is(
   .mock-exam-stat,.offline-stat-card,.messages-stat,.admin-stat,
   .counseling-stats-grid > *
@@ -594,6 +392,7 @@
   box-shadow: none !important;
   min-width: 0;
 }
+
 .admin-shell .admin-page-content .admin-legacy-page :is(
   .mock-exam-stat,.offline-stat-card,.messages-stat,.admin-stat
 )::before,
@@ -602,6 +401,7 @@
 )::after {
   box-shadow: none !important;
 }
+
 .admin-shell .admin-page-content .admin-legacy-page :is(input,select,textarea) {
   min-width: 0;
   max-width: 100%;
@@ -609,6 +409,7 @@
   border-color: var(--admin-border) !important;
   font: inherit;
 }
+
 .admin-shell .admin-page-content .admin-legacy-page :is(button,.course-btn,.primary-action,.secondary-action) {
   min-height: 35px;
   border-radius: 9px !important;
@@ -617,11 +418,13 @@
   font-weight: 750;
   box-shadow: none;
 }
+
 .admin-shell .admin-page-content .admin-legacy-page :is(table) {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
 }
+
 .admin-shell .admin-page-content .admin-legacy-page :is(th) {
   background: var(--admin-inner) !important;
   color: var(--admin-sub) !important;
@@ -629,17 +432,21 @@
   font-size: 10px !important;
   font-weight: 850;
 }
+
 .admin-shell .admin-page-content .admin-legacy-page :is(td) {
   border-bottom: 1px solid var(--admin-border);
   font-size: 11px;
 }
+
 .admin-shell .admin-page-content .admin-legacy-page :is(tbody tr:hover) {
   background: var(--admin-accent-soft);
 }
+
 .admin-shell .admin-page-content .admin-legacy-page :is(button,input,select,textarea,a):focus-visible {
   outline: 2px solid var(--admin-accent) !important;
   outline-offset: 2px;
 }
+
 .admin-shell .admin-page-content .admin-legacy-page :is(
   .mock-exam-dashboard,.mock-exam-list-card,.mock-exam-scroll-list,
   .messages-table-wrap,.offline-request-list,.counseling-account-list
@@ -647,11 +454,14 @@
   min-width: 0;
   max-width: 100%;
 }
-@media(max-width:760px) {
-  .admin-shell .admin-page-content .admin-legacy-page {
+
+@media(max-width:760px)
+.admin-shell .admin-page-content .admin-legacy-page {
     gap: 12px !important;
   }
-  .admin-shell .admin-page-content .admin-legacy-page :is(
+
+@media(max-width:760px)
+.admin-shell .admin-page-content .admin-legacy-page :is(
     .mock-exam-dashboard > div,
     .mock-exam-list-card,
     .counseling-account-section,
@@ -665,340 +475,12 @@
   ) {
     padding: 13px !important;
   }
-  .admin-shell .admin-page-content .admin-legacy-page :is(.mock-exam-scroll-list,.messages-table-wrap) {
+
+@media(max-width:760px)
+.admin-shell .admin-page-content .admin-legacy-page :is(.mock-exam-scroll-list,.messages-table-wrap) {
     overflow-x: auto;
   }
-}
-
 
 /* Phase 2 — unify remaining admin sections with the approved compact Shamseh UI. */
-.admin-shell .admin-page-content .admin-legacy-page.admin-offline-page,
-.admin-shell .admin-page-content .admin-legacy-page.admin-messages-page,
-.admin-shell .admin-page-content .admin-legacy-page.admin-accounts-page {
-  display:flex!important;
-  flex-direction:column!important;
-  box-sizing:border-box!important;
-  width:100%!important;
-  max-width:none!important;
-  margin:0!important;
-  padding:0!important;
-  gap:15px!important;
-  align-self:stretch!important;
-  color:var(--admin-text);
-  font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif;
-}
-.admin-shell .admin-page-content .admin-offline-page .offline-page-head,
-.admin-shell .admin-page-content .admin-messages-page .messages-ticket-section,
-.admin-shell .admin-page-content .admin-messages-page .messages-detail-section {
-  border:1px solid var(--admin-border)!important;
-  border-radius:15px!important;
-  background:var(--admin-card)!important;
-  box-shadow:var(--admin-shadow)!important;
-  color:var(--admin-text)!important;
-}
-.admin-shell .admin-page-content .admin-offline-page .offline-page-head {
-  min-height:76px;
-  padding:16px 19px!important;
-  border-top:1px solid var(--admin-border)!important;
-  background:linear-gradient(120deg,var(--admin-accent-soft),var(--admin-card) 78%)!important;
-  gap:12px;
-}
-.admin-shell .admin-page-content .admin-offline-page .offline-eyebrow {
-  color:var(--admin-accent)!important;
-  font-size:10px!important;
-  font-weight:850!important;
-}
-.admin-shell .admin-page-content .admin-offline-page .offline-page-head h2 {
-  color:var(--admin-text)!important;
-  font-size:19px!important;
-  line-height:1.5;
-  font-weight:850!important;
-  margin:3px 0 0!important;
-}
-.admin-shell .admin-page-content .admin-offline-page .offline-page-head p {
-  color:var(--admin-sub)!important;
-  font-size:11px!important;
-  line-height:1.8;
-  margin:4px 0 0!important;
-}
-.admin-shell .admin-page-content .admin-offline-page .offline-stats,
-.admin-shell .admin-page-content .admin-messages-page .messages-stats {
-  display:grid!important;
-  grid-template-columns:repeat(4,minmax(0,1fr))!important;
-  gap:10px!important;
-}
-.admin-shell .admin-page-content .admin-offline-page .offline-stat-card,
-.admin-shell .admin-page-content .admin-messages-page .messages-stat {
-  min-width:0;
-  min-height:86px!important;
-  padding:13px!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:13px!important;
-  background:var(--admin-card)!important;
-  color:var(--admin-text)!important;
-  box-shadow:var(--admin-shadow)!important;
-  text-align:right;
-}
-.admin-shell .admin-page-content .admin-offline-page .offline-stat-card.is-active,
-.admin-shell .admin-page-content .admin-messages-page .messages-stat.is-active {
-  border-color:var(--admin-accent)!important;
-  background:var(--admin-accent-soft)!important;
-}
-.admin-shell .admin-page-content .admin-offline-page .offline-stat-copy strong,
-.admin-shell .admin-page-content .admin-messages-page .messages-stat-copy strong {
-  color:var(--admin-text)!important;
-  font-size:21px!important;
-  line-height:1.25;
-}
-.admin-shell .admin-page-content .admin-offline-page .offline-stat-copy small,
-.admin-shell .admin-page-content .admin-messages-page .messages-stat-copy small {
-  color:var(--admin-sub)!important;
-  font-size:10px!important;
-}
-.admin-shell .admin-page-content .admin-offline-page .offline-stat-icon,
-.admin-shell .admin-page-content .admin-messages-page .messages-stat-icon {
-  background:var(--admin-accent-soft)!important;
-  color:var(--admin-accent)!important;
-}
-.admin-shell .admin-page-content .admin-offline-page .offline-list-card {
-  padding:17px!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:15px!important;
-  background:var(--admin-card)!important;
-  box-shadow:var(--admin-shadow)!important;
-}
-.admin-shell .admin-page-content .admin-offline-page .offline-list-head,
-.admin-shell .admin-page-content .admin-messages-page .messages-section-head {
-  gap:12px;
-  padding-bottom:12px;
-  border-bottom:1px solid var(--admin-border)!important;
-}
-.admin-shell .admin-page-content .admin-offline-page .offline-list-head h3,
-.admin-shell .admin-page-content .admin-messages-page .messages-section-head h3,
-.admin-shell .admin-page-content .admin-messages-page .messages-detail-head h3 {
-  color:var(--admin-text)!important;
-  font-size:14px!important;
-  font-weight:850!important;
-}
-.admin-shell .admin-page-content .admin-offline-page .offline-request-row {
-  padding:14px 0!important;
-  border-bottom:1px solid var(--admin-border)!important;
-}
-.admin-shell .admin-page-content .admin-offline-page .offline-student strong,
-.admin-shell .admin-page-content .admin-offline-page .offline-course strong {
-  color:var(--admin-text)!important;
-  font-size:12px!important;
-}
-.admin-shell .admin-page-content .admin-offline-page :is(.offline-student span,.offline-course span,.offline-date span) {
-  color:var(--admin-sub)!important;
-  font-size:10px!important;
-}
-.admin-shell .admin-page-content .admin-offline-page .offline-link-field,
-.admin-shell .admin-page-content .admin-messages-page .messages-table-filters,
-.admin-shell .admin-page-content .admin-messages-page .messages-search {
-  border-color:var(--admin-border)!important;
-  background:var(--admin-inner)!important;
-  color:var(--admin-text)!important;
-}
-.admin-shell .admin-page-content .admin-offline-page .offline-link-field input,
-.admin-shell .admin-page-content .admin-messages-page .messages-search input,
-.admin-shell .admin-page-content .admin-messages-page .messages-reply-form textarea {
-  background:var(--admin-control)!important;
-  color:var(--admin-text)!important;
-  border-color:var(--admin-border)!important;
-}
-.admin-shell .admin-page-content .admin-offline-page .offline-filter-group button,
-.admin-shell .admin-page-content .admin-messages-page .messages-pagination button,
-.admin-shell .admin-page-content .admin-messages-page .messages-refresh {
-  border:1px solid var(--admin-border)!important;
-  border-radius:9px!important;
-  background:var(--admin-inner)!important;
-  color:var(--admin-text)!important;
-}
-.admin-shell .admin-page-content .admin-offline-page .offline-filter-group button.active {
-  border-color:var(--admin-accent)!important;
-  background:var(--admin-accent-soft)!important;
-  color:var(--admin-text)!important;
-}
-.admin-shell .admin-page-content .admin-messages-page .messages-table-wrap {
-  border-color:var(--admin-border)!important;
-  border-radius:11px!important;
-}
-.admin-shell .admin-page-content .admin-messages-page .messages-table th {
-  background:var(--admin-inner)!important;
-  color:var(--admin-sub)!important;
-  font-size:10px!important;
-}
-.admin-shell .admin-page-content .admin-messages-page .messages-table td {
-  border-color:var(--admin-border)!important;
-  color:var(--admin-text)!important;
-  font-size:11px!important;
-}
-.admin-shell .admin-page-content .admin-messages-page .messages-table-row:hover,
-.admin-shell .admin-page-content .admin-messages-page .messages-table-row.is-selected {
-  background:var(--admin-accent-soft)!important;
-}
-.admin-shell .admin-page-content .admin-messages-page :is(.messages-table-subject,.messages-table-student,.messages-detail-head p,.messages-thread-head) {
-  color:var(--admin-text)!important;
-}
-.admin-shell .admin-page-content .admin-messages-page :is(.messages-table-id,.messages-table-date,.messages-filter-summary,.messages-pagination,.messages-detail-head p) {
-  color:var(--admin-sub)!important;
-}
-.admin-shell .admin-page-content .admin-messages-page .messages-detail-section,
-.admin-shell .admin-page-content .admin-messages-page .messages-reply-form {
-  padding:17px!important;
-}
-.admin-shell .admin-page-content .admin-dashboard-page {
-  width:100%;
-  max-width:1240px;
-  gap:14px!important;
-}
-.admin-shell .admin-page-content .admin-dashboard-page .admin-stat-grid {
-  gap:10px!important;
-}
-.admin-shell .admin-page-content .admin-dashboard-page .admin-stat {
-  padding:13px!important;
-  border-radius:14px!important;
-}
-.admin-shell .admin-page-content .admin-dashboard-page .admin-stat-copy strong {
-  font-size:20px!important;
-}
-.admin-shell .admin-page-content .admin-dashboard-page .admin-panel-card {
-  padding:15px!important;
-  border-radius:15px!important;
-}
-.admin-shell .admin-page-content .admin-dashboard-page .admin-panel-heading h2 {
-  font-size:14px!important;
-}
-.admin-shell .admin-page-content .admin-dashboard-page .admin-followup-grid {
-  gap:8px!important;
-}
-@media (max-width: 900px) {
-  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-stats,
-  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-stats {
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  }
-  .admin-shell .admin-page-content .admin-dashboard-page .admin-stat-grid,
-  .admin-shell .admin-page-content .admin-dashboard-page .admin-followup-grid {
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  }
-  .admin-shell .admin-page-content .admin-dashboard-page .admin-dashboard-grid {
-    grid-template-columns:1fr!important;
-  }
-}
-@media (max-width: 560px) {
-  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head {
-    align-items:flex-start;
-    flex-direction:column;
-  }
-  .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-list-head,
-  .admin-shell .admin-page-content .admin-legacy-page.admin-messages-page .messages-section-head {
-    align-items:flex-start;
-    flex-direction:column;
-  }
-  .admin-shell .admin-page-content .admin-dashboard-page .admin-stat-grid,
-  .admin-shell .admin-page-content .admin-dashboard-page .admin-followup-grid {
-    grid-template-columns:1fr 1fr!important;
-  }
-}
-
 
 /* Final cascade normalization: these rules intentionally outrank older page-specific styles. */
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head,
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .students-page-head {
-  min-height:76px!important;
-  padding:16px 18px!important;
-  border:1px solid var(--admin-border)!important;
-  border-top:1px solid var(--admin-border)!important;
-  border-radius:14px!important;
-  background:linear-gradient(120deg,var(--admin-accent-soft),var(--admin-card) 78%)!important;
-  box-shadow:var(--admin-shadow)!important;
-  overflow:visible!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head:before,
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .students-page-head:before {
-  display:none!important;
-  content:none!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .students-page-head h2,
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head h2 {
-  margin:0!important;
-  color:var(--admin-text)!important;
-  font-size:19px!important;
-  font-weight:850!important;
-  line-height:1.5!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .students-page-head p,
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head p {
-  margin:4px 0 0!important;
-  color:var(--admin-sub)!important;
-  font-size:11px!important;
-  line-height:1.8!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .student-stat,
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card,
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-stat {
-  min-height:78px!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:13px!important;
-  background:var(--admin-card)!important;
-  box-shadow:var(--admin-shadow)!important;
-  outline:0!important;
-  transform:none!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .student-stat:before,
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card:before,
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-stat:before,
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .student-stat:after,
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card:after,
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-stat:after {
-  display:none!important;
-  content:none!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .student-stat:nth-child(n) {
-  border-inline:1px solid var(--admin-border)!important;
-  background:var(--admin-card)!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-list-card {
-  padding:0!important;
-  border:1px solid var(--admin-border)!important;
-  border-top:1px solid var(--admin-border)!important;
-  border-radius:14px!important;
-  background:var(--admin-card)!important;
-  box-shadow:var(--admin-shadow)!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-stats {
-  padding:0!important;
-  gap:10px!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-stat.is-active,
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card.is-active {
-  border:1px solid var(--admin-accent)!important;
-  background:var(--admin-accent-soft)!important;
-  outline:0!important;
-  box-shadow:var(--admin-shadow)!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-accounts-page .accounts-permissions label {
-  border:1px solid var(--admin-border)!important;
-  border-radius:9px!important;
-  background:var(--admin-control)!important;
-  color:var(--admin-text)!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-dashboard-page .admin-stat {
-  border:1px solid var(--admin-border)!important;
-  border-radius:13px!important;
-  background:var(--admin-card)!important;
-  box-shadow:var(--admin-shadow)!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-dashboard-page .admin-stat:last-child {
-  border-inline:1px solid var(--admin-border)!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-dashboard-page .admin-stat:hover {
-  background:var(--admin-accent-soft)!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-dashboard-page .admin-panel-card {
-  border:1px solid var(--admin-border)!important;
-  border-radius:14px!important;
-  background:var(--admin-card)!important;
-  box-shadow:var(--admin-shadow)!important;
-}
