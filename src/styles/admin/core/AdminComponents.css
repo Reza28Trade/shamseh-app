@@ -606,3 +606,10 @@
   color: var(--admin-sub);
   font-size: 8px;
 }
+
+
+.admin-shell .admin-main .admin-page-content .admin-courses-page :is(input,select,textarea):focus {
+  outline: none;
+  border-color: var(--admin-accent);
+  box-shadow: 0 0 0 3px var(--admin-accent-soft);
+}
