@@ -1029,7 +1029,16 @@
   color:var(--admin-text);
 }
 
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-term-donut {
+  border-radius:50%;
+  overflow:hidden;
+}
+
 .admin-shell .admin-main .admin-page-content .admin-students-page .student-term-donut:after {
+  content:"";
+  position:absolute;
+  inset:19%;
+  border-radius:50%;
   background:var(--admin-card);
   box-shadow:0 0 0 1px var(--admin-border);
 }
