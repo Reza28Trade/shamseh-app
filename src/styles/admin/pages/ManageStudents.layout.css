@@ -36,21 +36,7 @@
 .list-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.list-head>div:first-child>span{font-size:10px;color:var(--admin-sub);display:block;margin-top:5px}.student-search{display:flex;align-items:center;gap:6px;min-width:270px}.student-search svg{color:var(--admin-sub)}.student-search input{background:var(--admin-control)!important}.student-filters{display:flex;align-items:center;gap:7px;margin:14px 0;padding:9px;background:var(--admin-inner);border-radius:11px}.student-filters svg{color:var(--admin-accent)}.student-filters select{max-width:150px}.students-error{padding:9px 11px;border-radius:9px;background:var(--admin-danger-soft);color:var(--admin-danger-strong);font-size:11px;margin-bottom:10px}.student-table-wrap{overflow-y:auto;overflow-x:auto;height:620px;max-height:620px;scrollbar-width:thin;scrollbar-color:var(--admin-border) transparent}.student-table-wrap::-webkit-scrollbar{width:7px;height:7px}.student-table-wrap::-webkit-scrollbar-track{background:transparent}.student-table-wrap::-webkit-scrollbar-thumb{background:var(--admin-border);border-radius:99px}.student-table-wrap::-webkit-scrollbar-thumb:hover{background:var(--admin-accent)}.student-table-wrap table{min-width:760px}.student-table-wrap th{font-size:10px;padding:10px;text-align:right}.student-table-wrap td{padding:11px 9px;font-size:11px;border-bottom:1px solid var(--admin-border)}.student-table-wrap td:first-child{display:flex;flex-direction:column;gap:3px}.student-table-wrap td:first-child small{color:var(--admin-sub);font-size:9px}.level-badge{display:inline-flex;padding:4px 7px;border-radius:7px;background:var(--admin-accent-soft);color:var(--admin-accent);font-size:10px;font-weight:800}.enrollment-chips{display:flex;gap:4px;flex-wrap:wrap;max-width:300px}.enrollment-chips span{padding:4px 6px;border:1px solid var(--admin-border);border-radius:6px;background:var(--admin-inner);font-size:9px}.row-actions{display:flex;gap:5px}.row-actions button{display:grid;place-items:center;padding:7px;background:var(--admin-control);border:1px solid var(--admin-border);color:var(--admin-text)}.row-actions button.danger{color:var(--admin-danger-strong)}.students-empty{text-align:center;padding:28px;color:var(--admin-sub);font-size:11px}
 @media(max-width:900px){.students-main-grid{grid-template-columns:1fr}.students-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.student-stat:nth-child(2){border-left:1px solid var(--admin-border)}.student-stat:nth-child(-n+2){border-bottom:1px solid var(--admin-border)}}
 @media(max-width:620px){.students-page-head{align-items:flex-start;flex-direction:column}.students-head-actions{width:100%}.students-head-actions button{flex:1;justify-content:center}.student-form{grid-template-columns:1fr}.picker-filters,.course-list{grid-template-columns:1fr}.student-search{min-width:0;width:100%}.list-head{align-items:stretch;flex-direction:column}.student-filters{flex-wrap:wrap}.student-filters select{max-width:none;flex:1}.students-stats{grid-template-columns:1fr 1fr}.student-stat{padding:13px}.student-stat strong{font-size:20px}}
-
-
-/* Charts and status accents consume the shared semantic palette from AdminTokens.css. */
-.admin-students-page .students-page-head{
-  background:linear-gradient(112deg,var(--admin-card) 0%,var(--admin-inner) 100%);
-  border-color:color-mix(in srgb,var(--admin-data-series-1) 30%,var(--admin-border));
-  position:relative;overflow:hidden;
-}
-.admin-students-page .students-page-head:before{
-  content:"";position:absolute;inset:0 auto 0 0;width:4px;
-  background:linear-gradient(180deg,var(--admin-data-series-1),var(--admin-data-series-2),var(--admin-data-series-3));
-}
 .admin-students-page .students-eyebrow{color:var(--admin-data-series-1)}
-.admin-students-page .students-page-head h2 svg,
-.admin-students-page .section-title svg{color:var(--admin-data-series-1)}
 .admin-students-page .students-stats{background:transparent}
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .students-stats{
   display:grid!important;
@@ -82,35 +68,42 @@
  .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .students-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
  .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-stat{padding:13px!important}
 }
-
-.admin-students-page .student-stat{position:relative;transition:background .18s ease;background:var(--admin-card)}
-.admin-students-page .student-stat strong{color:var(--admin-text)}
-.admin-students-page .student-chart-card,
-.admin-students-page .student-form-card,
-.admin-students-page .student-import-card,
-.admin-students-page .student-list-card{background:var(--admin-card)}
-.admin-students-page .student-chart-card{border-top:2px solid color-mix(in srgb,var(--admin-data-series-2) 70%,var(--admin-border))}
-.admin-students-page .student-form-card{border-top:2px solid color-mix(in srgb,var(--admin-data-series-1) 70%,var(--admin-border))}
-.admin-students-page .student-import-card{border-top:2px solid color-mix(in srgb,var(--admin-data-series-3) 75%,var(--admin-border))}
-.admin-students-page .student-list-card{border-top:2px solid color-mix(in srgb,var(--admin-data-series-4) 70%,var(--admin-border))}
 .admin-students-page .term-bar-row:nth-child(4n+1) i{background:linear-gradient(90deg,var(--admin-data-series-1),var(--admin-data-series-1-highlight))}
 .admin-students-page .term-bar-row:nth-child(4n+2) i{background:linear-gradient(90deg,var(--admin-data-series-2),var(--admin-data-series-2-highlight))}
 .admin-students-page .term-bar-row:nth-child(4n+3) i{background:linear-gradient(90deg,var(--admin-data-series-3),var(--admin-data-series-3-highlight))}
-.admin-students-page .term-bar-row:nth-child(4n) i{background:linear-gradient(90deg,var(--admin-data-series-4),var(--admin-data-series-4-highlight))}
-.admin-students-page .course-picker{background:color-mix(in srgb,var(--admin-data-series-1) 5%,var(--admin-inner));border-color:color-mix(in srgb,var(--admin-data-series-1) 28%,var(--admin-border))}
-.admin-students-page .course-choice.selected{border-color:var(--admin-data-series-1)!important;background:color-mix(in srgb,var(--admin-data-series-1) 16%,var(--admin-control))!important;box-shadow:inset -3px 0 0 var(--admin-data-series-1)}
-.admin-students-page .primary-action{background:linear-gradient(105deg,var(--admin-action-gradient-start),var(--admin-data-series-1));border-color:var(--admin-data-series-1);box-shadow:0 5px 14px color-mix(in srgb,var(--admin-data-series-1) 20%,transparent)}
-.admin-students-page .primary-action:hover{filter:brightness(1.08);transform:translateY(-1px)}
-.admin-students-page .import-actions{border-color:color-mix(in srgb,var(--admin-data-series-3) 65%,var(--admin-border));background:color-mix(in srgb,var(--admin-data-series-3) 10%,var(--admin-card));color:var(--admin-data-series-3)}
-.admin-students-page .import-actions:focus-within{outline:2px solid var(--admin-data-series-3);outline-offset:2px}
-.admin-students-page .level-badge{background:color-mix(in srgb,var(--admin-data-series-2) 17%,var(--admin-card));color:var(--admin-data-series-2);border:1px solid color-mix(in srgb,var(--admin-data-series-2) 30%,var(--admin-border))}
+.admin-students-page .term-bar-row:nth-child(4n) i{background:linear-gradient(90deg,var(--admin-data-series-4),var(--admin-data-series-4-highlight))}.admin-students-page .course-picker{
+background:var(--admin-inner);
+border-color:var(--admin-border);
+}.admin-students-page .course-choice.selected{
+border-color:var(--admin-accent)!important;
+background:var(--admin-accent-soft)!important;
+}.admin-students-page .primary-action{
+background:var(--admin-accent);
+border-color:var(--admin-accent);
+color:var(--admin-on-accent);
+box-shadow:none;
+}
+.admin-students-page .primary-action:hover{filter:brightness(1.08);transform:translateY(-1px)}.admin-students-page .import-actions{
+border-color:var(--admin-accent);
+background:var(--admin-accent-soft);
+color:var(--admin-accent);
+}
+.admin-students-page .import-actions:focus-within{outline:2px solid var(--admin-data-series-3);outline-offset:2px}.admin-students-page .level-badge{
+background:var(--admin-accent-soft);
+color:var(--admin-accent);
+border:1px solid var(--admin-border);
+}
 .admin-students-page .row-actions button.danger{color:var(--admin-status-danger);border-color:color-mix(in srgb,var(--admin-status-danger) 35%,var(--admin-border));background:color-mix(in srgb,var(--admin-status-danger) 7%,var(--admin-control))}
-.admin-students-page .students-error{background:color-mix(in srgb,var(--admin-status-danger) 12%,var(--admin-card));border:1px solid color-mix(in srgb,var(--admin-status-danger) 30%,var(--admin-border));color:var(--admin-status-danger)}
-.admin-students-page .warning-text{color:var(--admin-data-series-3)}
-.admin-students-page .student-search:focus-within{color:var(--admin-data-series-1)}
-.admin-students-page .student-search:focus-within svg{color:var(--admin-data-series-1)}
-.admin-students-page .student-filters{border:1px solid var(--admin-border)}
-.admin-students-page .student-table-wrap tbody tr:hover td{background:color-mix(in srgb,var(--admin-data-series-1) 8%,var(--admin-card))}
+.admin-students-page .students-error{background:color-mix(in srgb,var(--admin-status-danger) 12%,var(--admin-card));border:1px solid color-mix(in srgb,var(--admin-status-danger) 30%,var(--admin-border));color:var(--admin-status-danger)}.admin-students-page .warning-text{
+color:var(--admin-warning-text);
+}.admin-students-page .student-search:focus-within{
+color:var(--admin-accent);
+}.admin-students-page .student-search:focus-within svg{
+color:var(--admin-accent);
+}
+.admin-students-page .student-filters{border:1px solid var(--admin-border)}.admin-students-page .student-table-wrap tbody tr:hover td{
+background:var(--admin-accent-soft);
+}
 @media(prefers-reduced-motion:reduce){
   .admin-students-page .student-stat,.admin-students-page .primary-action{transition:none}
 }
@@ -118,29 +111,33 @@
 
 /* Final student page polish: remove eyebrow, add a warm contrast accent and detail modal. */
 .admin-students-page .students-eyebrow{display:none}
-/* Status accents are shared through --admin-status-attention. */
-.admin-students-page .students-page-head:before{
-  background:linear-gradient(180deg,var(--admin-data-series-1),var(--admin-data-series-2),var(--admin-data-series-3),var(--admin-status-attention));
+.admin-students-page .student-clickable-row{cursor:pointer}.admin-students-page .student-clickable-row:focus-visible{
+outline:2px solid var(--admin-accent);
+outline-offset:-2px;
+}.admin-students-page .student-clickable-row:hover td:first-child strong{
+color:var(--admin-accent);
 }
-.admin-students-page .student-stat:nth-child(4){--stat-accent:var(--admin-status-attention);background:linear-gradient(180deg,color-mix(in srgb,var(--admin-status-attention) 10%,var(--admin-card)),var(--admin-card) 72%)}
-.admin-students-page .student-import-card{border-top-color:var(--admin-data-series-3)}
-.admin-students-page .student-list-card .section-title svg{color:var(--admin-status-attention)}
-.admin-students-page .student-clickable-row{cursor:pointer}
-.admin-students-page .student-clickable-row:focus-visible{outline:2px solid var(--admin-status-attention);outline-offset:-2px}
-.admin-students-page .student-clickable-row:hover td:first-child strong{color:var(--admin-data-series-1)}
 .admin-students-page .student-detail-backdrop{
   position:fixed;inset:0;z-index:150;display:grid;place-items:center;padding:22px;
   background:var(--admin-overlay-backdrop);backdrop-filter:blur(7px);
-}
-.admin-students-page .student-detail-modal{
-  width:min(760px,100%);max-height:min(86vh,900px);overflow:auto;
-  background:var(--admin-card);color:var(--admin-text);border:1px solid var(--admin-border);
-  border-radius:20px;box-shadow:var(--admin-shadow-modal);padding:22px;
-}
-.admin-students-page .student-detail-header{
-  display:flex;justify-content:space-between;align-items:flex-start;gap:16px;
-  padding:0 0 18px;border-bottom:1px solid var(--admin-border);
-  background:linear-gradient(100deg,color-mix(in srgb,var(--admin-data-series-1) 9%,var(--admin-card)),var(--admin-card));
+}.admin-students-page .student-detail-modal{
+width:min(760px,100%);
+max-height:min(86vh,900px);
+overflow:auto;
+background:var(--admin-content-surface);
+color:var(--admin-text);
+border:1px solid var(--admin-content-border);
+border-radius:var(--admin-content-radius);
+box-shadow:var(--admin-content-shadow);
+padding:22px;
+}.admin-students-page .student-detail-header{
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+gap:16px;
+padding:0 0 18px;
+border-bottom:1px solid var(--admin-content-border);
+background:var(--admin-content-surface);
 }
 .admin-students-page .student-detail-kicker{font-size:10px;font-weight:850;color:var(--admin-status-attention)}
 .admin-students-page .student-detail-header h3{font-size:21px;margin:5px 0}
@@ -149,15 +146,16 @@
   display:grid;place-items:center;width:38px;height:38px;flex:0 0 38px;
   border:1px solid var(--admin-border);border-radius:11px;background:var(--admin-inner);color:var(--admin-text);cursor:pointer;
 }
-.admin-students-page .student-detail-facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:17px 0 22px}
-.admin-students-page .student-detail-facts>div{
-  display:flex;flex-direction:column;gap:7px;min-width:0;padding:13px;
-  border:1px solid var(--admin-border);border-radius:12px;background:var(--admin-inner);
+.admin-students-page .student-detail-facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:17px 0 22px}.admin-students-page .student-detail-facts>div{
+display:flex;
+flex-direction:column;
+gap:7px;
+min-width:0;
+padding:13px;
+border:1px solid var(--admin-content-border);
+border-radius:var(--admin-control-radius);
+background:var(--admin-content-inner);
 }
-.admin-students-page .student-detail-facts>div:nth-child(1){border-top:2px solid var(--admin-data-series-2)}
-.admin-students-page .student-detail-facts>div:nth-child(2){border-top:2px solid var(--admin-data-series-1)}
-.admin-students-page .student-detail-facts>div:nth-child(3){border-top:2px solid var(--admin-data-series-3)}
-.admin-students-page .student-detail-facts>div:nth-child(4){border-top:2px solid var(--admin-status-attention)}
 .admin-students-page .student-detail-facts span{font-size:10px;color:var(--admin-sub)}
 .admin-students-page .student-detail-facts strong{font-size:12px;overflow-wrap:anywhere}
 .admin-students-page .detail-doctorate{color:var(--admin-data-series-2)}
@@ -165,8 +163,13 @@
 .admin-students-page .student-detail-section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
 .admin-students-page .student-detail-section-title h4{font-size:13px;margin:0}
 .admin-students-page .student-detail-section-title>span{font-size:10px;color:var(--admin-sub)}
-.admin-students-page .student-detail-course-list{display:grid;gap:9px}
-.admin-students-page .student-detail-course-list article{padding:13px;border:1px solid var(--admin-border);border-right:3px solid var(--admin-data-series-1);border-radius:12px;background:var(--admin-inner)}
+.admin-students-page .student-detail-course-list{display:grid;gap:9px}.admin-students-page .student-detail-course-list article{
+padding:13px;
+border:1px solid var(--admin-content-border);
+border-right:3px solid var(--admin-accent);
+border-radius:var(--admin-control-radius);
+background:var(--admin-content-inner);
+}
 .admin-students-page .student-detail-course-list article.detail-course-inactive{border-right-color:var(--admin-status-attention)}
 .admin-students-page .detail-course-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .admin-students-page .detail-course-top strong{font-size:12px}
@@ -199,25 +202,6 @@
   border-radius:18px;
   box-shadow:var(--admin-shadow);
 }
-.admin-students-page .student-chart-card{
-  background:linear-gradient(145deg,color-mix(in srgb,var(--admin-data-series-2) 8%,var(--admin-card)),var(--admin-card) 62%);
-  border-top:3px solid var(--admin-data-series-2);
-}
-.admin-students-page .student-form-card{
-  background:linear-gradient(145deg,color-mix(in srgb,var(--admin-data-series-1) 9%,var(--admin-card)),var(--admin-card) 62%);
-  border-top:3px solid var(--admin-data-series-1);
-  box-shadow:0 12px 30px color-mix(in srgb,var(--admin-data-series-1) 8%,transparent);
-}
-.admin-students-page .student-chart-card .section-title{
-  padding-bottom:13px;
-  border-bottom:1px solid color-mix(in srgb,var(--admin-data-series-2) 24%,var(--admin-border));
-}
-.admin-students-page .student-chart-card .section-title svg{color:var(--admin-data-series-2)}
-.admin-students-page .student-form-card .section-title{
-  padding-bottom:13px;
-  border-bottom:1px solid color-mix(in srgb,var(--admin-data-series-1) 28%,var(--admin-border));
-}
-.admin-students-page .student-form-card .section-title h3{font-size:15px}
 @media(max-width:900px){
   .admin-students-page .students-main-grid{gap:20px}
 }
