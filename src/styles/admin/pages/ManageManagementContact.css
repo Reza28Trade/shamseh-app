@@ -353,10 +353,10 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page > .messages-stats {
   margin:0!important;
   padding:0!important;
-  background:transparent!important;
-  border:0!important;
-  border-radius:0!important;
-  box-shadow:none!important;
+  ;
+  ;
+  ;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-stat {
   width:100%!important;
@@ -367,8 +367,8 @@
   transition:border-color .15s ease,background .15s ease,transform .15s ease!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page button.messages-stat:hover {
-  border-color:var(--admin-accent)!important;
-  background:var(--admin-inner)!important;
+  ;
+  ;
   transform:translateY(-1px)!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page button.messages-stat.is-active {
