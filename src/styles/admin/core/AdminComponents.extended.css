@@ -232,7 +232,6 @@
    Scoped to the admin content area; no data, handlers, permissions or workflows changed. */
 
 .admin-shell .admin-page-content .admin-legacy-page {
-  --panel-gap: 14px;
   color: var(--admin-text);
   font-family: Vazirmatn, IRANSansX, Tahoma, system-ui, sans-serif;
   font-size: 12px;
