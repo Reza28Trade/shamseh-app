@@ -266,7 +266,7 @@ background:var(--admin-content-inner);
   border:0!important;
   box-shadow:none!important;
   border-radius:0!important;
-}/* Force the student-management header to use the shared module gradient and accent strip. */
+}/* Keep the student-management header on the shared neutral surface without an accent strip. */
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page > .students-page-head{
 background:var(--admin-content-surface)!important;
 border:1px solid var(--admin-content-border)!important;
