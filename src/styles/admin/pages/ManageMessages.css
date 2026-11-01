@@ -326,9 +326,8 @@ backdrop-filter:blur(8px);cursor:pointer
 .admin-legacy-page.admin-messages-page .messages-table tbody tr:focus-visible {}
 
 .admin-legacy-page.admin-messages-page .messages-table tbody tr.is-selected {
-  background:color-mix(in srgb,var(--admin-accent-soft) 70%,var(--admin-card))!important;
-  box-shadow:inset -3px 0 var(--admin-accent)
-}
+  ;
+  }
 
 .admin-legacy-page.admin-messages-page .messages-table td {
   padding:10px 12px!important;vertical-align:middle;}
@@ -755,7 +754,7 @@ backdrop-filter:blur(8px);cursor:pointer
 
 .admin-shell .admin-page-content .admin-messages-page .messages-table-row:hover,
 .admin-shell .admin-page-content .admin-messages-page .messages-table-row.is-selected {
-  background:var(--admin-accent-soft)!important;
+  ;
 }
 
 .admin-shell .admin-page-content .admin-messages-page :is(.messages-table-subject,.messages-table-student,.messages-detail-head p,.messages-thread-head) {
