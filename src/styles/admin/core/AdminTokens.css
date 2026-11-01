@@ -75,6 +75,20 @@
   --admin-message-support-mix: #9f526b;
   --admin-status-danger-strong: #d92d20;
   --admin-status-danger-muted: #c65353;
+  /* Shared module accent sequence and legacy semantic status aliases. */
+  --admin-module-series-1: #398A90;
+  --admin-module-series-2: #528bd8;
+  --admin-module-series-3: #d69b42;
+  --admin-module-series-4: #E58A70;
+  --admin-status-warning-inline: #b77912;
+  --admin-status-success-inline: #23856a;
+  --admin-status-danger-inline: #dc5c5c;
+  --admin-status-danger-legacy: #b94a48;
+  --admin-status-danger-button: #a94442;
+  --admin-message-error: #ef7777;
+  --admin-message-hero-start: #6d001a;
+  --admin-message-hero-deep: #281326;
+  --admin-message-gold-bright: #f1d6a1;
   /* Shared data-visualization palette; modules consume these instead of defining local palettes. */
   --admin-data-series-1: #4BA6A1;
   --admin-data-series-1-highlight: #70C4BC;
