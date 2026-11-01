@@ -355,7 +355,7 @@
   min-height:36px!important;
   padding:8px 13px!important;
   background:var(--admin-accent)!important;
-  color:#fff!important;
+  color:var(--admin-on-accent)!important;
   border:1px solid var(--admin-accent)!important;
   border-radius:9px!important;
   font-size:11px!important;
