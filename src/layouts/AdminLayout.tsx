@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import type { Admin } from '../types';
 import { useStore } from '../store/useStore';
 import '../styles/AdminLegacy.css';
+import '../styles/admin/pages/ManageCounseling.css';
+import '../styles/admin/pages/ManageOfflineRequests.legacy.css';
+import '../styles/admin/pages/ManageMessages.css';
+import '../styles/admin/pages/ManageNotifications.css';
+import '../styles/admin/pages/ManageManagementContact.css';
 import '../styles/AdminDesignSystem.css';
 import { LayoutDashboard, BookOpen, Users, MessageSquare, ShieldAlert, FileText, LogOut, Sun, Moon, Menu, X, CheckSquare, ClipboardList, Bell, Wallet, ShieldCheck, KeyRound, ShoppingBag } from 'lucide-react';
 
