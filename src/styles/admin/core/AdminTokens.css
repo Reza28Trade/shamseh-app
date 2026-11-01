@@ -59,6 +59,22 @@
   --admin-status-notice: #c38b37;
   --admin-status-notice-soft: rgba(195,139,55,.09);
   --admin-status-amber-soft: rgba(202,145,49,.12);
+  --admin-status-warning-strong: #b7791f;
+  --admin-status-warning-highlight: #e9b949;
+  --admin-status-success-highlight: #39ae86;
+  --admin-status-closed-highlight: #94a3b8;
+  --admin-message-hero-middle: #85334b;
+  --admin-message-hero-end: #24484b;
+  --admin-message-gold: #f0d6a2;
+  --admin-message-gold-light: #fff0cf;
+  --admin-message-rose: #b76c82;
+  --admin-message-rose-strong: #a14b62;
+  --admin-message-rose-soft: #b66a83;
+  --admin-message-student-border: #c58a36;
+  --admin-message-support-border: #2a9b73;
+  --admin-message-support-mix: #9f526b;
+  --admin-status-danger-strong: #d92d20;
+  --admin-status-danger-muted: #c65353;
   /* Shared data-visualization palette; modules consume these instead of defining local palettes. */
   --admin-data-series-1: #4BA6A1;
   --admin-data-series-1-highlight: #70C4BC;
