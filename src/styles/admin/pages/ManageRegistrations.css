@@ -212,3 +212,26 @@
     animation-duration: .01ms !important;
   }
 }
+
+/* Registration-specific surface rules migrated from Dashboard.css. */
+.admin-shell .admin-page-content .admin-finance-registration-page > div > article {
+  padding:14px 15px;
+}
+
+.admin-shell .admin-page-content .admin-finance-registration-page > section {
+  padding:14px;
+}
+
+.admin-shell .admin-page-content .admin-finance-registration-page > section > div,
+.admin-shell .admin-page-content .admin-finance-registration-page > div {
+  min-width:0;
+}
+
+.admin-shell .admin-page-content .admin-finance-registration-page article,
+.admin-shell .admin-page-content .admin-finance-registration-page section {
+  color:var(--admin-text);
+}
+
+.admin-shell .admin-page-content .admin-finance-registration-page article strong {
+  color:var(--admin-text);
+}
