@@ -46,8 +46,6 @@
   flex:0 0 34px!important;
   width:34px!important;
   height:34px!important;
-  ;
-  ;
   }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-stat-copy small {
   display:block!important}
@@ -77,20 +75,13 @@
   display:inline-flex!important;
   align-items:center!important;
   padding:5px 9px!important;
-  ;
-  ;
-  ;
-  ;
-  ;
   }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-table-wrap {
   width:100%!important;
   margin-top:14px!important;
   overflow-x:auto!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-table {
-  width:100%!important
-
-
+  width:100%!important;
   text-align:right!important;
 
   white-space:nowrap!important}
@@ -113,10 +104,6 @@
   max-width:150px!important;
   min-height:32px!important;
   padding:6px 9px!important;
-  ;
-  ;
-  ;
-  ;
   }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-empty {
   display:flex!important;
@@ -163,17 +150,9 @@
   width:100%!important;
   min-height:90px!important;
   padding:10px 12px!important;
-  ;
-  ;
-  ;
-  ;
-  ;
-  ;
-  ;
   resize:vertical!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-reply-form textarea:focus {
   outline:none!important;
-  ;
   }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-reply-actions {
   display:flex!important;
@@ -216,22 +195,16 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page > .messages-stats {
   margin:0!important;
   padding:0!important;
-  ;
-  ;
-  ;
   }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-stat {
   width:100%!important;
   min-height:76px!important;
   text-align:right!important;
-  ;
   cursor:pointer!important;
   transition:border-color .15s ease,background .15s ease,transform .15s ease!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page button.messages-stat:hover {
-  ;
   transform:translateY(-1px)!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page button.messages-stat.is-active {
-  ;
   }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-table-tools {
   display:flex!important;
@@ -257,12 +230,7 @@
   min-width:0!important;
   min-height:38px!important;
   padding:7px 0!important;
-  ;
-  ;
-  ;
   outline:0!important;
-  ;
-  ;
   }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-search input::placeholder {
   opacity:.85!important}
@@ -287,11 +255,6 @@
   gap:5px!important;
   min-height:32px!important;
   padding:6px 10px!important;
-  ;
-  ;
-  ;
-  ;
-  ;
   }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-pagination button:disabled {
   opacity:.4!important;
@@ -334,9 +297,6 @@
   height:36px!important;
   min-width:36px!important;
   min-height:36px!important;
-  ;
-  ;
-  ;
   }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-stat-copy {
   min-width:0!important;
@@ -383,7 +343,6 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page button.messages-stat.is-active {
   outline:1px solid var(--admin-accent)!important;
   outline-offset:-1px!important;
-  ;
   transform:none!important}
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-stats {
   position:relative!important;
