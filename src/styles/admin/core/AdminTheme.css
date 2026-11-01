@@ -20,8 +20,7 @@
   --admin-dashboard-gradient-surface: #242222;
   --admin-course-panel-surface: #252323;
   --admin-course-panel-border: rgba(255,255,255,.055);
-  --admin-course-panel-shadow: 8px 8px 18px rgba(13,12,12,.62), -8px -8px 18px rgba(48,45,45,.58), inset 1px 1px 0 rgba(255,255,255,.035);
-}
+  --admin-course-panel-shadow: 8px 8px 18px rgba(13,12,12,.62), -8px -8px 18px rgba(48,45,45,.58), inset 1px 1px 0 rgba(255,255,255,.035)}
 
 .admin-shell.admin-theme-light {
   --admin-bg: #EEECE4;
@@ -44,8 +43,7 @@
   --admin-dashboard-gradient-surface: var(--admin-card);
   --admin-course-panel-surface: var(--admin-bg);
   --admin-course-panel-border: rgba(255,255,255,.56);
-  --admin-course-panel-shadow: 8px 8px 18px rgba(174,166,154,.48), -8px -8px 18px rgba(255,255,255,.88), inset 1px 1px 0 rgba(255,255,255,.35);
-}
+  --admin-course-panel-shadow: 8px 8px 18px rgba(174,166,154,.48), -8px -8px 18px rgba(255,255,255,.88), inset 1px 1px 0 rgba(255,255,255,.35)}
 
 /* Semantic surface aliases shared by admin modules. */
 .admin-shell {
@@ -53,5 +51,4 @@
   --admin-content-inner: var(--admin-inner);
   --admin-content-border: var(--admin-border);
   --admin-content-radius: 14px;
-  --admin-content-shadow: var(--admin-shadow);
-}
+  --admin-content-shadow: var(--admin-shadow)}
