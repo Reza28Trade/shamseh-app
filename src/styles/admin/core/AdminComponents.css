@@ -270,3 +270,91 @@
     scroll-behavior: auto;
   }
 }
+
+
+/* Finance/registration is rendered outside the legacy wrapper but uses the
+   same canonical components and theme tokens. */
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page {
+  width: 100%;
+  max-width: 1240px;
+  min-width: 0;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  color: var(--admin-text);
+  font-family: Vazirmatn, IRANSansX, Tahoma, system-ui, sans-serif;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page :is(
+  > section,> article,> div > article,> div > section
+) {
+  border: 1px solid var(--admin-content-border);
+  border-radius: var(--admin-content-radius);
+  background: var(--admin-content-surface);
+  color: var(--admin-text);
+  box-shadow: var(--admin-content-shadow);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page :is(h1,h2,h3,h4) {
+  color: var(--admin-text);
+  letter-spacing: 0;
+  line-height: 1.6;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page :is(h1,h2) {
+  font-size: 17px;
+  font-weight: 850;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page :is(h3,h4) {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page :is(input,select,textarea) {
+  min-width: 0;
+  max-width: 100%;
+  min-height: var(--admin-control-height);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-control);
+  color: var(--admin-text);
+  font: inherit;
+  font-size: 11px;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page button {
+  min-height: 35px;
+  border-radius: var(--admin-control-radius);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page th {
+  background: var(--admin-inner);
+  color: var(--admin-sub);
+  border-color: var(--admin-border);
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page td {
+  color: var(--admin-text);
+  border-color: var(--admin-border);
+  font-size: 11px;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page :is(button,input,select,textarea,a):focus-visible {
+  outline: 2px solid var(--admin-accent);
+  outline-offset: 2px;
+}
