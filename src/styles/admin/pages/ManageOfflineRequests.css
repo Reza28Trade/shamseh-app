@@ -150,17 +150,17 @@
   min-width:0;
 }
 .offline-stat-copy strong{
-  font-size:19px!important;
-  line-height:1.2;
+  ;
+  ;
 }
 .offline-stat-copy small{
-  color:var(--admin-sub);
-  font-size:10px;
+  ;
+  ;
   white-space:nowrap;
 }
 .offline-stat-percent{
-  color:var(--admin-sub);
-  font-size:10px;
+  ;
+  ;
   direction:ltr;
 }
 .offline-stat-meter{
@@ -259,7 +259,7 @@
 }
 .offline-student strong,
 .offline-course strong{
-  font-size:12px!important;
+  ;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
@@ -267,16 +267,16 @@
 .offline-student span,
 .offline-course span,
 .offline-date span{
-  color:var(--admin-sub);
-  font-size:10px;
+  ;
+  ;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
 .offline-course strong{color:var(--admin-accent)!important}
 .offline-date strong{
-  color:var(--admin-text);
-  font-size:10px;
+  ;
+  ;
 }
 .offline-status{
   justify-self:end;
@@ -352,25 +352,25 @@
   align-items:center;
   gap:5px;
   padding:8px 10px;
-  font-size:10px;
-  font-weight:800;
+  ;
+  ;
   cursor:pointer;
 }
 .offline-review-actions .approve{
-  color:var(--admin-on-accent)!important;
-  background:var(--admin-accent)!important;
-  border:1px solid var(--admin-accent)!important;
+  ;
+  ;
+  ;
 }
 .offline-review-actions .reject{
-  color:var(--admin-status-danger-muted)!important;
-  background:rgba(239,68,68,.07)!important;
-  border:1px solid rgba(239,68,68,.2)!important;
+  ;
+  ;
+  ;
 }
 .offline-empty{
   padding:42px 20px;
-  color:var(--admin-sub);
+  ;
   text-align:center;
-  font-size:11px;
+  ;
 }
 @media(max-width:900px){
   .offline-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -848,9 +848,9 @@
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-review-actions button {
   min-height:35px!important;
   padding:7px 10px!important;
-  border-radius:9px!important;
-  font-size:10px!important;
-  box-shadow:none!important;
+  ;
+  ;
+  ;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-review-actions .approve {
 
