@@ -71,9 +71,9 @@
   display:flex;
   align-items:center;
   gap:7px;
-  color:var(--admin-accent)!important;
-  font-size:11px;
-  font-weight:800;
+  ;
+  ;
+  ;
   margin-bottom:5px;
 }
 .offline-page-head h2{
@@ -99,11 +99,11 @@
 }
 .offline-error{
   padding:10px 13px!important;
-  background:rgba(239,68,68,.08)!important;
-  color:var(--admin-status-danger-inline)!important;
-  border:1px solid rgba(239,68,68,.2)!important;
-  border-radius:11px!important;
-  font-size:11px;
+  ;
+  ;
+  ;
+  ;
+  ;
 }
 .offline-stats{
   display:grid;
@@ -273,7 +273,7 @@
   overflow:hidden;
   text-overflow:ellipsis;
 }
-.offline-course strong{color:var(--admin-accent)!important}
+.offline-course strong{}
 .offline-date strong{
   ;
   ;
@@ -286,25 +286,25 @@
   gap:5px;
   width:max-content;
   padding:6px 9px;
-  border-radius:8px;
-  font-size:10px;
-  font-weight:800;
+  ;
+  ;
+  ;
   white-space:nowrap;
 }
 .status-pending{
-  color:var(--admin-status-warning-inline)!important;
-  background:rgba(245,158,11,.1)!important;
-  border:1px solid rgba(245,158,11,.2);
+  ;
+  ;
+  ;
 }
 .status-approved{
-  color:var(--admin-status-success-inline)!important;
-  background:rgba(16,185,129,.1)!important;
-  border:1px solid rgba(16,185,129,.2);
+  ;
+  ;
+  ;
 }
 .status-rejected{
-  color:var(--admin-status-danger-muted)!important;
-  background:rgba(239,68,68,.08)!important;
-  border:1px solid rgba(239,68,68,.18);
+  ;
+  ;
+  ;
 }
 .offline-approved-link{
   display:block;
@@ -800,12 +800,12 @@
   max-width:100%!important;
   width:max-content!important;
   padding:6px 9px!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:8px!important;
-  background:var(--admin-inner)!important;
-  color:var(--admin-text)!important;
-  font-size:10px!important;
-  line-height:1.5!important;
+  ;
+  ;
+  ;
+  ;
+  ;
+  ;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-approved-link {
   max-width:100%!important;
