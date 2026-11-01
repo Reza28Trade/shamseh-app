@@ -22,51 +22,41 @@
   font-family: Vazirmatn, IRANSansX, Tahoma, system-ui, sans-serif;
   font-size: 12px;
   line-height: 1.8;
-  box-sizing: border-box;
-}
+  box-sizing: border-box}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) *,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) *::before,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) *::after {
-  box-sizing: border-box;
-}
+  box-sizing: border-box}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(h1,h2,h3,h4) {
   margin-block: 0;
   color: var(--admin-text);
   letter-spacing: 0;
-  line-height: 1.6;
-}
+  line-height: 1.6}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(h1,h2) {
   font-size: var(--admin-page-title-size);
-  font-weight: 850;
-}
+  font-weight: 850}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(h3,h4) {
   font-size: var(--admin-section-title-size);
-  font-weight: 800;
-}
+  font-weight: 800}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(p,small,.muted,.subtitle) {
-  line-height: 1.85;
-}
+  line-height: 1.85}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) label {
-  color: var(--admin-text);
-}
+  color: var(--admin-text)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) strong {
-  color: var(--admin-text);
-}
+  color: var(--admin-text)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) a {
-  color: var(--admin-accent);
-}
+  color: var(--admin-accent)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) hr {
-  border-color: var(--admin-border);
-}
+  border-color: var(--admin-border)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(input,select,textarea) {
   min-width: 0;
@@ -81,18 +71,15 @@
   font: inherit;
   font-size: 11px;
   line-height: 1.5;
-  box-shadow: none;
-}
+  box-shadow: none}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) textarea {
   min-height: 96px;
-  resize: vertical;
-}
+  resize: vertical}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(input,textarea)::placeholder {
   color: var(--admin-sub);
-  opacity: 1;
-}
+  opacity: 1}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(button,.course-btn,.primary-action,.secondary-action) {
   min-height: 35px;
@@ -103,25 +90,21 @@
   line-height: 1.5;
   box-shadow: none;
   transition: background-color .16s ease, border-color .16s ease, color .16s ease, box-shadow .16s ease;
-  -webkit-tap-highlight-color: transparent;
-}
+  -webkit-tap-highlight-color: transparent}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) button:disabled {
   cursor: not-allowed;
   opacity: .62;
-  transform: none;
-}
+  transform: none}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(button,input,select,textarea,a):focus-visible {
   outline: 2px solid var(--admin-accent);
-  outline-offset: 2px;
-}
+  outline-offset: 2px}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table {
   width: 100%;
   border-collapse: separate;
-  border-spacing: 0;
-}
+  border-spacing: 0}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) th {
   padding: 10px 11px;
@@ -131,8 +114,7 @@
   border-bottom: 1px solid var(--admin-border);
   font-size: 10px;
   font-weight: 850;
-  white-space: nowrap;
-}
+  white-space: nowrap}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) td {
   padding: 10px 11px;
@@ -140,12 +122,10 @@
   border-color: var(--admin-border);
   border-bottom: 1px solid var(--admin-border);
   font-size: 11px;
-  vertical-align: middle;
-}
+  vertical-align: middle}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) tbody tr:hover td {
-  background: var(--admin-accent-soft);
-}
+  background: var(--admin-accent-soft)}
 
 /* One shared surface language. These selectors intentionally exclude the
    approved Dashboard and Manage Admins reference screens. */
@@ -165,15 +145,13 @@
   background: var(--admin-content-surface);
   background-image: none;
   color: var(--admin-text);
-  box-shadow: var(--admin-content-shadow);
-}
+  box-shadow: var(--admin-content-shadow)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .students-page-head,.offline-page-head,.messages-page-head,.mock-exam-page-head,
   .counseling-page-head,.notifications-page-head,.admin-page-heading,.admin-page-head,.page-header
 ) {
-  padding: 15px 18px;
-}
+  padding: 15px 18px}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .student-stat,.course-stat,.offline-stat-card,.messages-stat,.mock-exam-stat,
@@ -184,8 +162,7 @@
   border-radius: 12px;
   background: var(--admin-content-surface);
   color: var(--admin-text);
-  box-shadow: var(--admin-shadow-stat);
-}
+  box-shadow: var(--admin-shadow-stat)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .admin-action-row,.admin-upcoming-row,.admin-followup-card,.admin-activity-row,
@@ -195,24 +172,21 @@
   border-color: var(--admin-content-border);
   background: var(--admin-content-inner);
   background-image: none;
-  color: var(--admin-text);
-}
+  color: var(--admin-text)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .admin-action-row,.admin-upcoming-row,.admin-followup-card,.admin-activity-row,
   .counseling-student-row,.offline-request-row,.student-term-legend-row,.student-clickable-row
 ):hover {
   border-color: var(--admin-accent);
-  box-shadow: var(--admin-shadow-control);
-}
+  box-shadow: var(--admin-shadow-control)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .messages-stat-icon,.offline-stat-icon,.mock-exam-stat-icon
 ) {
   border-radius: 10px;
   background: var(--admin-accent-soft);
-  color: var(--admin-accent);
-}
+  color: var(--admin-accent)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .messages-stat strong,.offline-stat-copy strong,.mock-exam-stat strong,
@@ -221,8 +195,7 @@
   color: var(--admin-text);
   font-size: clamp(16px,1.5vw,21px);
   font-weight: 850;
-  font-variant-numeric: tabular-nums;
-}
+  font-variant-numeric: tabular-nums}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .messages-table-wrap,.mock-exam-scroll-list,.offline-request-list,.student-table-wrap
@@ -231,34 +204,29 @@
   max-width: 100%;
   overflow: auto;
   scrollbar-width: thin;
-  scrollbar-color: var(--admin-border) transparent;
-}
+  scrollbar-color: var(--admin-border) transparent}
 
 .admin-shell ::selection {
   background: var(--admin-accent-soft);
-  color: var(--admin-text);
-}
+  color: var(--admin-text)}
 
 .admin-shell ::-webkit-scrollbar {
   width: 8px;
-  height: 8px;
-}
+  height: 8px}
 
-.admin-shell ::-webkit-scrollbar-track { background: transparent; }
-.admin-shell ::-webkit-scrollbar-thumb { background: var(--admin-border); border-radius: 99px; }
-.admin-shell ::-webkit-scrollbar-thumb:hover { background: var(--admin-accent); }
+.admin-shell ::-webkit-scrollbar-track { background: transparent}
+.admin-shell ::-webkit-scrollbar-thumb { background: var(--admin-border); border-radius: 99px}
+.admin-shell ::-webkit-scrollbar-thumb:hover { background: var(--admin-accent)}
 
 @media (max-width: 760px) {
   .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) {
-    gap: 12px;
-  }
+    gap: 12px}
 
   .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
     .students-page-head,.offline-page-head,.messages-page-head,.mock-exam-page-head,
     .counseling-page-head,.notifications-page-head,.admin-page-heading,.admin-page-head,.page-header
   ) {
-    padding: 13px;
-  }
+    padding: 13px}
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -267,8 +235,7 @@
   .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) *::after {
     transition: none;
     animation: none;
-    scroll-behavior: auto;
-  }
+    scroll-behavior: auto}
 }
 
 
@@ -287,8 +254,7 @@
   color: var(--admin-text);
   font-family: Vazirmatn, IRANSansX, Tahoma, system-ui, sans-serif;
   font-size: 12px;
-  line-height: 1.8;
-}
+  line-height: 1.8}
 
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page > section,
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page > article,
@@ -298,24 +264,20 @@
   border-radius: var(--admin-content-radius);
   background: var(--admin-content-surface);
   color: var(--admin-text);
-  box-shadow: var(--admin-content-shadow);
-}
+  box-shadow: var(--admin-content-shadow)}
 
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page :is(h1,h2,h3,h4) {
   color: var(--admin-text);
   letter-spacing: 0;
-  line-height: 1.6;
-}
+  line-height: 1.6}
 
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page :is(h1,h2) {
   font-size: 17px;
-  font-weight: 850;
-}
+  font-weight: 850}
 
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page :is(h3,h4) {
   font-size: 13px;
-  font-weight: 800;
-}
+  font-weight: 800}
 
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page :is(input,select,textarea) {
   min-width: 0;
@@ -326,41 +288,35 @@
   background: var(--admin-control);
   color: var(--admin-text);
   font: inherit;
-  font-size: 11px;
-}
+  font-size: 11px}
 
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page button {
   min-height: 35px;
   border-radius: var(--admin-control-radius);
   font-family: inherit;
   font-size: 11px;
-  font-weight: 750;
-}
+  font-weight: 750}
 
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page table {
   width: 100%;
   border-collapse: separate;
-  border-spacing: 0;
-}
+  border-spacing: 0}
 
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page th {
   background: var(--admin-inner);
   color: var(--admin-sub);
   border-color: var(--admin-border);
   font-size: 10px;
-  font-weight: 850;
-}
+  font-weight: 850}
 
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page td {
   color: var(--admin-text);
   border-color: var(--admin-border);
-  font-size: 11px;
-}
+  font-size: 11px}
 
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page :is(button,input,select,textarea,a):focus-visible {
   outline: 2px solid var(--admin-accent);
-  outline-offset: 2px;
-}
+  outline-offset: 2px}
 
 
 /* Shared feedback surfaces retain semantic meaning without page-local palettes. */
@@ -369,16 +325,14 @@
   border: 1px solid var(--admin-status-error);
   border-radius: var(--admin-control-radius);
   background: var(--admin-status-error-soft);
-  color: var(--admin-text);
-}
+  color: var(--admin-text)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) [role="status"],
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page [role="status"] {
   border: 1px solid var(--admin-status-success);
   border-radius: var(--admin-control-radius);
   background: var(--admin-status-success-soft);
-  color: var(--admin-text);
-}
+  color: var(--admin-text)}
 
 
 /* Course management has its own root (not the legacy page wrapper), but shares
@@ -387,24 +341,20 @@
   color: var(--admin-text);
   font-family: Vazirmatn, IRANSansX, Tahoma, system-ui, sans-serif;
   font-size: 12px;
-  line-height: 1.8;
-}
+  line-height: 1.8}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page :is(h1,h2,h3,h4) {
   color: var(--admin-text);
   letter-spacing: 0;
-  line-height: 1.6;
-}
+  line-height: 1.6}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page :is(h1,h2) {
   font-size: 17px;
-  font-weight: 850;
-}
+  font-weight: 850}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page :is(h3,h4) {
   font-size: 13px;
-  font-weight: 800;
-}
+  font-weight: 800}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page :is(input,select,textarea) {
   min-width: 0;
@@ -414,8 +364,7 @@
   background: var(--admin-control);
   color: var(--admin-text);
   font: inherit;
-  font-size: 11px;
-}
+  font-size: 11px}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page :is(button,.course-btn) {
   border: 1px solid var(--admin-border);
@@ -425,8 +374,7 @@
   font-family: inherit;
   font-size: 11px;
   font-weight: 750;
-  box-shadow: none;
-}
+  box-shadow: none}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-toolbar,.course-form,.course-list,.course-card,.modal) {
   border: 1px solid var(--admin-content-border);
@@ -434,73 +382,62 @@
   background: var(--admin-content-surface);
   background-image: none;
   color: var(--admin-text);
-  box-shadow: var(--admin-content-shadow);
-}
+  box-shadow: var(--admin-content-shadow)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat {
   border: 1px solid var(--admin-content-border);
   border-radius: 12px;
   background: var(--admin-content-surface);
   color: var(--admin-text);
-  box-shadow: var(--admin-shadow-stat);
-}
+  box-shadow: var(--admin-shadow-stat)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .expanded-panel {
   border: 1px solid var(--admin-border);
   border-radius: var(--shamseh-radius-md);
   background: var(--admin-inner);
   color: var(--admin-text);
-  box-shadow: none;
-}
+  box-shadow: none}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-card-cover,.cover-thumb) {
   border: 1px solid var(--admin-border);
   border-radius: 11px;
   background: var(--admin-inner);
-  color: var(--admin-sub);
-}
+  color: var(--admin-sub)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-pill,.course-status) {
   border: 1px solid var(--admin-border);
   border-radius: 8px;
   background: var(--admin-card);
   color: var(--admin-sub);
-  font-family: inherit;
-}
+  font-family: inherit}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-pill.accent,.course-status) {
   background: var(--admin-accent-soft);
   border-color: var(--admin-brand-border);
-  color: var(--admin-accent);
-}
+  color: var(--admin-accent)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-status.archived {
   background: var(--admin-inner);
-  color: var(--admin-sub);
-}
+  color: var(--admin-sub)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-status.draft {
   background: var(--admin-warning-soft);
-  color: var(--admin-gold);
-}
+  color: var(--admin-gold)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn.primary {
   background: var(--admin-accent);
   border-color: var(--admin-accent);
-  color: var(--admin-on-accent);
-}
+  color: var(--admin-on-accent)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn.blue {
   background: var(--admin-accent-soft);
   border-color: var(--admin-brand-border);
-  color: var(--admin-accent);
-}
+  color: var(--admin-accent)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn.danger {
   background: var(--admin-status-error-soft);
   border-color: var(--admin-status-error);
-  color: var(--admin-status-error);
-}
+  color: var(--admin-status-error)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page :is(.day-chip,.cover-file) {
   border: 1px solid var(--admin-border);
@@ -508,119 +445,99 @@
   background: var(--admin-control);
   color: var(--admin-sub);
   font-family: inherit;
-  font-size: 10px;
-}
+  font-size: 10px}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .day-chip.selected {
   background: var(--admin-accent-soft);
   border-color: var(--admin-brand-border);
-  color: var(--admin-accent);
-}
+  color: var(--admin-accent)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat-bar {
   border-radius: 99px;
-  background: var(--admin-inner);
-}
+  background: var(--admin-inner)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat-bar span {
   border-radius: 99px;
-  background: var(--admin-accent);
-}
+  background: var(--admin-accent)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-message {
   border: 1px solid var(--admin-border);
   border-radius: 11px;
   background: var(--admin-inner);
-  color: var(--admin-text);
-}
+  color: var(--admin-text)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-message.error {
   border-color: var(--admin-status-error);
-  background: var(--admin-status-error-soft);
-}
+  background: var(--admin-status-error-soft)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-message.success {
   border-color: var(--admin-status-success);
-  background: var(--admin-status-success-soft);
-}
+  background: var(--admin-status-success-soft)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page :is(button,input,select,textarea,a):focus-visible {
   outline: 2px solid var(--admin-accent);
-  outline-offset: 2px;
-}
+  outline-offset: 2px}
 
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-card-title {
   font-size: 12px;
-  font-weight: 850;
-}
+  font-weight: 850}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-card-sub {
   color: var(--admin-sub);
   font-size: 9px;
-  line-height: 1.75;
-}
+  line-height: 1.75}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat-label {
   color: var(--admin-sub);
   font-size: 10px;
-  font-weight: 750;
-}
+  font-weight: 750}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat-value {
   color: var(--admin-text);
   font-size: 22px;
   font-weight: 850;
   line-height: 1.4;
-  font-variant-numeric: tabular-nums;
-}
+  font-variant-numeric: tabular-nums}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat-head svg {
-  color: var(--admin-accent);
-}
+  color: var(--admin-accent)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-field label {
   color: var(--admin-text);
   font-size: 10px;
-  font-weight: 750;
-}
+  font-weight: 750}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-pill,.course-status) {
   font-size: 9px;
-  font-weight: 750;
-}
+  font-weight: 750}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .mini-row {
   border: 1px solid var(--admin-border);
   border-radius: var(--shamseh-radius-sm);
   background: var(--admin-inner);
-  color: var(--admin-text);
-}
+  color: var(--admin-text)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .mini-row strong {
   font-size: 9px;
-  font-weight: 800;
-}
+  font-weight: 800}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .mini-row span {
   color: var(--admin-sub);
-  font-size: 8px;
-}
+  font-size: 8px}
 
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page :is(input,select,textarea):focus {
   outline: none;
   border-color: var(--admin-accent);
-  box-shadow: 0 0 0 3px var(--admin-accent-soft);
-}
+  box-shadow: 0 0 0 3px var(--admin-accent-soft)}
 
 
 /* Shared controls and nested module surfaces. */
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) button:not(.primary-action):not(.course-btn.primary):not(.messages-send):not(.notifications-submit):not([data-variant="primary"]) {
   border: 1px solid var(--admin-border);
   background: var(--admin-inner);
-  color: var(--admin-text);
-}
+  color: var(--admin-text)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .course-picker,.student-filters,.mock-exam-filters,.counseling-account-item,
@@ -630,8 +547,7 @@
   border-radius: var(--admin-control-radius);
   background: var(--admin-content-inner);
   color: var(--admin-text);
-  box-shadow: none;
-}
+  box-shadow: none}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .offline-error,.messages-error
@@ -639,8 +555,7 @@
   border: 1px solid var(--admin-status-error);
   border-radius: var(--admin-control-radius);
   background: var(--admin-status-error-soft);
-  color: var(--admin-text);
-}
+  color: var(--admin-text)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .offline-filter-group button,.messages-pagination button,.messages-refresh,
@@ -650,53 +565,45 @@
   border-radius: var(--admin-control-radius);
   font-family: inherit;
   font-size: 11px;
-  font-weight: 750;
-}
+  font-weight: 750}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .notifications-target,.offline-filter-group button
 ) {
   background: var(--admin-control);
   color: var(--admin-sub);
-  border: 1px solid var(--admin-border);
-}
+  border: 1px solid var(--admin-border)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .notifications-target.is-active,.offline-filter-group button.active
 ) {
   background: var(--admin-accent-soft);
   border-color: var(--admin-accent);
-  color: var(--admin-accent);
-}
+  color: var(--admin-accent)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .notifications-submit {
   background: var(--admin-accent);
   border: 1px solid var(--admin-accent);
-  color: var(--admin-on-accent);
-}
+  color: var(--admin-on-accent)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .messages-reply-form textarea {
   background: var(--admin-control);
   border: 1px solid var(--admin-border);
   border-radius: var(--admin-control-radius);
-  color: var(--admin-text);
-}
+  color: var(--admin-text)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .messages-table-status {
   border-radius: 8px;
   background: var(--admin-control);
-  color: var(--admin-text);
-}
+  color: var(--admin-text)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .mock-exam-filters label {
   color: var(--admin-sub);
   font-size: 11px;
-  font-weight: 700;
-}
+  font-weight: 700}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .offline-list-head {
-  border-bottom: 1px solid var(--admin-border);
-}
+  border-bottom: 1px solid var(--admin-border)}
 
 
 /* Remaining page-specific primitives are still themed by the same central tokens. */
@@ -708,60 +615,50 @@
   border-radius: var(--admin-control-radius);
   background: var(--admin-content-inner);
   color: var(--admin-text);
-  box-shadow: none;
-}
+  box-shadow: none}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .notifications-feedback.is-success {
   border: 1px solid var(--admin-status-success);
   background: var(--admin-status-success-soft);
-  color: var(--admin-text);
-}
+  color: var(--admin-text)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .notifications-feedback.is-error {
   border: 1px solid var(--admin-status-error);
   background: var(--admin-status-error-soft);
-  color: var(--admin-text);
-}
+  color: var(--admin-text)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .course-message.error {
   border-color: var(--admin-status-error);
-  background: var(--admin-status-error-soft);
-}
+  background: var(--admin-status-error-soft)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .course-message.success {
   border-color: var(--admin-status-success);
-  background: var(--admin-status-success-soft);
-}
+  background: var(--admin-status-success-soft)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .day-chip.selected {
   border-color: var(--admin-brand-border);
   background: var(--admin-accent-soft);
-  color: var(--admin-accent);
-}
+  color: var(--admin-accent)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn.blue {
   border-color: var(--admin-brand-border);
   background: var(--admin-accent-soft);
-  color: var(--admin-accent);
-}
+  color: var(--admin-accent)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn.danger {
   border-color: var(--admin-status-error);
   background: var(--admin-status-error-soft);
-  color: var(--admin-status-error);
-}
+  color: var(--admin-status-error)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn.primary {
   border-color: var(--admin-accent);
   background: var(--admin-accent);
-  color: var(--admin-on-accent);
-}
+  color: var(--admin-on-accent)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn {
   position: relative;
   isolation: isolate;
-  overflow: hidden;
-}
+  overflow: hidden}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn::before {
   content: "";
@@ -771,36 +668,30 @@
   z-index: -1;
   transform: skewX(28deg) translateX(-150%);
   transition: transform .55s ease;
-  pointer-events: none;
-}
+  pointer-events: none}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-}
+  transform: translateY(-2px)}
 
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn:hover:not(:disabled)::before {
-  transform: skewX(28deg) translateX(280%);
-}
+  transform: skewX(28deg) translateX(280%)}
 
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .section-title svg,.offline-list-head h3 svg,.mock-exam-list-head svg,
   .course-section-head svg
 ) {
-  color: var(--admin-accent);
-}
+  color: var(--admin-accent)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .course-choice {
   border: 1px solid var(--admin-border);
   border-radius: var(--admin-control-radius);
   background: var(--admin-control);
-  color: var(--admin-text);
-}
+  color: var(--admin-text)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .course-choice.selected {
   border-color: var(--admin-accent);
-  background: var(--admin-accent-soft);
-}
+  background: var(--admin-accent-soft)}
 
 
 /* Shared compact controls used by student, mock-exam and counseling workflows. */
@@ -810,8 +701,7 @@
   border: 1px solid var(--admin-accent);
   border-radius: var(--admin-control-radius);
   background: var(--admin-accent);
-  color: var(--admin-on-accent);
-}
+  color: var(--admin-on-accent)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .secondary-action,.messages-refresh,.messages-open-ticket,.messages-detail-close,
@@ -821,8 +711,7 @@
   border: 1px solid var(--admin-border);
   border-radius: var(--admin-control-radius);
   background: var(--admin-inner);
-  color: var(--admin-text);
-}
+  color: var(--admin-text)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .student-term-switch,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .mock-participant-levels {
@@ -832,8 +721,7 @@
   padding: 3px;
   border: 1px solid var(--admin-border);
   border-radius: var(--admin-control-radius);
-  background: var(--admin-inner);
-}
+  background: var(--admin-inner)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .student-term-switch button,.mock-participant-levels button
@@ -843,21 +731,18 @@
   background: transparent;
   color: var(--admin-sub);
   font-size: 10px;
-  font-weight: 800;
-}
+  font-weight: 800}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .student-term-switch button.active,.mock-participant-levels button.is-active
 ) {
   background: var(--admin-accent);
-  color: var(--admin-on-accent);
-}
+  color: var(--admin-on-accent)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .mock-participant-bulk-actions {
   border: 1px solid var(--admin-content-border);
   border-radius: var(--admin-control-radius);
-  background: var(--admin-content-inner);
-}
+  background: var(--admin-content-inner)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .mock-participant-bulk-actions button {
   border: 1px solid var(--admin-border);
@@ -865,15 +750,13 @@
   background: var(--admin-control);
   color: var(--admin-text);
   font-size: 11px;
-  font-weight: 750;
-}
+  font-weight: 750}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .mock-participant-search input {
   border: 1px solid var(--admin-border);
   border-radius: var(--admin-control-radius);
   background: var(--admin-control);
-  color: var(--admin-text);
-}
+  color: var(--admin-text)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .messages-total,.messages-count-pill
@@ -886,22 +769,19 @@
   background: var(--admin-inner);
   color: var(--admin-sub);
   font-size: 10px;
-  font-weight: 750;
-}
+  font-weight: 750}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .students-error {
   border: 1px solid var(--admin-status-error);
   border-radius: var(--admin-control-radius);
   background: var(--admin-status-error-soft);
-  color: var(--admin-text);
-}
+  color: var(--admin-text)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .messages-page-title h2 svg,.admin-mock-exams-page h2 svg,
   .admin-mock-exams-page .mock-exam-list-head svg
 ) {
-  color: var(--admin-accent);
-}
+  color: var(--admin-accent)}
 
 
 /* Canonical selected, active and compact badge states. */
@@ -912,8 +792,7 @@
 ) {
   border-color: var(--admin-accent);
   background: var(--admin-accent-soft);
-  color: var(--admin-accent);
-}
+  color: var(--admin-accent)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .messages-stat.is-active,.messages-table-row.is-selected,
@@ -922,8 +801,7 @@
   .mock-participant-option.is-selected,.mock-participant-row-toggle.is-selected
 ) {
   border-color: var(--admin-accent);
-  background: var(--admin-accent-soft);
-}
+  background: var(--admin-accent-soft)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .level-badge,.enrollment-chips span
@@ -935,18 +813,15 @@
   background: var(--admin-inner);
   color: var(--admin-text);
   font-size: 10px;
-  font-weight: 750;
-}
+  font-weight: 750}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .level-badge {
   background: var(--admin-accent-soft);
   border-color: var(--admin-brand-border);
-  color: var(--admin-accent);
-}
+  color: var(--admin-accent)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .messages-stat.is-active {
-  box-shadow: inset 0 0 0 1px var(--admin-accent-soft);
-}
+  box-shadow: inset 0 0 0 1px var(--admin-accent-soft)}
 
 
 /* Semantic request states are shared status components, not page-local palettes. */
@@ -956,53 +831,45 @@
   background: var(--admin-inner);
   color: var(--admin-text);
   font-size: 10px;
-  font-weight: 800;
-}
+  font-weight: 800}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .offline-status.status-pending,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .status-pending {
   border-color: var(--admin-status-warning);
   background: var(--admin-status-warning-soft);
-  color: var(--admin-status-warning-inline);
-}
+  color: var(--admin-status-warning-inline)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .offline-status.status-approved,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .status-approved {
   border-color: var(--admin-status-success);
   background: var(--admin-status-success-soft);
-  color: var(--admin-status-success-inline);
-}
+  color: var(--admin-status-success-inline)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .offline-status.status-rejected,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .status-rejected {
   border-color: var(--admin-status-error);
   background: var(--admin-status-error-soft);
-  color: var(--admin-status-danger-muted);
-}
+  color: var(--admin-status-danger-muted)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .offline-review-actions .approve {
   border-color: var(--admin-status-success);
   background: var(--admin-status-success-soft);
-  color: var(--admin-status-success-inline);
-}
+  color: var(--admin-status-success-inline)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .offline-review-actions .reject {
   border-color: var(--admin-status-error);
   background: var(--admin-status-error-soft);
-  color: var(--admin-status-danger-muted);
-}
+  color: var(--admin-status-danger-muted)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .offline-course strong {
-  color: var(--admin-accent);
-}
+  color: var(--admin-accent)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .offline-eyebrow,.students-eyebrow,.notifications-eyebrow
 ) {
   color: var(--admin-accent);
   font-size: 10px;
-  font-weight: 800;
-}
+  font-weight: 800}
 
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
@@ -1012,26 +879,21 @@
   border: 1px solid var(--admin-accent);
   border-radius: var(--admin-control-radius);
   background: var(--admin-accent);
-  color: var(--admin-on-accent);
-}
+  color: var(--admin-on-accent)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .row-actions button.danger {
   border-color: var(--admin-status-error);
   background: var(--admin-status-error-soft);
-  color: var(--admin-status-danger-strong);
-}
+  color: var(--admin-status-danger-strong)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .mock-participant-table tbody tr.is-selected td {
-  background: var(--admin-accent-soft);
-}
+  background: var(--admin-accent-soft)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) button:hover:not(:disabled) {
-  border-color: var(--admin-brand-border);
-}
+  border-color: var(--admin-brand-border)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) button:disabled {
-  color: var(--admin-sub);
-}
+  color: var(--admin-sub)}
 
 
 /* Focus and pagination interaction states are shared across all admin modules. */
@@ -1040,10 +902,8 @@
 ):focus {
   border-color: var(--admin-accent);
   box-shadow: 0 0 0 3px var(--admin-accent-soft);
-  outline: none;
-}
+  outline: none}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .messages-pagination button:hover:not(:disabled) {
   border-color: var(--admin-accent);
-  background: var(--admin-accent-soft);
-}
+  background: var(--admin-accent-soft)}
