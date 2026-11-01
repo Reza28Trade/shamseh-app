@@ -14,6 +14,7 @@
   --admin-gold: var(--shamseh-gold);
   --admin-burgundy: var(--shamseh-burgundy);
   --admin-shadow: 0 16px 38px rgba(0,0,0,.22);
+  --admin-course-panel-surface: #252323;
   --admin-course-panel-border: rgba(255,255,255,.055);
   --admin-course-panel-shadow: 8px 8px 18px rgba(13,12,12,.62), -8px -8px 18px rgba(48,45,45,.58), inset 1px 1px 0 rgba(255,255,255,.035);
 }
@@ -33,6 +34,16 @@
   --admin-gold: var(--shamseh-gold);
   --admin-burgundy: var(--shamseh-burgundy);
   --admin-shadow: 0 10px 28px rgba(55,46,38,.09), 0 2px 7px rgba(55,46,38,.045);
+  --admin-course-panel-surface: var(--admin-bg);
   --admin-course-panel-border: rgba(255,255,255,.56);
   --admin-course-panel-shadow: 8px 8px 18px rgba(174,166,154,.48), -8px -8px 18px rgba(255,255,255,.88), inset 1px 1px 0 rgba(255,255,255,.35);
+}
+
+/* Semantic surface aliases shared by admin modules. */
+.admin-shell {
+  --admin-content-surface: var(--admin-card);
+  --admin-content-inner: var(--admin-inner);
+  --admin-content-border: var(--admin-border);
+  --admin-content-radius: 15px;
+  --admin-content-shadow: var(--admin-shadow);
 }
