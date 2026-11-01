@@ -3526,7 +3526,10 @@
   display:flex!important;
   width:min(100%,260px)!important;
   min-height:40px;
+  align-self:center!important;
+  justify-self:center!important;
   margin:8px auto 0!important;
+  margin-inline:auto!important;
   padding:9px 14px;
   border:1px solid var(--admin-brand-border)!important;
   border-radius:10px!important;background:var(--admin-accent-soft)!important;color:var(--admin-text)!important;
