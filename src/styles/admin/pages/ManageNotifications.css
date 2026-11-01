@@ -51,14 +51,11 @@
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-page-head p {
-  margin:5px 0 0!important;color:var(--admin-sub)!important;
+  margin:5px 0 0!important;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-card {
   min-width:0;padding:20px!important;
-
-
-box-shadow:var(--admin-shadow)!important;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form {
@@ -220,14 +217,11 @@ box-shadow:var(--admin-shadow)!important;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-page-head p {
-  margin:5px 0 0!important;color:var(--admin-sub)!important;
+  margin:5px 0 0!important;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form-card {
   min-width:0;padding:20px!important;
-
-
-box-shadow:var(--admin-shadow)!important;
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-form {
