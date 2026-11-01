@@ -434,9 +434,6 @@
 }
 
 .admin-shell .admin-page-content :is(
-  .admin-legacy-page > section,
-  .admin-legacy-page > form,
-  .admin-legacy-page > div:not([data-admin-overlay]):not(.accounts-workspace),
   .admin-finance-registration-page > section,
   .admin-finance-registration-page > article,
   .admin-finance-registration-page > div > article,
