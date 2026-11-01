@@ -27,11 +27,8 @@
   max-height:510px!important;
   overflow:auto!important}
 .admin-shell .admin-page-content .admin-legacy-page .student-table-wrap table{
-  width:100%;
-  border-collapse:separate;
-  border-spacing:0}
-.admin-shell .admin-page-content .admin-legacy-page .student-table-wrap thead{
-  position:sticky;
+  width:100%
+
   top:0;
   z-index:2}
 .admin-shell .admin-page-content .admin-legacy-page .student-table-wrap th{
