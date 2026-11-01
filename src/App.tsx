@@ -81,7 +81,7 @@ function AdminAccounts() {
   return <section className="admin-legacy-page admin-accounts-page">
     {error && <div className="accounts-feedback" role="alert">{error}</div>}
     <div className="accounts-workspace">
-      <div className="accounts-card accounts-create-card admin-master-panel">
+      <div className="accounts-card accounts-create-card admin-panel-card admin-master-panel">
         <header className="accounts-card-head"><span className="accounts-eyebrow">حساب جدید</span><h2>ایجاد حساب مدیر</h2></header>
         <p className="accounts-description">برای مدیر جدید نام کاربری و رمز مستقل تعیین کنید؛ سپس دسترسی بخش‌های موردنیاز را انتخاب کنید.</p>
         <div className="accounts-fields">
@@ -104,7 +104,7 @@ function AdminAccounts() {
         <button className="accounts-primary-action" disabled={busy||username.trim().length<3||password.length<12} onClick={()=>void create()}>{busy?'در حال ذخیره…':'ایجاد حساب مدیر'}</button>
         <small className="accounts-form-hint">رمز عبور باید حداقل ۱۲ کاراکتر داشته باشد.</small>
       </div>
-      <div className="accounts-card accounts-list-card admin-master-panel">
+      <div className="accounts-card accounts-list-card admin-panel-card admin-master-panel">
         <header className="accounts-card-head accounts-list-head"><div><span className="accounts-eyebrow">حساب‌های موجود</span><h2>مدیران تعریف‌شده</h2></div><span className="accounts-list-total">{admins.length.toLocaleString('fa-IR')} مدیر</span></header>
         {loading ? <div className="accounts-list-empty">در حال دریافت فهرست مدیران…</div> : admins.length===0 ? <div className="accounts-list-empty">هنوز حساب مدیر عادی ایجاد نشده است.</div> : <div className="accounts-admin-list">{admins.map(a=><article key={a.id} className="accounts-admin-row">
           <div className="accounts-admin-toolbar">
