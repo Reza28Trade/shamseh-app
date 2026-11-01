@@ -540,8 +540,8 @@
   cursor:pointer!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-row:has(input:checked) {
-  border-color:var(--admin-accent)!important;
-  background:var(--admin-accent-soft)!important;
+  ;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-row input {
   flex:0 0 auto!important;
