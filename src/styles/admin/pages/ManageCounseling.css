@@ -254,7 +254,7 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-conversation-section{
   padding:16px!important;
   border-radius:16px!important;
-  background:linear-gradient(145deg,color-mix(in srgb,#528bd8 5%,var(--admin-card)),var(--admin-card) 65%)!important;
+  background:linear-gradient(145deg,color-mix(in srgb,var(--admin-module-series-2) 5%,var(--admin-card)),var(--admin-card) 65%)!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-list{
   grid-template-columns:minmax(0,1fr)!important;
