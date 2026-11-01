@@ -5,15 +5,14 @@
   margin:0!important;
   gap:14px!important;
   color:var(--admin-text)!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-students-page > .students-page-head {
-  min-height:0!important;
-  padding:15px 18px!important;
-  border:1px solid var(--admin-border)!important;
-  border-top:1px solid var(--admin-border)!important;
-  border-radius:var(--admin-surface-radius)!important;
-  background:var(--admin-card)!important;
-  box-shadow:none!important;
+}.admin-shell .admin-page-content .admin-legacy-page.admin-students-page > .students-page-head{
+min-height:0!important;
+padding:15px 18px!important;
+border:1px solid var(--admin-content-border)!important;
+border-top:1px solid var(--admin-content-border)!important;
+border-radius:var(--admin-content-radius)!important;
+background:var(--admin-content-surface)!important;
+box-shadow:var(--admin-content-shadow)!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page > .students-page-head h2 {
   margin:0!important;
@@ -72,18 +71,17 @@
   background:transparent!important;
   border:0!important;
   box-shadow:none!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-chart-card,
+}.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-chart-card,
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-form-card,
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-import-card,
-.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-list-card {
-  min-width:0!important;
-  padding:16px!important;
-  border:1px solid var(--admin-border)!important;
-  border-top:1px solid var(--admin-border)!important;
-  border-radius:var(--admin-surface-radius)!important;
-  background:var(--admin-card)!important;
-  box-shadow:none!important;
+.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-list-card{
+min-width:0!important;
+padding:16px!important;
+border:1px solid var(--admin-content-border)!important;
+border-top:1px solid var(--admin-content-border)!important;
+border-radius:var(--admin-content-radius)!important;
+background:var(--admin-content-surface)!important;
+box-shadow:var(--admin-content-shadow)!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-chart-card .section-title,
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-form-card .section-title {
@@ -180,10 +178,9 @@
   border-radius:8px!important;
   background:var(--admin-control)!important;
   color:var(--admin-text)!important;
-}
-.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-detail-modal {
-  border-radius:15px!important;
-  box-shadow:var(--admin-shadow)!important;
+}.admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-detail-modal{
+border-radius:var(--admin-content-radius)!important;
+box-shadow:var(--admin-content-shadow)!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-detail-header {
   background:var(--admin-card)!important;
@@ -245,15 +242,14 @@
   background-color:transparent!important;
   box-shadow:none!important;
   overflow:visible!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page > .students-stats > .student-stat {
-  min-width:0!important;
-  margin:0!important;
-  padding:15px 18px!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:15px!important;
-  background:var(--admin-card)!important;
-  box-shadow:var(--admin-shadow)!important;
+}.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page > .students-stats > .student-stat{
+min-width:0!important;
+margin:0!important;
+padding:15px 18px!important;
+border:1px solid var(--admin-content-border)!important;
+border-radius:var(--admin-content-radius)!important;
+background:var(--admin-content-surface)!important;
+box-shadow:var(--admin-content-shadow)!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page > .students-stats > .student-stat:before {
   display:none!important;
@@ -270,17 +266,16 @@
   border:0!important;
   box-shadow:none!important;
   padding:0!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page > .students-main-grid > .student-chart-card,
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page > .students-main-grid > .student-form-card {
-  width:100%!important;
-  min-width:0!important;
-  box-sizing:border-box!important;
-  margin:0!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:var(--admin-surface-radius)!important;
-  background:var(--admin-card)!important;
-  box-shadow:none!important;
+}.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page > .students-main-grid > .student-chart-card,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page > .students-main-grid > .student-form-card{
+width:100%!important;
+min-width:0!important;
+box-sizing:border-box!important;
+margin:0!important;
+border:1px solid var(--admin-content-border)!important;
+border-radius:var(--admin-content-radius)!important;
+background:var(--admin-content-surface)!important;
+box-shadow:var(--admin-content-shadow)!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .student-term-chart-layout {
   grid-template-columns:minmax(140px,.7fr) minmax(0,1.3fr)!important;
