@@ -15,6 +15,7 @@ import { ManagementContactModule } from './management-contact/management-contact
 import { RegistrationsModule } from './registrations/registrations.module';
 import { AuditLogsModule } from './audit-logs/audit-logs.module';
 import { AuditLogInterceptor } from './audit-logs/audit-log.interceptor';
+import { BookstoreModule } from './bookstore/bookstore.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { AuditLogInterceptor } from './audit-logs/audit-log.interceptor';
     ManagementContactModule,
     RegistrationsModule,
     AuditLogsModule,
+    BookstoreModule,
   ],
   providers: [{ provide: APP_INTERCEPTOR, useClass: AuditLogInterceptor }],
 })

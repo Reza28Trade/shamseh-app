@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { MessageSquare, Send, RefreshCw, X, Clock3, CheckCircle2, CircleDot, MessagesSquare, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import '../../styles/admin/pages/ManageManagementContact.css';
 
 interface SupportMessage {
   id: string;
@@ -122,7 +123,7 @@ export const ManageManagementContact: React.FC = () => {
     status === 'ANSWERED' ? 'پاسخ داده شده' : status === 'CLOSED' ? 'بسته شده' : 'در انتظار پاسخ';
 
   return (
-    <div className="admin-legacy-page admin-messages-page">
+    <div className="admin-legacy-page admin-management-contact-page">
       {error && <div className="messages-error" role="alert">{error}</div>}
 
       <section className="messages-stats" aria-label="فیلتر وضعیت تیکت‌ها">

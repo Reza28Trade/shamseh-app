@@ -1,0 +1,98 @@
+/* Shared structural compatibility only.
+   Colors, typography, borders, radii, shadows and control appearance belong to
+   AdminTokens.css, AdminTheme.css and the canonical AdminComponents.css layer. */
+
+.admin-shell .admin-page-content :is(
+  .admin-messages-page .messages-stats,
+  .admin-offline-page .offline-stats,
+  .admin-mock-exams-page .mock-exam-stats,
+  .admin-counseling-page .counseling-stats-grid
+) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(min(100%,175px),1fr));
+  gap: 12px;
+  min-width: 0}
+
+.admin-shell .admin-page-content :is(
+  .admin-stat-grid,.course-stats,.students-stats
+) {
+  min-width: 0;
+  gap: 12px}
+
+.admin-shell .admin-page-content :is(
+  .admin-stat-grid,.course-stats,.students-stats,
+  .offline-stats,.messages-stats,.mock-exam-stats,.counseling-stats-grid
+) > * {
+  min-width: 0}
+
+.admin-shell .admin-page-content :is(
+  .messages-section-head,.offline-list-head,.mock-exam-list-head,
+  .admin-counseling-page .counseling-account-section > h3,
+  .admin-counseling-page .counseling-conversation-section > h3
+) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px}
+
+.admin-shell .admin-page-content :is(
+  .messages-filter-group,.offline-filter-group,.mock-exam-filters
+) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px}
+
+.admin-shell .admin-page-content :is(
+  .messages-table-wrap,.mock-exam-scroll-list,.offline-request-list,
+  .student-table-wrap
+) {
+  min-width: 0;
+  max-width: 100%;
+  overflow: auto;
+  scrollbar-width: thin}
+
+.admin-shell .admin-page-content :is(
+  .messages-table,.messages-table-wrap table,.mock-exam-scroll-list table
+) {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: separate;
+  border-spacing: 0}
+
+.admin-shell .admin-page-content .admin-legacy-page :is(input,select,textarea) {
+  min-width: 0;
+  max-width: 100%}
+
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  .mock-exam-dashboard,.mock-exam-list-card,.mock-exam-scroll-list,
+  .messages-table-wrap,.offline-request-list,.counseling-account-list,
+  .accounts-card,.accounts-create-card
+) {
+  min-width: 0;
+  max-width: 100%}
+
+@media (max-width: 760px) {
+  .admin-shell .admin-page-content :is(
+    .admin-messages-page .messages-stats,
+    .admin-offline-page .offline-stats,
+    .admin-mock-exams-page .mock-exam-stats,
+    .admin-counseling-page .counseling-stats-grid
+  ) {
+    grid-template-columns: repeat(2,minmax(0,1fr))}
+
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .messages-section-head,.offline-list-head,.mock-exam-list-head
+  ) {
+    align-items: stretch}
+}
+
+@media (max-width: 440px) {
+  .admin-shell .admin-page-content :is(
+    .admin-messages-page .messages-stats,
+    .admin-offline-page .offline-stats,
+    .admin-mock-exams-page .mock-exam-stats,
+    .admin-counseling-page .counseling-stats-grid
+  ) {
+    grid-template-columns: minmax(0,1fr)}
+}

@@ -1,0 +1,54 @@
+/* Central source of truth for the admin theme surfaces. Values are preserved from the approved shell. */
+.admin-shell.admin-theme-dark {
+  --admin-bg: var(--shamseh-charcoal);
+  --admin-card: #1D1B1B;
+  --admin-inner: #302D2D;
+  --admin-text: var(--shamseh-almond);
+  --admin-sub: #B9B0A6;
+  --admin-border: rgba(238,229,218,.13);
+  --admin-accent: var(--shamseh-turquoise);
+  --admin-accent-soft: rgba(72,209,204,.13);
+  --admin-brand-soft: rgba(0,128,128,.18);
+  --admin-brand-border: rgba(72,209,204,.30);
+  --admin-control: #211F1F;
+  --admin-gold: var(--shamseh-gold);
+  --admin-burgundy: var(--shamseh-burgundy);
+  --admin-shadow: 0 16px 38px rgba(0,0,0,.22);
+  --admin-dashboard-row-surface: #211F1F;
+  --admin-dashboard-icon-surface: #252323;
+  --admin-dashboard-deep-surface: #1D1B1B;
+  --admin-dashboard-gradient-surface: #242222;
+  --admin-course-panel-surface: #252323;
+  --admin-course-panel-border: rgba(255,255,255,.055);
+  --admin-course-panel-shadow: 8px 8px 18px rgba(13,12,12,.62), -8px -8px 18px rgba(48,45,45,.58), inset 1px 1px 0 rgba(255,255,255,.035)}
+
+.admin-shell.admin-theme-light {
+  --admin-bg: #EEECE4;
+  --admin-card: #F7F3EC;
+  --admin-inner: #E5DED5;
+  --admin-text: #302D2A;
+  --admin-sub: #70665D;
+  --admin-border: rgba(64,55,48,.14);
+  --admin-accent: var(--shamseh-teal);
+  --admin-accent-soft: rgba(0,128,128,.10);
+  --admin-brand-soft: rgba(0,128,128,.08);
+  --admin-brand-border: rgba(0,128,128,.27);
+  --admin-control: #F8F5EF;
+  --admin-gold: var(--shamseh-gold);
+  --admin-burgundy: var(--shamseh-burgundy);
+  --admin-shadow: 0 10px 28px rgba(55,46,38,.09), 0 2px 7px rgba(55,46,38,.045);
+  --admin-dashboard-row-surface: #E7E3DC;
+  --admin-dashboard-icon-surface: #E9E5DE;
+  --admin-dashboard-deep-surface: var(--admin-bg);
+  --admin-dashboard-gradient-surface: var(--admin-card);
+  --admin-course-panel-surface: var(--admin-bg);
+  --admin-course-panel-border: rgba(255,255,255,.56);
+  --admin-course-panel-shadow: 8px 8px 18px rgba(174,166,154,.48), -8px -8px 18px rgba(255,255,255,.88), inset 1px 1px 0 rgba(255,255,255,.35)}
+
+/* Semantic surface aliases shared by admin modules. */
+.admin-shell {
+  --admin-content-surface: var(--admin-card);
+  --admin-content-inner: var(--admin-inner);
+  --admin-content-border: var(--admin-border);
+  --admin-content-radius: 14px;
+  --admin-content-shadow: var(--admin-shadow)}

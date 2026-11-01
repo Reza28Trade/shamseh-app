@@ -26,7 +26,7 @@ export class PublicContentService {
       select: {
         id: true, title: true, professor: true, level: true, description: true,
         term: true, category: true, startDate: true, schedule: true, price: true,
-        coverImage: true, coverImageStorageKey: true, status: true,
+        coverImage: true, coverImageStorageKey: true, status: true, updatedAt: true,
         academicYear: true, classDays: true, classStartTime: true, classEndTime: true,
       },
     });
@@ -34,8 +34,10 @@ export class PublicContentService {
     // Uploaded covers must use the public streaming endpoint; the admin cover endpoint is protected.
     return courses.map(({ coverImageStorageKey, ...course }) => ({
       ...course,
+      // Version the URL whenever the course is updated so browsers cannot keep
+      // showing a previously uploaded cover from the same cached endpoint.
       coverImage: coverImageStorageKey
-        ? `/api/public/courses/${course.id}/cover`
+        ? `/api/public/courses/${course.id}/cover?v=${course.updatedAt.getTime()}`
         : course.coverImage,
     }));
   }

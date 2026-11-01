@@ -1,0 +1,42 @@
+name: Education news build validation
+
+on:
+  push:
+    branches:
+      - feature/approved-baseline-education-news
+  pull_request:
+    branches:
+      - baseline/approved-vps-20261020
+    paths:
+      - "src/**"
+      - "backend/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/education-news-build.yml"
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm install
+      - run: npm run build
+
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm install
+      - run: npx prisma generate
+      - run: npm run build

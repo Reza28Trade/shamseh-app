@@ -1,0 +1,380 @@
+/* Counseling header matches the shared student-management page header. */
+.admin-counseling-page > .counseling-page-head{
+  min-height:82px;
+  padding:18px 20px!important}
+.admin-counseling-page > .counseling-page-head button{min-height:38px}
+@media(max-width:700px){.admin-counseling-page > .counseling-page-head{padding:16px!important;min-height:0}}
+
+/* Counseling — dedicated compact management layout */
+.admin-counseling-page{
+  max-width:none;
+  padding:0!important;
+
+
+  gap:20px!important}
+
+.admin-counseling-page > div:first-child{
+
+
+  padding:4px 2px 0!important;
+  margin:0!important}
+
+.admin-counseling-page > div:first-child p{
+  margin-top:5px!important}
+
+.admin-counseling-page > section:nth-of-type(1){
+  padding:18px 20px!important;
+  margin:0!important}
+
+.admin-counseling-page > section:nth-of-type(1) > div{
+  gap:10px!important}
+
+.admin-counseling-page > section:nth-of-type(1) button[type="button"]{
+  flex:1 1 260px!important;
+  min-width:220px!important;
+  padding:10px 12px!important}
+
+.admin-counseling-page > section:nth-of-type(1) select{
+  min-width:62px;
+  padding:9px 10px!important}
+
+.admin-counseling-page > section:nth-of-type(1) > div > button:last-child{
+  padding:10px 16px!important}
+
+.admin-counseling-page > section:nth-of-type(2),
+.admin-counseling-page > section:nth-of-type(3){
+  padding:0!important}
+
+.admin-counseling-page > section:nth-of-type(2) > div > div{
+  padding:14px 16px!important}
+
+.admin-counseling-page > section:nth-of-type(2) > div > div > div:first-child{
+  gap:4px!important}
+
+.admin-counseling-page > section:nth-of-type(2) > div > div > div:last-child{
+  gap:6px!important}
+
+.admin-counseling-page > section:nth-of-type(3) > div > div{
+  padding:15px 16px!important}
+
+.admin-counseling-page > section:nth-of-type(3) > div > div > div:first-child{
+  align-items:center!important}
+
+.admin-counseling-page > section:nth-of-type(3) > div > div > div:last-child{
+  margin-top:10px!important;
+  padding-top:10px}
+
+.admin-counseling-page > section:nth-of-type(3) button{
+  padding:7px 11px!important}
+
+.admin-counseling-page > div[style*="position: fixed"]{
+  backdrop-filter:blur(5px)}
+
+@media(max-width:700px){
+  .admin-counseling-page > section:nth-of-type(1) > div{
+    align-items:stretch!important}
+  .admin-counseling-page > section:nth-of-type(1) > div > div{
+    width:100%}
+  .admin-counseling-page > section:nth-of-type(1) > div > button:last-child{
+    width:100%}
+}
+
+/* Counseling conversation history collapses to a single column on narrow screens. */
+.admin-counseling-conversations-grid{min-width:0}
+@media(max-width:760px){
+  .admin-counseling-conversations-grid{grid-template-columns:minmax(0,1fr)!important}
+  .admin-counseling-conversations-grid > div{min-width:0}
+}
+
+/* Final header consistency override for counselor management. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head{
+  min-height:82px!important;
+  padding:18px 20px!important}
+@media(max-width:700px){
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head{
+    min-height:0!important;padding:16px!important}
+}
+
+
+/* 2026-10-12: compact, unified counselor management layout */
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page{
+  max-width:1240px!important;
+  gap:14px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head{
+  min-height:82px!important;
+  padding:18px 20px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:0!important;
+  overflow:hidden}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid > div{
+  min-height:70px!important;
+  padding:11px 15px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid > div > div:first-child{
+  width:32px!important;height:32px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-account-section,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-conversation-section{
+  padding:16px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-list{
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:8px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-item{
+  display:flex!important;
+  align-items:center!important;
+  flex-wrap:wrap!important;
+  gap:10px 16px!important;
+  padding:10px 13px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-item > div:first-child{
+  flex:1 1 230px!important;
+  align-items:center!important;
+  margin:0!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-item > div:first-child > div:first-child{
+  display:flex!important;align-items:center!important;gap:12px!important;flex-wrap:wrap!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-item > div:first-child > div:first-child > div{
+  margin-top:0!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-item p{
+  flex:1 1 180px!important;margin:0!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-item button{
+  margin-top:0!important;padding:7px 10px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-section .admin-counseling-conversations-grid{
+  gap:10px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list{
+  gap:6px!important;
+  max-height:500px!important;
+  padding:2px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:center!important;
+  column-gap:12px!important;
+  row-gap:3px!important;
+  padding:9px 11px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button > strong,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button > span{
+  margin-top:0!important;min-width:0!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button > span:nth-of-type(1){grid-column:1}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button > span:nth-of-type(2){grid-column:2;grid-row:1/3;text-align:left}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button > span:nth-of-type(3){grid-column:1/-1}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-selected-student{
+  display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:5px 14px!important;
+  padding:0 0 8px!important;margin:0 0 8px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-selected-student > div{
+  margin:0!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-selected-student > div{display:inline!important}
+@media(max-width:760px){
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid{grid-template-columns:minmax(0,1fr)!important}
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-item{align-items:flex-start!important}
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button{grid-template-columns:minmax(0,1fr)!important}
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button > span:nth-of-type(2){grid-column:1;grid-row:auto;text-align:right}
+}
+
+/* Counselor management: align with the shared feedback/support inbox design. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page {
+  gap:14px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid {
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:10px!important;
+  margin:0!important;
+  padding:0!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid > div {
+  min-width:0!important;
+  min-height:76px!important;
+  box-sizing:border-box!important;
+  padding:13px 15px!important;
+  gap:12px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid > div > div:first-child {
+  flex:0 0 36px!important;
+  width:36px!important;
+  height:36px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > section {
+  min-width:0!important;
+  box-sizing:border-box!important;
+  padding:17px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > section > div:first-child {
+  gap:12px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page button {
+  min-height:34px!important;
+  padding:7px 11px!important;
+  }
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page input,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page select {
+  min-height:36px!important;
+  box-sizing:border-box!important;
+  }
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-list {
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr))!important;
+  gap:9px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-item {
+  min-width:0!important;
+  padding:11px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-item button {
+  min-height:30px!important;
+  margin-top:9px!important;
+  padding:5px 9px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-section .admin-counseling-conversations-grid {
+  grid-template-columns:minmax(230px,.8fr) minmax(0,1.6fr)!important;
+  gap:10px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list {
+  gap:6px!important;
+  max-height:460px!important;
+  padding:0!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button {
+  box-sizing:border-box!important;
+  padding:10px 11px!important;
+  }
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-selected-student {
+  padding-bottom:10px!important;
+  margin-bottom:10px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page table th,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page table td {
+  padding:8px!important}
+@media(max-width:900px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-section .admin-counseling-conversations-grid {
+    grid-template-columns:minmax(0,1fr)!important}
+}
+@media(max-width:600px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid {
+    grid-template-columns:minmax(0,1fr)!important}
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > section {
+    padding:12px!important}
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-list {
+    grid-template-columns:minmax(0,1fr)!important}
+}
+
+
+/* Counselor management: search alignment, compact student selection and pagination. */
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page {
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+  padding-inline:0!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > section {
+  margin-inline:0!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-search,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-search {
+  position:relative!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:40px!important;
+  box-sizing:border-box!important;
+  padding:0 12px!important;
+  margin:0 0 12px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-search input,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-search input {
+  flex:1 1 auto!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:38px!important;
+  margin:0!important;
+  padding:7px 0!important;
+  outline:0!important;
+  }
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-tools {
+  display:grid!important;
+  grid-template-columns:minmax(220px,1fr) minmax(130px,.35fr) minmax(150px,.45fr)!important;
+  align-items:end!important;
+  gap:10px!important;
+  margin-bottom:10px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-tools .counseling-student-search {
+  margin:0!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-filter {
+  display:flex!important;
+  flex-direction:column!important;
+  gap:5px!important;
+  min-width:0!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-filter select,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-submit select {
+  width:100%!important;
+  min-width:0!important;
+  padding:8px 10px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-list-head,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-pagination,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-pagination {
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  flex-wrap:wrap!important;
+  gap:10px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-list-head {
+  margin:10px 0!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-list {
+  display:flex!important;
+  flex-direction:column!important;
+  gap:6px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-row {
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  min-width:0!important;
+  padding:10px 12px!important;
+
+
+  cursor:pointer!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-row input {
+  flex:0 0 auto!important;
+  width:16px!important;
+  min-height:16px!important;
+  height:16px!important;
+  margin:0!important;
+  accent-color:var(--admin-accent)!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-copy {
+  display:flex!important;
+  flex:1 1 auto!important;
+  flex-direction:column!important;
+  gap:3px!important;
+  min-width:0!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-copy small {
+
+  overflow-wrap:anywhere!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-status {
+  flex:0 0 auto!important;
+  }
+
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-pagination,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-pagination {
+  margin-top:12px!important;
+  padding-top:12px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-pagination > div,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-pagination > div {
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-pagination button,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-pagination button {
+  min-height:30px!important;
+  padding:5px 9px!important;
+  }
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-pagination button:disabled,
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-pagination button:disabled {
+  opacity:.4!important;
+  cursor:not-allowed!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-submit {
+  display:grid!important;
+  grid-template-columns:minmax(220px,1fr) auto!important;
+  align-items:end!important;
+  gap:10px!important;
+  margin-top:14px!important;
+  padding-top:14px!important}
+.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-submit label {
+  display:block!important}
+@media(max-width:760px) {
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-tools {
+    grid-template-columns:minmax(0,1fr)!important}
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-submit {
+    grid-template-columns:minmax(0,1fr)!important}
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-row {
+    align-items:flex-start!important;
+    flex-wrap:wrap!important}
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-status {
+    margin-inline-start:26px!important}
+}
+
+@media(max-width:760px) {
+.admin-shell .admin-page-content .admin-counseling-page .admin-counseling-conversations-grid {
+    grid-template-columns:minmax(0,1fr)!important}
+}

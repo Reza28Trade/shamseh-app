@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import type { Admin } from '../types';
 import { useStore } from '../store/useStore';
+import '../styles/admin/core/AdminTokens.css';
+import '../styles/admin/core/AdminTheme.css';
 import '../styles/AdminLegacy.css';
-import { LayoutDashboard, BookOpen, Users, MessageSquare, ShieldAlert, FileText, LogOut, Sun, Moon, Menu, X, CheckSquare, ClipboardList, Bell, Wallet, ShieldCheck, KeyRound } from 'lucide-react';
+import '../styles/admin/core/AdminComponents.extended.css';
+import '../styles/admin/core/AdminLayout.css';
+import { LayoutDashboard, BookOpen, Users, MessageSquare, ShieldAlert, FileText, LogOut, Sun, Moon, Menu, X, CheckSquare, ClipboardList, Bell, Wallet, ShieldCheck, KeyRound, ShoppingBag } from 'lucide-react';
 
 interface AdminLayoutProps { admin?: Admin; onLogout: () => void; activeTab: string; setActiveTab: any; children: React.ReactNode; }
 
@@ -37,6 +41,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
     { id: 'notifications', label: 'ارسال اطلاعیه', icon: Bell },
     { id: 'rules', label: 'قوانین و تحلیل کنکور', icon: FileText },
     { id: 'registrations', label: 'مدیریت مالی، ثبت‌نام و بازپرداخت', icon: Wallet },
+    { id: 'books', label: 'مدیریت کتاب‌ها و سفارش‌ها', icon: ShoppingBag },
     { id: 'logs', label: 'گزارش‌های سیستمی', icon: ShieldAlert },
   ];
   const menuItems = allMenuItems.filter((item) => {
@@ -47,25 +52,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ admin, onLogout, activ
     return Boolean(admin?.permissions?.includes(item.id));
   });
   const activeItem = menuItems.find((item) => item.id === activeTab || (activeTab === 'finance' && item.id === 'registrations')) ?? menuItems[0];
-  const vars = {
-    '--admin-bg': isDark ? 'var(--shamseh-charcoal)' : 'var(--shamseh-almond)',
-    '--admin-card': isDark ? '#1D1B1B' : '#F7F1E8',
-    '--admin-inner': isDark ? '#302D2D' : '#E5D9CB',
-    '--admin-text': isDark ? 'var(--shamseh-almond)' : 'var(--shamseh-charcoal)',
-    '--admin-sub': isDark ? '#B9B0A6' : '#655D55',
-    '--admin-border': isDark ? 'rgba(238,229,218,.13)' : 'rgba(38,36,36,.14)',
-    '--admin-accent': isDark ? 'var(--shamseh-turquoise)' : 'var(--shamseh-teal)',
-    '--admin-accent-soft': isDark ? 'rgba(72,209,204,.13)' : 'rgba(0,128,128,.10)',
-    '--admin-brand-soft': isDark ? 'rgba(0,128,128,.18)' : 'rgba(0,128,128,.08)',
-    '--admin-brand-border': isDark ? 'rgba(72,209,204,.30)' : 'rgba(0,128,128,.25)',
-    '--admin-control': isDark ? '#211F1F' : '#F7F1E8',
-    '--admin-gold': 'var(--shamseh-gold)',
-    '--admin-burgundy': 'var(--shamseh-burgundy)',
-    '--admin-shadow': isDark ? '0 16px 38px rgba(0,0,0,.22)' : '0 10px 28px rgba(38,36,36,.07)',
-  } as React.CSSProperties;
+
 
   return (
-    <div className={'admin-shell ' + (isDark ? 'admin-theme-dark' : 'admin-theme-light')} style={vars} dir="rtl">
+    <div className={'admin-shell ' + (isDark ? 'admin-theme-dark' : 'admin-theme-light')} dir="rtl">
       <aside className={'admin-sidebar ' + (isSidebarOpen ? 'open' : '')}>
         <div className="admin-sidebar-main">
           <div className="admin-sidebar-brand">
