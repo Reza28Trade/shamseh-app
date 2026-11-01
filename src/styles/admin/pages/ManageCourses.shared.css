@@ -1,0 +1,17 @@
+/* Course-management legacy heading compatibility patterns.
+ * Kept at the former shared-pattern position to preserve cascade order.
+ */
+.admin-shell .admin-page-content .admin-legacy-page .course-title{
+  margin:0;
+  font-size:var(--admin-page-title-size)!important;
+  line-height:1.5;
+  font-weight:850!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page .course-subtitle{
+  margin:4px 0 0;
+  color:var(--admin-sub)!important;
+  font-size:11px!important;
+  line-height:1.8;
+}
+.admin-shell .admin-page-content .admin-legacy-page .course-title svg{color:var(--admin-accent)!important}
