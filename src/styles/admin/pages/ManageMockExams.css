@@ -231,7 +231,7 @@
   content:"";
   position:absolute;
   top:0;bottom:0;left:0;width:4px;
-  background:linear-gradient(180deg,#398A90,#528bd8,#d69b42,#E58A70);
+  background:linear-gradient(180deg,var(--admin-module-series-1),var(--admin-module-series-2),var(--admin-module-series-3),var(--admin-module-series-4));
 }
 .admin-shell .admin-page-content .admin-mock-exams-page .mock-exam-stats{
   position:relative;
@@ -247,23 +247,23 @@
   position:absolute;
   z-index:2;
   top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,#398A90 0%,#528bd8 34%,#d69b42 67%,#E58A70 100%);
+  background:linear-gradient(90deg,var(--admin-module-series-1) 0%,var(--admin-module-series-2) 34%,var(--admin-module-series-3) 67%,var(--admin-module-series-4) 100%);
   pointer-events:none;
 }
 .admin-shell .admin-page-content .admin-mock-exams-page .mock-exam-stat{
   background:linear-gradient(180deg,color-mix(in srgb,var(--admin-accent) 7%,var(--admin-card)),var(--admin-card) 75%)!important;
 }
 .admin-shell .admin-page-content .admin-mock-exams-page .mock-exam-list-card{
-  background:linear-gradient(145deg,color-mix(in srgb,#528bd8 7%,var(--admin-card)),var(--admin-card) 62%)!important;
+  background:linear-gradient(145deg,color-mix(in srgb,var(--admin-module-series-2) 7%,var(--admin-card)),var(--admin-card) 62%)!important;
   border:1px solid var(--admin-border)!important;
-  border-top:2px solid color-mix(in srgb,#528bd8 70%,var(--admin-border))!important;
+  border-top:2px solid color-mix(in srgb,var(--admin-module-series-2) 70%,var(--admin-border))!important;
   border-radius:16px!important;
   box-shadow:var(--admin-shadow)!important;
 }
 .admin-shell .admin-page-content .admin-mock-exams-page .mock-exam-form-card{
-  background:linear-gradient(145deg,color-mix(in srgb,#398A90 8%,var(--admin-card)),var(--admin-card) 62%)!important;
+  background:linear-gradient(145deg,color-mix(in srgb,var(--admin-module-series-1) 8%,var(--admin-card)),var(--admin-card) 62%)!important;
   border:1px solid var(--admin-border)!important;
-  border-top:2px solid color-mix(in srgb,#398A90 70%,var(--admin-border))!important;
+  border-top:2px solid color-mix(in srgb,var(--admin-module-series-1) 70%,var(--admin-border))!important;
   border-radius:16px!important;
   box-shadow:var(--admin-shadow)!important;
 }
@@ -316,9 +316,9 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > form{
   padding:16px!important;
   border-radius:16px!important;
-  background:linear-gradient(145deg,color-mix(in srgb,#398A90 8%,var(--admin-card)),var(--admin-card) 62%)!important;
+  background:linear-gradient(145deg,color-mix(in srgb,var(--admin-module-series-1) 8%,var(--admin-card)),var(--admin-card) 62%)!important;
   border:1px solid var(--admin-border)!important;
-  border-top:2px solid color-mix(in srgb,#398A90 70%,var(--admin-border))!important;
+  border-top:2px solid color-mix(in srgb,var(--admin-module-series-1) 70%,var(--admin-border))!important;
   box-shadow:var(--admin-shadow)!important;
 }
 @media(max-width:760px){
