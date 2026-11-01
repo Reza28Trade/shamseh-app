@@ -136,7 +136,6 @@
 }
 .offline-stat-card:hover{transform:translateY(-1px)}
 .offline-stat-card.is-active{
-  border-color:var(--admin-accent)!important;
 }
 .offline-stat-icon{
   width:32px;
@@ -661,7 +660,6 @@
   content:none!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card:hover {
-  border-color:var(--admin-accent)!important;
   transform:translateY(-1px)!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card.is-active {
@@ -1050,7 +1048,6 @@
 }
 
 .admin-shell .admin-page-content .admin-offline-page .offline-stat-card.is-active {
-  border-color:var(--admin-accent)!important;
 }
 
 .admin-shell .admin-page-content .admin-offline-page .offline-stat-copy strong {
@@ -1098,7 +1095,6 @@
 }
 
 .admin-shell .admin-page-content .admin-offline-page .offline-link-field {
-  border-color:var(--admin-border)!important;
 
 }
 
