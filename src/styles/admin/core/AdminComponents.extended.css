@@ -1,0 +1,117 @@
+/* Phase 2: bring the remaining admin sections onto the same compact visual language. */
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  .admin-stat,.offline-stat-card,.messages-stat,.mock-exam-stat,
+  .offline-list-card,.messages-ticket-section,.messages-detail-section,
+  .notifications-form-card,
+  .admin-page-heading,.admin-page-head,.page-header,.messages-page-head,
+  .notifications-page-head,.accounts-admin-toolbar,.messages-section-head
+){
+  border:1px solid var(--admin-border)!important;
+  border-top:1px solid var(--admin-border)!important;
+  border-radius:var(--admin-surface-radius)!important;
+  background:var(--admin-card)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  .admin-stat,.offline-stat-card,.messages-stat,.mock-exam-stat
+){
+  min-width:0;
+  overflow:hidden;
+  box-shadow:none!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  .admin-stat,.offline-stat-card,.messages-stat,.mock-exam-stat
+)::before,
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  .admin-stat,.offline-stat-card,.messages-stat,.mock-exam-stat
+)::after{
+  border-top-color:var(--admin-border)!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  .admin-stat,.offline-stat-card,.messages-stat,.mock-exam-stat
+) :is(h1,h2,h3,h4,strong,[class*="value"],[class*="Value"]){
+  font-size:clamp(14px,1.4vw,21px);
+  line-height:1.55;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  .admin-page-heading,.admin-page-head,.page-header,.messages-page-head,
+  .notifications-page-head,.accounts-admin-toolbar
+){
+  padding:16px 19px!important;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  .admin-finance-page,.admin-public-content-page,.admin-dashboard-page,
+  .admin-messages-page,.admin-notifications-page,.admin-accounts-page,
+  .admin-offline-page,.admin-counseling-page
+){
+  width:100%;
+  max-width:1240px;
+  margin-inline:auto;
+  gap:16px;
+  font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  .admin-stat,.offline-stat-card,.messages-stat,.mock-exam-stat,
+  .accounts-card,.accounts-create-card,.notifications-form-card,
+  .offline-list-card,.messages-ticket-section,.messages-detail-section
+) :is(input,select,textarea){
+  max-width:100%;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  .admin-stat-grid,.offline-stats,.messages-stats,.mock-exam-stats,
+  .counseling-stats-grid
+){
+  min-width:0;
+  gap:12px;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  .admin-stat-grid,.offline-stats,.messages-stats,.mock-exam-stats
+) > *{
+  min-width:0;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  .messages-table-wrap,.mock-exam-scroll-list
+){
+  max-width:100%;
+  overflow:auto;
+  scrollbar-width:thin;
+  scrollbar-color:var(--admin-border) transparent;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  .messages-table,.messages-table-wrap table,.mock-exam-scroll-list table
+){
+  min-width:640px;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(
+  .admin-stat,.offline-stat-card,.messages-stat,.mock-exam-stat,
+  .offline-list-card,.messages-ticket-section,.messages-detail-section,
+  .notifications-form-card
+) :is(button,input,select,textarea){
+  font-family:inherit;
+}
+.admin-shell .admin-page-content .admin-legacy-page :is(button,input,select,textarea){
+  max-width:100%;
+}
+@media(max-width:760px){
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .admin-stat-grid,.offline-stats,.messages-stats,.mock-exam-stats,
+    .counseling-stats-grid
+  ){
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .admin-page-heading,.admin-page-head,.page-header,.messages-page-head,
+    .notifications-page-head,.accounts-admin-toolbar
+  ){
+    align-items:stretch;
+    gap:10px;
+  }
+}
+@media(max-width:440px){
+  .admin-shell .admin-page-content .admin-legacy-page :is(
+    .admin-stat-grid,.offline-stats,.messages-stats,.mock-exam-stats,
+    .counseling-stats-grid
+  ){
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+}
