@@ -163,12 +163,14 @@
   color:var(--admin-text)!important;
 }
 
-@media(max-width:640px)
+@media(max-width:640px) {
 .admin-shell .admin-page-content .admin-notifications-page {
     gap:12px!important;
   }
+}
 
-@media(max-width:640px)
+@media(max-width:640px) {
 .admin-shell .admin-page-content .admin-notifications-page .notifications-form-card {
     padding:12px!important;
   }
+}
