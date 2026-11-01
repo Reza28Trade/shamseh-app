@@ -1032,3 +1032,18 @@
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) button:disabled {
   color: var(--admin-sub);
 }
+
+
+/* Focus and pagination interaction states are shared across all admin modules. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
+  input,select,textarea
+):focus {
+  border-color: var(--admin-accent);
+  box-shadow: 0 0 0 3px var(--admin-accent-soft);
+  outline: none;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .messages-pagination button:hover:not(:disabled) {
+  border-color: var(--admin-accent);
+  background: var(--admin-accent-soft);
+}
