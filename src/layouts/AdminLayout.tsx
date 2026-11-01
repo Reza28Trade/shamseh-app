@@ -3,7 +3,6 @@ import type { Admin } from '../types';
 import { useStore } from '../store/useStore';
 import '../styles/admin/core/AdminTokens.css';
 import '../styles/admin/core/AdminTheme.css';
-import '../styles/admin/core/AdminComponents.css';
 import '../styles/AdminLegacy.css';
 import '../styles/admin/core/AdminComponents.extended.css';
 import '../styles/admin/core/AdminLayout.css';
