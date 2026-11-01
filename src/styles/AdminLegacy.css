@@ -32,15 +32,8 @@
   color:var(--admin-text)!important;
 }
 
-/* Every first-level surface follows the active theme. */
-.admin-legacy-page > div:not([data-admin-overlay]),
-.admin-legacy-page > form:not([data-admin-overlay]),
-.admin-legacy-page > section:not([data-admin-overlay]){
-  background:var(--admin-card)!important;
-  background-image:none!important;
-  border-color:var(--admin-border)!important;
-  box-shadow:var(--admin-shadow)!important;
-}
+/* Surface ownership belongs to each module stylesheet.
+   The legacy wrapper must not turn layout containers into cards. */
 
 /* Legacy hard-coded dark surfaces are neutralized in both themes. */
 .admin-legacy-page [style*="#0e0e11"],
@@ -104,10 +97,8 @@
   color:var(--admin-text)!important;
   letter-spacing:-.2px;
 }
-.admin-legacy-page p,
-.admin-legacy-page label{
-  color:var(--admin-sub)!important;
-}
+.admin-legacy-page p{color:var(--admin-sub)!important}
+.admin-legacy-page label{color:var(--admin-text)!important}
 .admin-legacy-page strong{color:var(--admin-text)}
 .admin-legacy-page a{color:var(--admin-accent)}
 .admin-legacy-page hr{border-color:var(--admin-border)!important}
@@ -153,9 +144,6 @@
 }
 @media(max-width:620px){
   .admin-legacy-page{gap:14px}
-  .admin-legacy-page > div,
-  .admin-legacy-page > form,
-  .admin-legacy-page > section{border-radius:14px!important}
 }
 
 
