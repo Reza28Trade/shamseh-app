@@ -1,3 +1,44 @@
+/* Module-owned compatibility rules migrated from AdminLegacy.css. */
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat-grid {
+  display:grid;
+  position:relative;
+  overflow:visible;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  gap:12px!important;
+}
+
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat-grid::before,
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat-grid::after {
+  content:none!important;
+  display:none!important;
+}
+
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat {
+  background:var(--admin-card)!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:15px!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat:hover {
+  background:var(--admin-accent-soft)!important;
+  border-color:var(--admin-brand-border)!important;
+}
+
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat-grid {
+  min-height:81px;
+  border-radius:16px!important;
+}
+
+.admin-shell .admin-page-content .admin-dashboard-page .admin-stat {
+  min-height:78px;
+  padding:13px 16px!important;
+}
+
 /* Dashboard alignment: match the content width and card surfaces used by the other admin pages. */
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-dashboard-page {
