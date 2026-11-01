@@ -24,27 +24,13 @@
   font-weight:850!important;
   color:var(--admin-text)!important;
 }
-.admin-shell .admin-page-content .admin-legacy-page .course-title{
-  margin:0;
-  font-size:var(--admin-page-title-size)!important;
-  line-height:1.5;
-  font-weight:850!important;
-  color:var(--admin-text)!important;
-}
 .admin-shell .admin-page-content .admin-legacy-page .students-page-head p{
   margin:4px 0 0;
   color:var(--admin-sub)!important;
   font-size:11px!important;
   line-height:1.8;
 }
-.admin-shell .admin-page-content .admin-legacy-page .course-subtitle{
-  margin:4px 0 0;
-  color:var(--admin-sub)!important;
-  font-size:11px!important;
-  line-height:1.8;
-}
 .admin-shell .admin-page-content .admin-legacy-page .students-page-head h2 svg{color:var(--admin-accent)!important}
-.admin-shell .admin-page-content .admin-legacy-page .course-title svg{color:var(--admin-accent)!important}
 .admin-shell .admin-page-content .admin-legacy-page .students-head-actions{gap:7px}
 
 /* Shared cards and section surfaces. */
