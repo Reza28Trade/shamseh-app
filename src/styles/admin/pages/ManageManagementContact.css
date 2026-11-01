@@ -295,8 +295,8 @@
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-reply-form textarea:focus {
   outline:none!important;
-  border-color:var(--admin-accent)!important;
-  box-shadow:0 0 0 3px var(--admin-accent-soft)!important;
+  ;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-reply-actions {
   display:flex!important;
@@ -454,8 +454,8 @@
   ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-pagination button:not(:disabled):hover {
-  background:var(--admin-accent-soft)!important;
-  border-color:var(--admin-accent)!important;
+  ;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-pagination button:disabled {
   opacity:.4!important;
