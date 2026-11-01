@@ -1942,7 +1942,6 @@
 
 /* Final cascade normalization: these rules intentionally outrank older page-specific styles. */
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head,
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-toolbar,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .students-page-head {
   min-height:76px!important;
   padding:16px 18px!important;
@@ -1954,15 +1953,12 @@
   overflow:visible!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head:before,
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-toolbar:before,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .students-page-head:before {
   display:none!important;
   content:none!important;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-toolbar>div:first-child {
   display:block!important;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-toolbar>div:first-child h2,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .students-page-head h2,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head h2 {
   margin:0!important;
@@ -1971,7 +1967,6 @@
   font-weight:850!important;
   line-height:1.5!important;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-toolbar>div:first-child p,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .students-page-head p,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head p {
   margin:4px 0 0!important;
@@ -1979,7 +1974,6 @@
   font-size:11px!important;
   line-height:1.8!important;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-stat,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .student-stat,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-stat {
@@ -1991,18 +1985,15 @@
   outline:0!important;
   transform:none!important;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-stat:before,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .student-stat:before,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card:before,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-stat:before,
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-stat:after,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .student-stat:after,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card:after,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-stat:after {
   display:none!important;
   content:none!important;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page .course-stat:nth-child(n),
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page .student-stat:nth-child(n) {
   border-inline:1px solid var(--admin-border)!important;
   background:var(--admin-card)!important;
