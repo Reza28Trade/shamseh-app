@@ -1,0 +1,62 @@
+/* Page-owned rules migrated from AdminDesignSystem.css. */
+.admin-shell .admin-page-content .admin-public-content-page {
+  color:var(--admin-text);
+  font-size:12px;
+  line-height:1.8;
+}
+
+.admin-shell .admin-page-content .admin-public-content-page > header {
+  display:none!important;
+}
+
+.admin-shell .admin-page-content .admin-public-content-page > div:has(> button),
+.admin-shell .admin-page-content .admin-public-content-page form,
+.admin-shell .admin-page-content .admin-public-content-page > div[style*="overflow"] {
+  border-color:var(--admin-border)!important;
+  border-radius:14px!important;
+  box-shadow:none!important;
+}
+
+.admin-shell .admin-page-content .admin-public-content-page form {
+  background:var(--admin-card)!important;
+  color:var(--admin-text)!important;
+}
+
+.admin-shell .admin-page-content .admin-public-content-page label {
+  color:var(--admin-text)!important;
+}
+
+.admin-shell .admin-page-content .admin-public-content-page input,
+.admin-shell .admin-page-content .admin-public-content-page select,
+.admin-shell .admin-page-content .admin-public-content-page textarea {
+  min-width:0;
+  max-width:100%;
+  border:1px solid var(--admin-border)!important;
+  border-radius:9px!important;
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+  font:inherit;
+}
+
+.admin-shell .admin-page-content .admin-public-content-page input:focus,
+.admin-shell .admin-page-content .admin-public-content-page select:focus,
+.admin-shell .admin-page-content .admin-public-content-page textarea:focus {
+  border-color:var(--admin-accent)!important;
+  box-shadow:0 0 0 3px var(--admin-accent-soft)!important;
+  outline:none;
+}
+
+.admin-shell .admin-page-content .admin-public-content-page button {
+  transition:background .15s ease,border-color .15s ease,transform .15s ease;
+}
+
+.admin-shell .admin-page-content .admin-public-content-page button:focus-visible,
+.admin-shell .admin-page-content .admin-public-content-page a:focus-visible {
+  outline:2px solid var(--admin-accent)!important;
+  outline-offset:2px;
+}
+
+@media(max-width:640px)
+.admin-shell .admin-page-content .admin-public-content-page {
+    gap:12px!important;
+  }
