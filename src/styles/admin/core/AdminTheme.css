@@ -52,6 +52,6 @@
   --admin-content-surface: var(--admin-card);
   --admin-content-inner: var(--admin-inner);
   --admin-content-border: var(--admin-border);
-  --admin-content-radius: 15px;
+  --admin-content-radius: 14px;
   --admin-content-shadow: var(--admin-shadow);
 }
