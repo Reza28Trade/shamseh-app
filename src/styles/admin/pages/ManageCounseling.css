@@ -32,9 +32,6 @@
 .admin-counseling-page > section:nth-of-type(1) button[type="button"]{
   flex:1 1 260px!important;
   min-width:220px!important;
-  ;
-  ;
-  ;
   padding:10px 12px!important}
 
 .admin-counseling-page > section:nth-of-type(1) select{
@@ -42,7 +39,6 @@
   padding:9px 10px!important}
 
 .admin-counseling-page > section:nth-of-type(1) > div > button:last-child{
-  ;
   padding:10px 16px!important}
 
 .admin-counseling-page > section:nth-of-type(2),
@@ -199,15 +195,11 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page button {
   min-height:34px!important;
   padding:7px 11px!important;
-  ;
   }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page input,
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page select {
   min-height:36px!important;
   box-sizing:border-box!important;
-  ;
-  ;
-  ;
   }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-list {
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr))!important;
@@ -229,8 +221,6 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button {
   box-sizing:border-box!important;
   padding:10px 11px!important;
-  ;
-  ;
   }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-selected-student {
   padding-bottom:10px!important;
@@ -282,9 +272,7 @@
   min-height:38px!important;
   margin:0!important;
   padding:7px 0!important;
-  ;
   outline:0!important;
-  ;
   }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-tools {
   display:grid!important;
@@ -360,9 +348,6 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-pagination button {
   min-height:30px!important;
   padding:5px 9px!important;
-  ;
-  ;
-  ;
   }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-pagination button:disabled,
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-pagination button:disabled {
