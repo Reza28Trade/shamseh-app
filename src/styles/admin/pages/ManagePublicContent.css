@@ -1,21 +1,19 @@
 /* Module-owned compatibility rules migrated from AdminLegacy.css. */
 .admin-public-content-page > header {
   padding:20px 22px!important;
-  border-radius:17px!important;
 }
 
-.admin-public-content-page > header h2 {font-size:20px!important;letter-spacing:-.2px}
+.admin-public-content-page > header h2 {letter-spacing:-.2px}
 
 .admin-public-content-page > form,
 .admin-public-content-page > div[style*="grid"] {
-  border-radius:15px!important;
 }
 
 .admin-public-content-page table {width:100%;border-collapse:separate;border-spacing:0}
 
-.admin-public-content-page th {background:var(--admin-inner)!important;color:var(--admin-sub)!important}
+.admin-public-content-page th {color:var(--admin-sub)!important}
 
-.admin-public-content-page td {border-bottom:1px solid var(--admin-border)!important;color:var(--admin-text)}
+.admin-public-content-page td {color:var(--admin-text)}
 
 @media(max-width:700px) {
 .admin-public-content-page > header {padding:17px!important}
@@ -27,9 +25,8 @@
 
 /* Page-owned rules migrated from AdminDesignSystem.css. */
 .admin-shell .admin-page-content .admin-public-content-page {
-  color:var(--admin-text);
-  font-size:12px;
-  line-height:1.8;
+
+
 }
 
 .admin-shell .admin-page-content .admin-public-content-page > header {
@@ -45,12 +42,10 @@
 }
 
 .admin-shell .admin-page-content .admin-public-content-page form {
-  background:var(--admin-card)!important;
-  color:var(--admin-text)!important;
+
 }
 
 .admin-shell .admin-page-content .admin-public-content-page label {
-  color:var(--admin-text)!important;
 }
 
 .admin-shell .admin-page-content .admin-public-content-page input,
