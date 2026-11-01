@@ -101,7 +101,7 @@
 .admin-messages-page .messages-student-meta {display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 
 .admin-messages-page .messages-student-avatar {
-  width:26px;height:26px;display:grid;place-items:center;flex:0 0 auto;font-size:12px;
+  width:26px;height:26px;display:grid;place-items:center;flex:0 0 auto;;
 }
 
 .admin-messages-page .messages-student-name {}
@@ -270,7 +270,7 @@ backdrop-filter:blur(8px);cursor:pointer
 
 .admin-legacy-page.admin-messages-page .messages-stats {
   display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;
-  padding:0!important;margin:0!important;background-image:none!important;}
+  padding:0!important;margin:0!important;;}
 
 .admin-legacy-page.admin-messages-page .messages-stat {
   display:flex;align-items:center;gap:11px;min-width:0;padding:13px 15px!important;
