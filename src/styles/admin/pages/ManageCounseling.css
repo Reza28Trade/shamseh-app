@@ -293,7 +293,7 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-selected-student > div{display:inline!important}
 @media(max-width:760px){
   .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid{grid-template-columns:minmax(0,1fr)!important}
-  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid > div{border-bottom:1px solid var(--admin-border)!important}
+  .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid > div{}
   .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid > div:last-child{}
   .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-item{align-items:flex-start!important}
   .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-conversation-list > button{grid-template-columns:minmax(0,1fr)!important}
@@ -373,7 +373,6 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-item {
   min-width:0!important;
   padding:11px!important;
-  border-color:var(--admin-border)!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-item strong {
 }
@@ -424,7 +423,6 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page table th,
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page table td {
   padding:8px!important;
-  border-color:var(--admin-border)!important;
 }
 @media(max-width:900px) {
   .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid {
@@ -475,7 +473,6 @@
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-search:focus-within,
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-search:focus-within {
-  border-color:var(--admin-accent)!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-search input,
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-student-search input {
