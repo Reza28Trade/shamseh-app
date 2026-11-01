@@ -144,7 +144,7 @@ justify-content:space-between;
 gap:16px;
 
 }
-.students-eyebrow{font-size:10px;letter-spacing:1.3px;color:var(--admin-accent);font-weight:800}
+.students-eyebrow{;letter-spacing:1.3px;;}
 .students-page-head h2{display:flex;align-items:center;gap:8px;margin:5px 0 4px;}
 .students-page-head p{margin:0;}
 .students-head-actions{display:flex;gap:8px;flex-wrap:wrap}
@@ -155,8 +155,8 @@ gap:16px;
 .section-title{display:flex;align-items:center;gap:7px}.section-title svg{color:var(--admin-accent)}.section-title h3{margin:0;font-size:15px}
 .term-bars{margin-top:20px;display:flex;flex-direction:column;gap:14px}.term-bar-row{display:grid;grid-template-columns:80px minmax(0,1fr) 32px;align-items:center;gap:10px;font-size:12px}.term-bar-row>div{height:9px;border-radius:99px;background:var(--admin-inner);overflow:hidden}.term-bar-row i{display:block;height:100%;background:var(--admin-accent);border-radius:99px}.term-bar-row b{text-align:left;font-size:12px}
 .student-chart-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
-.student-term-switch{display:flex;gap:3px;padding:3px;border:1px solid var(--admin-border);background:var(--admin-inner);border-radius:9px;flex-shrink:0}
-.student-term-switch button{border:0;background:transparent;color:var(--admin-sub);padding:6px 8px;border-radius:7px;font-size:10px;font-weight:800;cursor:pointer;white-space:nowrap}
+.student-term-switch{display:flex;gap:3px;padding:3px;;;;flex-shrink:0}
+.student-term-switch button{;;;padding:6px 8px;;;;cursor:pointer;white-space:nowrap}
 .student-term-switch button.active{background:var(--admin-accent);color:var(--admin-on-accent)}
 .student-term-chart-layout{display:grid;grid-template-columns:minmax(100px,.75fr) minmax(0,1.25fr);align-items:center;gap:14px;margin-top:8px}
 .student-term-donut{width:min(100%,142px);aspect-ratio:1;border-radius:50%;margin:0 auto;display:grid;place-items:center;position:relative}
@@ -164,7 +164,7 @@ gap:16px;
 .student-term-donut-center{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:2px}
 .student-term-donut-center strong{font-size:23px;line-height:1.1;font-weight:900}.student-term-donut-center span{font-size:9px;color:var(--admin-sub)}
 .student-term-legend{display:flex;flex-direction:column;gap:5px;min-width:0}
-.student-term-legend-row{display:grid;grid-template-columns:8px minmax(0,1fr) auto auto;align-items:center;gap:6px;padding:7px 8px;border:1px solid var(--admin-border);background:var(--admin-inner);border-radius:8px;font-size:10px}
+.student-term-legend-row{display:grid;grid-template-columns:8px minmax(0,1fr) auto auto;align-items:center;gap:6px;padding:7px 8px;;;;}
 .student-term-legend-row i{width:8px;height:8px;border-radius:3px}.student-term-legend-row strong{font-size:11px}.student-term-legend-row small{font-size:9px;color:var(--admin-sub);min-width:26px;text-align:left}
 .student-term-note{font-size:9px;line-height:1.7;color:var(--admin-sub);margin:10px 0 0}
 .student-term-empty{font-size:10px;color:var(--admin-sub);line-height:1.8;padding:8px}
@@ -603,8 +603,8 @@ padding:16px!important;
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-term-switch button {
   min-height:29px!important;
   padding:5px 8px!important;
-  border-radius:7px!important;
-  font-size:10px!important;
+  ;
+  ;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-students-page .student-term-switch button.active {
   background:var(--admin-accent)!important;
