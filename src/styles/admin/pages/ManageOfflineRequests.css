@@ -374,7 +374,7 @@
   cursor:pointer;
 }
 .offline-review-actions .approve{
-  color:#fff!important;
+  color:var(--admin-on-accent)!important;
   background:var(--admin-accent)!important;
   border:1px solid var(--admin-accent)!important;
 }
@@ -944,7 +944,7 @@
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-review-actions .approve {
   border:1px solid var(--admin-accent)!important;
   background:var(--admin-accent)!important;
-  color:#fff!important;
+  color:var(--admin-on-accent)!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-review-actions .reject {
   border:1px solid color-mix(in srgb,var(--admin-status-danger-button) 30%,var(--admin-border))!important;
