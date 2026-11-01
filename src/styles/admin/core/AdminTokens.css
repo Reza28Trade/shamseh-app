@@ -113,17 +113,3 @@
   --shamseh-accent-soft: var(--admin-accent-soft);
   --shamseh-accent-border: var(--admin-brand-border);
 }
-.admin-shell .admin-page-content .admin-legacy-page {
-  font-size: var(--shamseh-font-size);
-  color: var(--shamseh-text-primary);
-}
-.admin-shell .admin-page-content .admin-legacy-page :is(input,select,textarea) {
-  min-height: var(--shamseh-control-height);
-  border-radius: var(--shamseh-radius-sm);
-}
-.admin-shell .admin-page-content .admin-legacy-page :is(button,.course-btn,.primary-action,.secondary-action) {
-  border-radius: var(--shamseh-radius-sm) !important;
-}
-.admin-shell .admin-page-content .admin-legacy-page :is(th,td) {
-  border-color: var(--shamseh-border-default);
-}
