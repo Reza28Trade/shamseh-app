@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { MessageSquare, Plus, RefreshCw, Search, ShieldCheck, UserRound, Users, ArrowLeftRight, History, Eye, EyeOff, Paperclip, Download } from 'lucide-react';
-import '../../styles/admin/pages/ManageCounseling.css';
 
 type Counselor = {
   id: string;
