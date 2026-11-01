@@ -275,6 +275,8 @@
 /* Finance/registration is rendered outside the legacy wrapper but uses the
    same canonical components and theme tokens. */
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page {
+  --admin-control-radius: var(--shamseh-radius-sm);
+  --admin-control-height: var(--shamseh-control-height);
   width: 100%;
   max-width: 1240px;
   min-width: 0;
