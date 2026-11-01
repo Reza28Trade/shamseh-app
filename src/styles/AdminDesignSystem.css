@@ -138,21 +138,8 @@
   .admin-shell .admin-sidebar{border-left:1px solid var(--admin-border)}
 }
 
-/* Remove page-level hero/header bands across admin sections.
-   Keep action controls and all section/card headings intact. */
-.admin-shell .admin-page-content :is(
-  .students-page-head,
-  .counseling-page-head,
-  .messages-page-head,
-  .notifications-page-head,
-  .offline-page-head,
-  .admin-page-heading,
-  .admin-page-head,
-  .page-header
-) {
-  display: none !important;
-}
-/* Course toolbar is a real dashboard-style panel; do not strip its surface or hide its actions. */
+/* Page headers are owned by their module stylesheets.
+   Do not globally hide headings: each module decides its own header composition. */
 
 
 /* Phase 3: consistent surfaces and controls for operational admin workspaces. */
