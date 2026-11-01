@@ -1,222 +1,96 @@
-/* System Reports: consume the shared reference instead of page-local inline styling. */
+/* Audit log page composition only. Shared cards, typography and controls are centralized. */
+
 .admin-shell .admin-page-content .admin-logs-page {
-  gap: var(--shamseh-space-4) !important;
+  gap: var(--shamseh-space-4);
   max-width: 1240px;
-
 }
+
 .admin-shell .admin-page-content .admin-logs-page > section:first-child {
-  padding: 0 !important;
-
-
-
+  padding: 16px;
 }
+
 .admin-shell .admin-page-content .admin-logs-page > section:first-child h2 {
-  margin: 0 0 var(--shamseh-space-1) !important;
-
-
-
+  margin: 0 0 var(--shamseh-space-1);
 }
-.admin-shell .admin-page-content .admin-logs-page > section:first-child h2 svg {
-}
-.admin-shell .admin-page-content .admin-logs-page > section:first-child p {
 
-}
 .admin-shell .admin-page-content .admin-logs-page > section:first-child button {
-  min-height: var(--shamseh-control-height) !important;
-  padding: 0 var(--shamseh-space-3) !important;
-  border: 1px solid var(--shamseh-accent-border) !important;
-  border-radius: var(--shamseh-radius-sm) !important;
-  background: var(--shamseh-accent-soft) !important;
-  color: var(--shamseh-text-primary) !important;
-  font-size: 11px !important;
-  font-weight: 750 !important;
+  min-height: var(--shamseh-control-height);
+  padding-inline: var(--shamseh-space-3);
 }
-.admin-shell .admin-page-content .admin-logs-page > section:nth-child(2) {
 
-
-
-
-}
-.admin-shell .admin-page-content .admin-logs-page > section:nth-child(2)[role="alert"] {
-
-}
-.admin-shell .admin-page-content .admin-logs-page > section:nth-child(2)[role="alert"] svg {
-}
 .admin-shell .admin-page-content .admin-logs-page > section:last-child {
-  padding: var(--shamseh-space-4) !important;
+  padding: var(--shamseh-space-4);
+}
 
+.admin-shell .admin-page-content .admin-logs-page .audit-search-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 260px;
+  width: 100%;
+  min-width: 0;
+  max-width: 360px;
+}
 
+.admin-shell .admin-page-content .admin-logs-page .audit-search-field > svg {
+  position: absolute;
+  right: 12px;
+  left: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  z-index: 1;
+  pointer-events: none;
+}
 
+.admin-shell .admin-page-content .admin-logs-page .audit-search-input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 0 38px 0 12px;
+  text-align: right;
+  direction: rtl;
+}
 
+.admin-shell .admin-page-content .admin-logs-page :is(th,td) {
+  padding: var(--shamseh-space-3) var(--shamseh-space-2);
 }
-.admin-shell .admin-page-content .admin-logs-page :is(input, select) {
-  min-width: 0 !important;
-  min-height: var(--shamseh-control-height) !important;
-  padding-block: 0 !important;
-  border: 1px solid var(--shamseh-border-default) !important;
-  border-radius: var(--shamseh-radius-sm) !important;
-  background: var(--shamseh-surface-control) !important;
-  color: var(--shamseh-text-primary) !important;
-  font-family: inherit !important;
-  font-size: 11px !important;
-  box-shadow: none !important;
-}
-.admin-shell .admin-page-content .admin-logs-page :is(input,select)::placeholder {
-  color: var(--shamseh-text-secondary) !important;
-  opacity: 1;
-}
-.admin-shell .admin-page-content .admin-logs-page > section:last-child > div[style*="overflow-x: auto"] {
 
-}
-.admin-shell .admin-page-content .admin-logs-page table {
-
-}
-.admin-shell .admin-page-content .admin-logs-page thead tr {
-}
-.admin-shell .admin-page-content .admin-logs-page :is(th, td) {
-}
 .admin-shell .admin-page-content .admin-logs-page th {
-  padding: var(--shamseh-space-3) var(--shamseh-space-2) !important;
-
-
-
   white-space: nowrap;
 }
-.admin-shell .admin-page-content .admin-logs-page td {
-  padding: var(--shamseh-space-3) var(--shamseh-space-2) !important;
 
-}
-.admin-shell .admin-page-content .admin-logs-page tbody tr:hover td {
-}
 .admin-shell .admin-page-content .admin-logs-page pre {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
+
 @media (max-width: 700px) {
+  .admin-shell .admin-page-content .admin-logs-page {
+    gap: 12px;
+  }
+
   .admin-shell .admin-page-content .admin-logs-page > section:last-child {
-    padding: var(--shamseh-space-3) !important;
+    padding: var(--shamseh-space-3);
   }
+
   .admin-shell .admin-page-content .admin-logs-page > section:last-child > div:first-child {
-    align-items: stretch !important;
+    align-items: stretch;
   }
+
   .admin-shell .admin-page-content .admin-logs-page > section:last-child > div:first-child > div:last-child {
-    flex-basis: 100% !important;
-    justify-content: stretch !important;
+    flex-basis: 100%;
+    justify-content: stretch;
   }
+
   .admin-shell .admin-page-content .admin-logs-page select {
     flex: 1 1 100%;
     width: 100%;
   }
-}
 
-
-/* System reports: align cards to the same content width as finance/registration
-   and keep the search icon in its own fixed-width area, away from typed text. */
-.admin-shell .admin-page-content .admin-logs-page {
-  width: 100% !important;
-  max-width: none !important;
-  margin-inline: 0 !important;
-}
-.admin-shell .admin-page-content .admin-logs-page .audit-search-field {
-  position: relative !important;
-  display: flex !important;
-  align-items: center !important;
-  flex: 1 1 260px !important;
-  width: 100% !important;
-  min-width: 0 !important;
-  max-width: 360px !important;
-}
-.admin-shell .admin-page-content .admin-logs-page .audit-search-field > svg {
-  position: absolute !important;
-  right: 12px !important;
-  left: auto !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  width: 16px !important;
-  height: 16px !important;
-  z-index: 1 !important;
-  pointer-events: none !important;
-}
-.admin-shell .admin-page-content .admin-logs-page .audit-search-input {
-  display: block !important;
-  width: 100% !important;
-  min-width: 0 !important;
-  padding: 0 38px 0 12px !important;
-  text-align: right !important;
-  direction: rtl !important;
-}
-@media (max-width: 700px) {
   .admin-shell .admin-page-content .admin-logs-page .audit-search-field {
-    flex-basis: 100% !important;
-    max-width: none !important;
-  }
-}
-
-/* Page-owned rules migrated from AdminDesignSystem.css. */
-.admin-shell .admin-page-content .admin-logs-page button:focus-visible {
-  outline:2px solid var(--admin-accent)!important;
-  outline-offset:2px;
-}
-
-.admin-shell .admin-page-content .admin-logs-page > section:not([role="alert"]) {
-
-
-}
-
-.admin-shell .admin-page-content .admin-logs-page > section:first-child {
-  padding:16px!important;
-}
-
-.admin-shell .admin-page-content .admin-logs-page h2 {
-
-}
-
-.admin-shell .admin-page-content .admin-logs-page table {
-  border-collapse:separate;
-  border-spacing:0;
-}
-
-.admin-shell .admin-page-content .admin-logs-page :is(th,td) {
-
-}
-
-.admin-shell .admin-page-content .admin-logs-page th {
-
-
-  white-space:nowrap;
-}
-
-.admin-shell .admin-page-content .admin-logs-page tbody tr:hover {
-}
-
-.admin-shell .admin-page-content .admin-logs-page input,
-.admin-shell .admin-page-content .admin-logs-page select {
-  min-height:38px;
-  border:1px solid var(--admin-border)!important;
-  border-radius:9px!important;
-  background:var(--admin-control)!important;
-  color:var(--admin-text)!important;
-  font:inherit;
-}
-
-.admin-shell .admin-page-content .admin-logs-page input:focus,
-.admin-shell .admin-page-content .admin-logs-page select:focus {
-  outline:none;
-  border-color:var(--admin-accent)!important;
-  box-shadow:0 0 0 3px var(--admin-accent-soft);
-}
-
-.admin-shell .admin-page-content .admin-logs-page [role="alert"] {
-}
-
-@media(max-width:640px) {
-.admin-shell .admin-page-content .admin-logs-page {
-    gap:12px!important;
-  }
-}
-
-@media(max-width:640px) {
-.admin-shell .admin-page-content .admin-logs-page > section:not([role="alert"]) {
-    padding:12px!important;
+    flex-basis: 100%;
+    max-width: none;
   }
 }
