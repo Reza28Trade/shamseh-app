@@ -697,3 +697,87 @@
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .offline-list-head {
   border-bottom: 1px solid var(--admin-border);
 }
+
+
+/* Remaining page-specific primitives are still themed by the same central tokens. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
+  .course-picker,.student-filters,.mock-exam-filters,.counseling-account-item,
+  .mock-exam-scroll-list > div,.admin-public-content-page > div:has(> button)
+) {
+  border: 1px solid var(--admin-content-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-content-inner);
+  color: var(--admin-text);
+  box-shadow: none;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .notifications-feedback.is-success {
+  border: 1px solid var(--admin-status-success);
+  background: var(--admin-status-success-soft);
+  color: var(--admin-text);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .notifications-feedback.is-error {
+  border: 1px solid var(--admin-status-error);
+  background: var(--admin-status-error-soft);
+  color: var(--admin-text);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .course-message.error {
+  border-color: var(--admin-status-error);
+  background: var(--admin-status-error-soft);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .course-message.success {
+  border-color: var(--admin-status-success);
+  background: var(--admin-status-success-soft);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-courses-page .day-chip.selected {
+  border-color: var(--admin-brand-border);
+  background: var(--admin-accent-soft);
+  color: var(--admin-accent);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn.blue {
+  border-color: var(--admin-brand-border);
+  background: var(--admin-accent-soft);
+  color: var(--admin-accent);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn.danger {
+  border-color: var(--admin-status-error);
+  background: var(--admin-status-error-soft);
+  color: var(--admin-status-error);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn.primary {
+  border-color: var(--admin-accent);
+  background: var(--admin-accent);
+  color: var(--admin-on-accent);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 34%;
+  z-index: -1;
+  transform: skewX(28deg) translateX(-150%);
+  transition: transform .55s ease;
+  pointer-events: none;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn:hover:not(:disabled)::before {
+  transform: skewX(28deg) translateX(280%);
+}
