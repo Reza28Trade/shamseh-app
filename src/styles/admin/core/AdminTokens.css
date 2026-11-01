@@ -35,6 +35,30 @@
   --admin-action-gradient-start: #398A90;
   --admin-overlay-backdrop: rgba(5,10,12,.72);
   --admin-shadow-modal: 0 28px 90px rgba(0,0,0,.42);
+  /* Shared semantic status colors; literal values are retained from the approved modules. */
+  --admin-status-active: #27846b;
+  --admin-status-inactive: #bd795d;
+  --admin-status-open: #d97706;
+  --admin-status-open-soft: rgba(217,119,6,.12);
+  --admin-status-answered: #059669;
+  --admin-status-answered-soft: rgba(5,150,105,.12);
+  --admin-status-closed: #64748b;
+  --admin-status-closed-soft: rgba(100,116,139,.12);
+  --admin-status-success: #23946e;
+  --admin-status-success-soft: rgba(35,148,110,.12);
+  --admin-status-success-strong: #16805d;
+  --admin-status-warning: #c58a27;
+  --admin-status-warning-soft: rgba(197,138,39,.12);
+  --admin-status-error: #cf6262;
+  --admin-status-error-soft: rgba(207,98,98,.12);
+  --admin-status-student: #be185d;
+  --admin-status-student-strong: #db2777;
+  --admin-status-student-soft: rgba(190,24,93,.07);
+  --admin-status-support: #059669;
+  --admin-status-support-soft: rgba(5,150,105,.07);
+  --admin-status-notice: #c38b37;
+  --admin-status-notice-soft: rgba(195,139,55,.09);
+  --admin-status-amber-soft: rgba(202,145,49,.12);
   /* Shared data-visualization palette; modules consume these instead of defining local palettes. */
   --admin-data-series-1: #4BA6A1;
   --admin-data-series-1-highlight: #70C4BC;
