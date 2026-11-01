@@ -121,8 +121,7 @@
   --admin-data-series-3: #D8B477;
   --admin-data-series-3-highlight: #E8CB96;
   --admin-data-series-4: #78B99A;
-  --admin-data-series-4-highlight: #A0D2B5;
-}
+  --admin-data-series-4-highlight: #A0D2B5}
 .admin-shell {
   --shamseh-surface-page: var(--admin-bg);
   --shamseh-surface-card: var(--admin-card);
@@ -133,5 +132,4 @@
   --shamseh-border-default: var(--admin-border);
   --shamseh-accent-primary: var(--admin-accent);
   --shamseh-accent-soft: var(--admin-accent-soft);
-  --shamseh-accent-border: var(--admin-brand-border);
-}
+  --shamseh-accent-border: var(--admin-brand-border)}
