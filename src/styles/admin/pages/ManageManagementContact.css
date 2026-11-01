@@ -15,12 +15,11 @@
   justify-content:space-between!important;
   min-height:76px!important;
   padding:16px 18px!important;
-  background:var(--admin-card)!important;
-  background-image:none!important;
-  color:var(--admin-text)!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:14px!important;
-  box-shadow:none!important;
+
+
+
+
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page > header.messages-page-head:before {
   display:none!important;
@@ -89,12 +88,11 @@
   gap:11px!important;
   min-width:0!important;
   padding:14px!important;
-  background:var(--admin-card)!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:12px!important;
-  box-shadow:none!important;
-  border-top:1px solid var(--admin-border)!important;
-  color:var(--admin-text)!important;
+
+
+
+
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-stat:before,
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-stat:after {
@@ -116,26 +114,23 @@
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-stat-copy small {
   display:block!important;
-  color:var(--admin-sub)!important;
-  font-size:10px!important;
-  font-weight:700!important;
+
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-stat-copy strong {
   display:block!important;
   margin-top:3px!important;
-  color:var(--admin-text)!important;
-  font-size:19px!important;
-  line-height:1.4!important;
-  font-weight:850!important;
+
+
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-ticket-section,
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-section {
   min-width:0!important;
   padding:18px!important;
-  background:var(--admin-card)!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:14px!important;
-  box-shadow:none!important;
+
+
+
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-section-head,
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-head,
@@ -566,7 +561,6 @@
   display:flex!important;
   flex-direction:column!important;
   gap:5px!important;
-  line-height:1.65!important;
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-ticket-section {
   box-sizing:border-box!important;
