@@ -962,3 +962,141 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-status.is-assigned {
   color: var(--admin-accent);
 }
+
+
+/* Student-management component appearance belongs to the shared design system. */
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-detail-backdrop {
+  background:var(--admin-overlay-backdrop);
+  backdrop-filter:blur(7px);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-detail-modal {
+  border:1px solid var(--admin-content-border);
+  border-radius:var(--admin-content-radius);
+  background:var(--admin-content-surface);
+  color:var(--admin-text);
+  box-shadow:var(--admin-shadow-dialog);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-detail-header {
+  border-bottom:1px solid var(--admin-border);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-detail-kicker {
+  color:var(--admin-accent);
+  font-size:10px;
+  font-weight:800;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-detail-close {
+  border:1px solid var(--admin-border);
+  border-radius:var(--admin-control-radius);
+  background:var(--admin-inner);
+  color:var(--admin-text);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-detail-facts > div,
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-detail-course-list article,
+.admin-shell .admin-main .admin-page-content .admin-students-page .detail-course-active,
+.admin-shell .admin-main .admin-page-content .admin-students-page .detail-course-inactive {
+  border:1px solid var(--admin-content-border);
+  border-radius:var(--admin-control-radius);
+  background:var(--admin-content-inner);
+  color:var(--admin-text);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-detail-facts span,
+.admin-shell .admin-main .admin-page-content .admin-students-page .detail-course-meta {
+  color:var(--admin-sub);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .detail-doctorate,
+.admin-shell .admin-main .admin-page-content .admin-students-page .detail-master {
+  color:var(--admin-accent);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .detail-status-active {
+  border:1px solid var(--admin-status-success);
+  border-radius:7px;
+  background:var(--admin-status-success-soft);
+  color:var(--admin-status-success);
+  padding:3px 8px;
+  font-size:10px;
+  font-weight:800;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-detail-section-title {
+  color:var(--admin-text);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-term-donut:after {
+  background:var(--admin-card);
+  box-shadow:0 0 0 1px var(--admin-border);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-term-donut-center strong {
+  color:var(--admin-text);
+  font-size:23px;
+  font-weight:900;
+  line-height:1.1;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-term-donut-center span,
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-term-note,
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-term-empty {
+  color:var(--admin-sub);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-term-note {
+  font-size:9px;
+  line-height:1.7;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-term-empty {
+  padding:8px;
+  font-size:10px;
+  line-height:1.8;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-term-legend-row {
+  padding:7px 8px;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .import-actions {
+  border:1px dashed var(--admin-accent);
+  border-radius:var(--admin-control-radius);
+  background:var(--admin-accent-soft);
+  color:var(--admin-accent);
+  font-size:11px;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .import-actions:focus-within {
+  outline:2px solid var(--admin-accent);
+  outline-offset:2px;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .import-preview {
+  border-top:1px solid var(--admin-border);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .warning-text {
+  color:var(--admin-status-warning);
+  font-size:11px;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .preview-list > div {
+  border:1px solid var(--admin-border);
+  border-radius:var(--admin-control-radius);
+  background:var(--admin-inner);
+  color:var(--admin-text);
+  font-size:10px;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .preview-list b {
+  color:var(--admin-accent);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .import-errors {
+  color:var(--admin-status-error);
+  font-size:10px;
+}
