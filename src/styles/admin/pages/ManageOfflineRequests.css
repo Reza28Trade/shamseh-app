@@ -18,7 +18,7 @@
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head:before {
   content:"";position:absolute;top:0;bottom:0;left:0;width:4px;
-  background:linear-gradient(180deg,#398A90,#528bd8,#d69b42,#E58A70);
+  background:linear-gradient(180deg,var(--admin-module-series-1),var(--admin-module-series-2),var(--admin-module-series-3),var(--admin-module-series-4));
 }
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-stats {
@@ -112,7 +112,7 @@
 .offline-error{
   padding:10px 13px!important;
   background:rgba(239,68,68,.08)!important;
-  color:#dc5c5c!important;
+  color:var(--admin-status-danger-inline)!important;
   border:1px solid rgba(239,68,68,.2)!important;
   border-radius:11px!important;
   font-size:11px;
@@ -309,17 +309,17 @@
   white-space:nowrap;
 }
 .status-pending{
-  color:#b77912!important;
+  color:var(--admin-status-warning-inline)!important;
   background:rgba(245,158,11,.1)!important;
   border:1px solid rgba(245,158,11,.2);
 }
 .status-approved{
-  color:#23856a!important;
+  color:var(--admin-status-success-inline)!important;
   background:rgba(16,185,129,.1)!important;
   border:1px solid rgba(16,185,129,.2);
 }
 .status-rejected{
-  color:#c65353!important;
+  color:var(--admin-status-danger-muted)!important;
   background:rgba(239,68,68,.08)!important;
   border:1px solid rgba(239,68,68,.18);
 }
@@ -379,7 +379,7 @@
   border:1px solid var(--admin-accent)!important;
 }
 .offline-review-actions .reject{
-  color:#c65353!important;
+  color:var(--admin-status-danger-muted)!important;
   background:rgba(239,68,68,.07)!important;
   border:1px solid rgba(239,68,68,.2)!important;
 }
@@ -476,7 +476,7 @@
   content:"";
   position:absolute;
   top:0;bottom:0;left:0;width:4px;
-  background:linear-gradient(180deg,#398A90,#528bd8,#d69b42,#E58A70);
+  background:linear-gradient(180deg,var(--admin-module-series-1),var(--admin-module-series-2),var(--admin-module-series-3),var(--admin-module-series-4));
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-eyebrow{display:none}
 .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head h2{
@@ -509,7 +509,7 @@
   position:absolute;
   z-index:2;
   top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,#398A90 0%,#528bd8 34%,#d69b42 67%,#E58A70 100%);
+  background:linear-gradient(90deg,var(--admin-module-series-1) 0%,var(--admin-module-series-2) 34%,var(--admin-module-series-3) 67%,var(--admin-module-series-4) 100%);
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card{
   border:0!important;
@@ -646,9 +646,9 @@
   width:100%!important;
   margin:0!important;
   padding:10px 12px!important;
-  border:1px solid color-mix(in srgb,#b94a48 25%,var(--admin-border))!important;
+  border:1px solid color-mix(in srgb,var(--admin-status-danger-legacy) 25%,var(--admin-border))!important;
   border-radius:10px!important;
-  background:color-mix(in srgb,#b94a48 7%,var(--admin-card))!important;
+  background:color-mix(in srgb,var(--admin-status-danger-legacy) 7%,var(--admin-card))!important;
   color:var(--admin-text)!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stats {
@@ -947,9 +947,9 @@
   color:#fff!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-review-actions .reject {
-  border:1px solid color-mix(in srgb,#a94442 30%,var(--admin-border))!important;
+  border:1px solid color-mix(in srgb,var(--admin-status-danger-button) 30%,var(--admin-border))!important;
   background:var(--admin-card)!important;
-  color:#a94442!important;
+  color:var(--admin-status-danger-button)!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-empty {
   padding:34px 16px!important;
