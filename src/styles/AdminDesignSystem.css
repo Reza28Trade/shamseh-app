@@ -33,7 +33,7 @@
 }
 
 /* A single shared page-heading pattern; no colored top strips. */
-.admin-shell .admin-page-content .admin-legacy-page :is(.students-page-head,.course-toolbar){
+.admin-shell .admin-page-content .admin-legacy-page .students-page-head{
   min-height:76px;
   padding:17px 19px!important;
   display:flex;
@@ -62,38 +62,34 @@
   line-height:1.8;
 }
 .admin-shell .admin-page-content .admin-legacy-page :is(.students-page-head h2 svg,.course-title svg){color:var(--admin-accent)!important}
-.admin-shell .admin-page-content .admin-legacy-page :is(.students-head-actions,.course-toolbar-actions){gap:7px}
+.admin-shell .admin-page-content .admin-legacy-page .students-head-actions{gap:7px}
 
 /* Shared cards and section surfaces. */
 .admin-shell .admin-page-content .admin-legacy-page :is(
-  .students-stats,.student-chart-card,.student-form-card,.student-import-card,.student-list-card,
-  .course-stat,.course-form,.course-list
+  .students-stats,.student-chart-card,.student-form-card,.student-import-card,.student-list-card
 ){
   border:1px solid var(--admin-border)!important;
   border-radius:var(--admin-surface-radius)!important;
   background:var(--admin-card)!important;
   box-shadow:var(--admin-shadow)!important;
 }
-.admin-shell .admin-page-content .admin-legacy-page :is(.student-chart-card,.student-form-card,.student-import-card,.student-list-card,.course-form,.course-list){
+.admin-shell .admin-page-content .admin-legacy-page :is(.student-chart-card,.student-form-card,.student-import-card,.student-list-card){
   padding:17px!important;
 }
-.admin-shell .admin-page-content .admin-legacy-page :is(.section-title h3,.course-section-head h3){
+.admin-shell .admin-page-content .admin-legacy-page .section-title h3{
   font-size:var(--admin-section-title-size)!important;
   font-weight:850!important;
   color:var(--admin-text)!important;
 }
-.admin-shell .admin-page-content .admin-legacy-page :is(.section-title svg,.course-section-head svg){color:var(--admin-accent)!important}
+.admin-shell .admin-page-content .admin-legacy-page .section-title svg{color:var(--admin-accent)!important}
 
 /* Stat cards share a restrained, neutral surface rather than decorative color bars. */
-.admin-shell .admin-page-content .admin-legacy-page :is(.student-stat,.course-stat){
+.admin-shell .admin-page-content .admin-legacy-page .student-stat{
   border-color:var(--admin-border)!important;
   border-top:1px solid var(--admin-border)!important;
   background:var(--admin-card)!important;
   box-shadow:none!important;
 }
-.admin-shell .admin-page-content .admin-legacy-page .course-stat:before{display:none!important;content:none!important}
-.admin-shell .admin-page-content .admin-legacy-page .course-stat :is(.course-stat-label,.course-stat-value){font-family:inherit}
-.admin-shell .admin-page-content .admin-legacy-page .course-stat .course-stat-value,
 .admin-shell .admin-page-content .admin-legacy-page .student-stat strong{
   font-size:21px!important;
   font-weight:850!important;
@@ -101,7 +97,7 @@
 }
 
 /* Tables use the same readable header, row separators and compact spacing. */
-.admin-shell .admin-page-content .admin-legacy-page :is(.student-table-wrap,.course-list-grid){
+.admin-shell .admin-page-content .admin-legacy-page .student-table-wrap{
   border-radius:11px;
   scrollbar-width:thin;
   scrollbar-color:var(--admin-border) transparent;
@@ -145,20 +141,20 @@
 
 /* Responsive behavior is shared while each page retains its own content arrangement. */
 @media(max-width:700px){
-  .admin-shell .admin-page-content .admin-legacy-page :is(.students-page-head,.course-toolbar){
+  .admin-shell .admin-page-content .admin-legacy-page .students-page-head{
     min-height:0;
     padding:15px!important;
     align-items:stretch;
     flex-direction:column;
   }
-  .admin-shell .admin-page-content .admin-legacy-page :is(.students-head-actions,.course-toolbar-actions){
+  .admin-shell .admin-page-content .admin-legacy-page .students-head-actions{
     width:100%;
   }
-  .admin-shell .admin-page-content .admin-legacy-page :is(.students-head-actions button,.course-toolbar-actions button){
+  .admin-shell .admin-page-content .admin-legacy-page .students-head-actions button{
     flex:1 1 auto;
     justify-content:center;
   }
-  .admin-shell .admin-page-content .admin-legacy-page :is(.student-chart-card,.student-form-card,.student-import-card,.student-list-card,.course-form,.course-list){
+  .admin-shell .admin-page-content .admin-legacy-page :is(.student-chart-card,.student-form-card,.student-import-card,.student-list-card){
     padding:14px!important;
   }
 }
@@ -3876,42 +3872,3 @@
 }
 @media(prefers-reduced-motion:reduce){.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn,.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn::before{transition:none!important}}
 
-
-/* Course summary tiles: match the dashboard's raised statistic cards in both themes. */
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-stats{
-  display:grid!important;
-  grid-template-columns:repeat(4,minmax(0,1fr))!important;
-  gap:12px!important;
-  background:transparent!important;
-  background-image:none!important;
-  border:0!important;
-  box-shadow:none!important;
-}
-.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-courses-page .course-stat{
-  background:var(--admin-card)!important;
-  background-color:var(--admin-card)!important;
-  background-image:none!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:16px!important;
-  box-shadow:var(--admin-shadow)!important;
-  color:var(--admin-text)!important;
-}
-.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-courses-page .course-stat{
-  background:var(--admin-card)!important;
-  background-color:var(--admin-card)!important;
-  background-image:none!important;
-  border:1px solid var(--admin-border)!important;
-  border-radius:16px!important;
-  box-shadow:var(--admin-shadow)!important;
-  color:var(--admin-text)!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat::before,
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat::after{
-  content:none!important;
-  display:none!important;
-  background:none!important;
-  box-shadow:none!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat-value{
-  color:var(--admin-text)!important;
-}
