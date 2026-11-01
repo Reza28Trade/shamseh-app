@@ -781,3 +781,23 @@
 .admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn:hover:not(:disabled)::before {
   transform: skewX(28deg) translateX(280%);
 }
+
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
+  .section-title svg,.offline-list-head h3 svg,.mock-exam-list-head svg,
+  .course-section-head svg
+) {
+  color: var(--admin-accent);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .course-choice {
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-control);
+  color: var(--admin-text);
+}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .course-choice.selected {
+  border-color: var(--admin-accent);
+  background: var(--admin-accent-soft);
+}
