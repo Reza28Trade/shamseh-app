@@ -1100,3 +1100,24 @@
   color:var(--admin-status-error);
   font-size:10px;
 }
+
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-term-legend-row small {
+  text-align:left;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .course-choice {
+  text-align:right;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .import-actions {
+  text-align:center;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap td:first-child {
+  text-align:center;
+}
+
+.admin-shell .admin-main .admin-page-content .admin-students-page .students-empty {
+  text-align:center;
+}
