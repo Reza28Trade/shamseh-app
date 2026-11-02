@@ -134,7 +134,7 @@ export const AuditLogs: React.FC = () => {
   }, [logs, search, actionFilter]);
 
   return (
-    <div className="admin-legacy-page admin-logs-page" className="admin-extracted-auditlogs-1">
+    <div className="admin-legacy-page admin-logs-page admin-extracted-auditlogs-1">
       <section className="admin-extracted-auditlogs-2">
         <div className="admin-extracted-auditlogs-3">
           <div>
