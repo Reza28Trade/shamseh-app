@@ -147,7 +147,7 @@
   box-shadow: var(--admin-content-shadow)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
-  .students-toolbar,.offline-page-head,.messages-page-head,.mock-exam-page-head,
+  .offline-page-head,.messages-page-head,.mock-exam-page-head,
   .counseling-page-head,.notifications-page-head,.admin-page-heading,.admin-page-head,.page-header
 ) {
   padding: 15px 18px}
@@ -222,7 +222,7 @@
     gap: 12px}
 
   .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
-    .students-toolbar,.offline-page-head,.messages-page-head,.mock-exam-page-head,
+    .offline-page-head,.messages-page-head,.mock-exam-page-head,
     .counseling-page-head,.notifications-page-head,.admin-page-heading,.admin-page-head,.page-header
   ) {
     padding: 13px}
@@ -1103,7 +1103,7 @@
   font-size:12px!important;line-height:1.8!important;color:var(--admin-text)!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-students-page :is(
-  .students-page-head,.student-stat,.student-chart-card,.student-form-card,
+  .student-stat,.student-chart-card,.student-form-card,
   .student-import-card,.student-list-card,.student-detail-modal
 ){font-family:inherit!important;color:var(--admin-text)!important}
 .admin-shell .admin-main .admin-page-content .admin-students-page :is(
