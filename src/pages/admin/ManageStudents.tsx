@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Archive, BarChart3, CheckCircle2, Download, Trash2, FileSpreadsheet, Filter, Pencil, Search, Upload, UserPlus, Users, X, Wallet } from 'lucide-react';
 import type { Student, Course } from '../../types';
-import '../../styles/admin/pages/ManageStudents.css';
 
 interface ManageStudentsProps {
   students: Student[];
@@ -58,6 +57,8 @@ const jalaliToIso = (value: string) => {
   }
   return '';
 };
+const faDigits = (value: unknown) => String(value ?? '').replace(/[0-9]/g, digit => '۰۱۲۳۴۵۶۷۸۹'[Number(digit)]);
+const enDigits = (value: string) => value.replace(/[۰-۹]/g, digit => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)));
 const years = (courses: Course[]) => Array.from(new Set(courses.map(c => c.academicYear).filter((v): v is number => typeof v === 'number'))).sort((a,b) => b-a);
 
 export const ManageStudents: React.FC<ManageStudentsProps> = ({
@@ -173,7 +174,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
     const targets = apiStudents.filter(student => selectedStudentIds.includes(student.id));
     if (!targets.length) return;
     const action = isArchived ? 'بایگانی' : 'بازگردانی به فهرست فعال';
-    if (!window.confirm(`${targets.length} هنرجوی انتخاب‌شده ${action} شوند؟ سوابق آن‌ها حفظ می‌شود.`)) return;
+    if (!window.confirm(`${faDigits(targets.length)} هنرجوی انتخاب‌شده ${action} شوند؟ سوابق آن‌ها حفظ می‌شود.`)) return;
     setBulkProcessing(true);
     setError('');
     const failures: string[] = [];
@@ -195,7 +196,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
     }
     setSelectedStudentIds([]);
     await loadStudents();
-    if (failures.length) setError(`عملیات برای ${targets.length - failures.length} نفر انجام شد؛ ناموفق: ${failures.join('، ')}`);
+    if (failures.length) setError(`عملیات برای ${faDigits(targets.length - failures.length)} نفر انجام شد؛ ناموفق: ${failures.join('، ')}`);
     setBulkProcessing(false);
   };
 
@@ -279,7 +280,14 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
   const doctorateCount = apiStudents.filter(s => s.academicLevel === 'DOCTORATE').length;
   const latestAcademicYear = availableYears[0];
   const termCounts = useMemo(() => {
-    const colors = ['#FF6838', '#FFC820', '#97C95C', '#1CB2F6', '#9B7BDE', '#1685B8'];
+    const colors = [
+      'var(--admin-data-series-1)',
+      'var(--admin-data-series-2)',
+      'var(--admin-data-series-3)',
+      'var(--admin-data-series-4)',
+      'var(--admin-data-series-1-highlight)',
+      'var(--admin-data-series-2-highlight)',
+    ];
     const grouped = new Map<string, Set<string>>();
     apiStudents.forEach(student => {
       student.enrollments.filter(enrollment => {
@@ -396,26 +404,22 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
 
   return (
     <div className="admin-legacy-page admin-students-page">
-      <section className="students-page-head">
-        <div>
-          <h2><Users size={19} /> مدیریت هنرجویان</h2>
-          <p>مدیریت هنرجویان، دوره‌ها و ثبت‌نام‌ها بر اساس مقطع و ترم تحصیلی</p>
-        </div>
-        <div className="students-head-actions">
+      <div className="students-toolbar">
+        <div className="students-toolbar-actions">
           <button type="button" onClick={() => void exportStudents()}><Download size={15}/> خروجی Excel</button>
           <button type="button" onClick={downloadTemplate}><FileSpreadsheet size={15}/> فایل نمونه</button>
         </div>
-      </section>
+      </div>
 
       <section className="students-stats">
-        <div className="student-stat"><span>کل هنرجویان</span><strong>{apiStudents.length}</strong></div>
-        <div className="student-stat"><span>ارشد</span><strong>{masterCount}</strong></div>
-        <div className="student-stat"><span>دکتری</span><strong>{doctorateCount}</strong></div>
-        <div className="student-stat"><span>ثبت‌نام فعال</span><strong>{activeEnrollments}</strong></div>
+        <div className="student-stat admin-master-panel"><span>کل هنرجویان</span><strong>{faDigits(apiStudents.length)}</strong></div>
+        <div className="student-stat admin-master-panel"><span>ارشد</span><strong>{masterCount}</strong></div>
+        <div className="student-stat admin-master-panel"><span>دکتری</span><strong>{doctorateCount}</strong></div>
+        <div className="student-stat admin-master-panel"><span>ثبت‌نام فعال</span><strong>{activeEnrollments}</strong></div>
       </section>
 
       <div className="students-main-grid">
-        <section className="student-chart-card">
+        <section className="student-chart-card admin-master-panel">
           <div className="student-chart-heading">
             <div className="section-title"><BarChart3 size={17}/><h3>توزیع هنرجویان بر اساس ترم</h3></div>
             <div className="student-term-switch">
@@ -425,32 +429,32 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
           </div>
           <div className="student-term-chart-layout">
             <div className="student-term-donut" style={{background: termCounts.gradient}}>
-              <div className="student-term-donut-center"><strong>{termCounts.total}</strong><span>هنرجو</span></div>
+              <div className="student-term-donut-center"><strong>{faDigits(termCounts.total)}</strong><span>هنرجو</span></div>
             </div>
             <div className="student-term-legend">
               {termCounts.rows.length ? termCounts.rows.map(item => <div className="student-term-legend-row" key={item.term}>
-                <i style={{background:item.color}}/><span>{item.term}</span><strong>{item.count}</strong><small>{termCounts.total ? Math.round(item.count / termCounts.total * 100) : 0}٪</small>
+                <i style={{background:item.color}}/><span>{faDigits(item.term)}</span><strong>{faDigits(item.count)}</strong><small>{faDigits(termCounts.total ? Math.round(item.count / termCounts.total * 100) : 0)}٪</small>
               </div>) : <p className="student-term-empty">هنوز داده‌ای برای نمایش آماری ثبت نشده است.</p>}
             </div>
           </div>
           <p className="student-term-note">هر هنرجو در هر ترم فقط یک‌بار شمرده می‌شود.</p>
         </section>
 
-        <section className="student-form-card">
+        <section className="student-form-card admin-master-panel">
           <div className="section-title"><UserPlus size={17}/><h3>{editingStudentId ? 'ویرایش هنرجو' : 'ثبت هنرجوی جدید'}</h3></div>
           <form onSubmit={handleSubmit} className="student-form">
             <input placeholder="نام و نام خانوادگی" value={fullName} onChange={e=>setFullName(e.target.value)} required/>
-            <input placeholder="کد ملی" value={nationalId} onChange={e=>setNationalId(e.target.value)} required/>
-            <input placeholder={editingStudentId ? 'موبایل جدید (اختیاری)' : 'شماره موبایل'} value={phone} onChange={e=>setPhone(e.target.value)} required={!editingStudentId}/>
+            <input placeholder="کد ملی" value={faDigits(nationalId)} onChange={e=>setNationalId(enDigits(e.target.value))} required/>
+            <input placeholder={editingStudentId ? 'موبایل جدید (اختیاری)' : 'شماره موبایل'} value={faDigits(phone)} onChange={e=>setPhone(enDigits(e.target.value))} required={!editingStudentId}/>
             <select value={academicLevel} onChange={e=>setAcademicLevel(e.target.value as any)} required><option value="">مقطع تحصیلی</option><option value="MASTER">ارشد</option><option value="DOCTORATE">دکتری</option></select>
             <div className="course-picker">
               <div className="picker-title">انتخاب دوره‌های مجاز</div>
               <div className="picker-filters">
                 <select value={coursePickerLevel} onChange={e=>setCoursePickerLevel(e.target.value as any)}><option value="">همه مقاطع</option><option value="MASTER">ارشد</option><option value="DOCTORATE">دکتری</option></select>
-                <select value={coursePickerYear} onChange={e=>setCoursePickerYear(e.target.value)}><option value="ALL">همه سال‌ها</option>{availableYears.map(y=><option key={y} value={y}>{y}</option>)}</select>
-                <select value={coursePickerTerm} onChange={e=>setCoursePickerTerm(e.target.value)}><option value="ALL">همه ترم‌ها</option>{availableTerms.map(t=><option key={t} value={t}>{t}</option>)}</select>
+                <select value={coursePickerYear} onChange={e=>setCoursePickerYear(e.target.value)}><option value="ALL">همه سال‌ها</option>{availableYears.map(y=><option key={y} value={y}>{faDigits(y)}</option>)}</select>
+                <select value={coursePickerTerm} onChange={e=>setCoursePickerTerm(e.target.value)}><option value="ALL">همه ترم‌ها</option>{availableTerms.map(t=><option key={t} value={t}>{faDigits(t)}</option>)}</select>
               </div>
-              <div className="course-list">{pickerCourses.map(course=><button type="button" className={selectedCourses.includes(course.id) ? 'course-choice selected' : 'course-choice'} key={course.id} onClick={()=>handleCheckboxChange(course.id)}><span>{course.title}</span><small>{levelLabel(course.level)} · {course.academicYear ?? '—'} · {termLabel(course.term)}</small></button>)}</div>
+              <div className="course-list">{pickerCourses.map(course=><button type="button" className={selectedCourses.includes(course.id) ? 'course-choice selected' : 'course-choice'} key={course.id} onClick={()=>handleCheckboxChange(course.id)}><span>{course.title}</span><small>{levelLabel(course.level)} · {course.academicYear == null ? '—' : faDigits(course.academicYear)} · {faDigits(termLabel(course.term))}</small></button>)}</div>
               {!pickerCourses.length && <div className="empty-mini">دوره‌ای با این فیلتر پیدا نشد.</div>}
             </div>
             <button className="primary-action" type="submit">{editingStudentId ? 'ذخیره تغییرات' : 'ثبت هنرجو و ورود به ثبت مالی'}</button>
@@ -459,37 +463,37 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
         </section>
       </div>
 
-      <section className="student-import-card">
+      <section className="student-import-card admin-master-panel">
         <div className="import-copy"><div className="section-title"><Upload size={17}/><h3>ورود گروهی از Excel</h3></div><p>فرمت نمونه را دانلود کنید، سپس فایل را انتخاب کنید. ابتدا پیش‌نمایش انجام می‌شود و بعد ثبت نهایی.</p></div>
         <div className="import-actions"><input ref={importRef} type="file" accept=".xlsx" onChange={e=>{const file=e.target.files?.[0]; if(file) void importFile(file,true);}}/><span>{importing ? 'در حال بررسی...' : 'فایل .xlsx را انتخاب کنید'}</span></div>
-        {importPreview && <div className="import-preview"><strong>{importPreview.valid} ردیف آماده ثبت از {importPreview.total}</strong>{importPreview.skipped>0 && <span className="warning-text">{importPreview.skipped} ردیف دارای خطا</span>}<div className="preview-list">{importPreview.rows.slice(0,8).map(row=><div key={row.row}><span>{row.name}</span><span>{row.course}</span><span>{row.term} {row.academicYear}</span><b>{row.status}</b></div>)}</div>{importPreview.errors.length>0 && <div className="import-errors">{importPreview.errors.slice(0,5).map((e,i)=><span key={i}>{e}</span>)}</div>}<div className="preview-actions"><button type="button" className="primary-action" disabled={importing || !importPreview.valid} onClick={()=>{const file=importRef.current?.files?.[0]; if(file) void importFile(file,false);}}>ثبت نهایی</button><button type="button" className="secondary-action" onClick={()=>setImportPreview(null)}>بستن</button></div></div>}
+        {importPreview && <div className="import-preview"><strong>{faDigits(importPreview.valid)} ردیف آماده ثبت از {faDigits(importPreview.total)}</strong>{importPreview.skipped>0 && <span className="warning-text">{faDigits(importPreview.skipped)} ردیف دارای خطا</span>}<div className="preview-list">{importPreview.rows.slice(0,8).map(row=><div key={row.row}><span>{row.name}</span><span>{row.course}</span><span>{faDigits(row.term)} {faDigits(row.academicYear)}</span><b>{row.status}</b></div>)}</div>{importPreview.errors.length>0 && <div className="import-errors">{importPreview.errors.slice(0,5).map((e,i)=><span key={i}>{e}</span>)}</div>}<div className="preview-actions"><button type="button" className="primary-action" disabled={importing || !importPreview.valid} onClick={()=>{const file=importRef.current?.files?.[0]; if(file) void importFile(file,false);}}>ثبت نهایی</button><button type="button" className="secondary-action" onClick={()=>setImportPreview(null)}>بستن</button></div></div>}
       </section>
 
-      <section className="student-list-card">
-        <div className="list-head"><div><div className="section-title"><Users size={17}/><h3>{studentSection==='ACTIVE'?'فهرست هنرجویان فعال':'بایگانی هنرجویان'}</h3></div><span>{filteredStudents.length} نفر نمایش داده می‌شود</span></div><div className="student-search"><Search size={15}/><input placeholder="جستجوی نام، کد ملی یا موبایل" value={search} onChange={e=>setSearch(e.target.value)}/></div></div>
-        <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}><button type="button" className={studentSection==='ACTIVE'?'primary-action':'secondary-action'} onClick={()=>{setStudentSection('ACTIVE');setSelectedStudentIds([]);}}><Users size={14}/> هنرجویان فعال ({apiStudents.filter(s=>!s.isArchived).length})</button><button type="button" className={studentSection==='ARCHIVED'?'primary-action':'secondary-action'} onClick={()=>{setStudentSection('ARCHIVED');setSelectedStudentIds([]);}}><Archive size={14}/> بایگانی ({apiStudents.filter(s=>s.isArchived).length})</button></div><div className="student-filters"><Filter size={15}/><select value={studentLevelFilter} onChange={e=>setStudentLevelFilter(e.target.value as any)}><option value="ALL">همه مقاطع</option><option value="MASTER">ارشد</option><option value="DOCTORATE">دکتری</option></select><select value={yearFilter} onChange={e=>setYearFilter(e.target.value)}><option value="ALL">همه سال‌ها</option>{availableYears.map(y=><option key={y} value={y}>{y}</option>)}</select><select value={termFilter} onChange={e=>setTermFilter(e.target.value)}><option value="ALL">همه ترم‌ها</option>{availableTerms.map(t=><option key={t} value={t}>{t}</option>)}</select><select value={studentCourseFilter} onChange={e=>setStudentCourseFilter(e.target.value)}><option value="ALL">همه دوره‌ها</option>{apiCourses.map(course=><option key={course.id} value={course.id}>{course.title}</option>)}</select><select value={studentEnrollmentFilter} onChange={e=>setStudentEnrollmentFilter(e.target.value as 'ALL'|'ENROLLED'|'NONE')}><option value="ALL">همه وضعیت ثبت‌نام</option><option value="ENROLLED">دارای دوره فعال</option><option value="NONE">بدون دوره فعال</option></select></div>
+      <section className="student-list-card admin-master-panel">
+        <div className="list-head"><div><div className="section-title"><Users size={17}/><h3>{studentSection==='ACTIVE'?'فهرست هنرجویان فعال':'بایگانی هنرجویان'}</h3></div><span>{faDigits(filteredStudents.length)} نفر نمایش داده می‌شود</span></div><div className="student-search"><Search size={15}/><input placeholder="جستجوی نام، کد ملی یا موبایل" value={faDigits(search)} onChange={e=>setSearch(enDigits(e.target.value))}/></div></div>
+        <div className="student-section-switch"><button type="button" className={studentSection==='ACTIVE'?'primary-action':'secondary-action'} onClick={()=>{setStudentSection('ACTIVE');setSelectedStudentIds([]);}}><Users size={14}/> هنرجویان فعال ({faDigits(apiStudents.filter(s=>!s.isArchived).length)})</button><button type="button" className={studentSection==='ARCHIVED'?'primary-action':'secondary-action'} onClick={()=>{setStudentSection('ARCHIVED');setSelectedStudentIds([]);}}><Archive size={14}/> بایگانی ({faDigits(apiStudents.filter(s=>s.isArchived).length)})</button></div><div className="student-filters"><Filter size={15}/><select value={studentLevelFilter} onChange={e=>setStudentLevelFilter(e.target.value as any)}><option value="ALL">همه مقاطع</option><option value="MASTER">ارشد</option><option value="DOCTORATE">دکتری</option></select><select value={yearFilter} onChange={e=>setYearFilter(e.target.value)}><option value="ALL">همه سال‌ها</option>{availableYears.map(y=><option key={y} value={y}>{faDigits(y)}</option>)}</select><select value={termFilter} onChange={e=>setTermFilter(e.target.value)}><option value="ALL">همه ترم‌ها</option>{availableTerms.map(t=><option key={t} value={t}>{t}</option>)}</select><select value={studentCourseFilter} onChange={e=>setStudentCourseFilter(e.target.value)}><option value="ALL">همه دوره‌ها</option>{apiCourses.map(course=><option key={course.id} value={course.id}>{course.title}</option>)}</select><select value={studentEnrollmentFilter} onChange={e=>setStudentEnrollmentFilter(e.target.value as 'ALL'|'ENROLLED'|'NONE')}><option value="ALL">همه وضعیت ثبت‌نام</option><option value="ENROLLED">دارای دوره فعال</option><option value="NONE">بدون دوره فعال</option></select></div>
         {error && <div className="students-error">{error}</div>}
-        {selectedStudentIds.length > 0 && <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap',padding:'10px 12px',marginBottom:12,border:'1px solid var(--admin-border)',borderRadius:12,background:'var(--admin-inner)'}}>
-          <strong>{selectedStudentIds.length} نفر انتخاب شده</strong>
+        {selectedStudentIds.length > 0 && <div className="student-bulk-selection">
+          <strong>{faDigits(selectedStudentIds.length)} نفر انتخاب شده</strong>
           <button type="button" className="secondary-action" disabled={bulkProcessing} onClick={()=>void bulkArchiveStudents(! (studentSection === 'ARCHIVED'))}><Archive size={14}/>{studentSection==='ARCHIVED'?'بازگردانی انتخاب‌شده‌ها':'بایگانی انتخاب‌شده‌ها'}</button>
           <button type="button" className="secondary-action" disabled={bulkProcessing} onClick={()=>setSelectedStudentIds([])}><X size={14}/> لغو انتخاب</button>
           {bulkProcessing && <span>در حال انجام عملیات گروهی…</span>}
         </div>}
-        {loading ? <div className="students-empty">در حال دریافت فهرست هنرجویان...</div> : <div className="student-table-wrap"><table><thead><tr><th><input type="checkbox" className="student-select-checkbox" aria-label="انتخاب همه هنرجویان نمایش‌داده‌شده" checked={filteredStudents.length > 0 && filteredStudents.every(student => selectedStudentIds.includes(student.id))} onChange={toggleAllVisibleStudents} /></th><th>هنرجو</th><th>مقطع</th><th>دوره‌های فعال</th><th>آخرین ثبت‌نام</th><th>عملیات</th></tr></thead><tbody>{filteredStudents.map(student=><tr key={student.id} className="student-clickable-row" tabIndex={0} aria-label={`مشاهده جزئیات ${student.fullName}`} onClick={()=>setSelectedStudent(student)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setSelectedStudent(student);}}}><td><input type="checkbox" className="student-select-checkbox" aria-label={`انتخاب ${student.fullName}`} checked={selectedStudentIds.includes(student.id)} onClick={e=>e.stopPropagation()} onChange={()=>toggleStudentSelection(student.id)} /></td><td><strong>{student.fullName}</strong><small>{student.nationalId} · {student.phone || '—'}</small></td><td><span className="level-badge">{levelLabel(student.academicLevel)}</span></td><td><div className="enrollment-chips">{student.enrollments.filter(e=>e.status==='ACTIVE').slice(0,3).map(e=><span key={e.id}>{e.course.title}</span>)}{student.enrollments.filter(e=>e.status==='ACTIVE').length>3 && <span>+{student.enrollments.filter(e=>e.status==='ACTIVE').length-3}</span>}</div></td><td>{student.enrollments.length ? isoToJalali(student.enrollments[0].enrolledAt) : '—'}</td><td><div className="row-actions"><button type="button" onClick={e=>{e.stopPropagation();void openStudentFinance(student);}} title="پرونده مالی / ویرایش مالی" aria-label="پرونده مالی هنرجو"><Wallet size={14}/></button><button type="button" onClick={e=>{e.stopPropagation();handleEdit(student);}} title="ویرایش" aria-label="ویرایش هنرجو"><Pencil size={14}/></button><button type="button" onClick={e=>{e.stopPropagation();void changeStudentArchive(student);}} title={student.isArchived?'بازگردانی به فهرست فعال':'بایگانی هنرجو'} aria-label={student.isArchived?'بازگردانی هنرجو':'بایگانی هنرجو'}>{student.isArchived?<CheckCircle2 size={14}/>:<Archive size={14}/>}</button>{student.isArchived && <button type="button" onClick={e=>{e.stopPropagation();void permanentlyDeleteArchivedStudent(student);}} title="حذف دائمی هنرجوی اشتباهی" aria-label="حذف دائمی هنرجو"><Trash2 size={14}/></button>}</div></td></tr>)}</tbody></table>{!filteredStudents.length && <div className="students-empty">هنرجویی با این فیلتر پیدا نشد.</div>}</div>}
+        {loading ? <div className="students-empty">در حال دریافت فهرست هنرجویان...</div> : <div className="student-table-wrap"><table><thead><tr><th><input type="checkbox" className="student-select-checkbox" aria-label="انتخاب همه هنرجویان نمایش‌داده‌شده" checked={filteredStudents.length > 0 && filteredStudents.every(student => selectedStudentIds.includes(student.id))} onChange={toggleAllVisibleStudents} /></th><th>هنرجو</th><th>مقطع</th><th>دوره‌های فعال</th><th>آخرین ثبت‌نام</th><th>عملیات</th></tr></thead><tbody>{filteredStudents.map(student=><tr key={student.id} className="student-clickable-row" tabIndex={0} aria-label={`مشاهده جزئیات ${student.fullName}`} onClick={()=>setSelectedStudent(student)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setSelectedStudent(student);}}}><td><input type="checkbox" className="student-select-checkbox" aria-label={`انتخاب ${student.fullName}`} checked={selectedStudentIds.includes(student.id)} onClick={e=>e.stopPropagation()} onChange={()=>toggleStudentSelection(student.id)} /></td><td><strong>{student.fullName}</strong><small>{faDigits(student.nationalId)} · {faDigits(student.phone || '—')}</small></td><td><span className="level-badge">{levelLabel(student.academicLevel)}</span></td><td><div className="enrollment-chips">{student.enrollments.filter(e=>e.status==='ACTIVE').slice(0,3).map(e=><span key={e.id}>{e.course.title}</span>)}{student.enrollments.filter(e=>e.status==='ACTIVE').length>3 && <span>+{faDigits(student.enrollments.filter(e=>e.status==='ACTIVE').length-3)}</span>}</div></td><td>{student.enrollments.length ? faDigits(isoToJalali(student.enrollments[0].enrolledAt)) : '—'}</td><td><div className="row-actions"><button type="button" onClick={e=>{e.stopPropagation();void openStudentFinance(student);}} title="پرونده مالی / ویرایش مالی" aria-label="پرونده مالی هنرجو"><Wallet size={14}/></button><button type="button" onClick={e=>{e.stopPropagation();handleEdit(student);}} title="ویرایش" aria-label="ویرایش هنرجو"><Pencil size={14}/></button><button type="button" onClick={e=>{e.stopPropagation();void changeStudentArchive(student);}} title={student.isArchived?'بازگردانی به فهرست فعال':'بایگانی هنرجو'} aria-label={student.isArchived?'بازگردانی هنرجو':'بایگانی هنرجو'}>{student.isArchived?<CheckCircle2 size={14}/>:<Archive size={14}/>}</button>{student.isArchived && <button type="button" onClick={e=>{e.stopPropagation();void permanentlyDeleteArchivedStudent(student);}} title="حذف دائمی هنرجوی اشتباهی" aria-label="حذف دائمی هنرجو"><Trash2 size={14}/></button>}</div></td></tr>)}</tbody></table>{!filteredStudents.length && <div className="students-empty">هنرجویی با این فیلتر پیدا نشد.</div>}</div>}
       </section>
       {selectedStudent && <div className="student-detail-backdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setSelectedStudent(null);}}>
         <section className="student-detail-modal" role="dialog" aria-modal="true" aria-labelledby="student-detail-title">
           <header className="student-detail-header"><div><span className="student-detail-kicker">پرونده هنرجو</span><h3 id="student-detail-title">{selectedStudent.fullName}</h3><p>اطلاعات فردی و سوابق ثبت‌نام</p></div><button type="button" className="student-detail-close" onClick={()=>setSelectedStudent(null)} aria-label="بستن پنجره"><X size={18}/></button></header>
           <div className="student-detail-facts">
-            <div><span>کد ملی</span><strong>{selectedStudent.nationalId || '—'}</strong></div>
-            <div><span>شماره موبایل</span><strong>{selectedStudent.phone || 'ثبت نشده'}</strong></div>
+            <div><span>کد ملی</span><strong>{faDigits(selectedStudent.nationalId || '—')}</strong></div>
+            <div><span>شماره موبایل</span><strong>{faDigits(selectedStudent.phone || 'ثبت نشده')}</strong></div>
             <div><span>مقطع تحصیلی</span><strong className={selectedStudent.academicLevel==='DOCTORATE'?'detail-doctorate':'detail-master'}>{levelLabel(selectedStudent.academicLevel)}</strong></div>
-            <div><span>تعداد دوره‌های فعال</span><strong>{selectedStudent.enrollments.filter(e=>e.status==='ACTIVE').length}</strong></div>
+            <div><span>تعداد دوره‌های فعال</span><strong>{faDigits(selectedStudent.enrollments.filter(e=>e.status==='ACTIVE').length)}</strong></div>
           </div>
-          <div className="student-detail-enrollments"><div className="student-detail-section-title"><h4>سوابق دوره‌ها و ثبت‌نام‌ها</h4><span>{selectedStudent.enrollments.length} مورد</span></div>
+          <div className="student-detail-enrollments"><div className="student-detail-section-title"><h4>سوابق دوره‌ها و ثبت‌نام‌ها</h4><span>{faDigits(selectedStudent.enrollments.length)} مورد</span></div>
             {selectedStudent.enrollments.length ? <div className="student-detail-course-list">{selectedStudent.enrollments.map(enrollment=><article key={enrollment.id} className={enrollment.status==='ACTIVE'?'detail-course-active':'detail-course-inactive'}>
               <div className="detail-course-top"><strong>{enrollment.course.title}</strong><span className={enrollment.status==='ACTIVE'?'detail-status-active':'detail-status-inactive'}>{enrollment.status==='ACTIVE'?'فعال':enrollment.status==='CANCELLED'?'لغوشده':enrollment.status==='COMPLETED'?'تکمیل‌شده':enrollment.status}</span></div>
-              <div className="detail-course-meta"><span>مقطع دوره: {levelLabel(enrollment.course.level)}</span><span>سال تحصیلی: {enrollment.course.academicYear ?? '—'}</span><span>ترم: {termLabel(enrollment.course.term)}</span><span>تاریخ ثبت‌نام: {enrollment.enrolledAt ? isoToJalali(enrollment.enrolledAt) : '—'}</span></div>
+              <div className="detail-course-meta"><span>مقطع دوره: {levelLabel(enrollment.course.level)}</span><span>سال تحصیلی: {enrollment.course.academicYear == null ? '—' : faDigits(enrollment.course.academicYear)}</span><span>ترم: {faDigits(termLabel(enrollment.course.term))}</span><span>تاریخ ثبت‌نام: {enrollment.enrolledAt ? faDigits(isoToJalali(enrollment.enrolledAt)) : '—'}</span></div>
             </article>)}</div> : <div className="students-empty">برای این هنرجو سابقه ثبت‌نامی وجود ندارد.</div>}
           </div>
           <footer className="student-detail-footer"><button type="button" className="secondary-action" onClick={()=>void openStudentFinance(selectedStudent)}><Wallet size={14}/> پرونده مالی</button><button type="button" className="secondary-action" onClick={()=>setSelectedStudent(null)}>بستن</button><button type="button" className="secondary-action" onClick={()=>void changeStudentArchive(selectedStudent)}>{selectedStudent.isArchived?<CheckCircle2 size={14}/>:<Archive size={14}/>} {selectedStudent.isArchived?'بازگردانی به فهرست فعال':'بایگانی هنرجو'}</button><button type="button" className="primary-action" onClick={()=>{const student=selectedStudent;setSelectedStudent(null);handleEdit(student);}}><Pencil size={14}/> ویرایش اطلاعات هنرجو</button></footer>
@@ -500,15 +504,15 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
           <header className="student-detail-header"><div><span className="student-detail-kicker">سوابق شهریه و پرداخت</span><h3 id="student-finance-title">{financeStudent.fullName}</h3><p>نمایش اطلاعات مالی ثبت‌شده در سامانه</p></div><button type="button" className="student-detail-close" onClick={()=>{setFinanceStudent(null);setFinanceData(null);}} aria-label="بستن پنجره"><X size={18}/></button></header>
           <div className="student-detail-enrollments">
             <div className="student-detail-section-title"><h4>{editingFinanceRegistrationId?'ویرایش پرونده مالی':'ثبت دستی پرونده مالی'}</h4><button type="button" className="secondary-action" onClick={()=>{setManualFinanceOpen(v=>!v);if(manualFinanceOpen)setEditingFinanceRegistrationId(null);}}>{manualFinanceOpen?'بستن فرم': 'ثبت پرونده جدید'}</button></div>
-            {manualFinanceOpen && <div className="detail-course-active" style={{marginBottom:12,display:'grid',gap:10}}>
+            {manualFinanceOpen && <div className="detail-course-active student-finance-manual-form">
               <strong>دوره‌های مشمول این پرونده</strong>
-              <div style={{display:'grid',gap:6}}>{apiCourses.filter(course=>course.level===financeStudent.academicLevel).map(course=><label key={course.id} style={{display:'flex',gap:8,alignItems:'center'}}><input type="checkbox" checked={manualCourseIds.includes(course.id)} onChange={()=>setManualCourseIds(current=>current.includes(course.id)?current.filter(id=>id!==course.id):[...current,course.id])}/>{course.title} · {course.academicYear??'—'} · {termLabel(course.term)}</label>)}</div>
-              <label>شهریه اولیه (تومان)<input type="number" min="1" value={manualOriginalTuition} onChange={e=>setManualOriginalTuition(e.target.value)}/></label>
-              <label>تخفیف (تومان)<input type="number" min="0" value={manualDiscount} onChange={e=>setManualDiscount(e.target.value)}/></label>
+              <div className="student-finance-course-options">{apiCourses.filter(course=>course.level===financeStudent.academicLevel).map(course=><label key={course.id} className="student-finance-course-option"><input type="checkbox" checked={manualCourseIds.includes(course.id)} onChange={()=>setManualCourseIds(current=>current.includes(course.id)?current.filter(id=>id!==course.id):[...current,course.id])}/>{course.title} · {course.academicYear == null ? '—' : faDigits(course.academicYear)} · {faDigits(termLabel(course.term))}</label>)}</div>
+              <label>شهریه اولیه (تومان)<input type="text" inputMode="numeric" min="1" value={faDigits(manualOriginalTuition)} onChange={e=>setManualOriginalTuition(enDigits(e.target.value))}/></label>
+              <label>تخفیف (تومان)<input type="text" inputMode="numeric" min="0" value={faDigits(manualDiscount)} onChange={e=>setManualDiscount(enDigits(e.target.value))}/></label>
               <label>دلیل تخفیف (اختیاری)<input value={manualDiscountReason} onChange={e=>setManualDiscountReason(e.target.value)}/></label>
               <h4>پرداخت‌های قبلی ثبت‌شده</h4>
-              {manualPayments.map((payment,index)=><div key={index} style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))',gap:8}}>
-                <input aria-label="مبلغ پرداخت قبلی" type="number" min="1" placeholder="مبلغ پرداخت (تومان)" value={payment.amount} onChange={e=>setManualPayments(rows=>rows.map((row,i)=>i===index?{...row,amount:e.target.value}:row))}/>
+              {manualPayments.map((payment,index)=><div key={index} className="student-finance-payment-row">
+                <input aria-label="مبلغ پرداخت قبلی" type="text" inputMode="numeric" min="1" placeholder="مبلغ پرداخت (تومان)" value={faDigits(payment.amount)} onChange={e=>setManualPayments(rows=>rows.map((row,i)=>i===index?{...row,amount:enDigits(e.target.value)}:row))}/>
                 <input aria-label="تاریخ پرداخت قبلی" type="text" inputMode="numeric" placeholder="۱۴۰۵/۰۷/۳۰" value={payment.paymentDate} onChange={e=>setManualPayments(rows=>rows.map((row,i)=>i===index?{...row,paymentDate:e.target.value.replace(/[۰-۹]/g,d=>String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))}:row))}/>
                 <select aria-label="روش پرداخت قبلی" value={payment.method} onChange={e=>setManualPayments(rows=>rows.map((row,i)=>i===index?{...row,method:e.target.value}:row))}><option value="BANK_TRANSFER">بانکی</option><option value="CASH">نقدی</option><option value="CARD">کارت‌خوان</option><option value="OTHER">سایر</option></select>
                 <input aria-label="شناسه پرداخت قبلی" placeholder="شماره پیگیری/توضیح" value={payment.reference} onChange={e=>setManualPayments(rows=>rows.map((row,i)=>i===index?{...row,reference:e.target.value}:row))}/>
@@ -516,32 +520,32 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
               </div>)}
               <button type="button" className="secondary-action" onClick={()=>setManualPayments(rows=>[...rows,{amount:'',paymentDate:'',method:'BANK_TRANSFER',reference:''}])}>افزودن پرداخت قبلی</button>
               <h4>برنامه اقساط (جمع اقساط برابر شهریه نهایی باشد)</h4>
-              {manualInstallments.map((installment,index)=><div key={index} style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(160px,1fr))',gap:8}}>
-                <input aria-label={'مبلغ قسط '+(index+1)} type="number" min="1" placeholder={'مبلغ قسط '+(index+1)+' (تومان)'} value={installment.amount} onChange={e=>setManualInstallments(rows=>rows.map((row,i)=>i===index?{...row,amount:e.target.value}:row))}/>
-                <label>سررسید قسط {index+1}<input aria-label={'سررسید قسط '+(index+1)} type="text" inputMode="numeric" placeholder="۱۴۰۵/۰۷/۳۰" value={installment.dueDate} onChange={e=>setManualInstallments(rows=>rows.map((row,i)=>i===index?{...row,dueDate:e.target.value.replace(/[۰-۹]/g,d=>String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))}:row))}/></label>
+              {manualInstallments.map((installment,index)=><div key={index} className="student-finance-installment-row">
+                <input aria-label={'مبلغ قسط '+faDigits(index+1)} type="text" inputMode="numeric" placeholder={'مبلغ قسط '+faDigits(index+1)+' (تومان)'} value={faDigits(installment.amount)} onChange={e=>setManualInstallments(rows=>rows.map((row,i)=>i===index?{...row,amount:enDigits(e.target.value)}:row))}/>
+                <label>سررسید قسط {faDigits(index+1)}<input aria-label={'سررسید قسط '+(index+1)} type="text" inputMode="numeric" placeholder="۱۴۰۵/۰۷/۳۰" value={faDigits(installment.dueDate)} onChange={e=>setManualInstallments(rows=>rows.map((row,i)=>i===index?{...row,dueDate:enDigits(e.target.value)}:row))}/></label>
                 {manualInstallments.length>1 && <button type="button" className="secondary-action" onClick={()=>setManualInstallments(rows=>rows.filter((_,i)=>i!==index))}>حذف قسط</button>}
               </div>)}
               <button type="button" className="secondary-action" onClick={()=>setManualInstallments(rows=>[...rows,{amount:'',dueDate:''}])}>افزودن قسط با سررسید دستی</button>
-              <p>جمع پرداخت‌های قبلی: {manualPayments.reduce((sum,p)=>sum+(Number(p.amount)||0),0).toLocaleString('fa-IR')} تومان · شهریه نهایی: {Math.max(0,(Number(manualOriginalTuition)||0)-(Number(manualDiscount)||0)).toLocaleString('fa-IR')} تومان · جمع اقساط: {manualInstallments.reduce((sum,i)=>sum+(Number(i.amount)||0),0).toLocaleString('fa-IR')} تومان</p>
+              <p>جمع پرداخت‌های قبلی: {faDigits(manualPayments.reduce((sum,p)=>sum+(Number(p.amount)||0),0).toLocaleString('en-US'))} تومان · شهریه نهایی: {faDigits(Math.max(0,(Number(manualOriginalTuition)||0)-(Number(manualDiscount)||0)).toLocaleString('en-US'))} تومان · جمع اقساط: {faDigits(manualInstallments.reduce((sum,i)=>sum+(Number(i.amount)||0),0).toLocaleString('en-US'))} تومان</p>
               <button type="button" className="primary-action" disabled={manualFinanceSaving} onClick={()=>void saveManualFinance()}>{manualFinanceSaving?'در حال ثبت…':editingFinanceRegistrationId?'ذخیره اصلاحات مالی':'ثبت پرونده مالی دستی'}</button>
             </div>}
           </div>{financeLoading ? <div className="students-empty">در حال دریافت پرونده مالی…</div> : financeError ? <div className="students-error">{financeError}</div> : financeData && <div className="student-detail-enrollments">
             {!financeData.registrations?.length && <div className="students-empty">برای این هنرجو هنوز پرونده مالی از مسیر ثبت‌نام ایجاد نشده است.</div>}
-            {(financeData.registrations || []).map((registration:any)=><article key={registration.id} className="detail-course-active" style={{marginBottom:12}}>
+            {(financeData.registrations || []).map((registration:any)=><article key={registration.id} className="detail-course-active student-finance-registration-card">
               <div className="detail-course-top"><strong>{registration.courses?.map((course:any)=>course.courseTitleSnapshot).join('، ') || 'ثبت‌نام بدون عنوان دوره'}</strong><span className="detail-status-active">{registration.status==='APPROVED'?'تأییدشده':registration.status}</span><button type="button" className="secondary-action" onClick={()=>{setEditingFinanceRegistrationId(registration.id);setManualCourseIds([]);setManualOriginalTuition(String(registration.originalTuition));setManualDiscount(String(registration.discountAmount));setManualDiscountReason('');setManualPayments([]);setManualInstallments((registration.installments||[]).map((i:any)=>({id:i.id,amount:String(i.amount),dueDate:isoToJalali(i.dueDate)})));setManualFinanceOpen(true);}}>ویرایش مالی</button></div>
               <div className="student-detail-facts">
-                <div><span>شهریه اولیه</span><strong>{Number(registration.originalTuition).toLocaleString('fa-IR')} تومان</strong></div>
-                <div><span>تخفیف</span><strong>{Number(registration.discountAmount).toLocaleString('fa-IR')} تومان</strong></div>
-                <div><span>شهریه نهایی</span><strong>{Number(registration.finalTuition).toLocaleString('fa-IR')} تومان</strong></div>
+                <div><span>شهریه اولیه</span><strong>{faDigits(Number(registration.originalTuition).toLocaleString('en-US'))} تومان</strong></div>
+                <div><span>تخفیف</span><strong>{faDigits(Number(registration.discountAmount).toLocaleString('en-US'))} تومان</strong></div>
+                <div><span>شهریه نهایی</span><strong>{faDigits(Number(registration.finalTuition).toLocaleString('en-US'))} تومان</strong></div>
               </div>
               <h4>پرداخت‌ها</h4>
-              {registration.payments?.length ? registration.payments.map((payment:any)=><div key={payment.id} className="detail-course-meta"><span>{payment.purpose==='INITIAL'?'پرداخت اولیه':'پرداخت قسط'}</span><span>{Number(payment.approvedAmount ?? payment.claimedAmount).toLocaleString('fa-IR')} تومان</span><span>{payment.paymentDate ? isoToJalali(payment.paymentDate) : '—'}</span><span>{payment.status==='APPROVED'?'تأییدشده':payment.status==='PENDING'?'در انتظار تأیید':payment.status}</span></div>) : <p>پرداختی ثبت نشده است.</p>}
+              {registration.payments?.length ? registration.payments.map((payment:any)=><div key={payment.id} className="detail-course-meta"><span>{payment.purpose==='INITIAL'?'پرداخت اولیه':'پرداخت قسط'}</span><span>{faDigits(Number(payment.approvedAmount ?? payment.claimedAmount).toLocaleString('en-US'))} تومان</span><span>{payment.paymentDate ? faDigits(isoToJalali(payment.paymentDate)) : '—'}</span><span>{payment.status==='APPROVED'?'تأییدشده':payment.status==='PENDING'?'در انتظار تأیید':payment.status}</span></div>) : <p>پرداختی ثبت نشده است.</p>}
               <h4>اقساط و سررسیدها</h4>
               <div className="student-detail-facts">
-                <div><span>پرداخت تأییدشده</span><strong>{Number(registration.paidTotal || 0).toLocaleString('fa-IR')} تومان</strong></div>
-                <div><span>مانده بدهی</span><strong>{Number(registration.balance ?? registration.finalTuition).toLocaleString('fa-IR')} تومان</strong></div>
+                <div><span>پرداخت تأییدشده</span><strong>{faDigits(Number(registration.paidTotal || 0).toLocaleString('en-US'))} تومان</strong></div>
+                <div><span>مانده بدهی</span><strong>{faDigits(Number(registration.balance ?? registration.finalTuition).toLocaleString('en-US'))} تومان</strong></div>
               </div>
-              {registration.installments?.length ? registration.installments.map((installment:any)=><div key={installment.id} className="detail-course-meta"><span>قسط {installment.sequence}</span><span>مبلغ: {Number(installment.amount).toLocaleString('fa-IR')} تومان</span><span>پرداخت: {Number(installment.paid || 0).toLocaleString('fa-IR')} تومان</span><span>مانده: {Number(installment.balance ?? installment.amount).toLocaleString('fa-IR')} تومان</span><span>سررسید: {isoToJalali(installment.dueDate)}</span><span>{installment.status==='PAID'?'پرداخت‌شده':installment.status==='OVERDUE'?'معوق':installment.status==='PARTIALLY_PAID'?'پرداخت ناقص':'در انتظار پرداخت'}</span></div>) : <p>قسطی ثبت نشده است.</p>}
+              {registration.installments?.length ? registration.installments.map((installment:any)=><div key={installment.id} className="detail-course-meta"><span>قسط {faDigits(installment.sequence)}</span><span>مبلغ: {faDigits(Number(installment.amount).toLocaleString('en-US'))} تومان</span><span>پرداخت: {faDigits(Number(installment.paid || 0).toLocaleString('en-US'))} تومان</span><span>مانده: {faDigits(Number(installment.balance ?? installment.amount).toLocaleString('en-US'))} تومان</span><span>سررسید: {faDigits(isoToJalali(installment.dueDate))}</span><span>{installment.status==='PAID'?'پرداخت‌شده':installment.status==='OVERDUE'?'معوق':installment.status==='PARTIALLY_PAID'?'پرداخت ناقص':'در انتظار پرداخت'}</span></div>) : <p>قسطی ثبت نشده است.</p>}
             </article>)}
           </div>}
           <footer className="student-detail-footer"><button type="button" className="secondary-action" onClick={()=>{setFinanceStudent(null);setFinanceData(null);}}>بستن</button></footer>

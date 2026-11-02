@@ -130,7 +130,6 @@
 /* One shared surface language. These selectors intentionally exclude the
    approved Dashboard and Manage Admins reference screens. */
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
-  .students-page-head,.student-chart-card,.student-form-card,.student-import-card,.student-list-card,
   .course-toolbar,.course-form,.course-list,.course-stat,.course-card,
   .offline-page-head,.offline-list-card,.messages-page-head,.messages-ticket-section,.messages-detail-section,
   .mock-exam-page-head,.mock-exam-list-card,.counseling-page-head,.counseling-account-section,
@@ -148,13 +147,13 @@
   box-shadow: var(--admin-content-shadow)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
-  .students-page-head,.offline-page-head,.messages-page-head,.mock-exam-page-head,
+  .offline-page-head,.messages-page-head,.mock-exam-page-head,
   .counseling-page-head,.notifications-page-head,.admin-page-heading,.admin-page-head,.page-header
 ) {
   padding: 15px 18px}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
-  .student-stat,.course-stat,.offline-stat-card,.messages-stat,.mock-exam-stat,
+  .course-stat,.offline-stat-card,.messages-stat,.mock-exam-stat,
   .counseling-stats-grid > *
 ) {
   min-width: 0;
@@ -223,7 +222,7 @@
     gap: 12px}
 
   .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
-    .students-page-head,.offline-page-head,.messages-page-head,.mock-exam-page-head,
+    .offline-page-head,.messages-page-head,.mock-exam-page-head,
     .counseling-page-head,.notifications-page-head,.admin-page-heading,.admin-page-head,.page-header
   ) {
     padding: 13px}
@@ -683,16 +682,6 @@
 ) {
   color: var(--admin-accent)}
 
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .course-choice {
-  border: 1px solid var(--admin-border);
-  border-radius: var(--admin-control-radius);
-  background: var(--admin-control);
-  color: var(--admin-text)}
-
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .course-choice.selected {
-  border-color: var(--admin-accent);
-  background: var(--admin-accent-soft)}
-
 
 /* Shared compact controls used by student, mock-exam and counseling workflows. */
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
@@ -786,7 +775,7 @@
 
 /* Canonical selected, active and compact badge states. */
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
-  .student-term-switch button.active,.course-choice.selected,
+  .student-term-switch button.active,
   .offline-filter-group button.active,.notifications-target.is-active,
   .mock-participant-levels button.is-active
 ) {
@@ -961,4 +950,560 @@
 
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-status.is-assigned {
   color: var(--admin-accent);
+}
+
+
+/* Student-management components use the same canonical surfaces and tokens as
+   the approved Manage Admins reference. Only genuinely unique visuals live here. */
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-detail-backdrop {
+  background:var(--admin-overlay-backdrop);
+  backdrop-filter:blur(7px);
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-detail-modal {
+  border:1px solid var(--admin-content-border);
+  border-radius:var(--admin-content-radius);
+  background:var(--admin-content-surface);
+  color:var(--admin-text);
+  box-shadow:var(--admin-shadow-dialog);
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-detail-header {
+  border-bottom:1px solid var(--admin-border);
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page :is(
+  .student-detail-facts > div,.student-detail-course-list article,
+  .detail-course-active,.detail-course-inactive
+) {
+  border:1px solid var(--admin-content-border);
+  border-radius:var(--admin-control-radius);
+  background:var(--admin-content-inner);
+  color:var(--admin-text);
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page :is(
+  .student-detail-facts span,.detail-course-meta,.student-term-note,
+  .student-term-empty,.student-detail-course-list small
+) { color:var(--admin-sub); }
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-detail-kicker {
+  color:var(--admin-accent);
+  font-size:10px;
+  font-weight:800;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-detail-close {
+  border:1px solid var(--admin-border);
+  border-radius:var(--admin-control-radius);
+  background:var(--admin-control);
+  color:var(--admin-text);
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .detail-status-active {
+  border:1px solid var(--admin-status-success);
+  border-radius:7px;
+  background:var(--admin-status-success-soft);
+  color:var(--admin-status-success);
+  padding:3px 8px;
+  font-size:10px;
+  font-weight:800;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-term-donut {
+  position:relative;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  overflow:hidden;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-term-donut::after {
+  content:"";
+  position:absolute;
+  inset:19%;
+  border-radius:50%;
+  background:var(--admin-card);
+  box-shadow:0 0 0 1px var(--admin-border);
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-term-donut-center {
+  position:relative;
+  z-index:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:2px;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-term-donut-center strong {
+  color:var(--admin-text);
+  font-size:23px;
+  font-weight:900;
+  line-height:1.1;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-term-note {
+  font-size:9px;
+  line-height:1.7;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-term-empty {
+  padding:8px;
+  font-size:10px;
+  line-height:1.8;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-term-legend-row {
+  border:1px solid var(--admin-content-border);
+  border-radius:var(--admin-control-radius);
+  background:var(--admin-content-inner);
+  padding:7px 8px;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-term-legend-row small {
+  min-width:26px;
+  text-align:left;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .course-choice {
+  border:1px solid var(--admin-border);
+  border-radius:var(--admin-control-radius);
+  background:var(--admin-control);
+  color:var(--admin-text);
+  text-align:right;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .course-choice.selected {
+  border-color:var(--admin-accent);
+  background:var(--admin-accent-soft);
+  color:var(--admin-text);
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .import-actions {
+  border:1px dashed var(--admin-brand-border);
+  border-radius:var(--admin-control-radius);
+  background:var(--admin-accent-soft);
+  color:var(--admin-accent);
+  font-size:11px;
+  text-align:center;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .import-actions:focus-within {
+  outline:2px solid var(--admin-accent);
+  outline-offset:2px;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .preview-list > div {
+  border:1px solid var(--admin-border);
+  border-radius:var(--admin-control-radius);
+  background:var(--admin-inner);
+  color:var(--admin-text);
+  font-size:10px;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .warning-text {
+  color:var(--admin-status-warning);
+  font-size:11px;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .import-errors {
+  color:var(--admin-status-error);
+  font-size:10px;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap :is(th,td):first-child {
+  text-align:center;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .students-empty {
+  text-align:center;
+}
+
+/* Student management: exact typography, controls and motion rhythm from
+   the approved Manage Admins reference. This block is intentionally last. */
+.admin-shell .admin-main .admin-page-content .admin-students-page {
+  font-family:Vazirmatn,IRANSansX,Tahoma,system-ui,sans-serif!important;
+  font-size:12px!important;line-height:1.8!important;color:var(--admin-text)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page :is(
+  .student-stat,.student-chart-card,.student-form-card,
+  .student-import-card,.student-list-card,.student-detail-modal
+){font-family:inherit!important;color:var(--admin-text)!important}
+.admin-shell .admin-main .admin-page-content .admin-students-page :is(
+  .section-title h3,.student-chart-heading h3
+){font-size:15px!important;line-height:1.55!important;font-weight:900!important;letter-spacing:0!important}
+.admin-shell .admin-main .admin-page-content .admin-students-page :is(
+  .import-copy p,.list-head>div:first-child>span,.student-term-note
+){color:var(--admin-sub)!important;font-size:11px!important;line-height:1.9!important}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-stat{font-size:11px!important;line-height:1.6!important}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-stat strong{
+  color:var(--admin-text)!important;font-size:21px!important;line-height:1.35!important;
+  font-weight:900!important;font-variant-numeric:tabular-nums}
+.admin-shell .admin-main .admin-page-content .admin-students-page .section-title{font-size:12px!important;line-height:1.6!important}
+.admin-shell .admin-main .admin-page-content .admin-students-page :is(
+  .student-form,.student-filters,.picker-filters,.student-search,.student-detail-modal,
+  .student-detail-facts,.student-detail-course-list
+){font-family:inherit!important;font-size:11px!important}
+.admin-shell .admin-main .admin-page-content .admin-students-page :is(
+  .student-form>input,.student-form>select,.student-search input,
+  .student-filters select,.picker-filters select,
+  .student-finance-payment-row input,.student-finance-payment-row select,
+  .student-finance-installment-row input,.student-finance-installment-row select
+){
+  min-height:40px!important;padding:9px 11px!important;border:1px solid var(--admin-border)!important;
+  border-radius:10px!important;background:var(--admin-control)!important;color:var(--admin-text)!important;
+  font-family:inherit!important;font-size:12px!important;font-weight:500!important;
+  line-height:1.6!important;box-shadow:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page :is(input,select,textarea,button):focus-visible{
+  outline:2px solid var(--admin-accent)!important;outline-offset:2px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .course-picker{
+  border:1px solid var(--admin-border)!important;border-radius:11px!important;
+  background:var(--admin-inner)!important;color:var(--admin-text)!important;box-shadow:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .picker-title{
+  color:var(--admin-text)!important;font-size:11px!important;line-height:1.6!important;font-weight:800!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .course-choice{
+  display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+  justify-content:center!important;gap:3px!important;min-height:58px!important;padding:8px 10px!important;
+  border:1px solid var(--admin-border)!important;border-radius:8px!important;
+  background:var(--admin-control)!important;color:var(--admin-text)!important;
+  font-family:inherit!important;font-size:10px!important;font-weight:800!important;
+  line-height:1.65!important;text-align:right!important;cursor:pointer!important;box-shadow:none!important;
+  transition:transform .18s ease,border-color .18s ease,background-color .18s ease,box-shadow .18s ease!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .course-choice span{
+  color:inherit!important;font-size:11px!important;font-weight:850!important;line-height:1.65!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .course-choice small{
+  color:var(--admin-sub)!important;font-size:9px!important;font-weight:600!important;line-height:1.6!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .course-choice:hover:not(:disabled){
+  transform:translateY(-1px)!important;border-color:var(--admin-brand-border)!important;
+  background:var(--admin-accent-soft)!important;box-shadow:var(--admin-shadow-control)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .course-choice.selected{
+  border-color:var(--admin-accent)!important;background:var(--admin-accent-soft)!important;
+  color:var(--admin-text)!important;box-shadow:inset 0 0 0 1px var(--admin-brand-border)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .course-choice.selected small{color:var(--admin-accent)!important}
+.admin-shell .admin-main .admin-page-content .admin-students-page .empty-mini{
+  padding:12px!important;border:1px dashed var(--admin-border)!important;border-radius:9px!important;
+  color:var(--admin-sub)!important;font-size:10px!important;text-align:center!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-term-switch button{
+  min-height:34px!important;padding:7px 10px!important;font-size:10px!important;font-weight:800!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-term-switch button.active{
+  border-color:var(--admin-brand-border)!important;background:var(--admin-accent-soft)!important;color:var(--admin-accent)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-section-switch{
+  display:flex;flex-wrap:wrap;align-items:center;gap:7px;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-section-switch button{
+  min-height:34px!important;padding:7px 11px!important;font-size:10px!important;font-weight:800!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-section-switch button.primary-action{
+  background:var(--admin-accent)!important;border-color:var(--admin-accent)!important;color:var(--admin-on-accent)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-filters{
+  border:1px solid var(--admin-content-border)!important;border-radius:10px!important;background:var(--admin-content-inner)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-filters select{
+  min-height:36px!important;padding:7px 9px!important;font-size:10px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-search input{
+  min-height:36px!important;font-size:10px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap th{
+  font-size:10px!important;font-weight:850!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap td{
+  font-size:11px!important;line-height:1.7!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap td small{
+  display:block;margin-top:3px;color:var(--admin-sub)!important;font-size:9px!important;line-height:1.6!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page :is(.level-badge,.enrollment-chips>span){
+  border:1px solid var(--admin-border)!important;border-radius:7px!important;
+  background:var(--admin-control)!important;color:var(--admin-text)!important;
+  font-size:9px!important;font-weight:750!important;line-height:1.5!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .row-actions button{
+  min-width:32px!important;min-height:32px!important;width:32px!important;height:32px!important;padding:0!important;
+}
+
+/* Exact animated glass action language from Manage Admins. */
+.admin-shell .admin-main .admin-page-content .admin-students-page :is(
+  .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
+  .student-term-switch button,.row-actions button,.student-detail-footer button,
+  .preview-actions button,.student-bulk-selection button
+){
+  position:relative!important;isolation:isolate!important;overflow:hidden!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;
+  border:1px solid rgba(223,207,186,.92)!important;border-top-color:rgba(255,255,255,.88)!important;
+  border-bottom-color:var(--admin-dashboard-refresh-border)!important;border-radius:10px!important;
+  background:linear-gradient(110deg,rgba(248,241,231,.92),rgba(239,229,215,.88))!important;
+  color:var(--admin-accent)!important;
+  box-shadow:0 8px 18px rgba(75,53,30,.075),inset 0 1px 0 rgba(255,255,255,.88)!important;
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  font-family:inherit!important;font-size:11px!important;font-weight:800!important;line-height:1.6!important;
+  cursor:pointer!important;
+  transition:transform .28s ease,background .28s ease,border-color .28s ease,
+    box-shadow .28s ease,color .28s ease!important;
+  -webkit-tap-highlight-color:transparent;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page :is(
+  .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
+  .student-term-switch button,.row-actions button,.student-detail-footer button,
+  .preview-actions button,.student-bulk-selection button
+)::before{
+  content:""!important;position:absolute;inset:0 auto 0 0;width:34%;z-index:-1;
+  background:linear-gradient(105deg,rgba(255,255,255,0),rgba(255,255,255,.20) 48%,rgba(0,128,128,.055) 72%,rgba(255,255,255,0));
+  transform:skewX(28deg) translateX(-150%);transition:transform .55s ease;pointer-events:none;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page :is(
+  .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
+  .student-term-switch button,.row-actions button,.student-detail-footer button,
+  .preview-actions button,.student-bulk-selection button
+):hover:not(:disabled),
+.admin-shell .admin-main .admin-page-content .admin-students-page :is(
+  .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
+  .student-term-switch button,.row-actions button,.student-detail-footer button,
+  .preview-actions button,.student-bulk-selection button
+):focus-visible{
+  transform:translateY(-2px)!important;
+  background:linear-gradient(110deg,rgba(248,241,231,.96),rgba(239,233,222,.94))!important;
+  border-color:rgba(22,140,145,.48)!important;color:var(--admin-dashboard-accent-strong)!important;
+  box-shadow:0 11px 22px rgba(18,43,43,.085),0 0 10px rgba(72,209,204,.085),inset 0 1px 0 rgba(255,255,255,.72)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page :is(
+  .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
+  .student-term-switch button,.row-actions button,.student-detail-footer button,
+  .preview-actions button,.student-bulk-selection button
+):hover:not(:disabled)::before,
+.admin-shell .admin-main .admin-page-content .admin-students-page :is(
+  .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
+  .student-term-switch button,.row-actions button,.student-detail-footer button,
+  .preview-actions button,.student-bulk-selection button
+):focus-visible::before{transform:skewX(28deg) translateX(280%)}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-students-page :is(
+  .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
+  .student-term-switch button,.row-actions button,.student-detail-footer button,
+  .preview-actions button,.student-bulk-selection button
+){
+  border-color:rgba(238,229,218,.16)!important;border-top-color:rgba(255,255,255,.22)!important;
+  border-bottom-color:rgba(0,0,0,.35)!important;
+  background:linear-gradient(110deg,rgba(58,54,52,.94),rgba(39,36,35,.94))!important;
+  color:var(--admin-accent)!important;
+  box-shadow:0 8px 18px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.12)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-students-page :is(
+  .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
+  .student-term-switch button,.row-actions button,.student-detail-footer button,
+  .preview-actions button,.student-bulk-selection button
+):hover:not(:disabled),
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-students-page :is(
+  .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
+  .student-term-switch button,.row-actions button,.student-detail-footer button,
+  .preview-actions button,.student-bulk-selection button
+):focus-visible{
+  background:linear-gradient(110deg,rgba(68,64,61,.98),rgba(43,40,38,.98))!important;
+  border-color:var(--admin-brand-border)!important;color:var(--admin-accent)!important;
+  box-shadow:0 12px 24px rgba(0,0,0,.34),0 0 14px rgba(72,209,204,.12),inset 0 1px 0 rgba(255,255,255,.16)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page :is(
+  .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
+  .student-term-switch button,.row-actions button,.student-detail-footer button,
+  .preview-actions button,.student-bulk-selection button
+):disabled{opacity:.45!important;cursor:not-allowed!important;transform:none!important}
+@media(prefers-reduced-motion:reduce){
+  .admin-shell .admin-main .admin-page-content .admin-students-page :is(
+    .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
+    .student-term-switch button,.row-actions button,.student-detail-footer button,
+    .preview-actions button,.student-bulk-selection button
+  ),
+  .admin-shell .admin-main .admin-page-content .admin-students-page :is(
+    .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
+    .student-term-switch button,.row-actions button,.student-detail-footer button,
+    .preview-actions button,.student-bulk-selection button
+  )::before{transition:none!important}
+}
+
+
+/* Preserve selected states above the shared glass action base. */
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-section-switch button.primary-action{
+  background:var(--admin-accent)!important;border-color:var(--admin-accent)!important;
+  color:var(--admin-on-accent)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-term-switch button.active{
+  background:var(--admin-accent-soft)!important;border-color:var(--admin-brand-border)!important;
+  color:var(--admin-accent)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-finance-manual-form{
+  display:grid;gap:10px;margin-bottom:12px;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-finance-course-options{
+  display:grid;gap:6px;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-finance-course-option{
+  display:flex;align-items:center;gap:8px;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page :is(
+  .student-finance-payment-row,.student-finance-installment-row
+){
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-finance-installment-row{
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-finance-registration-card{
+  margin-bottom:12px;
+}
+
+
+/* Student management uses the full content column; the legacy 1240px cap
+   caused an asymmetric gap beside the fixed sidebar. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page{
+  max-width:none;
+  margin-inline:0;
+}
+
+/* Final alignment fixes for Manage Students. */
+.admin-shell .admin-main .admin-page-content .admin-students-page .students-stats .student-stat{
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  direction:rtl;
+  text-align:right;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .students-stats .student-stat strong{
+  flex:0 0 auto;
+  margin-inline-start:auto;
+  text-align:left;
+}
+
+/* The new-student panel uses the same canonical surface as the reference cards. */
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-form-card{
+  border:1px solid var(--admin-content-border);
+  border-radius:var(--admin-content-radius);
+  background:var(--admin-content-surface);
+  background-image:none;
+  color:var(--admin-text);
+  box-shadow:var(--admin-content-shadow);
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-form-card > .section-title{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:0;
+  padding:0;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-form-card .student-form{
+  margin-top:14px;
+}
+
+/* Keep the account-row card treatment, but remove legacy vertical cell dividers. */
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td{
+  border-left:0!important;
+  border-right:0!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td:first-child{
+  border-right:1px solid var(--admin-content-border)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td:last-child{
+  border-left:1px solid var(--admin-content-border)!important;
+}
+
+/* Student list rows reuse the exact inset account-card surface from
+   Manage Admins: Accounts defined. Keep table semantics and row actions intact. */
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap table{
+  border-collapse:separate!important;
+  border-spacing:0 8px!important;
+  background:transparent!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row{
+  background:transparent!important;
+  box-shadow:none!important;
+  transition:transform .2s ease!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td{
+  border-top:1px solid rgba(255,255,255,.62)!important;
+  border-bottom:1px solid rgba(255,255,255,.62)!important;
+  background:var(--admin-dashboard-row-surface)!important;
+  box-shadow:inset 3px 3px 7px rgba(177,169,157,.38),
+    inset -3px -3px 7px rgba(255,255,255,.82)!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td:first-child{
+  border-right:1px solid rgba(255,255,255,.62)!important;
+  border-radius:0 12px 12px 0!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td:last-child{
+  border-left:1px solid rgba(255,255,255,.62)!important;
+  border-radius:12px 0 0 12px!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td{
+  border-top:1px solid rgba(255,255,255,.045)!important;
+  border-bottom:1px solid rgba(255,255,255,.045)!important;
+  background:var(--admin-dashboard-row-surface)!important;
+  box-shadow:inset 3px 3px 7px rgba(12,11,11,.55),
+    inset -3px -3px 7px rgba(52,48,48,.42)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td:first-child{
+  border-right:1px solid rgba(255,255,255,.045)!important;
+  border-radius:0 12px 12px 0!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td:last-child{
+  border-left:1px solid rgba(255,255,255,.045)!important;
+  border-radius:12px 0 0 12px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row:hover{
+  transform:translateY(-1px)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row:hover td{
+  border-top-color:var(--admin-brand-border)!important;
+  border-bottom-color:var(--admin-brand-border)!important;
+  box-shadow:var(--admin-shadow-control)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row:focus-visible{
+  outline:2px solid var(--admin-accent)!important;
+  outline-offset:2px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td{
+  padding-top:13px!important;
+  padding-bottom:13px!important;
+  transition:background .2s ease,border-color .2s ease,box-shadow .2s ease!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .list-head{
+  margin-bottom:10px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .list-head>div:first-child>span{
+  color:var(--admin-sub)!important;
+  font-size:11px!important;
+  line-height:1.8!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-search{
+  min-height:40px;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-search input{
+  border-radius:10px!important;
+}
+@media(prefers-reduced-motion:reduce){
+  .admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row,
+  .admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td{
+    transition:none!important;
+  }
+}
+
+
+/* Final table-cell reset: preserve one continuous account row without
+   inset shadows or borders creating separators between its columns. */
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td{
+  border-left:0!important;
+  border-right:0!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td{
+  box-shadow:inset 0 3px 7px rgba(177,169,157,.38),
+    inset 0 -3px 7px rgba(255,255,255,.82)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td{
+  box-shadow:inset 0 3px 7px rgba(12,11,11,.55),
+    inset 0 -3px 7px rgba(52,48,48,.42)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td:first-child{
+  border-right:1px solid var(--admin-content-border)!important;
+  border-radius:0 12px 12px 0!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td:last-child{
+  border-left:1px solid var(--admin-content-border)!important;
+  border-radius:12px 0 0 12px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row:hover td{
+  box-shadow:inset 0 3px 7px rgba(177,169,157,.30),
+    inset 0 -3px 7px rgba(255,255,255,.78)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row:hover td{
+  box-shadow:inset 0 3px 7px rgba(12,11,11,.48),
+    inset 0 -3px 7px rgba(52,48,48,.36)!important;
 }
