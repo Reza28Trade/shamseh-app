@@ -1,0 +1,40 @@
+.admin-bookstore-page {
+  display: grid;
+  gap: 16px;
+  color: var(--admin-text);
+  direction: rtl;
+  min-width: 0;
+}
+
+.admin-bookstore-page .accounts-card {
+  min-width: 0;
+}
+
+.admin-bookstore-page .accounts-card > h3 {
+  margin-top: 0;
+}
+
+.admin-bookstore-page .bookstore-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
+}
+
+.admin-bookstore-page .bookstore-order-list,
+.admin-bookstore-page .bookstore-book-list {
+  display: grid;
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .admin-bookstore-page .bookstore-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-bookstore-page .bookstore-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
