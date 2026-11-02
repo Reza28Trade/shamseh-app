@@ -340,7 +340,3 @@
   .admin-courses-page .cover-thumb { width: 60px; height: 60px}
   .admin-courses-page .modal-grid { grid-template-columns: 1fr}
 }
-
-@media(prefers-reduced-motion:reduce) {
-  .admin-courses-page * { transition: none}
-}
