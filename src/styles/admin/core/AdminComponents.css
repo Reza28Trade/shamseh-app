@@ -2583,7 +2583,7 @@
 }
 .admin-shell .admin-main .admin-page-content .admin-dashboard-tools {
   flex-wrap:wrap;
-  justify-content:flex-start;
+  justify-content:space-between;
   min-width:0;
 }
 .admin-shell .admin-main .admin-page-content .admin-dashboard-tools > input {
