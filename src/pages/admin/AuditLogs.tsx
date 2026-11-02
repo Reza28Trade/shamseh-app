@@ -176,7 +176,7 @@ export const AuditLogs: React.FC = () => {
           <div className="admin-extracted-auditlogs-18">موردی با این عبارت یا فیلتر پیدا نشد.</div>
         ) : (
           <div className="admin-extracted-auditlogs-19 admin-data-table-wrap admin-logs-table-wrap">
-            <table className="admin-extracted-auditlogs-20 admin-data-table">
+            <table className="admin-extracted-auditlogs-20 admin-data-table admin-audit-table">
               <thead className="admin-extracted-auditlogs-21">
                 <tr className="admin-extracted-auditlogs-22">
                   {['زمان', 'نوع عملیات', 'بخش / شناسه', 'انجام‌دهنده', 'جزئیات'].map((heading) => (
