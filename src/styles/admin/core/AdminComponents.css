@@ -2385,6 +2385,8 @@
 
 /* Shared activity feed component.
    Promoted from Dashboard > Recent Activity so every activity feed uses the exact same reference. */
+.admin-shell .admin-main .admin-page-content .admin-recent-activity {padding:17px;}
+
 .admin-shell .admin-main .admin-page-content .admin-recent-activity .admin-activity-list {
   display:flex;
   flex-direction:column;
