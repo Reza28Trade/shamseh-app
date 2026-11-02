@@ -441,16 +441,7 @@ export const ManageMockExams: React.FC = () => {
                   key={jd}
                   disabled={isPast(jd)}
                   onClick={() => selectDay(jd)}
-                  style={{
-                    height: 40,
-                    borderRadius: 9,
-                    border: isSelected(jd) ? '1px solid #38bdf8' : '1px solid transparent',
-                    background: isSelected(jd) ? 'rgba(56,189,248,.16)' : 'transparent',
-                    color: isPast(jd) ? '#444' : isSelected(jd) ? '#38bdf8' : '#fff',
-                    cursor: isPast(jd) ? 'not-allowed' : 'pointer',
-                    fontSize: 12,
-                    fontWeight: isSelected(jd) ? 900 : 500,
-                  }}
+                  className={`admin-mock-calendar-day${isPast(jd) ? ' is-past' : ''}${isSelected(jd) ? ' is-selected' : ''}`}
                 >{jd}</button>
               ))}
             </div>
@@ -464,7 +455,7 @@ export const ManageMockExams: React.FC = () => {
 
       <div className="mock-exam-dashboard">
 
-        <div className="admin-mock-card" className="mock-exam-list-card">
+        <div className="admin-mock-card mock-exam-list-card">
           <div className="mock-exam-list-head">
             <div className="admin-mock-section-title">
               <CalendarDays size={17} color="var(--admin-accent)" />
@@ -498,14 +489,7 @@ export const ManageMockExams: React.FC = () => {
           ) : (
           <div className="mock-exam-scroll-list">
             {filteredExams.map((exam) => (
-              <div key={exam.id} style={{
-                padding: 16,
-                borderRadius: 16,
-                border: '1px solid rgba(255,255,255,.07)',
-                background: 'rgba(20,20,25,.75)',
-                display: 'grid',
-                gap: 14,
-              }}>
+              <div key={exam.id} className="admin-mock-exam-item">
                 <div className="admin-extracted-managemockexams-15">
                   <div>
                     <div className="admin-extracted-managemockexams-16">
