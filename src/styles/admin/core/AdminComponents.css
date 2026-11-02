@@ -1348,6 +1348,54 @@
   margin-inline:0;
 }
 
+/* Final alignment fixes for Manage Students. */
+.admin-shell .admin-main .admin-page-content .admin-students-page .students-stats .student-stat{
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  direction:rtl;
+  text-align:right;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .students-stats .student-stat strong{
+  flex:0 0 auto;
+  margin-inline-start:auto;
+  text-align:left;
+}
+
+/* The new-student panel uses the same canonical surface as the reference cards. */
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-form-card{
+  border:1px solid var(--admin-content-border);
+  border-radius:var(--admin-content-radius);
+  background:var(--admin-content-surface);
+  background-image:none;
+  color:var(--admin-text);
+  box-shadow:var(--admin-content-shadow);
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-form-card > .section-title{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:0;
+  padding:0;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-form-card .student-form{
+  margin-top:14px;
+}
+
+/* Keep the account-row card treatment, but remove legacy vertical cell dividers. */
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td{
+  border-left:0!important;
+  border-right:0!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td:first-child{
+  border-right:1px solid var(--admin-content-border)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td:last-child{
+  border-left:1px solid var(--admin-content-border)!important;
+}
+
 /* Student list rows reuse the exact inset account-card surface from
    Manage Admins: Accounts defined. Keep table semantics and row actions intact. */
 .admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap table{
