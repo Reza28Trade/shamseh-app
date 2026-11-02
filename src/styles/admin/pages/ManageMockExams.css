@@ -129,11 +129,7 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list > div{min-height:0!important;padding:10px 12px!important;gap:8px!important;}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list > div > div:first-child{gap:10px!important;}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list > div > div:first-child > div:first-child .admin-extracted-managemockexams-18{margin-top:5px!important;}
-@media(max-width:900px){
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
 
-
-}
 @media(max-width:600px){
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stats{gap:8px!important;}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat{min-height:62px!important;padding:10px!important;}
