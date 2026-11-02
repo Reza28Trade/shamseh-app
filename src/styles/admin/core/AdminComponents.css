@@ -502,14 +502,6 @@
   background: var(--admin-status-error-soft);
   color: var(--admin-text)}
 
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .course-message.error {
-  border-color: var(--admin-status-error);
-  background: var(--admin-status-error-soft)}
-
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .course-message.success {
-  border-color: var(--admin-status-success);
-  background: var(--admin-status-success-soft)}
-
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .section-title svg,.offline-list-head h3 svg,.mock-exam-list-head svg,
   .course-section-head svg
