@@ -297,12 +297,12 @@ ${value}`.trim();
       </header>
 
       <div className="admin-extracted-managepubliccontent-3">
-        <button type="button" onClick={() => { setTab('rules'); setError(''); }} style={{ ...buttonStyle, background: tab === 'rules' ? colors.accent : colors.bg, color: tab === 'rules' ? '#fff' : colors.text }}><FileText size={15} /> قوانین و مقررات</button>
-        <button type="button" onClick={() => { setTab('analysis'); setError(''); }} style={{ ...buttonStyle, background: tab === 'analysis' ? colors.accent : colors.bg, color: tab === 'analysis' ? '#fff' : colors.text }}><BookOpenText size={15} /> تحلیل کنکور سال‌های قبل</button>
-        <button type="button" onClick={() => { setTab('news'); setError(''); }} style={{ ...buttonStyle, background: tab === 'news' ? colors.accent : colors.bg, color: tab === 'news' ? '#fff' : colors.text }}><FileText size={15} /> اخبار و اسلایدر</button>
+        <button type="button" onClick={() => { setTab('rules'); setError(''); }} className={`admin-public-button${tab === 'rules' ? ' is-active' : ''}`}><FileText size={15} /> قوانین و مقررات</button>
+        <button type="button" onClick={() => { setTab('analysis'); setError(''); }} className={`admin-public-button${tab === 'analysis' ? ' is-active' : ''}`}><BookOpenText size={15} /> تحلیل کنکور سال‌های قبل</button>
+        <button type="button" onClick={() => { setTab('news'); setError(''); }} className={`admin-public-button${tab === 'news' ? ' is-active' : ''}`}><FileText size={15} /> اخبار و اسلایدر</button>
       </div>
 
-      {error && <div role="alert" style={{ padding: 12, borderRadius: 10, background: dark ? 'rgba(122,32,56,.22)' : 'rgba(122,32,56,.10)', color: dark ? '#e6a7b5' : '#7A2038', fontSize: 12 }}>{error}</div>}
+      {error && <div role="alert" className="admin-public-feedback is-error">{error}</div>}
       {success && <div role="status" className="admin-extracted-managepubliccontent-4">{success}</div>}
       {loading ? <div style={{ padding: 32, textAlign: 'center', color: colors.muted }}>در حال دریافت اطلاعات...</div> : tab === 'news' ? (
         <section style={{ border: '1px solid ' + colors.border, borderRadius: 16, padding: 18, background: colors.alt, display: 'grid', gap: 14 }}>
@@ -329,7 +329,7 @@ ${value}`.trim();
             <div className="admin-extracted-managepubliccontent-13">
               تصویر خبر (اختیاری)
               <div className="admin-extracted-managepubliccontent-14">
-                <label style={{ ...buttonStyle, cursor: newsImageUploading ? 'wait' : 'pointer', background: colors.bg }}>
+                <label className="admin-public-button admin-public-upload-button" aria-busy={newsImageUploading}>
                   <FileText size={15}/>{newsImageUploading ? 'در حال بارگذاری…' : 'انتخاب تصویر از کامپیوتر'}
                   <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" disabled={newsImageUploading} onChange={(event) => { void uploadNewsImage(event.target.files?.[0]); event.currentTarget.value = ''; }} className="admin-extracted-managepubliccontent-15"/>
                 </label>
@@ -378,7 +378,7 @@ ${value}`.trim();
             ))}
           </div>
           <div className="admin-extracted-managepubliccontent-27">
-            <button type="submit" disabled={saving} style={{ ...buttonStyle, background: colors.accent, color: '#fff', borderColor: colors.accent, opacity: saving ? .7 : 1 }}><Save size={15} />{saving ? 'در حال ذخیره...' : 'ذخیره و انتشار قوانین'}</button>
+            <button type="submit" disabled={saving} className="admin-public-button admin-public-button--primary"><Save size={15} />{saving ? 'در حال ذخیره...' : 'ذخیره و انتشار قوانین'}</button>
             <span style={{ color: colors.muted, fontSize: 11 }}>ذخیره در پایگاه داده؛ قابل مشاهده برای همه بازدیدکنندگان.</span>
           </div>
         </form>
@@ -398,7 +398,7 @@ ${value}`.trim();
               <label className="admin-extracted-managepubliccontent-34">سال کنکور<input value={form.examYear} onChange={(event) => setForm({ ...form, examYear: event.target.value })} className="admin-public-input" placeholder="مثلاً ۱۴۰۵" /></label>
               <label className="admin-extracted-managepubliccontent-35">مقطع *<select required value={form.examLevel} onChange={(event) => setForm({ ...form, examLevel: event.target.value })} className="admin-public-input"><option value="">انتخاب مقطع</option><option value="کارشناسی ارشد">کارشناسی ارشد</option><option value="دکتری">دکتری</option></select></label>
             </div>
-            <label className="admin-extracted-managepubliccontent-36">متن تحلیل (اختیاری در صورت ثبت اطلاعات ساختاریافته)<textarea rows={8} value={form.content} onChange={(event) => setForm({ ...form, content: event.target.value })} style={{ ...inputStyle, lineHeight: 2, resize: 'vertical' }} placeholder="توضیحات تکمیلی تحلیل را وارد کنید؛ اگر اطلاعات ساختاریافته ثبت می‌کنید، این بخش می‌تواند خالی بماند." /></label>
+            <label className="admin-extracted-managepubliccontent-36">متن تحلیل (اختیاری در صورت ثبت اطلاعات ساختاریافته)<textarea rows={8} value={form.content} onChange={(event) => setForm({ ...form, content: event.target.value })} className="admin-public-input admin-public-input--textarea" placeholder="توضیحات تکمیلی تحلیل را وارد کنید؛ اگر اطلاعات ساختاریافته ثبت می‌کنید، این بخش می‌تواند خالی بماند." /></label>
             <section style={{ border: '1px solid ' + colors.border, borderRadius: 14, padding: 15, display: 'flex', flexDirection: 'column', gap: 12, background: colors.alt }}>
               <div><strong className="admin-extracted-managepubliccontent-37">اطلاعات ساختاریافته پوشش و سؤال‌ها</strong><p style={{ margin: '5px 0 0', color: colors.muted, fontSize: 11, lineHeight: 1.9 }}>وضعیت هر سؤال را مشخص کنید. درصد پوشش بر اساس سؤال‌های شماره‌گذاری‌شده از شماره شروع محاسبه می‌شود؛ سؤال‌های قبل از آن نادیده گرفته می‌شوند.</p></div>
               <div className="admin-extracted-managepubliccontent-38">
@@ -415,9 +415,9 @@ ${value}`.trim();
                 <table className="admin-extracted-managepubliccontent-45">
                   <thead><tr style={{ background: colors.alt, textAlign: 'right' }}>{['شماره سؤال', 'وضعیت پوشش', 'توضیحات'].map((label) => <th key={label} style={{ padding: '11px 10px', borderBottom: '1px solid ' + colors.border, whiteSpace: 'nowrap' }}>{label}</th>)}</tr></thead>
                   <tbody>{form.questions.map((question, index) => <tr key={index}>
-                    <td style={{ padding: 7, borderBottom: '1px solid ' + colors.border, width: 100 }}><input aria-label={`شماره سؤال ${index + 1}`} value={question.questionNumber} onChange={(event) => setForm((current) => ({ ...current, questions: current.questions.map((row, rowIndex) => rowIndex === index ? { ...row, questionNumber: event.target.value } : row) }))} style={{ ...inputStyle, minWidth: 75 }} /></td>
+                    <td style={{ padding: 7, borderBottom: '1px solid ' + colors.border, width: 100 }}><input aria-label={`شماره سؤال ${index + 1}`} value={question.questionNumber} onChange={(event) => setForm((current) => ({ ...current, questions: current.questions.map((row, rowIndex) => rowIndex === index ? { ...row, questionNumber: event.target.value } : row) }))} className="admin-public-input admin-public-input--compact" /></td>
                     <td style={{ padding: 7, borderBottom: '1px solid ' + colors.border, width: 170 }}><select aria-label={`وضعیت پوشش سؤال ${index + 1}`} value={question.status} onChange={(event) => setForm((current) => ({ ...current, questions: current.questions.map((row, rowIndex) => rowIndex === index ? { ...row, status: event.target.value as QuestionRow['status'] } : row) }))} className="admin-public-input">{questionStatusOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></td>
-                    <td style={{ padding: 7, borderBottom: '1px solid ' + colors.border, minWidth: 360 }}><textarea aria-label={`توضیحات سؤال ${index+1}`} value={question.explanation ?? ''} onChange={(event) => setForm((current) => ({ ...current, questions: current.questions.map((row, rowIndex) => rowIndex === index ? { ...row, explanation: event.target.value } : row) }))} rows={2} style={{ ...inputStyle, minWidth: 340, lineHeight: 1.8, resize: 'vertical' }} placeholder="هر توضیح لازم: مبحث، منبع، کتاب، استاد، صفحه و نکته‌های مرتبط..." /></td>
+                    <td style={{ padding: 7, borderBottom: '1px solid ' + colors.border, minWidth: 360 }}><textarea aria-label={`توضیحات سؤال ${index+1}`} value={question.explanation ?? ''} onChange={(event) => setForm((current) => ({ ...current, questions: current.questions.map((row, rowIndex) => rowIndex === index ? { ...row, explanation: event.target.value } : row) }))} rows={2} className="admin-public-input admin-public-input--textarea admin-public-input--wide" placeholder="هر توضیح لازم: مبحث، منبع، کتاب، استاد، صفحه و نکته‌های مرتبط..." /></td>
                   </tr>)}
                   {form.questions.length === 0 && <tr><td colSpan={3} style={{ padding: 18, textAlign: 'center', color: colors.muted }}>ابتدا تعداد کل سؤال‌ها را وارد کن تا ردیف‌ها ساخته شوند.</td></tr>}</tbody>
                 </table>
