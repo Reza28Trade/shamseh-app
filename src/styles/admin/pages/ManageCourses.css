@@ -5,11 +5,14 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 1240px;
   min-width: 0;
-  margin-inline: auto;
   gap: 14px;
   padding: 0}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page:not(.admin-accounts-page) {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0}
 
 .admin-courses-page .course-toolbar {
   display: flex;
@@ -178,8 +181,7 @@
   overflow-x: hidden;
   overflow-y: auto;
   padding: 0 3px 3px 4px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--admin-border) transparent}
+}
 
 .admin-courses-page .course-filters {
   display: grid;
@@ -337,8 +339,4 @@
   .admin-courses-page .cover-picker { grid-template-columns: 60px minmax(0,1fr)}
   .admin-courses-page .cover-thumb { width: 60px; height: 60px}
   .admin-courses-page .modal-grid { grid-template-columns: 1fr}
-}
-
-@media(prefers-reduced-motion:reduce) {
-  .admin-courses-page * { transition: none}
 }
