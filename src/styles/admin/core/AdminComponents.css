@@ -2497,173 +2497,115 @@
 }
 
 
-/* Audit log table: semantic table layout with one continuous surface per row. */
-.admin-shell .admin-main .admin-page-content .admin-logs-page .admin-logs-table-wrap {
-  display:block!important;
-  width:100%!important;
-  max-width:100%!important;
-  min-width:0!important;
-  max-height:min(700px,72vh)!important;
-  overflow-x:auto!important;
-  overflow-y:auto!important;
-  padding:7px!important;
-  direction:rtl!important;
+/* Shared activity feed component.
+   Promoted from Dashboard > Recent Activity so every activity feed uses the exact same reference. */
+.admin-shell .admin-main .admin-page-content .admin-recent-activity .admin-activity-list {
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  min-width:0;
+}
+.admin-shell .admin-main .admin-page-content .admin-recent-activity .admin-activity-row {
+  display:flex;
+  align-items:center;
+  min-width:0;
+  min-height:64px;
+  padding:12px;
+  gap:12px;
+  text-align:right;
+  direction:rtl;
+  background:var(--admin-dashboard-row-surface);
+  background-color:var(--admin-dashboard-row-surface);
+  background-image:none;
+  border:1px solid rgba(255,255,255,.62);
+  border-radius:12px;
+  box-shadow:inset 3px 3px 7px rgba(177,169,157,.38),inset -3px -3px 7px rgba(255,255,255,.82);
+  color:var(--admin-text);
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-recent-activity .admin-activity-row {
+  border-color:rgba(255,255,255,.045);
+  box-shadow:inset 3px 3px 7px rgba(12,11,11,.55),inset -3px -3px 7px rgba(52,48,48,.42);
+}
+.admin-shell .admin-main .admin-page-content .admin-recent-activity .admin-activity-row:hover {
+  transform:translateY(-1px);
+}
+.admin-shell .admin-main .admin-page-content .admin-recent-activity .admin-activity-mark {
+  display:grid;
+  place-items:center;
+  flex:0 0 36px;
+  width:36px;
+  height:36px;
+  border-radius:10px;
+  background:var(--admin-dashboard-icon-surface);
+  border:1px solid rgba(255,255,255,.62);
+  box-shadow:3px 3px 7px rgba(177,169,157,.38),-3px -3px 7px rgba(255,255,255,.86);
+  color:var(--admin-accent);
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-recent-activity .admin-activity-mark {
+  border-color:rgba(255,255,255,.055);
+  box-shadow:3px 3px 7px rgba(13,12,12,.55),-3px -3px 7px rgba(51,47,47,.48);
+}
+.admin-shell .admin-main .admin-page-content .admin-recent-activity .admin-activity-copy {
+  display:flex;
+  flex:1 1 auto;
+  flex-direction:column;
+  gap:4px;
+  min-width:0;
+}
+.admin-shell .admin-main .admin-page-content .admin-recent-activity .admin-activity-copy strong {
+  color:var(--admin-text);
+  font-size:12px;
+  line-height:1.6;
+  overflow-wrap:anywhere;
+}
+.admin-shell .admin-main .admin-page-content .admin-recent-activity .admin-activity-copy small,
+.admin-shell .admin-main .admin-page-content .admin-recent-activity .admin-activity-row time {
+  color:var(--admin-sub);
+  font-size:10px;
+  line-height:1.6;
+}
+.admin-shell .admin-main .admin-page-content .admin-recent-activity .admin-activity-row time {
+  flex:0 0 auto;
+  white-space:nowrap;
+}
+.admin-shell .admin-main .admin-page-content .admin-recent-activity .admin-activity-list--scroll {
+  max-height:min(760px,72vh);
+  overflow-x:hidden;
+  overflow-y:auto;
   overscroll-behavior:contain;
-  scrollbar-gutter:stable;
   scrollbar-width:thin;
   scrollbar-color:var(--admin-border) transparent;
+  padding:2px 3px 2px 2px;
 }
-.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table {
-  display:table!important;
-  direction:rtl!important;
-  width:100%!important;
-  min-width:860px!important;
-  max-width:none!important;
-  table-layout:fixed!important;
-  border:0!important;
-  border-collapse:separate!important;
-  border-spacing:0 8px!important;
-  background:transparent!important;
+.admin-shell .admin-main .admin-page-content .admin-recent-activity .admin-activity-row .admin-action-button {
+  flex:0 0 auto;
 }
-.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table col.audit-col-time {width:17%}
-.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table col.audit-col-action {width:21%}
-.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table col.audit-col-entity {width:25%}
-.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table col.audit-col-user {width:15%}
-.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table col.audit-col-details {width:22%}
-.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table thead {
-  display:table-header-group!important;
+.admin-shell .admin-main .admin-page-content .admin-logs-page .admin-dashboard-tools {
+  flex-wrap:wrap;
+  justify-content:flex-start;
+  min-width:0;
 }
-.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table thead tr {
-  display:table-row!important;
+.admin-shell .admin-main .admin-page-content .admin-logs-page .admin-dashboard-tools > input {
+  flex:1 1 260px;
+  width:auto;
+  min-width:220px;
+  max-width:360px;
 }
-.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table thead th {
-  position:sticky!important;
-  top:0!important;
-  z-index:4!important;
-  display:table-cell!important;
-  padding:11px 13px!important;
-  border:0!important;
-  border-bottom:1px solid var(--admin-content-border)!important;
-  background:var(--admin-content-inner)!important;
-  color:var(--admin-sub)!important;
-  box-shadow:none!important;
-  font-size:10px!important;
-  font-weight:850!important;
-  line-height:1.7!important;
-  text-align:right!important;
-  white-space:nowrap!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table thead th:first-child {border-radius:0 10px 10px 0!important}
-.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table thead th:last-child {border-radius:10px 0 0 10px!important}
-.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table tbody {
-  display:table-row-group!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table tbody tr.admin-audit-row {
-  display:table-row!important;
-  min-height:0!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table tbody tr.admin-audit-row td {
-  display:table-cell!important;
-  min-width:0!important;
-  padding:13px 14px!important;
-  border-top:1px solid rgba(255,255,255,.62)!important;
-  border-bottom:1px solid rgba(255,255,255,.62)!important;
-  border-inline:0!important;
-  border-radius:0!important;
-  background:var(--admin-dashboard-row-surface)!important;
-  background-image:none!important;
-  color:var(--admin-text)!important;
-  box-shadow:none!important;
-  font-size:11px!important;
-  line-height:1.8!important;
-  text-align:right!important;
-  vertical-align:middle!important;
-  overflow-wrap:anywhere!important;
-  word-break:normal!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table tbody tr.admin-audit-row td:first-child {
-  border-right:1px solid rgba(255,255,255,.62)!important;
-  border-radius:0 12px 12px 0!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table tbody tr.admin-audit-row td:last-child {
-  border-left:1px solid rgba(255,255,255,.62)!important;
-  border-radius:12px 0 0 12px!important;
-}
-.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-logs-page table.admin-audit-table tbody tr.admin-audit-row td {
-  border-top-color:rgba(255,255,255,.045)!important;
-  border-bottom-color:rgba(255,255,255,.045)!important;
-  background:var(--admin-dashboard-row-surface)!important;
-  box-shadow:none!important;
-}
-.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-logs-page table.admin-audit-table tbody tr.admin-audit-row td:first-child {border-right-color:rgba(255,255,255,.045)!important}
-.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-logs-page table.admin-audit-table tbody tr.admin-audit-row td:last-child {border-left-color:rgba(255,255,255,.045)!important}
-.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table tbody tr.admin-audit-row:hover td {
-  filter:brightness(1.015);
-  box-shadow:none!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table tbody tr.admin-audit-detail-row {
-  display:table-row!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table tbody tr.admin-audit-detail-row td {
-  display:table-cell!important;
-  padding:14px!important;
-  border:1px solid var(--admin-course-panel-border)!important;
-  border-radius:12px!important;
-  background:var(--admin-content-inner)!important;
-  box-shadow:none!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-logs-page .admin-logs-toolbar {
-  display:grid!important;
-  grid-template-columns:minmax(150px,1fr) minmax(0,2fr)!important;
-  align-items:center!important;
-  gap:14px!important;
-  width:100%!important;
-  margin-bottom:16px!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-logs-page .admin-logs-toolbar-actions {
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr) auto!important;
-  grid-template-areas:"filters refresh"!important;
-  align-items:center!important;
-  gap:10px!important;
-  min-width:0!important;
-  width:100%!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-logs-page .admin-logs-toolbar-actions > .admin-extracted-auditlogs-11 {
-  grid-area:filters!important;
-  display:grid!important;
-  grid-template-columns:minmax(220px,1.4fr) minmax(190px,1fr)!important;
-  align-items:center!important;
-  gap:10px!important;
-  min-width:0!important;
-  width:100%!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-logs-page .admin-logs-toolbar-actions > .admin-logs-refresh {
-  grid-area:refresh!important;
-  justify-self:end!important;
-  white-space:nowrap!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-logs-page .audit-search-field {
-  width:100%!important;
-  max-width:none!important;
-  min-width:0!important;
-}
-.admin-shell .admin-main .admin-page-content .admin-logs-page .admin-audit-filter--select {
-  width:100%!important;
-  min-width:0!important;
+.admin-shell .admin-main .admin-page-content .admin-logs-page .admin-dashboard-tools > select {
+  flex:0 1 230px;
+  min-width:190px;
 }
 @media(max-width:760px) {
-  .admin-shell .admin-main .admin-page-content .admin-logs-page .admin-logs-toolbar {
-    grid-template-columns:minmax(0,1fr)!important;
+  .admin-shell .admin-main .admin-page-content .admin-recent-activity .admin-activity-row {
+    flex-wrap:wrap;
   }
-  .admin-shell .admin-main .admin-page-content .admin-logs-page .admin-logs-toolbar-actions {
-    grid-template-columns:minmax(0,1fr)!important;
-    grid-template-areas:"filters" "refresh"!important;
+  .admin-shell .admin-main .admin-page-content .admin-recent-activity .admin-activity-row time {
+    margin-inline-start:auto;
   }
-  .admin-shell .admin-main .admin-page-content .admin-logs-page .admin-logs-toolbar-actions > .admin-extracted-auditlogs-11 {
-    grid-template-columns:minmax(0,1fr)!important;
-  }
-  .admin-shell .admin-main .admin-page-content .admin-logs-page .admin-logs-toolbar-actions > .admin-logs-refresh {
-    justify-self:start!important;
+  .admin-shell .admin-main .admin-page-content .admin-logs-page .admin-dashboard-tools > input,
+  .admin-shell .admin-main .admin-page-content .admin-logs-page .admin-dashboard-tools > select {
+    flex:1 1 100%;
+    max-width:none;
   }
 }
