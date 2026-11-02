@@ -18,17 +18,17 @@ The admin panel has one visual source of truth and independent page composition.
 - `AdminComponents.css`: the single canonical visual component layer. It is loaded after module styles so shared appearance wins over legacy declarations. It owns page typography, controls, buttons, tables, cards, headers, statistic tiles, row surfaces, focus states and common responsive visual treatment.
 - `AdminComponents.extended.css`: structural compatibility only. It may define grid/flex behavior, min-width, overflow, table minimum widths and responsive column arrangements. It must not define colors, backgrounds, borders, radii, shadows, typography or control appearance.
 - `AdminLayout.css`: admin shell, sidebar, mobile header and responsive shell layout.
-- `AdminLegacy.css`: narrow compatibility layer for historical inline styles that cannot yet be removed from markup. It must not define general component styles or page surfaces.
+
+The obsolete `src/styles/AdminLegacy.css` compatibility layer has been deleted. Static inline presentation has been migrated to classes; the remaining inline styles in student and course management are data-driven chart/progress values and must remain dynamic.
 
 ### Load and ownership order
 
 1. `AdminTokens.css`
 2. `AdminTheme.css`
-3. `AdminLegacy.css`
-4. `AdminComponents.extended.css`
-5. `AdminLayout.css`
-6. Page-owned module styles
-7. `AdminComponents.css` as the final shared visual layer
+3. `AdminComponents.extended.css`
+4. `AdminLayout.css`
+5. Page-owned module styles
+6. `AdminComponents.css` as the final shared visual layer
 
 The former `AdminComponents.overrides.css` was removed. Shared appearance must never be split across multiple late override files.
 
@@ -58,4 +58,4 @@ Student and counselor portals remain separate authenticated experiences with the
 
 ## Current refactor boundary
 
-This refactor centralizes shared visual ownership, removes the duplicate late override stylesheet, reduces the legacy stylesheet to inline-style compatibility, and keeps the extended layer structural. Shared component appearance has been removed from module stylesheets; remaining page-local visual rules are limited to domain-specific data visualization, semantic states and separators. It does not change page workflows or the approved Dashboard/Manage Admins reference designs.
+This refactor centralizes shared visual ownership, removes the duplicate late override stylesheet and the obsolete inline-style compatibility layer, and keeps the extended layer structural. Shared component appearance has been removed from module stylesheets; remaining page-local visual rules are limited to domain-specific data visualization, semantic states and separators. It does not change page workflows or the approved Dashboard/Manage Admins reference designs.
