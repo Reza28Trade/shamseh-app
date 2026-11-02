@@ -13,7 +13,7 @@
 .admin-mock-exams-page > form,
   .admin-mock-exams-page > div:last-child{padding:15px!important;}
 .admin-mock-exams-page form > .admin-mock-form-grid{grid-template-columns:minmax(0,1fr)!important;}
-.admin-mock-exams-page > div:last-child > div[style*="display: grid"] > div > div:first-child{flex-direction:column!important;}
+.admin-mock-exams-page > div:last-child > .admin-extracted-managemockexams-6 > div > div:first-child{flex-direction:column!important;}
 
 
 }
@@ -120,15 +120,15 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page{width:100%!important;max-width:none!important;margin:0!important;padding:0!important;box-sizing:border-box!important;}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div:first-child{width:100%!important;min-width:0!important;margin:0!important;padding:0!important;}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div:first-child > button{min-height:36px!important;margin:0!important;padding:8px 12px!important;}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div button{min-width:0!important;}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > div[style*="position: fixed"] > div > div:first-child button{width:36px!important;height:36px!important;}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .admin-extracted-managemockexams-6 > div button{min-width:0!important;}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > .admin-extracted-managemockexams-6 > div > div:first-child button{width:36px!important;height:36px!important;}
 /* Compact final pass: separated stat cards, no inert refresh control, tidy registered exams. */
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stats{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important;overflow:visible!important;padding:0!important;}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stat{min-height:68px!important;padding:12px 14px!important;}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list{height:auto!important;max-height:420px!important;min-height:0!important;gap:8px!important;padding:2px!important;}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list > div{min-height:0!important;padding:10px 12px!important;gap:8px!important;}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list > div > div:first-child{gap:10px!important;}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list > div > div:first-child > div:first-child > div[style*="marginTop"]{margin-top:5px!important;}
+.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-scroll-list > div > div:first-child > div:first-child .admin-extracted-managemockexams-18{margin-top:5px!important;}
 @media(max-width:900px){
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
 
