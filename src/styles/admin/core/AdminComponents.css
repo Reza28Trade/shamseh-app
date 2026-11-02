@@ -2325,3 +2325,39 @@
   font:inherit;
   font-size:11px;
 }
+
+
+/* Public content surface variants preserve the light/dark shell contrast. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-news-panel,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-structured-card {
+  background: var(--admin-inner);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-form-card,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-record-card,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-toolbar,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-table-wrap,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-empty--card {
+  background: var(--admin-control);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-image-preview {
+  background: transparent;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-structured-card {
+  padding: 15px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-table-wrap {
+  border: 1px solid var(--admin-border);
+  border-radius: var(--shamseh-radius-md);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-record-card {
+  border-radius: var(--shamseh-radius-md);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-image-preview {
+  border-radius: var(--admin-control-radius);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-card {
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-surface-radius);
+  background: var(--admin-card);
+  box-shadow: none;
+}
