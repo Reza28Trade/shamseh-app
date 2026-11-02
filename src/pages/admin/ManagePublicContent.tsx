@@ -302,12 +302,12 @@ ${value}`.trim();
       {error && <div role="alert" className="admin-public-feedback is-error">{error}</div>}
       {success && <div role="status" className="admin-extracted-managepubliccontent-4">{success}</div>}
       {loading ? <div className="admin-public-loading">در حال دریافت اطلاعات...</div> : tab === 'news' ? (
-        <section style={{ border: '1px solid ' + colors.border, borderRadius: 16, padding: 18, background: colors.alt, display: 'grid', gap: 14 }}>
+        <section className="admin-public-panel admin-public-news-panel">
           <div className="admin-extracted-managepubliccontent-5">
-            <div><h2 className="admin-extracted-managepubliccontent-6">مدیریت اخبار و اطلاعیه‌ها</h2><p style={{ margin: '5px 0 0', color: colors.muted, fontSize: 12 }}>خبرها را از اینجا اضافه، ویرایش، منتشر یا حذف کنید.</p></div>
+            <div><h2 className="admin-extracted-managepubliccontent-6">مدیریت اخبار و اطلاعیه‌ها</h2><p className="admin-public-muted-copy admin-public-copy--compact">خبرها را از اینجا اضافه، ویرایش، منتشر یا حذف کنید.</p></div>
             <button type="button" onClick={() => { setNewsEditingId(null); setNewsForm(emptyNewsForm); setShowNewsForm(true); setError(''); setSuccess(''); }} className="admin-public-button admin-public-button--primary"><Plus size={15}/> افزودن خبر جدید</button>
           </div>
-          {showNewsForm && <form onSubmit={(event) => void saveNews(event)} style={{ display: 'grid', gap: 12, padding: 16, borderRadius: 14, border: '1px solid ' + colors.border, background: colors.bg }}>
+          {showNewsForm && <form onSubmit={(event) => void saveNews(event)} className="admin-public-form-card">
             <h3 className="admin-extracted-managepubliccontent-7">{newsEditingId ? 'ویرایش خبر' : 'ثبت خبر جدید'}</h3>
             <label className="admin-extracted-managepubliccontent-8">عنوان خبر *
               <input required maxLength={180} value={newsForm.title} onChange={(event) => setNewsForm({ ...newsForm, title: event.target.value })} placeholder="مثلاً آغاز ثبت‌نام آزمون آزمایشی" className="admin-public-input"/>
@@ -330,12 +330,12 @@ ${value}`.trim();
                   <FileText size={15}/>{newsImageUploading ? 'در حال بارگذاری…' : 'انتخاب تصویر از کامپیوتر'}
                   <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" disabled={newsImageUploading} onChange={(event) => { void uploadNewsImage(event.target.files?.[0]); event.currentTarget.value = ''; }} className="admin-extracted-managepubliccontent-15"/>
                 </label>
-                <span style={{ color: colors.muted, fontSize: 11, fontWeight: 400 }}>JPG، PNG، WEBP یا GIF · حداکثر ۵ مگابایت</span>
+                <span className="admin-public-muted-copy admin-public-copy--small">JPG، PNG، WEBP یا GIF · حداکثر ۵ مگابایت</span>
               </div>
               <label className="admin-extracted-managepubliccontent-16">یا نشانی تصویر
                 <input dir="ltr" value={newsForm.imageUrl} onChange={(event) => setNewsForm({ ...newsForm, imageUrl: event.target.value })} placeholder="https://..." className="admin-public-input admin-public-input--ltr"/>
               </label>
-              {newsForm.imageUrl && <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', padding: 8, border: '1px solid ' + colors.border, borderRadius: 10 }}>
+              {newsForm.imageUrl && <div className="admin-public-image-preview">
                 <img src={newsForm.imageUrl} alt="پیش‌نمایش تصویر خبر" onError={(event) => { event.currentTarget.style.visibility = 'hidden'; }} className="admin-extracted-managepubliccontent-17"/>
                 <button type="button" onClick={() => setNewsForm({ ...newsForm, imageUrl: '' })} className="admin-public-button">حذف تصویر</button>
               </div>}
@@ -343,27 +343,27 @@ ${value}`.trim();
             <label className="admin-extracted-managepubliccontent-18"><input type="checkbox" checked={newsForm.published} onChange={(event) => setNewsForm({ ...newsForm, published: event.target.checked })}/> انتشار در صفحه اخبار</label>
             <div className="admin-extracted-managepubliccontent-19"><button type="submit" disabled={newsSaving} className="admin-public-button admin-public-button--primary"><Save size={15}/>{newsSaving ? 'در حال ذخیره…' : newsEditingId ? 'ذخیره تغییرات' : 'ذخیره خبر'}</button><button type="button" onClick={() => { setShowNewsForm(false); setNewsEditingId(null); setNewsForm(emptyNewsForm); }} className="admin-public-button">انصراف</button></div>
           </form>}
-          {newsItems.length === 0 ? <div style={{ padding: 24, textAlign: 'center', border: '1px dashed ' + colors.border, borderRadius: 12, color: colors.muted }}>هنوز خبری ثبت نشده است. برای شروع روی «افزودن خبر جدید» بزنید.</div> : <div className="admin-extracted-managepubliccontent-20">
-            <div style={{ color: colors.muted, fontSize: 12 }}>تعداد خبرهای ثبت‌شده: <strong>{newsItems.length}</strong></div>
-            {newsItems.map((item) => <article key={item.id} style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap', padding: 14, border: '1px solid ' + colors.border, borderRadius: 12, background: colors.bg }}>
+          {newsItems.length === 0 ? <div className="admin-public-empty admin-public-empty--dashed">هنوز خبری ثبت نشده است. برای شروع روی «افزودن خبر جدید» بزنید.</div> : <div className="admin-extracted-managepubliccontent-20">
+            <div className="admin-public-muted-copy admin-public-copy--meta">تعداد خبرهای ثبت‌شده: <strong>{newsItems.length}</strong></div>
+            {newsItems.map((item) => <article key={item.id} className="admin-public-record-card">
               <div className="admin-extracted-managepubliccontent-21">
-                <div className="admin-extracted-managepubliccontent-22"><strong className="admin-extracted-managepubliccontent-23">{item.title || 'بدون عنوان'}</strong><span className={`admin-public-publish-status${item.published ? ' is-published' : ' is-draft'}`}>{item.published ? 'منتشرشده' : 'پیش‌نویس'}</span><span style={{ fontSize: 10, color: colors.muted }}>{item.category}{item.date ? ' · ' + item.date : ''}</span></div>
-                <p style={{ margin: 0, fontSize: 12, lineHeight: 1.9, color: colors.muted }}>{item.summary}</p>
+                <div className="admin-extracted-managepubliccontent-22"><strong className="admin-extracted-managepubliccontent-23">{item.title || 'بدون عنوان'}</strong><span className={`admin-public-publish-status${item.published ? ' is-published' : ' is-draft'}`}>{item.published ? 'منتشرشده' : 'پیش‌نویس'}</span><span className="admin-public-record-meta">{item.category}{item.date ? ' · ' + item.date : ''}</span></div>
+                <p className="admin-public-record-summary">{item.summary}</p>
               </div>
               <div className="admin-extracted-managepubliccontent-24"><button type="button" onClick={() => editNews(item)} className="admin-public-button"><Pencil size={14}/> ویرایش</button><button type="button" disabled={newsSaving} onClick={() => void deleteNews(item)} className="admin-public-button admin-public-button--danger"><Trash2 size={14}/> حذف</button></div>
             </article>)}
           </div>}
         </section>
       ) : tab === 'rules' ? (
-        <form onSubmit={saveRules} style={{ background: colors.bg, border: `1px solid ${colors.border}`, borderRadius: 18, padding: '18px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <form onSubmit={saveRules} className="admin-public-form-card admin-public-form-card--spaced">
           <label className="admin-extracted-managepubliccontent-25">عنوان صفحه قوانین
             <input required value={rulesTitle} onChange={(event) => setRulesTitle(event.target.value)} className="admin-public-input" />
           </label>
           <div className="admin-extracted-managepubliccontent-26">
             {ruleSectionFields.map(({ key, title, hint }) => (
-              <label key={key} style={{ display: 'flex', flexDirection: 'column', gap: 7, fontSize: 12, fontWeight: 800, border: `1px solid ${colors.border}`, borderRadius: 14, padding: 14, background: colors.alt }}>
+              <label key={key} className="admin-public-rule-field">
                 {title}
-                <span style={{ fontSize: 10, color: colors.muted, fontWeight: 500 }}>{hint}</span>
+                <span className="admin-public-field-hint">{hint}</span>
                 <textarea
                   value={rulesSections[key]}
                   onChange={(event) => setRulesSections((current) => ({ ...current, [key]: event.target.value }))}
@@ -376,19 +376,19 @@ ${value}`.trim();
           </div>
           <div className="admin-extracted-managepubliccontent-27">
             <button type="submit" disabled={saving} className="admin-public-button admin-public-button--primary"><Save size={15} />{saving ? 'در حال ذخیره...' : 'ذخیره و انتشار قوانین'}</button>
-            <span style={{ color: colors.muted, fontSize: 11 }}>ذخیره در پایگاه داده؛ قابل مشاهده برای همه بازدیدکنندگان.</span>
+            <span className="admin-public-muted-copy admin-public-copy--small">ذخیره در پایگاه داده؛ قابل مشاهده برای همه بازدیدکنندگان.</span>
           </div>
         </form>
       ) : (
         <div className="admin-extracted-managepubliccontent-28">
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center', padding: 14, background: colors.bg, border: `1px solid ${colors.border}`, borderRadius: 16 }}>
+          <div className="admin-public-toolbar">
             <div className="admin-extracted-managepubliccontent-29"><Search size={15} color={colors.muted} className="admin-extracted-managepubliccontent-30" /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="جست‌وجوی عنوان، سال یا متن..." className="admin-public-input admin-public-input--search" /></div>
             <select value={yearFilter} onChange={(event) => setYearFilter(event.target.value)} className="admin-public-input"><option value="ALL">همه سال‌ها</option>{years.map((item) => <option key={item} value={item}>{item}</option>)}</select>
             <select value={publishFilter} onChange={(event) => setPublishFilter(event.target.value)} className="admin-public-input"><option value="ALL">همه وضعیت‌ها</option><option value="true">منتشرشده</option><option value="false">پیش‌نویس</option></select>
             <button type="button" onClick={startCreate} className="admin-public-button admin-public-button--primary"><Plus size={15} /> افزودن تحلیل</button>
           </div>
 
-          {showForm && <form onSubmit={saveAnalysis} style={{ background: colors.bg, border: `1px solid ${colors.border}`, borderRadius: 18, padding: '18px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {showForm && <form onSubmit={saveAnalysis} className="admin-public-form-card admin-public-form-card--analysis">
             <h3 className="admin-extracted-managepubliccontent-31">{editingId ? 'ویرایش تحلیل' : 'ثبت تحلیل جدید'}</h3>
             <div className="admin-extracted-managepubliccontent-32">
               <label className="admin-extracted-managepubliccontent-33">عنوان *<input required value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} className="admin-public-input" /></label>
@@ -396,27 +396,27 @@ ${value}`.trim();
               <label className="admin-extracted-managepubliccontent-35">مقطع *<select required value={form.examLevel} onChange={(event) => setForm({ ...form, examLevel: event.target.value })} className="admin-public-input"><option value="">انتخاب مقطع</option><option value="کارشناسی ارشد">کارشناسی ارشد</option><option value="دکتری">دکتری</option></select></label>
             </div>
             <label className="admin-extracted-managepubliccontent-36">متن تحلیل (اختیاری در صورت ثبت اطلاعات ساختاریافته)<textarea rows={8} value={form.content} onChange={(event) => setForm({ ...form, content: event.target.value })} className="admin-public-input admin-public-input--textarea" placeholder="توضیحات تکمیلی تحلیل را وارد کنید؛ اگر اطلاعات ساختاریافته ثبت می‌کنید، این بخش می‌تواند خالی بماند." /></label>
-            <section style={{ border: '1px solid ' + colors.border, borderRadius: 14, padding: 15, display: 'flex', flexDirection: 'column', gap: 12, background: colors.alt }}>
-              <div><strong className="admin-extracted-managepubliccontent-37">اطلاعات ساختاریافته پوشش و سؤال‌ها</strong><p style={{ margin: '5px 0 0', color: colors.muted, fontSize: 11, lineHeight: 1.9 }}>وضعیت هر سؤال را مشخص کنید. درصد پوشش بر اساس سؤال‌های شماره‌گذاری‌شده از شماره شروع محاسبه می‌شود؛ سؤال‌های قبل از آن نادیده گرفته می‌شوند.</p></div>
+            <section className="admin-public-structured-card">
+              <div><strong className="admin-extracted-managepubliccontent-37">اطلاعات ساختاریافته پوشش و سؤال‌ها</strong><p className="admin-public-muted-copy admin-public-copy--description">وضعیت هر سؤال را مشخص کنید. درصد پوشش بر اساس سؤال‌های شماره‌گذاری‌شده از شماره شروع محاسبه می‌شود؛ سؤال‌های قبل از آن نادیده گرفته می‌شوند.</p></div>
               <div className="admin-extracted-managepubliccontent-38">
                 <label className="admin-extracted-managepubliccontent-39">کدرشته<input value={form.fieldCode} onChange={(event) => setForm({ ...form, fieldCode: event.target.value })} className="admin-public-input" placeholder="مثلاً ۱۳۵۹" /></label>
                 <label className="admin-extracted-managepubliccontent-40">نام رشته<input value={form.fieldName} onChange={(event) => setForm({ ...form, fieldName: event.target.value })} className="admin-public-input" placeholder="مثلاً پژوهش هنر" /></label>
                 <label className="admin-extracted-managepubliccontent-41">تعداد کل سؤال‌های این کدرشته<input type="number" min="0" step="1" value={form.totalQuestions} onChange={(event) => { const raw = event.target.value; const total = Math.max(0, Math.floor(Number(raw) || 0)); setForm((current) => ({ ...current, totalQuestions: raw, questions: current.questions.slice(0, total).concat(Array.from({ length: Math.max(0, total - current.questions.length) }, (_, index) => ({ questionNumber: String(current.questions.length + index + 1), explanation: '', status: 'NOT_COVERED' as const }))) })); }} className="admin-public-input admin-public-input--ltr" placeholder="60" /></label>
-                <label className="admin-extracted-managepubliccontent-42">شماره اولین سؤال در محاسبه<input type="number" min="1" max={Math.max(1, Number(form.totalQuestions) || 1)} step="1" value={form.startQuestionNumber} onChange={(event) => setForm({ ...form, startQuestionNumber: event.target.value })} className="admin-public-input admin-public-input--ltr" placeholder="مثلاً ۲۶" /><span style={{ color: colors.muted, lineHeight: 1.8 }}>سؤال‌های قبل از این شماره در درصد پوشش حساب نمی‌شوند.</span></label>
+                <label className="admin-extracted-managepubliccontent-42">شماره اولین سؤال در محاسبه<input type="number" min="1" max={Math.max(1, Number(form.totalQuestions) || 1)} step="1" value={form.startQuestionNumber} onChange={(event) => setForm({ ...form, startQuestionNumber: event.target.value })} className="admin-public-input admin-public-input--ltr" placeholder="مثلاً ۲۶" /><span className="admin-public-field-hint admin-public-field-hint--inline">سؤال‌های قبل از این شماره در درصد پوشش حساب نمی‌شوند.</span></label>
               </div>
               <div className="admin-extracted-managepubliccontent-43">
-                <div><strong className="admin-extracted-managepubliccontent-44">جدول وضعیت پوشش سؤال‌ها</strong><p style={{ color: colors.muted, fontSize: 11, margin: '4px 0 0' }}>برای هر سؤال فقط وضعیت پوشش را انتخاب کن؛ درصد پوشش خودکار محاسبه می‌شود.</p></div>
-                <div style={{ padding: '8px 12px', borderRadius: 10, background: colors.bg, border: '1px solid ' + colors.border, fontSize: 12, fontWeight: 800 }}>درصد پوشش محاسبه‌شده: {calculateCoverage(form.questions, Number(form.startQuestionNumber) || 1) == null ? '—' : `${calculateCoverage(form.questions, Number(form.startQuestionNumber) || 1)}٪`}</div>
+                <div><strong className="admin-extracted-managepubliccontent-44">جدول وضعیت پوشش سؤال‌ها</strong><p className="admin-public-muted-copy admin-public-copy--table-help">برای هر سؤال فقط وضعیت پوشش را انتخاب کن؛ درصد پوشش خودکار محاسبه می‌شود.</p></div>
+                <div className="admin-public-coverage-summary">درصد پوشش محاسبه‌شده: {calculateCoverage(form.questions, Number(form.startQuestionNumber) || 1) == null ? '—' : `${calculateCoverage(form.questions, Number(form.startQuestionNumber) || 1)}٪`}</div>
               </div>
-              <div style={{ overflowX: 'auto', border: '1px solid ' + colors.border, borderRadius: 12, background: colors.bg }}>
+              <div className="admin-public-table-wrap">
                 <table className="admin-extracted-managepubliccontent-45">
-                  <thead><tr style={{ background: colors.alt, textAlign: 'right' }}>{['شماره سؤال', 'وضعیت پوشش', 'توضیحات'].map((label) => <th key={label} style={{ padding: '11px 10px', borderBottom: '1px solid ' + colors.border, whiteSpace: 'nowrap' }}>{label}</th>)}</tr></thead>
+                  <thead><tr className="admin-public-table-head-row">{['شماره سؤال', 'وضعیت پوشش', 'توضیحات'].map((label) => <th key={label} className="admin-public-table-heading">{label}</th>)}</tr></thead>
                   <tbody>{form.questions.map((question, index) => <tr key={index}>
-                    <td style={{ padding: 7, borderBottom: '1px solid ' + colors.border, width: 100 }}><input aria-label={`شماره سؤال ${index + 1}`} value={question.questionNumber} onChange={(event) => setForm((current) => ({ ...current, questions: current.questions.map((row, rowIndex) => rowIndex === index ? { ...row, questionNumber: event.target.value } : row) }))} className="admin-public-input admin-public-input--compact" /></td>
-                    <td style={{ padding: 7, borderBottom: '1px solid ' + colors.border, width: 170 }}><select aria-label={`وضعیت پوشش سؤال ${index + 1}`} value={question.status} onChange={(event) => setForm((current) => ({ ...current, questions: current.questions.map((row, rowIndex) => rowIndex === index ? { ...row, status: event.target.value as QuestionRow['status'] } : row) }))} className="admin-public-input">{questionStatusOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></td>
-                    <td style={{ padding: 7, borderBottom: '1px solid ' + colors.border, minWidth: 360 }}><textarea aria-label={`توضیحات سؤال ${index+1}`} value={question.explanation ?? ''} onChange={(event) => setForm((current) => ({ ...current, questions: current.questions.map((row, rowIndex) => rowIndex === index ? { ...row, explanation: event.target.value } : row) }))} rows={2} className="admin-public-input admin-public-input--textarea admin-public-input--wide" placeholder="هر توضیح لازم: مبحث، منبع، کتاب، استاد، صفحه و نکته‌های مرتبط..." /></td>
+                    <td className="admin-public-table-cell admin-public-table-cell--number"><input aria-label={`شماره سؤال ${index + 1}`} value={question.questionNumber} onChange={(event) => setForm((current) => ({ ...current, questions: current.questions.map((row, rowIndex) => rowIndex === index ? { ...row, questionNumber: event.target.value } : row) }))} className="admin-public-input admin-public-input--compact" /></td>
+                    <td className="admin-public-table-cell admin-public-table-cell--status"><select aria-label={`وضعیت پوشش سؤال ${index + 1}`} value={question.status} onChange={(event) => setForm((current) => ({ ...current, questions: current.questions.map((row, rowIndex) => rowIndex === index ? { ...row, status: event.target.value as QuestionRow['status'] } : row) }))} className="admin-public-input">{questionStatusOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></td>
+                    <td className="admin-public-table-cell admin-public-table-cell--explanation"><textarea aria-label={`توضیحات سؤال ${index+1}`} value={question.explanation ?? ''} onChange={(event) => setForm((current) => ({ ...current, questions: current.questions.map((row, rowIndex) => rowIndex === index ? { ...row, explanation: event.target.value } : row) }))} rows={2} className="admin-public-input admin-public-input--textarea admin-public-input--wide" placeholder="هر توضیح لازم: مبحث، منبع، کتاب، استاد، صفحه و نکته‌های مرتبط..." /></td>
                   </tr>)}
-                  {form.questions.length === 0 && <tr><td colSpan={3} style={{ padding: 18, textAlign: 'center', color: colors.muted }}>ابتدا تعداد کل سؤال‌ها را وارد کن تا ردیف‌ها ساخته شوند.</td></tr>}</tbody>
+                  {form.questions.length === 0 && <tr><td colSpan={3} className="admin-public-empty">ابتدا تعداد کل سؤال‌ها را وارد کن تا ردیف‌ها ساخته شوند.</td></tr>}</tbody>
                 </table>
               </div>
             </section>
@@ -424,15 +424,15 @@ ${value}`.trim();
             <div className="admin-extracted-managepubliccontent-47"><button disabled={saving} type="submit" className="admin-public-button admin-public-button--primary"><Save size={15} />{saving ? 'در حال ذخیره...' : 'ذخیره تحلیل'}</button><button type="button" onClick={() => { setShowForm(false); setEditingId(null); }} className="admin-public-button">انصراف</button></div>
           </form>}
 
-          {filteredAnalyses.length === 0 ? <div style={{ padding: 30, textAlign: 'center', background: colors.bg, border: `1px solid ${colors.border}`, borderRadius: 16, color: colors.muted }}>تحلیلی با این فیلترها پیدا نشد.</div> : filteredAnalyses.map((item) => (
-            <article key={item.id} style={{ padding: 14, borderRadius: 12, border: `1px solid ${colors.border}`, background: colors.bg, display: 'flex', gap: 14, justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+          {filteredAnalyses.length === 0 ? <div className="admin-public-empty admin-public-empty--card">تحلیلی با این فیلترها پیدا نشد.</div> : filteredAnalyses.map((item) => (
+            <article key={item.id} className="admin-public-record-card admin-public-record-card--analysis">
               <div className="admin-extracted-managepubliccontent-48">
                 <div className="admin-extracted-managepubliccontent-49">
                   <strong className="admin-extracted-managepubliccontent-50">{item.title}</strong>
                   <span className={`admin-public-publish-status${item.published ? ' is-published' : ' is-draft'}`}>{item.published ? 'منتشرشده' : 'پیش‌نویس'}</span>
                 </div>
-                <div style={{ color: colors.muted, fontSize: 11, marginBottom: 8 }}>{[item.examYear, item.examLevel].filter(Boolean).join(' · ') || 'بدون سال و مقطع'}</div>
-                <p style={{ color: colors.muted, fontSize: 12, lineHeight: 1.9, margin: 0, whiteSpace: 'pre-wrap' }}>{(() => { const structured = parseAnalysisContent(item.content); const preview = structured?.narrative?.trim() || (structured ? [structured.fieldName, structured.coveragePercent == null ? '' : `پوشش ${structured.coveragePercent}٪`, `${structured.questions?.length || 0} سؤال ثبت‌شده`].filter(Boolean).join(' · ') : item.content); return preview.length > 240 ? preview.slice(0, 240) + '…' : preview; })()}</p>
+                <div className="admin-public-analysis-meta">{[item.examYear, item.examLevel].filter(Boolean).join(' · ') || 'بدون سال و مقطع'}</div>
+                <p className="admin-public-analysis-preview">{(() => { const structured = parseAnalysisContent(item.content); const preview = structured?.narrative?.trim() || (structured ? [structured.fieldName, structured.coveragePercent == null ? '' : `پوشش ${structured.coveragePercent}٪`, `${structured.questions?.length || 0} سؤال ثبت‌شده`].filter(Boolean).join(' · ') : item.content); return preview.length > 240 ? preview.slice(0, 240) + '…' : preview; })()}</p>
               </div>
               <div className="admin-extracted-managepubliccontent-51">
                 <button type="button" onClick={() => startEdit(item)} className="admin-public-button"><Pencil size={14} /> ویرایش</button>
