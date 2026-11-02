@@ -47,7 +47,7 @@
   padding: 0 38px 0 12px;
 }
 .admin-shell .admin-page-content .admin-logs-page .admin-logs-table-wrap {
-  max-height: min(680px, 72vh);
+  max-height: min(690px, 72vh);
 }
 .admin-shell .admin-page-content .admin-logs-page .admin-logs-table-wrap pre {
   max-width: 100%;
