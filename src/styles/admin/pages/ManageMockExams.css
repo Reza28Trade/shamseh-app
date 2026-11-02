@@ -110,7 +110,7 @@
 @media(max-width:600px){
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page > form,
   .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-list-card{padding:13px!important;}
-.admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-exam-list-head{align-items:stretch!important;flex-direction:column!important;}
 
 
