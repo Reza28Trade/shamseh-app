@@ -2469,6 +2469,9 @@
 .admin-shell .admin-main .admin-page-content .admin-recent-activity .admin-activity-row .admin-action-button {
   flex:0 0 auto;
 }
+.admin-shell .admin-main .admin-page-content .admin-recent-activity > .admin-dashboard-tools {
+  margin-bottom:18px;
+}
 .admin-shell .admin-main .admin-page-content .admin-dashboard-tools {
   display:flex;
   direction:rtl;
