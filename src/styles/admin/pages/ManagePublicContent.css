@@ -1,29 +1,30 @@
-/* Layout and responsive composition only. Visual tokens, surfaces, controls and typography are owned by the central admin design system. */
-/* Public content page composition only. Shared surfaces and controls are centralized. */
-
-.admin-public-content-page{gap: 16px;}
-.admin-public-content-page > header{display: none;}
-.admin-public-content-page > form,
-.admin-public-content-page > div:has(> button),
-.admin-public-content-page > div[style*="overflow"]{min-width: 0;max-width: 100%;padding: 16px;}
-.admin-public-content-page table{width: 100%
-
-  max-width: 100%;width: 100%;}
+/* Public content: layout and responsive composition only. */
+.admin-public-content-page{display:flex;flex-direction:column;gap:14px;width:100%;max-width:none;min-width:0;margin:0;}
+.admin-public-content-page > header{display:none;}
+.admin-public-content-page .admin-public-news-panel,
+.admin-public-content-page .admin-public-form-card,
+.admin-public-content-page .admin-public-structured-card,
+.admin-public-content-page .admin-public-record-card,
+.admin-public-content-page .admin-public-toolbar,
+.admin-public-content-page .admin-public-table-wrap{min-width:0;max-width:100%;}
+.admin-public-content-page .admin-public-record-card{align-items:flex-start;}
+.admin-public-content-page .admin-public-record-card > div:first-child{flex:1 1 280px;min-width:0;}
+.admin-public-content-page .admin-public-image-preview{min-width:0;}
+.admin-public-content-page .admin-public-table-wrap{overflow-x:auto;}
+.admin-public-content-page .admin-public-table-wrap table{width:100%;min-width:680px;border-collapse:collapse;}
+.admin-public-content-page .admin-public-table-cell--number{width:100px;}
+.admin-public-content-page .admin-public-table-cell--status{width:170px;}
+.admin-public-content-page .admin-public-table-cell--explanation{min-width:360px;}
+.admin-public-content-page .admin-public-input--wide{min-width:340px;}
 @media(max-width:700px){
-.admin-public-content-page{gap: 13px;}
-.admin-public-content-page > form,
-  .admin-public-content-page > div:has(> button),
-  .admin-public-content-page > div[style*="overflow"]{padding: 13px;}
-
-
+ .admin-public-content-page{gap:12px;}
+ .admin-public-content-page .admin-public-news-panel,
+ .admin-public-content-page .admin-public-form-card,
+ .admin-public-content-page .admin-public-structured-card{padding:13px;}
+ .admin-public-content-page .admin-public-record-card{gap:10px;}
+ .admin-public-content-page .admin-public-toolbar{align-items:stretch;}
+ .admin-public-content-page .admin-public-table-wrap table{min-width:620px;}
 }
-@media(max-width:640px){
-.admin-public-content-page{gap: 12px;}
-
-
+@media(max-width:480px){
+ .admin-public-content-page .admin-public-input--wide{min-width:280px;}
 }
-
-
-.admin-public-content-page{display:flex;flex-direction:column;gap:14px;width:100%;max-width:none;min-width:0;margin:0;color:var(--admin-text);}
-.admin-public-content-page .admin-public-intro{margin:0;color:var(--admin-sub);font-size:11px;line-height:1.85;}
-.admin-public-content-page .admin-public-loading{padding:32px;text-align:center;color:var(--admin-sub);}
