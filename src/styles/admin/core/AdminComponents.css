@@ -2072,3 +2072,91 @@
   background: var(--admin-inner);
   color: var(--admin-sub);
 }
+
+
+/* Public content editor structural components use the same admin surfaces and typography tokens. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-news-panel,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-form-card,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-structured-card,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-record-card,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-toolbar,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-image-preview {
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-surface-radius);
+  background: var(--admin-card);
+  color: var(--admin-text);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-news-panel { padding: 18px; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-form-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-form-card--spaced { gap: 14px; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-rule-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 14px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-surface-radius);
+  background: var(--admin-inner);
+  color: var(--admin-text);
+  font-size: 11px;
+  font-weight: 800;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-muted-copy,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-field-hint { color: var(--admin-sub); }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-copy--compact { margin: 5px 0 0; font-size: 11px; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-copy--small { font-size: 10px; font-weight: 400; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-copy--meta { font-size: 11px; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-copy--description { margin: 5px 0 0; font-size: 11px; line-height: 1.9; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-copy--table-help { margin: 4px 0 0; font-size: 11px; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-record-meta { color: var(--admin-sub); font-size: 10px; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-record-summary,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-analysis-preview {
+  margin: 0;
+  color: var(--admin-sub);
+  font-size: 11px;
+  line-height: 1.9;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-analysis-preview { white-space: pre-wrap; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-field-hint--inline { line-height: 1.8; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-field-hint { font-size: 10px; font-weight: 500; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-image-preview { display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-empty {
+  padding: 18px;
+  color: var(--admin-sub);
+  text-align: center;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-empty--dashed {
+  padding: 24px;
+  border: 1px dashed var(--admin-border);
+  border-radius: var(--admin-control-radius);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-empty--card {
+  padding: 30px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-surface-radius);
+  background: var(--admin-card);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-toolbar { display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-coverage-summary {
+  padding: 8px 12px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-inner);
+  color: var(--admin-text);
+  font-size: 11px;
+  font-weight: 800;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-table-heading {
+  padding: 11px 10px;
+  border-bottom: 1px solid var(--admin-border);
+  color: var(--admin-text);
+  white-space: nowrap;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-table-cell { padding:7px;border-bottom:1px solid var(--admin-border); }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-table-head-row { background:var(--admin-inner);text-align:right; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-analysis-meta { margin-bottom:8px;color:var(--admin-sub);font-size:11px; }
