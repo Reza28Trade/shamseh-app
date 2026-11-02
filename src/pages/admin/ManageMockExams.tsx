@@ -349,7 +349,7 @@ export const ManageMockExams: React.FC = () => {
   };
 
   return (
-    <div className="admin-legacy-page admin-mock-exams-page" className="admin-extracted-managemockexams-1">
+    <div className="admin-legacy-page admin-mock-exams-page admin-extracted-managemockexams-1">
       {error && <div style={errorBox}>{error}</div>}
 
       <div className="mock-exam-dashboard">
