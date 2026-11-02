@@ -2338,7 +2338,6 @@
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table tbody td:first-child {border-right-width:1px; border-radius:0 12px 12px 0}
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table tbody td:last-child {border-left-width:1px; border-radius:12px 0 0 12px}
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table tbody tr:hover td {filter:brightness(1.015)}
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table tbody tr.admin-audit-row.is-expanded td {border-bottom-color:var(--admin-brand-border)}
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table tbody td[colspan] {
   width:auto; border:1px solid var(--admin-course-panel-border); border-radius:12px;
 }
