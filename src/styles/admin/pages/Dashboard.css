@@ -414,20 +414,6 @@
 
 .admin-dashboard-page * {box-sizing:border-box}
 
-.admin-dashboard-tools {display:flex;direction:rtl;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:30px}
-
-.admin-dashboard-updated {display:flex;align-items:center;gap:7px;font-size:11px;color:var(--admin-sub)}
-
-.admin-dashboard-updated svg {color:var(--admin-accent);flex:none}
-
-.admin-dashboard-page .admin-refresh-button {display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--admin-brand-border);border-radius:10px;padding:9px 12px;background:var(--admin-accent-soft);color:var(--shamseh-charcoal)!important;-webkit-text-fill-color:var(--shamseh-charcoal);font-size:11px;font-weight:800;white-space:nowrap;cursor:pointer;transition:color .18s,border-color .18s,background .18s}
-
-.admin-dashboard-page .admin-refresh-button:hover:not(:disabled) {color:var(--admin-accent)!important;-webkit-text-fill-color:var(--admin-accent);border-color:var(--admin-accent);background:var(--admin-brand-soft)}
-
-.admin-refresh-button:disabled {opacity:.6;cursor:wait}
-
-.admin-spinning {animation:admin-spin 1s linear infinite}
-
 @keyframes admin-spin {to{transform:rotate(360deg)}}
 
 .admin-dashboard-notice {border:1px solid var(--admin-status-notice);background:var(--admin-status-notice-soft);color:var(--admin-text);border-radius:12px;padding:10px 13px;font-size:11px;line-height:1.8}
