@@ -212,30 +212,3 @@
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-savebar{display:flex;justify-content:flex-start;align-items:center;gap:8px;margin-top:12px;padding-top:12px;}
 .admin-shell .admin-page-content .admin-legacy-page.admin-mock-exams-page .mock-participant-savebar button{min-height:36px!important;padding:8px 15px!important;}
-
-
-
-/* Static JSX presentation rules extracted from the page component. */
-.admin-extracted-managemockexams-1{display:flex!important;flex-direction:column!important;gap:24px!important;width:100%!important;direction:rtl!important}
-.admin-extracted-managemockexams-2{display:flex!important;gap:10px!important;align-items:center!important;flex-wrap:wrap!important}
-.admin-extracted-managemockexams-3{display:flex!important;gap:7px!important;align-items:center!important}
-.admin-extracted-managemockexams-4{color:#888!important;font-weight:800!important}
-.admin-extracted-managemockexams-5{display:flex!important;gap:10px!important;justify-content:flex-start!important}
-.admin-extracted-managemockexams-6{position:fixed!important;inset:0!important;background:rgba(0,0,0,.65)!important;z-index:1000!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:20px!important}
-.admin-extracted-managemockexams-7{width:min(390px, 100%)!important;background:#141419!important;border:1px solid #333!important;border-radius:18px!important;padding:18px!important;box-shadow:0 20px 60px rgba(0,0,0,.45)!important}
-.admin-extracted-managemockexams-8{display:flex!important;align-items:center!important;justify-content:space-between!important;margin-bottom:16px!important}
-.admin-extracted-managemockexams-9{font-size:14px!important}
-.admin-extracted-managemockexams-10{display:grid!important;grid-template-columns:repeat(7, 1fr)!important;gap:5px!important;text-align:center!important}
-.admin-extracted-managemockexams-11{color:#888!important;font-size:10px!important;padding:6px 0!important}
-.admin-extracted-managemockexams-12{display:flex!important;justify-content:space-between!important;align-items:center!important;margin-top:16px!important;border-top:1px solid #26262d!important;padding-top:14px!important}
-.admin-extracted-managemockexams-13{color:#888!important;font-size:10px!important}
-.admin-extracted-managemockexams-14{background:#38bdf8!important;color:#071018!important;border:0!important;padding:8px 15px!important;border-radius:8px!important;font-weight:800!important;cursor:pointer!important;font-size:11px!important}
-.admin-extracted-managemockexams-15{display:flex!important;justify-content:space-between!important;align-items:flex-start!important;gap:16px!important}
-.admin-extracted-managemockexams-16{display:flex!important;align-items:center!important;gap:9px!important;flex-wrap:wrap!important}
-.admin-extracted-managemockexams-17{color:#fff!important;font-size:14px!important}
-.admin-extracted-managemockexams-18{color:#94a3b8!important;font-size:11px!important;margin-top:8px!important}
-.admin-extracted-managemockexams-19{color:#64748b!important;font-size:11px!important;margin-top:6px!important;display:flex!important;align-items:center!important;gap:5px!important}
-.admin-extracted-managemockexams-20{color:#38bdf8!important;font-size:11px!important;display:inline-flex!important;align-items:center!important;gap:5px!important;margin-top:7px!important}
-.admin-extracted-managemockexams-21{display:flex!important;gap:8px!important;flex-wrap:wrap!important}
-.admin-extracted-managemockexams-22{border-top:1px solid rgba(255,255,255,.06)!important;padding-top:14px!important}
-.admin-extracted-managemockexams-23{color:#cbd5e1!important;font-size:12px!important;font-weight:800!important;margin-bottom:10px!important}
