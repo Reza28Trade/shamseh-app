@@ -130,7 +130,6 @@
 /* One shared surface language. These selectors intentionally exclude the
    approved Dashboard and Manage Admins reference screens. */
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
-  .students-page-head,.student-chart-card,.student-form-card,.student-import-card,.student-list-card,
   .course-toolbar,.course-form,.course-list,.course-stat,.course-card,
   .offline-page-head,.offline-list-card,.messages-page-head,.messages-ticket-section,.messages-detail-section,
   .mock-exam-page-head,.mock-exam-list-card,.counseling-page-head,.counseling-account-section,
@@ -154,7 +153,7 @@
   padding: 15px 18px}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
-  .student-stat,.course-stat,.offline-stat-card,.messages-stat,.mock-exam-stat,
+  .course-stat,.offline-stat-card,.messages-stat,.mock-exam-stat,
   .counseling-stats-grid > *
 ) {
   min-width: 0;
@@ -683,16 +682,6 @@
 ) {
   color: var(--admin-accent)}
 
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .course-choice {
-  border: 1px solid var(--admin-border);
-  border-radius: var(--admin-control-radius);
-  background: var(--admin-control);
-  color: var(--admin-text)}
-
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .course-choice.selected {
-  border-color: var(--admin-accent);
-  background: var(--admin-accent-soft)}
-
 
 /* Shared compact controls used by student, mock-exam and counseling workflows. */
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
@@ -786,7 +775,7 @@
 
 /* Canonical selected, active and compact badge states. */
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
-  .student-term-switch button.active,.course-choice.selected,
+  .student-term-switch button.active,
   .offline-filter-group button.active,.notifications-target.is-active,
   .mock-participant-levels button.is-active
 ) {
