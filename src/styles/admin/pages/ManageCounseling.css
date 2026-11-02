@@ -156,3 +156,77 @@
 
 }
 
+
+
+/* Static JSX presentation rules extracted from the page component. */
+.admin-extracted-managecounseling-1{display:flex!important;flex-direction:column!important;gap:18px!important;color:var(--admin-text)!important;direction:rtl!important}
+.admin-extracted-managecounseling-2{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:12px!important;flex-wrap:wrap!important}
+.admin-extracted-managecounseling-3{margin:0!important;font-size:17px!important;font-weight:900!important}
+.admin-extracted-managecounseling-4{margin:6px 0 0!important;color:var(--admin-sub)!important;font-size:11px!important}
+.admin-extracted-managecounseling-5{padding:12px!important;border-radius:10px!important;color:#d92d20!important;background:rgba(217,45,32,.08)!important;font-size:12px!important}
+.admin-extracted-managecounseling-6{padding:12px!important;border-radius:10px!important;color:#16805d!important;background:rgba(22,128,93,.09)!important;font-size:12px!important}
+.admin-extracted-managecounseling-7{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important;gap:12px!important}
+.admin-extracted-managecounseling-8{width:38px!important;height:38px!important;display:grid!important;place-items:center!important;border-radius:11px!important;color:var(--admin-accent)!important;background:var(--admin-accent-soft)!important}
+.admin-extracted-managecounseling-9{color:var(--admin-sub)!important;font-size:10px!important}
+.admin-extracted-managecounseling-10{display:block!important;margin-top:4px!important;font-size:20px!important}
+.admin-extracted-managecounseling-11{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:12px!important;flex-wrap:wrap!important;margin-bottom:14px!important}
+.admin-extracted-managecounseling-12{margin:0!important;font-size:14px!important;font-weight:900!important}
+.admin-extracted-managecounseling-13{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))!important;gap:10px!important;padding:14px!important;margin-bottom:16px!important;border-radius:12px!important;background:var(--admin-inner)!important}
+.admin-extracted-managecounseling-14{font-size:11px!important}
+.admin-extracted-managecounseling-15{font-size:11px!important}
+.admin-extracted-managecounseling-16{font-size:11px!important}
+.admin-extracted-managecounseling-17{font-size:11px!important}
+.admin-extracted-managecounseling-18{display:flex!important;align-items:end!important}
+.admin-extracted-managecounseling-19{color:var(--admin-sub)!important;font-size:12px!important}
+.admin-extracted-managecounseling-20{color:var(--admin-sub)!important;font-size:12px!important}
+.admin-extracted-managecounseling-21{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))!important;gap:10px!important}
+.admin-extracted-managecounseling-22{border:1px solid var(--admin-border)!important;border-radius:12px!important;padding:13px!important;background:var(--admin-inner)!important}
+.admin-extracted-managecounseling-23{display:flex!important;align-items:start!important;justify-content:space-between!important;gap:8px!important}
+.admin-extracted-managecounseling-24{font-size:13px!important}
+.admin-extracted-managecounseling-25{color:var(--admin-sub)!important;font-size:10px!important;margin-top:5px!important}
+.admin-extracted-managecounseling-26{margin:8px 0 0!important;color:var(--admin-sub)!important;font-size:11px!important}
+.admin-extracted-managecounseling-27{margin:0 0 6px!important;font-size:14px!important;font-weight:900!important}
+.admin-extracted-managecounseling-28{margin:0 0 14px!important;color:var(--admin-sub)!important;font-size:11px!important}
+.admin-extracted-managecounseling-29{color:var(--admin-sub)!important;font-size:12px!important}
+.admin-extracted-managecounseling-30{color:var(--admin-sub)!important;font-size:12px!important}
+.admin-extracted-managecounseling-31{font-size:11px!important}
+.admin-extracted-managecounseling-32{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:12px!important;flex-wrap:wrap!important;margin-bottom:14px!important}
+.admin-extracted-managecounseling-33{margin:0!important;font-size:14px!important;font-weight:900!important}
+.admin-extracted-managecounseling-34{margin:5px 0 0!important;color:var(--admin-sub)!important;font-size:10px!important}
+.admin-extracted-managecounseling-35{position:relative!important;min-width:220px!important;max-width:340px!important;flex:1 1 240px!important}
+.admin-extracted-managecounseling-36{position:absolute!important;right:10px!important;top:12px!important;color:var(--admin-sub)!important}
+.admin-extracted-managecounseling-37{color:var(--admin-sub)!important;font-size:12px!important}
+.admin-extracted-managecounseling-38{color:var(--admin-sub)!important;font-size:12px!important}
+.admin-extracted-managecounseling-39{display:grid!important;grid-template-columns:minmax(240px, .85fr) minmax(0, 1.5fr)!important;gap:12px!important}
+.admin-extracted-managecounseling-40{display:flex!important;flex-direction:column!important;gap:8px!important;max-height:500px!important;overflow-y:auto!important}
+.admin-extracted-managecounseling-41{display:block!important;font-size:12px!important}
+.admin-extracted-managecounseling-42{display:block!important;color:var(--admin-sub)!important;font-size:10px!important;margin-top:4px!important}
+.admin-extracted-managecounseling-43{display:block!important;color:var(--admin-sub)!important;font-size:10px!important;margin-top:5px!important}
+.admin-extracted-managecounseling-44{display:block!important;font-size:10px!important;margin-top:7px!important;overflow:hidden!important;white-space:nowrap!important;text-overflow:ellipsis!important}
+.admin-extracted-managecounseling-45{min-width:0!important;border:1px solid var(--admin-border)!important;border-radius:12px!important;padding:12px!important;background:var(--admin-inner)!important}
+.admin-extracted-managecounseling-46{padding:30px!important;text-align:center!important;color:var(--admin-sub)!important;font-size:12px!important}
+.admin-extracted-managecounseling-47{margin-bottom:8px!important}
+.admin-extracted-managecounseling-48{padding-bottom:10px!important;border-bottom:1px solid var(--admin-border)!important;margin-bottom:10px!important}
+.admin-extracted-managecounseling-49{font-size:12px!important}
+.admin-extracted-managecounseling-50{color:var(--admin-sub)!important;font-size:10px!important;margin-top:4px!important}
+.admin-extracted-managecounseling-51{max-height:400px!important;overflow-y:auto!important;display:flex!important;flex-direction:column!important;gap:9px!important}
+.admin-extracted-managecounseling-52{color:var(--admin-sub)!important;font-size:11px!important}
+.admin-extracted-managecounseling-53{color:var(--admin-sub)!important;font-size:11px!important;text-align:center!important;padding:25px!important}
+.admin-extracted-managecounseling-54{border:1px solid var(--admin-border)!important;border-radius:10px!important;padding:10px!important;background:var(--admin-card)!important}
+.admin-extracted-managecounseling-55{white-space:pre-wrap!important;overflow-wrap:anywhere!important;font-size:12px!important;line-height:1.8!important}
+.admin-extracted-managecounseling-56{display:flex!important;align-items:center!important;gap:9px!important;margin-top:9px!important;padding:10px 11px!important;border-radius:9px!important;background:var(--admin-accent-soft)!important;border:1px solid var(--admin-brand-border)!important;color:var(--admin-text)!important;text-decoration:none!important;font-size:11px!important}
+.admin-extracted-managecounseling-57{flex:1!important;overflow-wrap:anywhere!important}
+.admin-extracted-managecounseling-58{display:block!important;color:var(--admin-sub)!important;margin-top:4px!important}
+.admin-extracted-managecounseling-59{display:flex!important;justify-content:space-between!important;gap:8px!important;margin-top:7px!important;color:var(--admin-sub)!important;font-size:9px!important}
+.admin-extracted-managecounseling-60{display:flex!important;align-items:center!important;gap:7px!important;margin:0 0 12px!important;font-size:14px!important;font-weight:900!important}
+.admin-extracted-managecounseling-61{color:var(--admin-sub)!important;font-size:11px!important}
+.admin-extracted-managecounseling-62{overflow-x:auto!important}
+.admin-extracted-managecounseling-63{width:100%!important;border-collapse:collapse!important;font-size:11px!important}
+.admin-extracted-managecounseling-64{text-align:right!important;padding:10px 8px!important;color:var(--admin-sub)!important;border-bottom:1px solid var(--admin-border)!important;white-space:nowrap!important}
+.admin-extracted-managecounseling-65{padding:10px 8px!important;border-bottom:1px solid var(--admin-border)!important}
+.admin-extracted-managecounseling-66{color:var(--admin-sub)!important;font-size:9px!important}
+.admin-extracted-managecounseling-67{padding:10px 8px!important;border-bottom:1px solid var(--admin-border)!important}
+.admin-extracted-managecounseling-68{padding:10px 8px!important;border-bottom:1px solid var(--admin-border)!important;white-space:nowrap!important}
+.admin-extracted-managecounseling-69{padding:10px 8px!important;border-bottom:1px solid var(--admin-border)!important;white-space:nowrap!important}
+.admin-extracted-managecounseling-70{color:#16805d!important;font-weight:800!important}
+.admin-extracted-managecounseling-71{padding:10px 8px!important;border-bottom:1px solid var(--admin-border)!important}
