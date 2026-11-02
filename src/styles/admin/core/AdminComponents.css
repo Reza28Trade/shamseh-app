@@ -1924,7 +1924,7 @@
 }
 
 
-/* System audit log filters use the shared control tokens. */
+/* System audit log controls and expanded-row state. */
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-audit-filter {
   box-sizing: border-box;
   max-width: 100%;
@@ -1945,6 +1945,9 @@
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-audit-filter--select {
   min-width: 190px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page table.admin-data-table tbody tr.admin-audit-row.is-expanded td {
+  background: var(--admin-accent-soft);
 }
 
 
@@ -2328,39 +2331,32 @@
 
 
 /* Canonical admin data-table component.
-   All modules opt into this component; visual treatment stays centralized. */
+   Modules opt in with .admin-data-table-wrap and .admin-data-table;
+   page styles may control geometry only, never table colors or typography. */
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-data-table-wrap {
   width: 100%;
   min-width: 0;
   max-width: 100%;
   overflow: auto;
-  padding: 7px;
-  border: 1px solid var(--admin-course-panel-border);
+  border: 1px solid var(--admin-content-border);
   border-radius: var(--admin-content-radius);
-  background: var(--admin-bg);
-  box-shadow: var(--admin-course-panel-shadow);
+  background: var(--admin-content-surface);
   scrollbar-width: thin;
   scrollbar-color: var(--admin-border) transparent;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table {
   width: 100%;
-  min-width: 820px;
-  table-layout: fixed;
+  min-width: 720px;
   border: 0;
   border-collapse: separate;
-  border-spacing: 0 7px;
+  border-spacing: 0;
   background: transparent;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table :is(th,td):nth-child(1) { width: 16%; }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table :is(th,td):nth-child(2) { width: 26%; }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table :is(th,td):nth-child(3) { width: 24%; }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table :is(th,td):nth-child(4) { width: 16%; }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table :is(th,td):nth-child(5) { width: 18%; }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table thead th {
   position: sticky;
   top: 0;
-  z-index: 2;
-  padding: 11px 13px;
+  z-index: 1;
+  padding: 12px 14px;
   border: 0;
   border-bottom: 1px solid var(--admin-content-border);
   background: var(--admin-content-inner);
@@ -2371,125 +2367,56 @@
   text-align: right;
   white-space: nowrap;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table thead th:first-child {
-  border-radius: 0 9px 9px 0;
-}
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table thead th:last-child {
-  border-radius: 9px 0 0 9px;
-}
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table tbody td {
-  padding: 11px 13px;
+  padding: 12px 14px;
   border: 0;
-  border-top: 1px solid var(--admin-course-panel-border);
-  border-bottom: 1px solid var(--admin-course-panel-border);
-  background: var(--admin-dashboard-row-surface);
+  border-bottom: 1px solid var(--admin-content-border);
+  background: var(--admin-content-surface);
   color: var(--admin-text);
   font-size: 11px;
   line-height: 1.8;
   text-align: right;
   vertical-align: middle;
-  overflow-wrap: anywhere;
-  box-shadow: inset 0 3px 7px rgba(177,169,157,.18), inset 0 -3px 7px rgba(255,255,255,.24);
-  transition: background-color .16s ease, color .16s ease;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table tbody td:first-child {
-  border-right: 1px solid var(--admin-course-panel-border);
-  border-radius: 0 10px 10px 0;
-}
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table tbody td:last-child {
-  border-left: 1px solid var(--admin-course-panel-border);
-  border-radius: 10px 0 0 10px;
-}
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table tbody td[colspan] {
-  width: 100%;
-  border: 1px solid var(--admin-course-panel-border);
-  border-radius: 10px;
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table tbody tr:nth-child(even) td {
+  background: var(--admin-content-inner);
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table tbody tr:hover td {
   background: var(--admin-accent-soft);
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table tbody tr.admin-audit-row.is-expanded td {
-  background: var(--admin-accent-soft);
-}
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table tbody tr:last-child td {
-  border-bottom-color: transparent;
+  border-bottom: 0;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-button {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 7px;
   min-height: 34px;
-  padding: 7px 12px;
-  border: 1px solid rgba(223,207,186,.92);
-  border-top-color: rgba(255,255,255,.88);
-  border-bottom-color: var(--admin-dashboard-refresh-border);
-  border-radius: 10px;
-  background: linear-gradient(110deg,rgba(248,241,231,.92),rgba(239,229,215,.88));
-  color: var(--admin-accent);
+  padding: 7px 11px;
+  border: 1px solid var(--admin-brand-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-control);
+  color: var(--admin-text);
   font: inherit;
   font-size: 10px;
-  font-weight: 850;
+  font-weight: 800;
   line-height: 1.5;
   cursor: pointer;
   white-space: nowrap;
-  box-shadow: var(--admin-shadow-control-hover);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  transition: transform .28s ease, background .28s ease, border-color .28s ease, box-shadow .28s ease, color .28s ease;
+  transition: background-color .16s ease, border-color .16s ease, color .16s ease, box-shadow .16s ease;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-button::before {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 34%;
-  z-index: -1;
-  background: linear-gradient(105deg,rgba(255,255,255,0),rgba(255,255,255,.20) 48%,rgba(0,128,128,.055) 72%,rgba(255,255,255,0));
-  transform: skewX(28deg) translateX(-150%);
-  transition: transform .55s ease;
-  pointer-events: none;
-}
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-button:hover:not(:disabled),
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-button:focus-visible {
-  transform: translateY(-2px);
-  border-color: rgba(22,140,145,.48);
-  background: linear-gradient(110deg,rgba(248,241,231,.96),rgba(239,233,222,.94));
-  color: var(--admin-dashboard-accent-strong);
-  box-shadow: 0 11px 22px rgba(18,43,43,.085), 0 0 10px rgba(72,209,204,.085), inset 0 1px 0 rgba(255,255,255,.72);
-}
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-button:hover:not(:disabled)::before,
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-button:focus-visible::before {
-  transform: skewX(28deg) translateX(280%);
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-button:hover:not(:disabled) {
+  border-color: var(--admin-accent);
+  background: var(--admin-accent-soft);
+  color: var(--admin-text);
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-button:disabled {
   cursor: not-allowed;
   opacity: .55;
-  transform: none;
-}
-.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table tbody td {
-  box-shadow: inset 3px 3px 7px rgba(12,11,11,.30), inset -3px -3px 7px rgba(52,48,48,.22);
-}
-.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-button {
-  border-color: rgba(238,229,218,.16);
-  border-top-color: rgba(255,255,255,.22);
-  border-bottom-color: rgba(0,0,0,.35);
-  background: linear-gradient(110deg,rgba(58,54,52,.94),rgba(39,36,35,.94));
-  color: var(--admin-accent);
-  box-shadow: 0 8px 18px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.12);
-}
-.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-button:hover:not(:disabled),
-.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-button:focus-visible {
-  border-color: var(--admin-brand-border);
-  background: linear-gradient(110deg,rgba(68,64,61,.98),rgba(43,40,38,.98));
-  color: var(--admin-accent);
-  box-shadow: 0 12px 24px rgba(0,0,0,.34), 0 0 14px rgba(72,209,204,.12), inset 0 1px 0 rgba(255,255,255,.16);
 }
 @media (prefers-reduced-motion: reduce) {
-  .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-button,
-  .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-button::before {
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-button {
     transition: none;
   }
 }
