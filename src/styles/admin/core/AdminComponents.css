@@ -2581,18 +2581,18 @@
 .admin-shell .admin-main .admin-page-content .admin-recent-activity .admin-activity-row .admin-action-button {
   flex:0 0 auto;
 }
-.admin-shell .admin-main .admin-page-content .admin-logs-page .admin-dashboard-tools {
+.admin-shell .admin-main .admin-page-content .admin-dashboard-tools {
   flex-wrap:wrap;
   justify-content:flex-start;
   min-width:0;
 }
-.admin-shell .admin-main .admin-page-content .admin-logs-page .admin-dashboard-tools > input {
+.admin-shell .admin-main .admin-page-content .admin-dashboard-tools > input {
   flex:1 1 260px;
   width:auto;
   min-width:220px;
   max-width:360px;
 }
-.admin-shell .admin-main .admin-page-content .admin-logs-page .admin-dashboard-tools > select {
+.admin-shell .admin-main .admin-page-content .admin-dashboard-tools > select {
   flex:0 1 230px;
   min-width:190px;
 }
@@ -2603,8 +2603,8 @@
   .admin-shell .admin-main .admin-page-content .admin-recent-activity .admin-activity-row time {
     margin-inline-start:auto;
   }
-  .admin-shell .admin-main .admin-page-content .admin-logs-page .admin-dashboard-tools > input,
-  .admin-shell .admin-main .admin-page-content .admin-logs-page .admin-dashboard-tools > select {
+  .admin-shell .admin-main .admin-page-content .admin-dashboard-tools > input,
+  .admin-shell .admin-main .admin-page-content .admin-dashboard-tools > select {
     flex:1 1 100%;
     max-width:none;
   }
