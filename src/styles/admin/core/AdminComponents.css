@@ -2582,9 +2582,26 @@
   flex:0 0 auto;
 }
 .admin-shell .admin-main .admin-page-content .admin-dashboard-tools {
-  flex-wrap:wrap;
+  display:flex;
+  direction:rtl;
+  align-items:center;
   justify-content:space-between;
+  flex-wrap:wrap;
+  gap:12px;
+  width:100%;
   min-width:0;
+  min-height:30px;
+}
+.admin-shell .admin-main .admin-page-content .admin-dashboard-updated {
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-size:11px;
+  color:var(--admin-sub);
+}
+.admin-shell .admin-main .admin-page-content .admin-dashboard-updated svg {
+  color:var(--admin-accent);
+  flex:none;
 }
 .admin-shell .admin-main .admin-page-content .admin-dashboard-tools > input {
   flex:1 1 260px;
