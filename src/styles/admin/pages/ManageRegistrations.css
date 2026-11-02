@@ -1,103 +1,28 @@
+/* Layout and responsive composition only. Visual tokens, surfaces, controls and typography are owned by the central admin design system. */
 /* Finance/registration page composition only. Shared appearance is centralized. */
 
-.admin-finance-registration-page {
-  gap: 16px;
-  max-width: 100%;
-  min-width: 0}
+.admin-finance-registration-page{gap: 16px;max-width: 100%;min-width: 0;}
+.admin-finance-registration-page > div:first-child{display: grid;grid-template-columns: repeat(auto-fit,minmax(min(100%,190px),1fr));gap: 12px;min-width: 0;}
+.admin-finance-registration-page > div:first-child > article{position: relative;min-width: 0;min-height: 92px;align-content: space-between;padding: 14px 15px;}
+.admin-finance-registration-page > section{min-width: 0;padding: 17px;gap: 13px;}
+.admin-finance-registration-page > section p{max-width: 760px;}
+.admin-finance-registration-page > section > div[style*="overflowX"]{min-width: 0;max-width: 100%;overflow-x: auto;}
+.admin-finance-registration-page table td{vertical-align: top;}
+.admin-finance-registration-page > div:nth-of-type(2){display: flex;align-items: center;gap: 7px;padding: 5px;width: fit-content;max-width: 100%;}
+.admin-finance-registration-page > div:nth-of-type(2) button{min-height: 36px;padding: 8px 13px;}
+.admin-finance-registration-page > div:nth-of-type(3){display: grid;grid-template-columns: minmax(220px,1fr) minmax(155px,220px);gap: 10px;padding: 12px;min-width: 0;}
+.admin-finance-registration-page > div[role="dialog"] > form textarea{min-height: 76px;}
+@media (max-width: 720px){
+.admin-finance-registration-page{gap: 12px;}
+.admin-finance-registration-page > div:first-child{grid-template-columns: repeat(2,minmax(0,1fr));gap: 8px;}
+.admin-finance-registration-page > div:first-child > article{min-height: 84px;padding: 11px;}
+.admin-finance-registration-page > section{padding: 12px;}
+.admin-finance-registration-page > div:nth-of-type(2){width: 100%;flex-wrap: wrap;}
+.admin-finance-registration-page > div:nth-of-type(2) button{flex: 1 1 auto;}
+.admin-finance-registration-page > div:nth-of-type(3){grid-template-columns: minmax(0,1fr);padding: 9px;}
+.admin-finance-registration-page > div[role="dialog"]{padding: 8px;}
+.admin-finance-registration-page > div[role="dialog"] > form{padding: 14px;max-height: 94vh;}
 
-.admin-finance-registration-page > div:first-child {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(min(100%,190px),1fr));
-  gap: 12px;
-  min-width: 0}
 
-.admin-finance-registration-page > div:first-child > article {
-  position: relative;
-  min-width: 0;
-  min-height: 92px;
-  align-content: space-between;
-  padding: 14px 15px;
-  transition: transform .18s ease}
-
-.admin-finance-registration-page > div:first-child > article:hover {
-  transform: translateY(-1px)}
-
-.admin-finance-registration-page > section {
-  min-width: 0;
-  padding: 17px;
-  gap: 13px}
-
-.admin-finance-registration-page > section p {
-  max-width: 760px}
-
-.admin-finance-registration-page > section > div[style*="overflowX"] {
-  min-width: 0;
-  max-width: 100%;
-  overflow-x: auto}
-
-.admin-finance-registration-page table td {
-  vertical-align: top}
-
-.admin-finance-registration-page table tbody tr {
-  transition: background .15s ease}
-
-.admin-finance-registration-page > div:nth-of-type(2) {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 5px;
-  width: fit-content;
-  max-width: 100%}
-
-.admin-finance-registration-page > div:nth-of-type(2) button {
-  min-height: 36px;
-  padding: 8px 13px}
-
-.admin-finance-registration-page > div:nth-of-type(3) {
-  display: grid;
-  grid-template-columns: minmax(220px,1fr) minmax(155px,220px);
-  gap: 10px;
-  padding: 12px;
-  min-width: 0}
-
-.admin-finance-registration-page > div[role="dialog"] > form textarea {
-  min-height: 76px}
-
-@media (max-width: 720px) {
-  .admin-finance-registration-page { gap: 12px}
-
-  .admin-finance-registration-page > div:first-child {
-    grid-template-columns: repeat(2,minmax(0,1fr));
-    gap: 8px}
-
-  .admin-finance-registration-page > div:first-child > article {
-    min-height: 84px;
-    padding: 11px}
-
-  .admin-finance-registration-page > section { padding: 12px}
-
-  .admin-finance-registration-page > div:nth-of-type(2) {
-    width: 100%;
-    flex-wrap: wrap}
-
-  .admin-finance-registration-page > div:nth-of-type(2) button {
-    flex: 1 1 auto}
-
-  .admin-finance-registration-page > div:nth-of-type(3) {
-    grid-template-columns: minmax(0,1fr);
-    padding: 9px}
-
-  .admin-finance-registration-page > div[role="dialog"] { padding: 8px}
-
-  .admin-finance-registration-page > div[role="dialog"] > form {
-    padding: 14px;
-    max-height: 94vh}
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .admin-finance-registration-page *,
-  .admin-finance-registration-page *::before,
-  .admin-finance-registration-page *::after {
-    transition-duration: .01ms;
-    animation-duration: .01ms}
-}
