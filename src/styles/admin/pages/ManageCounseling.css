@@ -48,7 +48,7 @@
 }
 /* 2026-10-12: compact, unified counselor management layout */
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page{max-width:1240px!important;gap:14px!important;}
-.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-page-head{min-height:82px!important;padding:18px 20px!important;}
+
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:0!important;overflow:hidden;}
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid > div{min-height:70px!important;padding:11px 15px!important;}
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid > div > div:first-child{width:32px!important;height:32px!important;}
@@ -106,7 +106,7 @@
 
 }
 @media(max-width:600px){
-.admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > .counseling-stats-grid{grid-template-columns:minmax(0,1fr)!important;}
+
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page > section{padding:12px!important;}
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-account-list{grid-template-columns:minmax(0,1fr)!important;}
 
