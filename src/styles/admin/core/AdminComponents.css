@@ -1939,3 +1939,46 @@
   border-color: var(--admin-accent);
   background: var(--admin-accent-soft);
 }
+
+
+/* System audit log controls and expanded-row state. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-audit-filter {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-height: var(--admin-control-height);
+  padding: 8px 10px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-control);
+  color: var(--admin-text);
+  font: inherit;
+  font-size: 11px;
+  outline-offset: 2px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-audit-filter--search {
+  width: 100%;
+  min-width: 0;
+  padding-right: 34px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-audit-filter--select {
+  min-width: 190px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-audit-refresh {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-control);
+  color: var(--admin-text);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-audit-refresh:disabled {
+  cursor: wait;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-audit-row.is-expanded {
+  background: var(--admin-inner);
+}
