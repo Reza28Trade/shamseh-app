@@ -432,7 +432,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
             </div>
             <div className="student-term-legend">
               {termCounts.rows.length ? termCounts.rows.map(item => <div className="student-term-legend-row" key={item.term}>
-                <i style={{background:item.color}}/><span>{item.term}</span><strong>{faDigits(item.count)}</strong><small>{termCounts.total ? Math.round(item.count / termCounts.total * 100) : 0}٪</small>
+                <i style={{background:item.color}}/><span>{faDigits(item.term)}</span><strong>{faDigits(item.count)}</strong><small>{faDigits(termCounts.total ? Math.round(item.count / termCounts.total * 100) : 0)}٪</small>
               </div>) : <p className="student-term-empty">هنوز داده‌ای برای نمایش آماری ثبت نشده است.</p>}
             </div>
           </div>
@@ -450,10 +450,10 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
               <div className="picker-title">انتخاب دوره‌های مجاز</div>
               <div className="picker-filters">
                 <select value={coursePickerLevel} onChange={e=>setCoursePickerLevel(e.target.value as any)}><option value="">همه مقاطع</option><option value="MASTER">ارشد</option><option value="DOCTORATE">دکتری</option></select>
-                <select value={coursePickerYear} onChange={e=>setCoursePickerYear(e.target.value)}><option value="ALL">همه سال‌ها</option>{availableYears.map(y=><option key={y} value={y}>{y}</option>)}</select>
+                <select value={coursePickerYear} onChange={e=>setCoursePickerYear(e.target.value)}><option value="ALL">همه سال‌ها</option>{availableYears.map(y=><option key={y} value={y}>{faDigits(y)}</option>)}</select>
                 <select value={coursePickerTerm} onChange={e=>setCoursePickerTerm(e.target.value)}><option value="ALL">همه ترم‌ها</option>{availableTerms.map(t=><option key={t} value={t}>{t}</option>)}</select>
               </div>
-              <div className="course-list">{pickerCourses.map(course=><button type="button" className={selectedCourses.includes(course.id) ? 'course-choice selected' : 'course-choice'} key={course.id} onClick={()=>handleCheckboxChange(course.id)}><span>{course.title}</span><small>{levelLabel(course.level)} · {course.academicYear == null ? '—' : faDigits(course.academicYear)} · {termLabel(course.term)}</small></button>)}</div>
+              <div className="course-list">{pickerCourses.map(course=><button type="button" className={selectedCourses.includes(course.id) ? 'course-choice selected' : 'course-choice'} key={course.id} onClick={()=>handleCheckboxChange(course.id)}><span>{course.title}</span><small>{levelLabel(course.level)} · {course.academicYear == null ? '—' : faDigits(course.academicYear)} · {faDigits(termLabel(course.term))}</small></button>)}</div>
               {!pickerCourses.length && <div className="empty-mini">دوره‌ای با این فیلتر پیدا نشد.</div>}
             </div>
             <button className="primary-action" type="submit">{editingStudentId ? 'ذخیره تغییرات' : 'ثبت هنرجو و ورود به ثبت مالی'}</button>
@@ -492,7 +492,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
           <div className="student-detail-enrollments"><div className="student-detail-section-title"><h4>سوابق دوره‌ها و ثبت‌نام‌ها</h4><span>{faDigits(selectedStudent.enrollments.length)} مورد</span></div>
             {selectedStudent.enrollments.length ? <div className="student-detail-course-list">{selectedStudent.enrollments.map(enrollment=><article key={enrollment.id} className={enrollment.status==='ACTIVE'?'detail-course-active':'detail-course-inactive'}>
               <div className="detail-course-top"><strong>{enrollment.course.title}</strong><span className={enrollment.status==='ACTIVE'?'detail-status-active':'detail-status-inactive'}>{enrollment.status==='ACTIVE'?'فعال':enrollment.status==='CANCELLED'?'لغوشده':enrollment.status==='COMPLETED'?'تکمیل‌شده':enrollment.status}</span></div>
-              <div className="detail-course-meta"><span>مقطع دوره: {levelLabel(enrollment.course.level)}</span><span>سال تحصیلی: {enrollment.course.academicYear == null ? '—' : faDigits(enrollment.course.academicYear)}</span><span>ترم: {termLabel(enrollment.course.term)}</span><span>تاریخ ثبت‌نام: {enrollment.enrolledAt ? isoToJalali(enrollment.enrolledAt) : '—'}</span></div>
+              <div className="detail-course-meta"><span>مقطع دوره: {levelLabel(enrollment.course.level)}</span><span>سال تحصیلی: {enrollment.course.academicYear == null ? '—' : faDigits(enrollment.course.academicYear)}</span><span>ترم: {faDigits(termLabel(enrollment.course.term))}</span><span>تاریخ ثبت‌نام: {enrollment.enrolledAt ? isoToJalali(enrollment.enrolledAt) : '—'}</span></div>
             </article>)}</div> : <div className="students-empty">برای این هنرجو سابقه ثبت‌نامی وجود ندارد.</div>}
           </div>
           <footer className="student-detail-footer"><button type="button" className="secondary-action" onClick={()=>void openStudentFinance(selectedStudent)}><Wallet size={14}/> پرونده مالی</button><button type="button" className="secondary-action" onClick={()=>setSelectedStudent(null)}>بستن</button><button type="button" className="secondary-action" onClick={()=>void changeStudentArchive(selectedStudent)}>{selectedStudent.isArchived?<CheckCircle2 size={14}/>:<Archive size={14}/>} {selectedStudent.isArchived?'بازگردانی به فهرست فعال':'بایگانی هنرجو'}</button><button type="button" className="primary-action" onClick={()=>{const student=selectedStudent;setSelectedStudent(null);handleEdit(student);}}><Pencil size={14}/> ویرایش اطلاعات هنرجو</button></footer>
@@ -505,7 +505,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
             <div className="student-detail-section-title"><h4>{editingFinanceRegistrationId?'ویرایش پرونده مالی':'ثبت دستی پرونده مالی'}</h4><button type="button" className="secondary-action" onClick={()=>{setManualFinanceOpen(v=>!v);if(manualFinanceOpen)setEditingFinanceRegistrationId(null);}}>{manualFinanceOpen?'بستن فرم': 'ثبت پرونده جدید'}</button></div>
             {manualFinanceOpen && <div className="detail-course-active student-finance-manual-form">
               <strong>دوره‌های مشمول این پرونده</strong>
-              <div className="student-finance-course-options">{apiCourses.filter(course=>course.level===financeStudent.academicLevel).map(course=><label key={course.id} className="student-finance-course-option"><input type="checkbox" checked={manualCourseIds.includes(course.id)} onChange={()=>setManualCourseIds(current=>current.includes(course.id)?current.filter(id=>id!==course.id):[...current,course.id])}/>{course.title} · {course.academicYear??'—'} · {termLabel(course.term)}</label>)}</div>
+              <div className="student-finance-course-options">{apiCourses.filter(course=>course.level===financeStudent.academicLevel).map(course=><label key={course.id} className="student-finance-course-option"><input type="checkbox" checked={manualCourseIds.includes(course.id)} onChange={()=>setManualCourseIds(current=>current.includes(course.id)?current.filter(id=>id!==course.id):[...current,course.id])}/>{course.title} · {course.academicYear??'—'} · {faDigits(termLabel(course.term))}</label>)}</div>
               <label>شهریه اولیه (تومان)<input type="number" min="1" value={manualOriginalTuition} onChange={e=>setManualOriginalTuition(e.target.value)}/></label>
               <label>تخفیف (تومان)<input type="number" min="0" value={manualDiscount} onChange={e=>setManualDiscount(e.target.value)}/></label>
               <label>دلیل تخفیف (اختیاری)<input value={manualDiscountReason} onChange={e=>setManualDiscountReason(e.target.value)}/></label>
