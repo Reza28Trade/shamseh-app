@@ -335,203 +335,52 @@
   color: var(--admin-text)}
 
 
-/* Course management has its own root (not the legacy page wrapper), but shares
-   the exact same visual components and tokens as the other admin modules. */
-.admin-shell .admin-main .admin-page-content .admin-courses-page {
-  color: var(--admin-text);
-  font-family: Vazirmatn, IRANSansX, Tahoma, system-ui, sans-serif;
-  font-size: 12px;
-  line-height: 1.8}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page :is(h1,h2,h3,h4) {
-  color: var(--admin-text);
-  letter-spacing: 0;
-  line-height: 1.6}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page :is(h1,h2) {
-  font-size: 17px;
-  font-weight: 850}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page :is(h3,h4) {
-  font-size: 13px;
-  font-weight: 800}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page :is(input,select,textarea) {
-  min-width: 0;
-  max-width: 100%;
+/* Shared admin metadata, status and compact list primitives. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
+  .admin-meta-chip,.admin-status-chip,.cover-file
+) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 28px;
+  padding: 5px 9px;
   border: 1px solid var(--admin-border);
-  border-radius: var(--shamseh-radius-sm);
+  border-radius: var(--admin-control-radius);
   background: var(--admin-control);
-  color: var(--admin-text);
+  color: var(--admin-sub);
   font: inherit;
-  font-size: 11px}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page :is(button,.course-btn) {
-  border: 1px solid var(--admin-border);
-  border-radius: var(--shamseh-radius-sm);
-  background: var(--admin-inner);
-  color: var(--admin-text);
-  font-family: inherit;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 750;
-  box-shadow: none}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-toolbar,.course-form,.course-list,.course-card,.modal) {
-  border: 1px solid var(--admin-content-border);
-  border-radius: var(--admin-content-radius);
-  background: var(--admin-content-surface);
-  background-image: none;
-  color: var(--admin-text);
-  box-shadow: var(--admin-content-shadow)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat {
-  border: 1px solid var(--admin-content-border);
-  border-radius: 12px;
-  background: var(--admin-content-surface);
-  color: var(--admin-text);
-  box-shadow: var(--admin-shadow-stat)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .expanded-panel {
-  border: 1px solid var(--admin-border);
-  border-radius: var(--shamseh-radius-md);
-  background: var(--admin-inner);
-  color: var(--admin-text);
-  box-shadow: none}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-card-cover,.cover-thumb) {
-  border: 1px solid var(--admin-border);
-  border-radius: 11px;
-  background: var(--admin-inner);
-  color: var(--admin-sub)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-pill,.course-status) {
-  border: 1px solid var(--admin-border);
-  border-radius: 8px;
-  background: var(--admin-card);
-  color: var(--admin-sub);
-  font-family: inherit}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-pill.accent,.course-status) {
-  background: var(--admin-accent-soft);
+  line-height: 1.5}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-status-chip.is-accent {
   border-color: var(--admin-brand-border);
+  background: var(--admin-accent-soft);
   color: var(--admin-accent)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-status.archived {
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-status-chip.is-muted {
   background: var(--admin-inner);
   color: var(--admin-sub)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-status.draft {
-  background: var(--admin-warning-soft);
-  color: var(--admin-gold)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn.primary {
-  background: var(--admin-accent);
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-status-chip.is-warning {
+  border-color: var(--admin-status-warning);
+  background: var(--admin-status-warning-soft);
+  color: var(--admin-warning-text)}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-list-row {
+  border: 1px solid var(--admin-content-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-content-inner);
+  color: var(--admin-text)}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-list-row:hover {
   border-color: var(--admin-accent);
-  color: var(--admin-on-accent)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn.blue {
-  background: var(--admin-accent-soft);
-  border-color: var(--admin-brand-border);
-  color: var(--admin-accent)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn.danger {
-  background: var(--admin-status-error-soft);
-  border-color: var(--admin-status-error);
-  color: var(--admin-status-error)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page :is(.day-chip,.cover-file) {
-  border: 1px solid var(--admin-border);
-  border-radius: var(--shamseh-radius-sm);
-  background: var(--admin-control);
-  color: var(--admin-sub);
-  font-family: inherit;
-  font-size: 10px}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .day-chip.selected {
-  background: var(--admin-accent-soft);
-  border-color: var(--admin-brand-border);
-  color: var(--admin-accent)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat-bar {
+  box-shadow: var(--admin-shadow-control)}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-stat-bar {
+  overflow: hidden;
   border-radius: 99px;
   background: var(--admin-inner)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat-bar span {
-  border-radius: 99px;
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-stat-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
   background: var(--admin-accent)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-message {
-  border: 1px solid var(--admin-border);
-  border-radius: 11px;
-  background: var(--admin-inner);
-  color: var(--admin-text)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-message.error {
-  border-color: var(--admin-status-error);
-  background: var(--admin-status-error-soft)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-message.success {
-  border-color: var(--admin-status-success);
-  background: var(--admin-status-success-soft)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page :is(button,input,select,textarea,a):focus-visible {
-  outline: 2px solid var(--admin-accent);
-  outline-offset: 2px}
-
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-card-title {
-  font-size: 12px;
-  font-weight: 850}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-card-sub {
-  color: var(--admin-sub);
-  font-size: 9px;
-  line-height: 1.75}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat-label {
-  color: var(--admin-sub);
-  font-size: 10px;
-  font-weight: 750}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat-value {
-  color: var(--admin-text);
-  font-size: 22px;
-  font-weight: 850;
-  line-height: 1.4;
-  font-variant-numeric: tabular-nums}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-stat-head svg {
-  color: var(--admin-accent)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-field label {
-  color: var(--admin-text);
-  font-size: 10px;
-  font-weight: 750}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page :is(.course-pill,.course-status) {
-  font-size: 9px;
-  font-weight: 750}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .mini-row {
-  border: 1px solid var(--admin-border);
-  border-radius: var(--shamseh-radius-sm);
-  background: var(--admin-inner);
-  color: var(--admin-text)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .mini-row strong {
-  font-size: 9px;
-  font-weight: 800}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .mini-row span {
-  color: var(--admin-sub);
-  font-size: 8px}
-
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page :is(input,select,textarea):focus {
-  outline: none;
-  border-color: var(--admin-accent);
-  box-shadow: 0 0 0 3px var(--admin-accent-soft)}
-
 
 /* Shared controls and nested module surfaces. */
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) button:not(.primary-action):not(.course-btn.primary):not(.messages-send):not(.notifications-submit):not([data-variant="primary"]) {
@@ -634,48 +483,6 @@
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .course-message.success {
   border-color: var(--admin-status-success);
   background: var(--admin-status-success-soft)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .day-chip.selected {
-  border-color: var(--admin-brand-border);
-  background: var(--admin-accent-soft);
-  color: var(--admin-accent)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn.blue {
-  border-color: var(--admin-brand-border);
-  background: var(--admin-accent-soft);
-  color: var(--admin-accent)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn.danger {
-  border-color: var(--admin-status-error);
-  background: var(--admin-status-error-soft);
-  color: var(--admin-status-error)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn.primary {
-  border-color: var(--admin-accent);
-  background: var(--admin-accent);
-  color: var(--admin-on-accent)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn::before {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 34%;
-  z-index: -1;
-  transform: skewX(28deg) translateX(-150%);
-  transition: transform .55s ease;
-  pointer-events: none}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn:hover:not(:disabled) {
-  transform: translateY(-2px)}
-
-.admin-shell .admin-main .admin-page-content .admin-courses-page .course-btn:hover:not(:disabled)::before {
-  transform: skewX(28deg) translateX(280%)}
-
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .section-title svg,.offline-list-head h3 svg,.mock-exam-list-head svg,
