@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { AlertCircle, RefreshCw, Search, ShieldAlert } from 'lucide-react';
-import '../../styles/admin/pages/AuditLogs.css';
 
 type AuditLogEntry = {
   id: string;
@@ -133,35 +132,28 @@ export const AuditLogs: React.FC = () => {
         </section>
       )}
 
-      <section className="admin-extracted-auditlogs-8 admin-logs-panel admin-master-panel">
-        <div className="admin-extracted-auditlogs-9 admin-logs-toolbar">
-          <div className="admin-extracted-auditlogs-10">
+      <section className="admin-extracted-auditlogs-8 admin-panel-card admin-recent-activity admin-master-panel">
+        <div className="admin-dashboard-tools">
+          <span className="admin-dashboard-updated">
             <ShieldAlert size={17} />
-            <span>{loading ? 'در حال دریافت…' : `${filteredLogs.length.toLocaleString('fa-IR')} مورد از ${logs.length.toLocaleString('fa-IR')} رویداد`}</span>
-          </div>
-          <div className="admin-logs-toolbar-actions">
-            <button type="button" onClick={() => void loadLogs(true)} disabled={loading || refreshing} className="admin-action-button admin-logs-refresh">
-              <RefreshCw size={15} className={refreshing ? 'animate-spin' : ''} />
-              به‌روزرسانی
-            </button>
-            <div className="admin-extracted-auditlogs-11">
-            <label className="audit-search-field">
-              <Search size={16} className="admin-extracted-auditlogs-12" />
-              <input
-                type="search"
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="جست‌وجوی رویداد، کاربر، شناسه…"
-                aria-label="جست‌وجو در گزارش‌های سیستمی"
-                className="audit-search-input admin-audit-filter admin-audit-filter--search"
-              />
-            </label>
-            <select value={actionFilter} onChange={(event) => setActionFilter(event.target.value)} aria-label="فیلتر نوع رویداد" className="admin-audit-filter admin-audit-filter--select">
-              <option value="all">همهٔ نوع رویدادها</option>
-              {actions.map((action) => <option key={action} value={action}>{formatAction(action)}</option>)}
-            </select>
-            </div>
-          </div>
+            <span>{loading ? 'در حال دریافت…' : `${filteredLogs.length.toLocaleString('fa-IR')} مورد از `${logs.length.toLocaleString('fa-IR')} رویداد`}</span>
+          </span>
+          <input
+            type="search"
+            size={32}
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="جست‌وجوی رویداد، کاربر، شناسه…"
+            aria-label="جست‌وجو در گزارش‌های سیستمی"
+          />
+          <select value={actionFilter} onChange={(event) => setActionFilter(event.target.value)} aria-label="فیلتر نوع رویداد">
+            <option value="all">همهٔ نوع رویدادها</option>
+            {actions.map((action) => <option key={action} value={action}>{formatAction(action)}</option>)}
+          </select>
+          <button type="button" onClick={() => void loadLogs(true)} disabled={loading || refreshing} className="admin-refresh-button">
+            <RefreshCw size={15} className={refreshing ? 'admin-spinning' : ''} />
+            به‌روزرسانی
+          </button>
         </div>
 
         {loading ? (
@@ -175,54 +167,39 @@ export const AuditLogs: React.FC = () => {
         ) : !error && filteredLogs.length === 0 ? (
           <div className="admin-extracted-auditlogs-18">موردی با این عبارت یا فیلتر پیدا نشد.</div>
         ) : (
-          <div className="admin-extracted-auditlogs-19 admin-data-table-wrap admin-logs-table-wrap">
-            <table className="admin-extracted-auditlogs-20 admin-data-table admin-audit-table">
-              <colgroup>
-                <col className="audit-col-time" />
-                <col className="audit-col-action" />
-                <col className="audit-col-entity" />
-                <col className="audit-col-user" />
-                <col className="audit-col-details" />
-              </colgroup>
-              <thead className="admin-extracted-auditlogs-21">
-                <tr className="admin-extracted-auditlogs-22">
-                  {['زمان', 'نوع عملیات', 'بخش / شناسه', 'انجام‌دهنده', 'جزئیات'].map((heading) => (
-                    <th key={heading} scope="col" className="admin-extracted-auditlogs-23">{heading}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {filteredLogs.map((log) => (
-                  <React.Fragment key={log.id}>
-                    <tr className={`admin-audit-row${detailsOpen === log.id ? ' is-expanded' : ''}`}>
-                      <td className="admin-extracted-auditlogs-24">
-                        <time dateTime={log.timestamp}>{formatTimestamp(log.timestamp)}</time>
-                      </td>
-                      <td className="admin-extracted-auditlogs-25">{formatAction(log.action)}</td>
-                      <td className="admin-extracted-auditlogs-26">
-                        <span>{log.entityType}</span>
-                        {log.entityId && <span className="admin-extracted-auditlogs-27">{log.entityId}</span>}
-                      </td>
-                      <td className="admin-extracted-auditlogs-28">{log.performedBy}</td>
-                      <td className="admin-extracted-auditlogs-29">
-                        {log.details == null ? <span className="admin-extracted-auditlogs-30">—</span> : (
-                          <button type="button" aria-expanded={detailsOpen === log.id} onClick={() => setDetailsOpen((current) => current === log.id ? null : log.id)} className="admin-extracted-auditlogs-31 admin-action-button admin-logs-details-button">
-                            {detailsOpen === log.id ? 'بستن جزئیات' : 'مشاهده'}
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                    {detailsOpen === log.id && (
-                      <tr className="admin-audit-detail-row">
-                        <td colSpan={5} className="admin-extracted-auditlogs-32">
-                          <pre dir="auto" className="admin-extracted-auditlogs-33">{formatDetails(log.details)}</pre>
-                        </td>
-                      </tr>
-                    )}
-                  </React.Fragment>
-                ))}
-              </tbody>
-            </table>
+          <div className="admin-activity-list admin-activity-list--scroll">
+            {filteredLogs.map((log) => (
+              <React.Fragment key={log.id}>
+                <div className="admin-activity-row">
+                  <span className="admin-activity-mark"><Activity size={14} /></span>
+                  <span className="admin-activity-copy">
+                    <strong>{formatAction(log.action)}</strong>
+                    <small>{log.entityType || 'رویداد سامانه'} · {log.performedBy || 'کاربر سامانه'}</small>
+                    {log.entityId && <small>{log.entityId}</small>}
+                  </span>
+                  <time dateTime={log.timestamp}>{formatTimestamp(log.timestamp)}</time>
+                  {log.details != null && (
+                    <button
+                      type="button"
+                      aria-expanded={detailsOpen === log.id}
+                      onClick={() => setDetailsOpen((current) => current === log.id ? null : log.id)}
+                      className="admin-action-button"
+                    >
+                      {detailsOpen === log.id ? 'بستن' : 'مشاهده'}
+                    </button>
+                  )}
+                </div>
+                {detailsOpen === log.id && (
+                  <div className="admin-activity-row">
+                    <span className="admin-activity-mark"><ShieldAlert size={14} /></span>
+                    <span className="admin-activity-copy">
+                      <strong>جزئیات رویداد</strong>
+                      <small><span dir="auto">{formatDetails(log.details)}</span></small>
+                    </span>
+                  </div>
+                )}
+              </React.Fragment>
+            ))}
           </div>
         )}
         {!loading && !error && filteredLogs.length > 0 && (
