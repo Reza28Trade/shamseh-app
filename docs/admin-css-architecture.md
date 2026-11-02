@@ -16,6 +16,7 @@ The admin panel has one visual source of truth and independent page composition.
 - `AdminTokens.css`: Shamseh brand tokens, spacing/radius primitives, semantic status colors, data-series colors, approved shell surfaces/actions and elevation tokens. It contains variables only; it does not style components.
 - `AdminTheme.css`: canonical light/dark values and semantic surface aliases. All theme-dependent component colors resolve through these variables.
 - `AdminComponents.css`: the single canonical visual component layer. It is loaded after module styles so shared appearance wins over legacy declarations. It owns page typography, controls, buttons, tables, cards, headers, statistic tiles, row surfaces, focus states and common responsive visual treatment.
+  - Shared data tables opt into `.admin-data-table-wrap` and `.admin-data-table`; the central layer owns their surface, header, row, hover, typography and action-button appearance. Module CSS may set only table-specific geometry and responsive overflow.
 - `AdminComponents.extended.css`: structural compatibility only. It may define grid/flex behavior, min-width, overflow, table minimum widths and responsive column arrangements. It must not define colors, backgrounds, borders, radii, shadows, typography or control appearance.
 - `AdminLayout.css`: admin shell, sidebar, mobile header and responsive shell layout.
 
