@@ -2238,3 +2238,9 @@
   gap: 10px;
   font-size: 12px;
 }
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-input--large {
+  min-height: 150px;
+  line-height: 2;
+  background: var(--admin-control);
+}
