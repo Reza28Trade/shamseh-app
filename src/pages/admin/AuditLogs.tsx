@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { AlertCircle, RefreshCw, Search, ShieldAlert } from 'lucide-react';
+import { Activity, AlertCircle, RefreshCw, ShieldAlert } from 'lucide-react';
 
 type AuditLogEntry = {
   id: string;
@@ -136,7 +136,7 @@ export const AuditLogs: React.FC = () => {
         <div className="admin-dashboard-tools">
           <span className="admin-dashboard-updated">
             <ShieldAlert size={17} />
-            <span>{loading ? 'در حال دریافت…' : `${filteredLogs.length.toLocaleString('fa-IR')} مورد از `${logs.length.toLocaleString('fa-IR')} رویداد`}</span>
+            <span>{loading ? 'در حال دریافت…' : `${filteredLogs.length.toLocaleString('fa-IR')} مورد از ${logs.length.toLocaleString('fa-IR')} رویداد`}</span>
           </span>
           <input
             type="search"
@@ -204,7 +204,7 @@ export const AuditLogs: React.FC = () => {
         )}
         {!loading && !error && filteredLogs.length > 0 && (
           <p className="admin-extracted-auditlogs-34 admin-logs-table-note">
-            حداکثر ۲۰۰ رویداد اخیر نمایش داده می‌شود؛ جدول پس از نمایش حداکثر ۱۰ ردیف اسکرول می‌شود.
+            حداکثر ۲۰۰ رویداد اخیر نمایش داده می‌شود؛ فهرست پس از نمایش حداکثر ۱۰ ردیف اسکرول می‌شود.
           </p>
         )}
       </section>
