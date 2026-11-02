@@ -22,6 +22,8 @@
   font-family: Vazirmatn, IRANSansX, Tahoma, system-ui, sans-serif;
   font-size: 12px;
   line-height: 1.8;
+  scrollbar-color: var(--admin-border) transparent;
+  scrollbar-width: thin;
   box-sizing: border-box}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) *,
