@@ -340,18 +340,3 @@
   .admin-courses-page .cover-thumb { width: 60px; height: 60px}
   .admin-courses-page .modal-grid { grid-template-columns: 1fr}
 }
-
-
-/* Static JSX presentation rules extracted from the page component. */
-.admin-extracted-managecourses-1{min-width:0!important}
-.admin-extracted-managecourses-2{margin-top:8px!important}
-.admin-extracted-managecourses-3{margin-top:6px!important}
-.admin-extracted-managecourses-4{width:100%!important}
-.admin-extracted-managecourses-5{margin-bottom:10px!important}
-.admin-extracted-managecourses-6{display:flex!important;gap:8px!important;flex-wrap:wrap!important}
-.admin-extracted-managecourses-7{max-height:220px!important}
-.admin-extracted-managecourses-8{width:100%!important;margin-top:10px!important}
-.admin-extracted-managecourses-9{margin-top:9px!important}
-.admin-extracted-managecourses-10{margin-top:9px!important}
-.admin-extracted-managecourses-11{width:100%!important;margin-top:8px!important}
-.admin-extracted-managecourses-12{margin-top:9px!important}
