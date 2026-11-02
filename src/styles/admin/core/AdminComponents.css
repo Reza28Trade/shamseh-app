@@ -2053,3 +2053,22 @@
   color: var(--admin-warning-text, var(--admin-text));
   font-size: 11px;
 }
+
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-publish-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border: 1px solid var(--admin-border);
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 750;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-publish-status.is-published {
+  background: var(--admin-accent-soft);
+  color: var(--admin-accent);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-publish-status.is-draft {
+  background: var(--admin-inner);
+  color: var(--admin-sub);
+}
