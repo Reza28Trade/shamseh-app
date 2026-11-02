@@ -2219,12 +2219,7 @@
   border:1px solid var(--admin-border);
   border-radius:var(--admin-control-radius);
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-book-row,
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-order-card {
-  border:1px solid var(--admin-border);
-  border-radius:var(--admin-surface-radius);
-  background:var(--admin-card);
-}
+/* Book and order cards consume the shared admin-surface-card component. */
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-book-meta { font-size:10px; }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-book-data { font-size:11px; }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-book-discount { color:var(--admin-accent);font-size:11px;font-weight:800; }
@@ -2293,12 +2288,7 @@
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-image-preview {
   border-radius: var(--admin-control-radius);
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-card {
-  border: 1px solid var(--admin-border);
-  border-radius: var(--admin-surface-radius);
-  background: var(--admin-card);
-  box-shadow: none;
-}
+/* Bookstore panels use the canonical admin-master-panel surface. */
 
 
 /* Canonical admin data-table component.
