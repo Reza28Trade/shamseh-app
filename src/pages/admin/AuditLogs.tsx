@@ -177,6 +177,13 @@ export const AuditLogs: React.FC = () => {
         ) : (
           <div className="admin-extracted-auditlogs-19 admin-data-table-wrap admin-logs-table-wrap">
             <table className="admin-extracted-auditlogs-20 admin-data-table admin-audit-table">
+              <colgroup>
+                <col className="audit-col-time" />
+                <col className="audit-col-action" />
+                <col className="audit-col-entity" />
+                <col className="audit-col-user" />
+                <col className="audit-col-details" />
+              </colgroup>
               <thead className="admin-extracted-auditlogs-21">
                 <tr className="admin-extracted-auditlogs-22">
                   {['زمان', 'نوع عملیات', 'بخش / شناسه', 'انجام‌دهنده', 'جزئیات'].map((heading) => (
@@ -206,7 +213,7 @@ export const AuditLogs: React.FC = () => {
                       </td>
                     </tr>
                     {detailsOpen === log.id && (
-                      <tr>
+                      <tr className="admin-audit-detail-row">
                         <td colSpan={5} className="admin-extracted-auditlogs-32">
                           <pre dir="auto" className="admin-extracted-auditlogs-33">{formatDetails(log.details)}</pre>
                         </td>
