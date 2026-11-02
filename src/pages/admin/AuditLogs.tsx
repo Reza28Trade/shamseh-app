@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { AlertCircle, FileText, RefreshCw, Search, ShieldAlert } from 'lucide-react';
+import { AlertCircle, RefreshCw, Search, ShieldAlert } from 'lucide-react';
 import '../../styles/admin/pages/AuditLogs.css';
 
 type AuditLogEntry = {
@@ -123,23 +123,6 @@ export const AuditLogs: React.FC = () => {
 
   return (
     <div className="admin-legacy-page admin-logs-page admin-extracted-auditlogs-1">
-      <section className="admin-extracted-auditlogs-2">
-        <div className="admin-extracted-auditlogs-3">
-          <div>
-            <h2 className="admin-extracted-auditlogs-4">
-              <FileText size={21} /> گزارش‌های سیستمی
-            </h2>
-            <p className="admin-extracted-auditlogs-5">
-              مشاهده و جست‌وجوی ۲۰۰ رویداد اخیر؛ برای دیدن جزئیات هر رویداد، ردیف آن را باز کنید.
-            </p>
-          </div>
-          <button type="button" onClick={() => void loadLogs(true)} disabled={loading || refreshing} className="admin-audit-refresh">
-            <RefreshCw size={15} className={refreshing ? 'animate-spin' : ''} />
-            به‌روزرسانی
-          </button>
-        </div>
-      </section>
-
       {error && (
         <section role="alert" className="admin-extracted-auditlogs-6">
           <AlertCircle size={20} />
@@ -150,13 +133,18 @@ export const AuditLogs: React.FC = () => {
         </section>
       )}
 
-      <section className="admin-extracted-auditlogs-8">
-        <div className="admin-extracted-auditlogs-9">
+      <section className="admin-extracted-auditlogs-8 admin-logs-panel">
+        <div className="admin-extracted-auditlogs-9 admin-logs-toolbar">
           <div className="admin-extracted-auditlogs-10">
             <ShieldAlert size={17} />
             <span>{loading ? 'در حال دریافت…' : `${filteredLogs.length.toLocaleString('fa-IR')} مورد از ${logs.length.toLocaleString('fa-IR')} رویداد`}</span>
           </div>
-          <div className="admin-extracted-auditlogs-11">
+          <div className="admin-logs-toolbar-actions">
+            <button type="button" onClick={() => void loadLogs(true)} disabled={loading || refreshing} className="admin-action-button admin-logs-refresh">
+              <RefreshCw size={15} className={refreshing ? 'animate-spin' : ''} />
+              به‌روزرسانی
+            </button>
+            <div className="admin-extracted-auditlogs-11">
             <label className="audit-search-field">
               <Search size={16} className="admin-extracted-auditlogs-12" />
               <input
@@ -172,6 +160,7 @@ export const AuditLogs: React.FC = () => {
               <option value="all">همهٔ نوع رویدادها</option>
               {actions.map((action) => <option key={action} value={action}>{formatAction(action)}</option>)}
             </select>
+            </div>
           </div>
         </div>
 
@@ -186,8 +175,8 @@ export const AuditLogs: React.FC = () => {
         ) : !error && filteredLogs.length === 0 ? (
           <div className="admin-extracted-auditlogs-18">موردی با این عبارت یا فیلتر پیدا نشد.</div>
         ) : (
-          <div className="admin-extracted-auditlogs-19">
-            <table className="admin-extracted-auditlogs-20">
+          <div className="admin-extracted-auditlogs-19 admin-data-table-wrap admin-logs-table-wrap">
+            <table className="admin-extracted-auditlogs-20 admin-data-table">
               <thead className="admin-extracted-auditlogs-21">
                 <tr className="admin-extracted-auditlogs-22">
                   {['زمان', 'نوع عملیات', 'بخش / شناسه', 'انجام‌دهنده', 'جزئیات'].map((heading) => (
@@ -210,7 +199,7 @@ export const AuditLogs: React.FC = () => {
                       <td className="admin-extracted-auditlogs-28">{log.performedBy}</td>
                       <td className="admin-extracted-auditlogs-29">
                         {log.details == null ? <span className="admin-extracted-auditlogs-30">—</span> : (
-                          <button type="button" aria-expanded={detailsOpen === log.id} onClick={() => setDetailsOpen((current) => current === log.id ? null : log.id)} className="admin-extracted-auditlogs-31">
+                          <button type="button" aria-expanded={detailsOpen === log.id} onClick={() => setDetailsOpen((current) => current === log.id ? null : log.id)} className="admin-extracted-auditlogs-31 admin-action-button">
                             {detailsOpen === log.id ? 'بستن جزئیات' : 'مشاهده'}
                           </button>
                         )}
@@ -230,7 +219,7 @@ export const AuditLogs: React.FC = () => {
           </div>
         )}
         {!loading && !error && filteredLogs.length > 0 && (
-          <p className="admin-extracted-auditlogs-34">
+          <p className="admin-extracted-auditlogs-34 admin-logs-table-note">
             حداکثر ۲۰۰ رویداد اخیر نمایش داده می‌شود؛ جدول پس از نمایش حداکثر ۱۰ ردیف اسکرول می‌شود.
           </p>
         )}
