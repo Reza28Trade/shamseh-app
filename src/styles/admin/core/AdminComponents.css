@@ -1982,3 +1982,74 @@
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-audit-row.is-expanded {
   background: var(--admin-inner);
 }
+
+
+/* Public content editor: shared controls and theme-aware states. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--admin-control-height);
+  padding: 9px 11px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-control);
+  color: var(--admin-text);
+  font: inherit;
+  font-size: 11px;
+  outline: none;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-input--textarea {
+  min-height: 96px;
+  line-height: 1.9;
+  resize: vertical;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-input--wide {
+  min-width: 340px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-input--compact {
+  min-width: 75px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-input--search {
+  padding-right: 34px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-input--ltr {
+  direction: ltr;
+  text-align: left;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 35px;
+  padding: 8px 11px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-control);
+  color: var(--admin-text);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-button.is-active,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-button--primary {
+  border-color: var(--admin-accent);
+  background: var(--admin-accent);
+  color: #fff;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-button--danger {
+  color: var(--admin-warning-text, var(--admin-sub));
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-upload-button[aria-busy="true"] {
+  cursor: wait;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-feedback.is-error {
+  padding: 12px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-accent-soft);
+  color: var(--admin-warning-text, var(--admin-text));
+  font-size: 11px;
+}
