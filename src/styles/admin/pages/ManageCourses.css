@@ -5,11 +5,14 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 1240px;
   min-width: 0;
-  margin-inline: auto;
   gap: 14px;
   padding: 0}
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-courses-page:not(.admin-accounts-page) {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0}
 
 .admin-courses-page .course-toolbar {
   display: flex;
