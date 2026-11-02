@@ -7,20 +7,10 @@
   padding: var(--shamseh-space-4);
 }
 .admin-shell .admin-page-content .admin-logs-page .admin-logs-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--shamseh-space-3);
-  min-width: 0;
-  margin-bottom: var(--shamseh-space-4);
+  min-width:0;
 }
 .admin-shell .admin-page-content .admin-logs-page .admin-logs-toolbar-actions {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--shamseh-space-2);
-  min-width: 0;
+  min-width:0;
 }
 .admin-shell .admin-page-content .admin-logs-page .audit-search-field {
   position: relative;
