@@ -13,7 +13,7 @@
 .admin-mock-exams-page > form,
   .admin-mock-exams-page > div:last-child{padding:15px!important;}
 .admin-mock-exams-page form > .admin-mock-form-grid{grid-template-columns:minmax(0,1fr)!important;}
-.admin-mock-exams-page > div:last-child > .admin-extracted-managemockexams-6 > div > div:first-child{flex-direction:column!important;}
+.admin-mock-exams-page .mock-exam-scroll-list > .admin-mock-exam-item > div:first-child{flex-direction:column!important;}
 
 
 }
