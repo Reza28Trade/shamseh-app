@@ -77,7 +77,7 @@
 .offline-filter-group{width:100%;}
 .offline-filter-group button{flex:1;}
 .offline-request-main{grid-template-columns:1fr;gap:8px;}
-.offline-status{justify-self:start;}
+
 .offline-review-actions{display:grid;grid-template-columns:1fr 1fr;}
 .offline-review-actions button{justify-content:center;}
 
@@ -210,7 +210,7 @@
 
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head{min-height:76px!important;padding:16px 18px!important;overflow:visible!important;}
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head h2{margin:0!important;}
+
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-page-head p{margin:4px 0 0!important;}
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-stat-card{min-height:78px!important;}
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-offline-page .offline-list-card{padding:0!important;}
