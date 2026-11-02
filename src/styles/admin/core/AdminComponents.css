@@ -1699,3 +1699,148 @@
 .admin-extracted-managecourses-10{margin-top:9px!important}
 .admin-extracted-managecourses-11{width:100%!important;margin-top:8px!important}
 .admin-extracted-managecourses-12{margin-top:9px!important}
+
+
+/* Mock exams: page controls and surfaces use the canonical admin tokens. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-mock-exams-page .admin-mock-card,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-mock-exams-page .admin-mock-exam-item {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-surface-radius);
+  background: var(--admin-card);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-mock-exams-page .admin-mock-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-mock-exams-page .admin-mock-exam-item {
+  display: grid;
+  gap: 14px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-mock-exams-page .admin-mock-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-mock-exams-page .admin-mock-field-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--admin-sub);
+  font-size: 11px;
+  font-weight: 750;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-mock-exams-page .admin-mock-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--admin-control-height);
+  padding: 9px 11px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-control-radius);
+  outline: none;
+  background: var(--admin-control);
+  color: var(--admin-text);
+  font: inherit;
+  font-size: 11px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-mock-exams-page .admin-mock-input--date {
+  flex: 1;
+  min-width: 180px;
+  text-align: right;
+  cursor: pointer;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-mock-exams-page .admin-mock-input--time {
+  width: 72px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-mock-exams-page .admin-mock-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--admin-border);
+  color: var(--admin-text);
+  font-size: 13px;
+  font-weight: 850;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-mock-exams-page .admin-mock-muted {
+  margin: 0;
+  padding: 20px;
+  color: var(--admin-sub);
+  font-size: 11px;
+  text-align: center;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-mock-exams-page .admin-mock-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border: 1px solid var(--admin-border);
+  border-radius: 7px;
+  background: var(--admin-accent-soft);
+  color: var(--admin-accent);
+  font-size: 10px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-mock-exams-page .admin-mock-calendar-nav,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-mock-exams-page .admin-mock-secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 35px;
+  padding: 8px 11px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-control);
+  color: var(--admin-text);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 750;
+  cursor: pointer;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-mock-exams-page .admin-mock-calendar-nav {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-mock-exams-page .admin-mock-primary-button {
+  min-height: 38px;
+  padding: 9px 16px;
+  border: 1px solid var(--admin-accent);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-accent);
+  color: #fff;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 850;
+  cursor: pointer;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-mock-exams-page .admin-mock-error {
+  padding: 12px 15px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-accent-soft);
+  color: var(--admin-warning-text, var(--admin-text));
+  font-size: 11px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-mock-exams-page .admin-mock-calendar-day {
+  height: 40px;
+  border: 1px solid transparent;
+  border-radius: var(--admin-control-radius);
+  background: transparent;
+  color: var(--admin-text);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-mock-exams-page .admin-mock-calendar-day.is-selected {
+  border-color: var(--admin-accent);
+  background: var(--admin-accent-soft);
+  color: var(--admin-accent);
+  font-weight: 900;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-mock-exams-page .admin-mock-calendar-day.is-past {
+  color: var(--admin-sub);
+  cursor: not-allowed;
+  opacity: .55;
+}
