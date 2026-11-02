@@ -54,19 +54,7 @@ function formatTimestamp(value: string): string {
   }).format(date);
 }
 
-const controlStyle: React.CSSProperties = {
-  minWidth: 170,
-  maxWidth: '100%',
-  padding: '9px 11px',
-  border: '1px solid var(--admin-border, #d8e3e0)',
-  borderRadius: 9,
-  background: 'var(--admin-control, #fbfdfc)',
-  color: 'var(--admin-text, #202a2a)',
-  font: 'inherit',
-  fontSize: 13,
-  outlineOffset: 2,
-  boxSizing: 'border-box',
-};
+
 
 export const AuditLogs: React.FC = () => {
   const [logs, setLogs] = useState<AuditLogEntry[]>([]);
@@ -145,7 +133,7 @@ export const AuditLogs: React.FC = () => {
               مشاهده و جست‌وجوی ۲۰۰ رویداد اخیر؛ برای دیدن جزئیات هر رویداد، ردیف آن را باز کنید.
             </p>
           </div>
-          <button type="button" onClick={() => void loadLogs(true)} disabled={loading || refreshing} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, border: '1px solid var(--admin-border, #d8e3e0)', background: 'var(--admin-control, #fbfdfc)', color: 'var(--admin-text, #202a2a)', padding: '9px 13px', borderRadius: 9, cursor: loading || refreshing ? 'wait' : 'pointer', font: 'inherit', fontSize: 13 }}>
+          <button type="button" onClick={() => void loadLogs(true)} disabled={loading || refreshing} className="admin-audit-refresh">
             <RefreshCw size={15} className={refreshing ? 'animate-spin' : ''} />
             به‌روزرسانی
           </button>
@@ -178,10 +166,10 @@ export const AuditLogs: React.FC = () => {
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="جست‌وجوی رویداد، کاربر، شناسه…"
                 aria-label="جست‌وجو در گزارش‌های سیستمی"
-                style={{ ...controlStyle, width: '100%', paddingRight: 34 }}
+                className="admin-audit-filter admin-audit-filter--search"
               />
             </label>
-            <select value={actionFilter} onChange={(event) => setActionFilter(event.target.value)} aria-label="فیلتر نوع رویداد" style={{ ...controlStyle, minWidth: 190 }}>
+            <select value={actionFilter} onChange={(event) => setActionFilter(event.target.value)} aria-label="فیلتر نوع رویداد" className="admin-audit-filter admin-audit-filter--select">
               <option value="all">همهٔ نوع رویدادها</option>
               {actions.map((action) => <option key={action} value={action}>{formatAction(action)}</option>)}
             </select>
@@ -211,7 +199,7 @@ export const AuditLogs: React.FC = () => {
               <tbody>
                 {filteredLogs.map((log) => (
                   <React.Fragment key={log.id}>
-                    <tr style={{ background: detailsOpen === log.id ? 'var(--admin-inner, #e7efed)' : 'var(--admin-card, #fff)' }}>
+                    <tr className={`admin-audit-row${detailsOpen === log.id ? ' is-expanded' : ''}`}>
                       <td className="admin-extracted-auditlogs-24">
                         <time dateTime={log.timestamp}>{formatTimestamp(log.timestamp)}</time>
                       </td>
