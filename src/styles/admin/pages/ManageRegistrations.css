@@ -6,7 +6,7 @@
 .admin-finance-registration-page > div:first-child > article{position: relative;min-width: 0;min-height: 92px;align-content: space-between;padding: 14px 15px;}
 .admin-finance-registration-page > section{min-width: 0;padding: 17px;gap: 13px;}
 .admin-finance-registration-page > section p{max-width: 760px;}
-.admin-finance-registration-page > section > div[style*="overflowX"]{min-width: 0;max-width: 100%;overflow-x: auto;}
+.admin-finance-registration-page > section > .admin-extracted-manageregistrations-30{min-width: 0;max-width: 100%;overflow-x: auto;}
 .admin-finance-registration-page table td{vertical-align: top;}
 .admin-finance-registration-page > div:nth-of-type(2){display: flex;align-items: center;gap: 7px;padding: 5px;width: fit-content;max-width: 100%;}
 .admin-finance-registration-page > div:nth-of-type(2) button{min-height: 36px;padding: 8px 13px;}
