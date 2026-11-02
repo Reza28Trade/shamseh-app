@@ -350,7 +350,7 @@ ${value}`.trim();
             <div style={{ color: colors.muted, fontSize: 12 }}>تعداد خبرهای ثبت‌شده: <strong>{newsItems.length}</strong></div>
             {newsItems.map((item) => <article key={item.id} style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap', padding: 14, border: '1px solid ' + colors.border, borderRadius: 12, background: colors.bg }}>
               <div className="admin-extracted-managepubliccontent-21">
-                <div className="admin-extracted-managepubliccontent-22"><strong className="admin-extracted-managepubliccontent-23">{item.title || 'بدون عنوان'}</strong><span style={{ fontSize: 10, borderRadius: 999, padding: '4px 8px', background: item.published ? 'rgba(16,185,129,.12)' : colors.alt, color: item.published ? '#10b981' : colors.muted }}>{item.published ? 'منتشرشده' : 'پیش‌نویس'}</span><span style={{ fontSize: 10, color: colors.muted }}>{item.category}{item.date ? ' · ' + item.date : ''}</span></div>
+                <div className="admin-extracted-managepubliccontent-22"><strong className="admin-extracted-managepubliccontent-23">{item.title || 'بدون عنوان'}</strong><span className={`admin-public-publish-status${item.published ? ' is-published' : ' is-draft'}`}>{item.published ? 'منتشرشده' : 'پیش‌نویس'}</span><span style={{ fontSize: 10, color: colors.muted }}>{item.category}{item.date ? ' · ' + item.date : ''}</span></div>
                 <p style={{ margin: 0, fontSize: 12, lineHeight: 1.9, color: colors.muted }}>{item.summary}</p>
               </div>
               <div className="admin-extracted-managepubliccontent-24"><button type="button" onClick={() => editNews(item)} className="admin-public-button"><Pencil size={14}/> ویرایش</button><button type="button" disabled={newsSaving} onClick={() => void deleteNews(item)} className="admin-public-button admin-public-button--danger"><Trash2 size={14}/> حذف</button></div>
@@ -432,7 +432,7 @@ ${value}`.trim();
               <div className="admin-extracted-managepubliccontent-48">
                 <div className="admin-extracted-managepubliccontent-49">
                   <strong className="admin-extracted-managepubliccontent-50">{item.title}</strong>
-                  <span style={{ fontSize: 10, padding: '4px 7px', borderRadius: 999, background: item.published ? 'rgba(16,185,129,.12)' : colors.alt, color: item.published ? '#10b981' : colors.muted }}>{item.published ? 'منتشرشده' : 'پیش‌نویس'}</span>
+                  <span className={`admin-public-publish-status${item.published ? ' is-published' : ' is-draft'}`}>{item.published ? 'منتشرشده' : 'پیش‌نویس'}</span>
                 </div>
                 <div style={{ color: colors.muted, fontSize: 11, marginBottom: 8 }}>{[item.examYear, item.examLevel].filter(Boolean).join(' · ') || 'بدون سال و مقطع'}</div>
                 <p style={{ color: colors.muted, fontSize: 12, lineHeight: 1.9, margin: 0, whiteSpace: 'pre-wrap' }}>{(() => { const structured = parseAnalysisContent(item.content); const preview = structured?.narrative?.trim() || (structured ? [structured.fieldName, structured.coveragePercent == null ? '' : `پوشش ${structured.coveragePercent}٪`, `${structured.questions?.length || 0} سؤال ثبت‌شده`].filter(Boolean).join(' · ') : item.content); return preview.length > 240 ? preview.slice(0, 240) + '…' : preview; })()}</p>
