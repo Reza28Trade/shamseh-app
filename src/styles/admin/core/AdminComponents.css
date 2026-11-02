@@ -383,10 +383,6 @@
   background: var(--admin-accent)}
 
 
-.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .danger-action {
-  border: 1px solid var(--admin-status-error);
-  background: var(--admin-status-error-soft);
-  color: var(--admin-status-error)}
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-item-title {
   color: var(--admin-text);
   font-size: 12px;
@@ -797,3 +793,8 @@
 .admin-shell .admin-page-content .admin-legacy-page.admin-counseling-page .counseling-assignment-status.is-assigned {
   color: var(--admin-accent);
 }
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .danger-action {
+  border: 1px solid var(--admin-status-error);
+  background: var(--admin-status-error-soft);
+  color: var(--admin-status-error)}
