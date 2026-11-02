@@ -233,7 +233,7 @@ export const ManageCounseling: React.FC = () => {
         ].map(item => { const Icon = item.icon; return <div key={item.label} className="admin-counseling-stat-card"><div className="admin-extracted-managecounseling-8"><Icon size={18}/></div><div><div className="admin-extracted-managecounseling-9">{item.label}</div><strong className="admin-extracted-managecounseling-10">{item.value}</strong></div></div>; })}
       </div>
 
-      <section className="counseling-account-section" className="admin-counseling-card">
+      <section className="counseling-account-section admin-counseling-card">
         <div className="admin-extracted-managecounseling-11">
           <h3 className="admin-extracted-managecounseling-12">حساب مشاوران</h3>
           <button type="button" onClick={() => setShowCreate(value => !value)} className="admin-counseling-button"><Plus size={14}/>{showCreate ? 'بستن فرم' : 'تعریف مشاور جدید'}</button>
@@ -249,7 +249,7 @@ export const ManageCounseling: React.FC = () => {
           <>
           <label className="counseling-account-search"><Search size={15}/><input type="search" value={counselorSearch} onChange={e => setCounselorSearch(e.target.value)} placeholder="جست‌وجوی نام مشاور یا نام کاربری" aria-label="جست‌وجوی مشاوران"/></label>
           <div className="counseling-account-list admin-extracted-managecounseling-21">
-            {filteredCounselors.map(counselor => <div className="counseling-account-item" key={counselor.id} className="admin-extracted-managecounseling-22">
+            {filteredCounselors.map(counselor => <div className="counseling-account-item admin-extracted-managecounseling-22" key={counselor.id}>
               <div className="admin-extracted-managecounseling-23">
                 <div><strong className="admin-extracted-managecounseling-24">{counselor.displayName}</strong><div className="admin-extracted-managecounseling-25">نام کاربری: {counselor.user.username}</div></div>
                 <span className={`admin-counselor-status${counselor.isActive ? ' is-active' : ' is-inactive'}`}>{counselor.isActive ? 'فعال' : 'غیرفعال'}</span>
@@ -262,7 +262,7 @@ export const ManageCounseling: React.FC = () => {
         )}
       </section>
 
-      <section className="counseling-assignment-section" className="admin-counseling-card">
+      <section className="counseling-assignment-section admin-counseling-card">
         <h3 className="admin-extracted-managecounseling-27">تخصیص یا انتقال هنرجو</h3>
         <p className="admin-extracted-managecounseling-28">برای جلوگیری از فهرست طولانی، هر صفحه ۱۰ هنرجو دارد. جست‌وجو، فیلتر و انتخاب‌ها هنگام جابه‌جایی صفحه حفظ می‌شوند.</p>
         <div className="counseling-student-tools">
@@ -290,7 +290,7 @@ export const ManageCounseling: React.FC = () => {
         </form>
       </section>
 
-      <section className="counseling-conversation-section" className="admin-counseling-card">
+      <section className="counseling-conversation-section admin-counseling-card">
         <div className="admin-extracted-managecounseling-32">
           <div><h3 className="admin-extracted-managecounseling-33">نظارت بر گفت‌وگوها</h3><p className="admin-extracted-managecounseling-34">ادمین می‌تواند تاریخچه را مشاهده کند؛ ارسال پیام از طرف ادمین غیرفعال است.</p></div>
           <div className="admin-extracted-managecounseling-35"><Search size={14} className="admin-extracted-managecounseling-36"/><input value={search} onChange={e => setSearch(e.target.value)} placeholder="جست‌وجوی هنرجو، مشاور یا پیام" className="admin-counseling-input admin-counseling-input--search"/></div>
