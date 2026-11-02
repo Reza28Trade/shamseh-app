@@ -133,7 +133,7 @@
    approved Dashboard and Manage Admins reference screens. */
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .students-page-head,.student-chart-card,.student-form-card,.student-import-card,.student-list-card,
-  .course-toolbar,.course-form,.course-list,.course-stat,.course-card,.modal,
+  .admin-surface-card,
   .offline-page-head,.offline-list-card,.messages-page-head,.messages-ticket-section,.messages-detail-section,
   .mock-exam-page-head,.mock-exam-list-card,.counseling-page-head,.counseling-account-section,
   .counseling-conversation-section,.notifications-page-head,.notifications-form-card,
@@ -156,7 +156,7 @@
   padding: 15px 18px}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
-  .student-stat,.course-stat,.offline-stat-card,.messages-stat,.mock-exam-stat,
+  .student-stat,.admin-stat-card,.offline-stat-card,.messages-stat,.mock-exam-stat,
   .counseling-stats-grid > *
 ) {
   min-width: 0;
@@ -192,7 +192,7 @@
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .messages-stat strong,.offline-stat-copy strong,.mock-exam-stat strong,
-  .counseling-stats-grid strong,.student-stat strong,.course-stat-value
+  .counseling-stats-grid strong,.student-stat strong,.admin-stat-value
 ) {
   color: var(--admin-text);
   font-size: clamp(16px,1.5vw,21px);
@@ -504,7 +504,7 @@
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .section-title svg,.offline-list-head h3 svg,.mock-exam-list-head svg,
-  .course-section-head svg
+  .admin-section-head svg
 ) {
   color: var(--admin-accent)}
 
