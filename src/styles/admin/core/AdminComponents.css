@@ -1339,3 +1339,84 @@
 .admin-shell .admin-main .admin-page-content .admin-students-page .student-finance-registration-card{
   margin-bottom:12px;
 }
+
+
+/* Student list rows reuse the exact inset account-card surface from
+   Manage Admins: Accounts defined. Keep table semantics and row actions intact. */
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap table{
+  border-collapse:separate!important;
+  border-spacing:0 8px!important;
+  background:transparent!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row{
+  background:transparent!important;
+  box-shadow:none!important;
+  transition:transform .2s ease!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td{
+  border-top:1px solid rgba(255,255,255,.62)!important;
+  border-bottom:1px solid rgba(255,255,255,.62)!important;
+  background:var(--admin-dashboard-row-surface)!important;
+  box-shadow:inset 3px 3px 7px rgba(177,169,157,.38),
+    inset -3px -3px 7px rgba(255,255,255,.82)!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td:first-child{
+  border-right:1px solid rgba(255,255,255,.62)!important;
+  border-radius:0 12px 12px 0!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td:last-child{
+  border-left:1px solid rgba(255,255,255,.62)!important;
+  border-radius:12px 0 0 12px!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td{
+  border-top:1px solid rgba(255,255,255,.045)!important;
+  border-bottom:1px solid rgba(255,255,255,.045)!important;
+  background:var(--admin-dashboard-row-surface)!important;
+  box-shadow:inset 3px 3px 7px rgba(12,11,11,.55),
+    inset -3px -3px 7px rgba(52,48,48,.42)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td:first-child{
+  border-right:1px solid rgba(255,255,255,.045)!important;
+  border-radius:0 12px 12px 0!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td:last-child{
+  border-left:1px solid rgba(255,255,255,.045)!important;
+  border-radius:12px 0 0 12px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row:hover{
+  transform:translateY(-1px)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row:hover td{
+  border-top-color:var(--admin-brand-border)!important;
+  border-bottom-color:var(--admin-brand-border)!important;
+  box-shadow:var(--admin-shadow-control)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row:focus-visible{
+  outline:2px solid var(--admin-accent)!important;
+  outline-offset:2px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td{
+  padding-top:13px!important;
+  padding-bottom:13px!important;
+  transition:background .2s ease,border-color .2s ease,box-shadow .2s ease!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .list-head{
+  margin-bottom:10px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .list-head>div:first-child>span{
+  color:var(--admin-sub)!important;
+  font-size:11px!important;
+  line-height:1.8!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-search{
+  min-height:40px;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-search input{
+  border-radius:10px!important;
+}
+@media(prefers-reduced-motion:reduce){
+  .admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row,
+  .admin-shell .admin-main .admin-page-content .admin-students-page .student-table-wrap tbody tr.student-clickable-row td{
+    transition:none!important;
+  }
+}
