@@ -21,6 +21,7 @@ import { ManageBookstore } from './pages/admin/ManageBookstore';
 import type { Student, Admin } from './types';
 import './styles/admin/pages/Dashboard.css';
 import './styles/admin/pages/ManageAdmins.css';
+import './styles/admin/pages/ManageStudents.css';
 import './styles/admin/core/AdminComponents.css';
 
 
