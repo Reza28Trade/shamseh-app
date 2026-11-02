@@ -160,13 +160,12 @@ export const AuditLogs: React.FC = () => {
             <label className="audit-search-field">
               <Search size={16} className="admin-extracted-auditlogs-12" />
               <input
-                className="audit-search-input"
                 type="search"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="جست‌وجوی رویداد، کاربر، شناسه…"
                 aria-label="جست‌وجو در گزارش‌های سیستمی"
-                className="admin-audit-filter admin-audit-filter--search"
+                className="audit-search-input admin-audit-filter admin-audit-filter--search"
               />
             </label>
             <select value={actionFilter} onChange={(event) => setActionFilter(event.target.value)} aria-label="فیلتر نوع رویداد" className="admin-audit-filter admin-audit-filter--select">
