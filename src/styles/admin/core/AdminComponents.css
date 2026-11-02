@@ -147,7 +147,7 @@
   box-shadow: var(--admin-content-shadow)}
 
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
-  .students-page-head,.offline-page-head,.messages-page-head,.mock-exam-page-head,
+  .students-toolbar,.offline-page-head,.messages-page-head,.mock-exam-page-head,
   .counseling-page-head,.notifications-page-head,.admin-page-heading,.admin-page-head,.page-header
 ) {
   padding: 15px 18px}
@@ -222,7 +222,7 @@
     gap: 12px}
 
   .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
-    .students-page-head,.offline-page-head,.messages-page-head,.mock-exam-page-head,
+    .students-toolbar,.offline-page-head,.messages-page-head,.mock-exam-page-head,
     .counseling-page-head,.notifications-page-head,.admin-page-heading,.admin-page-head,.page-header
   ) {
     padding: 13px}
@@ -1107,10 +1107,10 @@
   .student-import-card,.student-list-card,.student-detail-modal
 ){font-family:inherit!important;color:var(--admin-text)!important}
 .admin-shell .admin-main .admin-page-content .admin-students-page :is(
-  .students-page-head h2,.section-title h3,.student-chart-heading h3
+  .section-title h3,.student-chart-heading h3
 ){font-size:15px!important;line-height:1.55!important;font-weight:900!important;letter-spacing:0!important}
 .admin-shell .admin-main .admin-page-content .admin-students-page :is(
-  .students-page-head p,.import-copy p,.list-head>div:first-child>span,.student-term-note
+  .import-copy p,.list-head>div:first-child>span,.student-term-note
 ){color:var(--admin-sub)!important;font-size:11px!important;line-height:1.9!important}
 .admin-shell .admin-main .admin-page-content .admin-students-page .student-stat{font-size:11px!important;line-height:1.6!important}
 .admin-shell .admin-main .admin-page-content .admin-students-page .student-stat strong{
@@ -1214,7 +1214,7 @@
 
 /* Exact animated glass action language from Manage Admins. */
 .admin-shell .admin-main .admin-page-content .admin-students-page :is(
-  .primary-action,.secondary-action,.students-head-actions button,.student-section-switch button,
+  .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
   .student-term-switch button,.row-actions button,.student-detail-footer button,
   .preview-actions button,.student-bulk-selection button
 ){
@@ -1233,7 +1233,7 @@
   -webkit-tap-highlight-color:transparent;
 }
 .admin-shell .admin-main .admin-page-content .admin-students-page :is(
-  .primary-action,.secondary-action,.students-head-actions button,.student-section-switch button,
+  .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
   .student-term-switch button,.row-actions button,.student-detail-footer button,
   .preview-actions button,.student-bulk-selection button
 )::before{
@@ -1242,12 +1242,12 @@
   transform:skewX(28deg) translateX(-150%);transition:transform .55s ease;pointer-events:none;
 }
 .admin-shell .admin-main .admin-page-content .admin-students-page :is(
-  .primary-action,.secondary-action,.students-head-actions button,.student-section-switch button,
+  .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
   .student-term-switch button,.row-actions button,.student-detail-footer button,
   .preview-actions button,.student-bulk-selection button
 ):hover:not(:disabled),
 .admin-shell .admin-main .admin-page-content .admin-students-page :is(
-  .primary-action,.secondary-action,.students-head-actions button,.student-section-switch button,
+  .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
   .student-term-switch button,.row-actions button,.student-detail-footer button,
   .preview-actions button,.student-bulk-selection button
 ):focus-visible{
@@ -1257,17 +1257,17 @@
   box-shadow:0 11px 22px rgba(18,43,43,.085),0 0 10px rgba(72,209,204,.085),inset 0 1px 0 rgba(255,255,255,.72)!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-students-page :is(
-  .primary-action,.secondary-action,.students-head-actions button,.student-section-switch button,
+  .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
   .student-term-switch button,.row-actions button,.student-detail-footer button,
   .preview-actions button,.student-bulk-selection button
 ):hover:not(:disabled)::before,
 .admin-shell .admin-main .admin-page-content .admin-students-page :is(
-  .primary-action,.secondary-action,.students-head-actions button,.student-section-switch button,
+  .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
   .student-term-switch button,.row-actions button,.student-detail-footer button,
   .preview-actions button,.student-bulk-selection button
 ):focus-visible::before{transform:skewX(28deg) translateX(280%)}
 .admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-students-page :is(
-  .primary-action,.secondary-action,.students-head-actions button,.student-section-switch button,
+  .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
   .student-term-switch button,.row-actions button,.student-detail-footer button,
   .preview-actions button,.student-bulk-selection button
 ){
@@ -1278,12 +1278,12 @@
   box-shadow:0 8px 18px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.12)!important;
 }
 .admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-students-page :is(
-  .primary-action,.secondary-action,.students-head-actions button,.student-section-switch button,
+  .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
   .student-term-switch button,.row-actions button,.student-detail-footer button,
   .preview-actions button,.student-bulk-selection button
 ):hover:not(:disabled),
 .admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-students-page :is(
-  .primary-action,.secondary-action,.students-head-actions button,.student-section-switch button,
+  .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
   .student-term-switch button,.row-actions button,.student-detail-footer button,
   .preview-actions button,.student-bulk-selection button
 ):focus-visible{
@@ -1292,18 +1292,18 @@
   box-shadow:0 12px 24px rgba(0,0,0,.34),0 0 14px rgba(72,209,204,.12),inset 0 1px 0 rgba(255,255,255,.16)!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-students-page :is(
-  .primary-action,.secondary-action,.students-head-actions button,.student-section-switch button,
+  .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
   .student-term-switch button,.row-actions button,.student-detail-footer button,
   .preview-actions button,.student-bulk-selection button
 ):disabled{opacity:.45!important;cursor:not-allowed!important;transform:none!important}
 @media(prefers-reduced-motion:reduce){
   .admin-shell .admin-main .admin-page-content .admin-students-page :is(
-    .primary-action,.secondary-action,.students-head-actions button,.student-section-switch button,
+    .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
     .student-term-switch button,.row-actions button,.student-detail-footer button,
     .preview-actions button,.student-bulk-selection button
   ),
   .admin-shell .admin-main .admin-page-content .admin-students-page :is(
-    .primary-action,.secondary-action,.students-head-actions button,.student-section-switch button,
+    .primary-action,.secondary-action,.students-toolbar-actions button,.student-section-switch button,
     .student-term-switch button,.row-actions button,.student-detail-footer button,
     .preview-actions button,.student-bulk-selection button
   )::before{transition:none!important}
@@ -1340,6 +1340,13 @@
   margin-bottom:12px;
 }
 
+
+/* Student management uses the full content column; the legacy 1240px cap
+   caused an asymmetric gap beside the fixed sidebar. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-students-page{
+  max-width:none;
+  margin-inline:0;
+}
 
 /* Student list rows reuse the exact inset account-card surface from
    Manage Admins: Accounts defined. Keep table semantics and row actions intact. */
