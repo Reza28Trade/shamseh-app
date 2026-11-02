@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { JalaliDatePicker } from '../../components/JalaliDatePicker';
 import '../../styles/admin/pages/ManageRegistrations.css';
 
