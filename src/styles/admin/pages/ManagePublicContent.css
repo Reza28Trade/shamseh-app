@@ -23,3 +23,57 @@
 
 }
 
+
+
+/* Static JSX presentation rules extracted from the page component. */
+.admin-extracted-managepubliccontent-1{display:flex!important;align-items:center!important;gap:10px!important;margin-bottom:5px!important}
+.admin-extracted-managepubliccontent-2{font-size:19px!important;line-height:1.5!important;margin:0!important;font-weight:850!important}
+.admin-extracted-managepubliccontent-3{display:flex!important;gap:7px!important;flex-wrap:wrap!important}
+.admin-extracted-managepubliccontent-4{padding:12px!important;border-radius:10px!important;background:rgba(16,185,129,.1)!important;color:#10b981!important;font-size:12px!important}
+.admin-extracted-managepubliccontent-5{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;flex-wrap:wrap!important}
+.admin-extracted-managepubliccontent-6{margin:0!important;font-size:17px!important}
+.admin-extracted-managepubliccontent-7{margin:0!important;font-size:15px!important}
+.admin-extracted-managepubliccontent-8{display:grid!important;gap:6px!important;font-size:12px!important;font-weight:750!important}
+.admin-extracted-managepubliccontent-9{display:grid!important;gap:6px!important;font-size:12px!important;font-weight:750!important}
+.admin-extracted-managepubliccontent-10{display:grid!important;grid-template-columns:repeat(auto-fit, minmax(min(100%, 220px), 1fr))!important;gap:12px!important}
+.admin-extracted-managepubliccontent-11{display:grid!important;gap:6px!important;font-size:12px!important;font-weight:750!important}
+.admin-extracted-managepubliccontent-12{display:grid!important;gap:6px!important;font-size:12px!important;font-weight:750!important}
+.admin-extracted-managepubliccontent-13{display:grid!important;gap:8px!important;font-size:12px!important;font-weight:750!important}
+.admin-extracted-managepubliccontent-14{display:flex!important;align-items:center!important;gap:10px!important;flex-wrap:wrap!important}
+.admin-extracted-managepubliccontent-15{display:none!important}
+.admin-extracted-managepubliccontent-16{display:grid!important;gap:5px!important;font-weight:500!important}
+.admin-extracted-managepubliccontent-17{width:100px!important;height:64px!important;object-fit:cover!important;border-radius:7px!important}
+.admin-extracted-managepubliccontent-18{display:flex!important;align-items:center!important;gap:8px!important;font-size:12px!important;cursor:pointer!important}
+.admin-extracted-managepubliccontent-19{display:flex!important;gap:8px!important;flex-wrap:wrap!important}
+.admin-extracted-managepubliccontent-20{display:grid!important;gap:10px!important}
+.admin-extracted-managepubliccontent-21{flex:1 1 260px!important;min-width:0!important}
+.admin-extracted-managepubliccontent-22{display:flex!important;align-items:center!important;gap:8px!important;flex-wrap:wrap!important;margin-bottom:6px!important}
+.admin-extracted-managepubliccontent-23{font-size:13px!important}
+.admin-extracted-managepubliccontent-24{display:flex!important;gap:7px!important}
+.admin-extracted-managepubliccontent-25{display:flex!important;flex-direction:column!important;gap:7px!important;font-size:12px!important;font-weight:800!important}
+.admin-extracted-managepubliccontent-26{display:grid!important;grid-template-columns:repeat(auto-fit, minmax(min(100%, 320px), 1fr))!important;gap:14px!important}
+.admin-extracted-managepubliccontent-27{display:flex!important;align-items:center!important;gap:10px!important;flex-wrap:wrap!important}
+.admin-extracted-managepubliccontent-28{display:flex!important;flex-direction:column!important;gap:14px!important}
+.admin-extracted-managepubliccontent-29{position:relative!important;flex:1 1 220px!important}
+.admin-extracted-managepubliccontent-30{position:absolute!important;right:11px!important;top:13px!important}
+.admin-extracted-managepubliccontent-31{margin:0!important;font-size:15px!important}
+.admin-extracted-managepubliccontent-32{display:grid!important;grid-template-columns:repeat(auto-fit, minmax(min(100%, 220px), 1fr))!important;gap:12px!important}
+.admin-extracted-managepubliccontent-33{display:flex!important;flex-direction:column!important;gap:6px!important;font-size:11px!important}
+.admin-extracted-managepubliccontent-34{display:flex!important;flex-direction:column!important;gap:6px!important;font-size:11px!important}
+.admin-extracted-managepubliccontent-35{display:flex!important;flex-direction:column!important;gap:6px!important;font-size:12px!important;font-weight:700!important}
+.admin-extracted-managepubliccontent-36{display:flex!important;flex-direction:column!important;gap:6px!important;font-size:11px!important}
+.admin-extracted-managepubliccontent-37{font-size:13px!important}
+.admin-extracted-managepubliccontent-38{display:grid!important;grid-template-columns:repeat(auto-fit, minmax(min(100%, 180px), 1fr))!important;gap:12px!important}
+.admin-extracted-managepubliccontent-39{display:flex!important;flex-direction:column!important;gap:6px!important;font-size:11px!important}
+.admin-extracted-managepubliccontent-40{display:flex!important;flex-direction:column!important;gap:6px!important;font-size:11px!important}
+.admin-extracted-managepubliccontent-41{display:flex!important;flex-direction:column!important;gap:6px!important;font-size:11px!important}
+.admin-extracted-managepubliccontent-42{display:flex!important;flex-direction:column!important;gap:6px!important;font-size:11px!important}
+.admin-extracted-managepubliccontent-43{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;flex-wrap:wrap!important}
+.admin-extracted-managepubliccontent-44{font-size:12px!important}
+.admin-extracted-managepubliccontent-45{width:100%!important;border-collapse:collapse!important;min-width:620px!important;font-size:12px!important}
+.admin-extracted-managepubliccontent-46{display:flex!important;align-items:center!important;gap:8px!important;font-size:12px!important;cursor:pointer!important}
+.admin-extracted-managepubliccontent-47{display:flex!important;gap:8px!important;flex-wrap:wrap!important}
+.admin-extracted-managepubliccontent-48{flex:1 1 250px!important;min-width:0!important}
+.admin-extracted-managepubliccontent-49{display:flex!important;align-items:center!important;gap:8px!important;flex-wrap:wrap!important;margin-bottom:7px!important}
+.admin-extracted-managepubliccontent-50{font-size:14px!important}
+.admin-extracted-managepubliccontent-51{display:flex!important;gap:8px!important}
