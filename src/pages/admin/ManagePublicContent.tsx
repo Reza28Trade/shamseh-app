@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { BookOpenText, FileText, Pencil, Plus, Save, Search, Trash2 } from 'lucide-react';
-import { useStore } from '../../store/useStore';
 import '../../styles/admin/pages/ManagePublicContent.css';
 
 type ContentRecord = {
@@ -49,8 +48,6 @@ const calculateCoverage = (questions: QuestionRow[], startQuestion: number) => {
 };
 
 export const ManagePublicContent: React.FC = () => {
-  const theme = useStore((state) => state.theme);
-  const dark = theme === 'dark';
   const colors = {
     bg: 'var(--admin-control)',
     alt: 'var(--admin-inner)',
