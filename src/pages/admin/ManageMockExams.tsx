@@ -349,7 +349,7 @@ export const ManageMockExams: React.FC = () => {
   };
 
   return (
-    <div className="admin-legacy-page admin-mock-exams-page" style={{ display: 'flex', flexDirection: 'column', gap: 24, width: '100%', direction: 'rtl' }}>
+    <div className="admin-legacy-page admin-mock-exams-page" className="admin-extracted-managemockexams-1">
       {error && <div style={errorBox}>{error}</div>}
 
       <div className="mock-exam-dashboard">
@@ -382,7 +382,7 @@ export const ManageMockExams: React.FC = () => {
             <input value={form.field} onChange={(e) => setForm({ ...form, field: e.target.value })} placeholder="مثال: پژوهش هنر" style={input} required />
           </Field>
           <Field label="تاریخ و ساعت آزمون *">
-            <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+            <div className="admin-extracted-managemockexams-2">
               <button
                 type="button"
                 onClick={openCalendar}
@@ -390,11 +390,11 @@ export const ManageMockExams: React.FC = () => {
               >
                 {selectedDate ? `${selectedDate.jd} ${monthNames[selectedDate.jm - 1]} ${selectedDate.jy}` : 'انتخاب تاریخ شمسی'}
               </button>
-              <div style={{ display: 'flex', gap: 7, alignItems: 'center' }}>
+              <div className="admin-extracted-managemockexams-3">
                 <select value={hour} onChange={e => setHour(e.target.value)} style={{ ...input, width: 72 }}>
                   {Array.from({ length: 24 }, (_, i) => <option key={i} value={String(i).padStart(2,'0')}>{String(i).padStart(2,'0')}</option>)}
                 </select>
-                <span style={{ color: '#888', fontWeight: 800 }}>:</span>
+                <span className="admin-extracted-managemockexams-4">:</span>
                 <select value={minute} onChange={e => setMinute(e.target.value)} style={{ ...input, width: 72 }}>
                   {['00','15','30','45'].map(v => <option key={v} value={v}>{v}</option>)}
                 </select>
@@ -411,7 +411,7 @@ export const ManageMockExams: React.FC = () => {
           </Field>
         </div>
 
-        <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-start' }}>
+        <div className="admin-extracted-managemockexams-5">
           {editingId && <button type="button" onClick={resetForm} style={secondaryButton}>انصراف</button>}
           <button type="submit" disabled={saving} style={primaryButton}>
             {saving ? 'در حال ذخیره...' : editingId ? 'ذخیره تغییرات' : 'ثبت آزمون'}
@@ -421,20 +421,20 @@ export const ManageMockExams: React.FC = () => {
 
       {calendarOpen && (
         <div
-          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.65)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}
+          className="admin-extracted-managemockexams-6"
           onClick={() => setCalendarOpen(false)}
         >
           <div
             onClick={e => e.stopPropagation()}
-            style={{ width: 'min(390px, 100%)', background: '#141419', border: '1px solid #333', borderRadius: 18, padding: 18, boxShadow: '0 20px 60px rgba(0,0,0,.45)' }}
+            className="admin-extracted-managemockexams-7"
           >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+            <div className="admin-extracted-managemockexams-8">
               <button type="button" onClick={() => shiftMonth(1)} style={calendarNavButton}>‹</button>
-              <strong style={{ fontSize: 14 }}>{monthNames[calendarMonth.jm - 1]} {calendarMonth.jy}</strong>
+              <strong className="admin-extracted-managemockexams-9">{monthNames[calendarMonth.jm - 1]} {calendarMonth.jy}</strong>
               <button type="button" onClick={() => shiftMonth(-1)} style={calendarNavButton}>›</button>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 5, textAlign: 'center' }}>
-              {weekdays.map(day => <div key={day} style={{ color: '#888', fontSize: 10, padding: '6px 0' }}>{day}</div>)}
+            <div className="admin-extracted-managemockexams-10">
+              {weekdays.map(day => <div key={day} className="admin-extracted-managemockexams-11">{day}</div>)}
               {days.map((jd, i) => jd === null ? <div key={`empty-${i}`} /> : (
                 <button
                   type="button"
@@ -454,9 +454,9 @@ export const ManageMockExams: React.FC = () => {
                 >{jd}</button>
               ))}
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 16, borderTop: '1px solid #26262d', paddingTop: 14 }}>
-              <span style={{ color: '#888', fontSize: 10 }}>روزهای گذشته قابل انتخاب نیستند</span>
-              <button type="button" onClick={() => setCalendarOpen(false)} style={{ background: '#38bdf8', color: '#071018', border: 0, padding: '8px 15px', borderRadius: 8, fontWeight: 800, cursor: 'pointer', fontSize: 11 }}>تأیید تاریخ</button>
+            <div className="admin-extracted-managemockexams-12">
+              <span className="admin-extracted-managemockexams-13">روزهای گذشته قابل انتخاب نیستند</span>
+              <button type="button" onClick={() => setCalendarOpen(false)} className="admin-extracted-managemockexams-14">تأیید تاریخ</button>
             </div>
           </div>
         </div>
@@ -506,26 +506,26 @@ export const ManageMockExams: React.FC = () => {
                 display: 'grid',
                 gap: 14,
               }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16 }}>
+                <div className="admin-extracted-managemockexams-15">
                   <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 9, flexWrap: 'wrap' }}>
-                      <strong style={{ color: '#fff', fontSize: 14 }}>{exam.title}</strong>
+                    <div className="admin-extracted-managemockexams-16">
+                      <strong className="admin-extracted-managemockexams-17">{exam.title}</strong>
                       <span style={badge}>{statusLabels[exam.status]}</span>
                     </div>
-                    <div style={{ color: '#94a3b8', fontSize: 11, marginTop: 8 }}>
+                    <div className="admin-extracted-managemockexams-18">
                       {exam.level} · {exam.field} · {new Date(exam.examDate).toLocaleString('fa-IR')}
                     </div>
-                    <div style={{ color: '#64748b', fontSize: 11, marginTop: 6, display: 'flex', alignItems: 'center', gap: 5 }}>
+                    <div className="admin-extracted-managemockexams-19">
                       <Users size={13} />
                       {exam.participants.length} هنرجوی ثبت‌نام‌شده
                     </div>
                     {exam.examUrl && (
-                      <a href={exam.examUrl} target="_blank" rel="noreferrer" style={{ color: '#38bdf8', fontSize: 11, display: 'inline-flex', alignItems: 'center', gap: 5, marginTop: 7 }}>
+                      <a href={exam.examUrl} target="_blank" rel="noreferrer" className="admin-extracted-managemockexams-20">
                         <Link2 size={13} /> لینک سایت آزمون <ExternalLink size={11} />
                       </a>
                     )}
                   </div>
-                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  <div className="admin-extracted-managemockexams-21">
                     <button onClick={() => editExam(exam)} style={secondaryButton}>
                       <Pencil size={14} /> ویرایش
                     </button>
@@ -546,8 +546,8 @@ export const ManageMockExams: React.FC = () => {
                 </div>
 
                 {participantExamId === exam.id && (
-                  <div style={{ borderTop: '1px solid rgba(255,255,255,.06)', paddingTop: 14 }}>
-                    <div style={{ color: '#cbd5e1', fontSize: 12, fontWeight: 800, marginBottom: 10 }}>
+                  <div className="admin-extracted-managemockexams-22">
+                    <div className="admin-extracted-managemockexams-23">
                       انتخاب هنرجویان ثبت‌نام‌شده در این آزمون
                     </div>
                     <div className="mock-participant-toolbar">
