@@ -150,7 +150,7 @@ export function ManageRegistrations(){
       detail:item.transferReference?'شناسه انتقال: '+item.transferReference+' · '+item.reason:item.reason,
     })),
   ].sort((a,b)=>new Date(b.date).getTime()-new Date(a.date).getTime());
-  return <section className="admin-finance-registration-page" className="admin-extracted-manageregistrations-1">
+  return <section className="admin-finance-registration-page admin-extracted-manageregistrations-1">
     <div className="admin-extracted-manageregistrations-2">
       {[
         {label:'ثبت‌نام تأییدشده',value:new Intl.NumberFormat('fa-IR').format(approvedRegistrations.length),tone:'var(--admin-text)'},
