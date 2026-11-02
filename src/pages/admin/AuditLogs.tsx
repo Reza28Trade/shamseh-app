@@ -199,7 +199,7 @@ export const AuditLogs: React.FC = () => {
                       <td className="admin-extracted-auditlogs-28">{log.performedBy}</td>
                       <td className="admin-extracted-auditlogs-29">
                         {log.details == null ? <span className="admin-extracted-auditlogs-30">—</span> : (
-                          <button type="button" aria-expanded={detailsOpen === log.id} onClick={() => setDetailsOpen((current) => current === log.id ? null : log.id)} className="admin-extracted-auditlogs-31 admin-action-button">
+                          <button type="button" aria-expanded={detailsOpen === log.id} onClick={() => setDetailsOpen((current) => current === log.id ? null : log.id)} className="admin-extracted-auditlogs-31 admin-action-button admin-logs-details-button">
                             {detailsOpen === log.id ? 'بستن جزئیات' : 'مشاهده'}
                           </button>
                         )}
