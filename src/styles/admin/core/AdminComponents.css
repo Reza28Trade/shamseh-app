@@ -131,7 +131,7 @@
    approved Dashboard and Manage Admins reference screens. */
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) :is(
   .students-page-head,.student-chart-card,.student-form-card,.student-import-card,.student-list-card,
-  .course-toolbar,.course-form,.course-list,.course-stat,.course-card,
+  .course-toolbar,.course-form,.course-list,.course-stat,.course-card,.modal,
   .offline-page-head,.offline-list-card,.messages-page-head,.messages-ticket-section,.messages-detail-section,
   .mock-exam-page-head,.mock-exam-list-card,.counseling-page-head,.counseling-account-section,
   .counseling-conversation-section,.notifications-page-head,.notifications-form-card,
@@ -381,6 +381,34 @@
   height: 100%;
   border-radius: inherit;
   background: var(--admin-accent)}
+
+
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .danger-action {
+  border: 1px solid var(--admin-status-error);
+  background: var(--admin-status-error-soft);
+  color: var(--admin-status-error)}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-item-title {
+  color: var(--admin-text);
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1.6}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-muted-text {
+  color: var(--admin-sub);
+  font-size: 10px;
+  line-height: 1.75}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-field-label {
+  display: block;
+  margin: 0 0 6px;
+  color: var(--admin-text);
+  font-size: 10px;
+  font-weight: 750}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-media-thumb {
+  border: 1px solid var(--admin-border);
+  border-radius: var(--shamseh-radius-md);
+  background: var(--admin-inner);
+  color: var(--admin-sub)}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .cover-file {
+  cursor: pointer}
 
 /* Shared controls and nested module surfaces. */
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) button:not(.primary-action):not(.course-btn.primary):not(.messages-send):not(.notifications-submit):not([data-variant="primary"]) {
