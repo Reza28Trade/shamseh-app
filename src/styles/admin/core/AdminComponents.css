@@ -2400,6 +2400,11 @@
   border-left: 1px solid var(--admin-course-panel-border);
   border-radius: 10px 0 0 10px;
 }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table tbody td[colspan] {
+  width: 100%;
+  border: 1px solid var(--admin-course-panel-border);
+  border-radius: 10px;
+}
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table tbody tr:hover td {
   background: var(--admin-accent-soft);
 }
