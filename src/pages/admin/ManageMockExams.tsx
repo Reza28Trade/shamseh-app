@@ -350,7 +350,7 @@ export const ManageMockExams: React.FC = () => {
 
   return (
     <div className="admin-legacy-page admin-mock-exams-page admin-extracted-managemockexams-1">
-      {error && <div style={errorBox}>{error}</div>}
+      {error && <div className="admin-mock-error">{error}</div>}
 
       <div className="mock-exam-dashboard">
         <div className="mock-exam-stats">
@@ -361,59 +361,59 @@ export const ManageMockExams: React.FC = () => {
         </div>
       </div>
 
-      <form onSubmit={submit} style={card}>
-        <div style={sectionTitle}>
-          <Plus size={17} color="#ff3366" />
+      <form onSubmit={submit} className="admin-mock-card">
+        <div className="admin-mock-section-title">
+          <Plus size={17} color="var(--admin-accent)" />
           {editingId ? 'ویرایش آزمون' : 'تعریف آزمون جدید'}
         </div>
 
-        <div style={grid}>
+        <div className="admin-mock-form-grid">
           <Field label="عنوان آزمون *">
-            <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="مثال: آزمون آزمایشی مهر" style={input} required />
+            <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="مثال: آزمون آزمایشی مهر" className="admin-mock-input" required />
           </Field>
           <Field label="مقطع *">
-            <select value={form.level} onChange={(e) => setForm({ ...form, level: e.target.value })} style={input} required>
+            <select value={form.level} onChange={(e) => setForm({ ...form, level: e.target.value })} className="admin-mock-input" required>
               <option value="">انتخاب مقطع</option>
               <option value="ارشد">ارشد</option>
               <option value="دکتری">دکتری</option>
             </select>
           </Field>
           <Field label="رشته *">
-            <input value={form.field} onChange={(e) => setForm({ ...form, field: e.target.value })} placeholder="مثال: پژوهش هنر" style={input} required />
+            <input value={form.field} onChange={(e) => setForm({ ...form, field: e.target.value })} placeholder="مثال: پژوهش هنر" className="admin-mock-input" required />
           </Field>
           <Field label="تاریخ و ساعت آزمون *">
             <div className="admin-extracted-managemockexams-2">
               <button
                 type="button"
                 onClick={openCalendar}
-                style={{ ...input, flex: 1, minWidth: 180, textAlign: 'right', cursor: 'pointer' }}
+                className="admin-mock-input admin-mock-input--date"
               >
                 {selectedDate ? `${selectedDate.jd} ${monthNames[selectedDate.jm - 1]} ${selectedDate.jy}` : 'انتخاب تاریخ شمسی'}
               </button>
               <div className="admin-extracted-managemockexams-3">
-                <select value={hour} onChange={e => setHour(e.target.value)} style={{ ...input, width: 72 }}>
+                <select value={hour} onChange={e => setHour(e.target.value)} className="admin-mock-input admin-mock-input--time">
                   {Array.from({ length: 24 }, (_, i) => <option key={i} value={String(i).padStart(2,'0')}>{String(i).padStart(2,'0')}</option>)}
                 </select>
                 <span className="admin-extracted-managemockexams-4">:</span>
-                <select value={minute} onChange={e => setMinute(e.target.value)} style={{ ...input, width: 72 }}>
+                <select value={minute} onChange={e => setMinute(e.target.value)} className="admin-mock-input admin-mock-input--time">
                   {['00','15','30','45'].map(v => <option key={v} value={v}>{v}</option>)}
                 </select>
               </div>
             </div>
           </Field>
           <Field label="وضعیت">
-            <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value as MockExamStatus })} style={input}>
+            <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value as MockExamStatus })} className="admin-mock-input">
               {Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
             </select>
           </Field>
           <Field label="لینک سایت آزمون">
-            <input type="url" value={form.examUrl} onChange={(e) => setForm({ ...form, examUrl: e.target.value })} placeholder="https://exam.example.ir/..." style={input} />
+            <input type="url" value={form.examUrl} onChange={(e) => setForm({ ...form, examUrl: e.target.value })} placeholder="https://exam.example.ir/..." className="admin-mock-input" />
           </Field>
         </div>
 
         <div className="admin-extracted-managemockexams-5">
-          {editingId && <button type="button" onClick={resetForm} style={secondaryButton}>انصراف</button>}
-          <button type="submit" disabled={saving} style={primaryButton}>
+          {editingId && <button type="button" onClick={resetForm} className="admin-mock-secondary-button">انصراف</button>}
+          <button type="submit" disabled={saving} className="admin-mock-primary-button">
             {saving ? 'در حال ذخیره...' : editingId ? 'ذخیره تغییرات' : 'ثبت آزمون'}
           </button>
         </div>
@@ -429,9 +429,9 @@ export const ManageMockExams: React.FC = () => {
             className="admin-extracted-managemockexams-7"
           >
             <div className="admin-extracted-managemockexams-8">
-              <button type="button" onClick={() => shiftMonth(1)} style={calendarNavButton}>‹</button>
+              <button type="button" onClick={() => shiftMonth(1)} className="admin-mock-calendar-nav">‹</button>
               <strong className="admin-extracted-managemockexams-9">{monthNames[calendarMonth.jm - 1]} {calendarMonth.jy}</strong>
-              <button type="button" onClick={() => shiftMonth(-1)} style={calendarNavButton}>›</button>
+              <button type="button" onClick={() => shiftMonth(-1)} className="admin-mock-calendar-nav">›</button>
             </div>
             <div className="admin-extracted-managemockexams-10">
               {weekdays.map(day => <div key={day} className="admin-extracted-managemockexams-11">{day}</div>)}
@@ -464,13 +464,13 @@ export const ManageMockExams: React.FC = () => {
 
       <div className="mock-exam-dashboard">
 
-        <div style={card} className="mock-exam-list-card">
+        <div className="admin-mock-card" className="mock-exam-list-card">
           <div className="mock-exam-list-head">
-            <div style={sectionTitle}>
-              <CalendarDays size={17} color="#ff3366" />
+            <div className="admin-mock-section-title">
+              <CalendarDays size={17} color="var(--admin-accent)" />
               آزمون‌های ثبت‌شده ({filteredExams.length} از {exams.length})
             </div>
-            <button type="button" onClick={exportExams} style={secondaryButton} disabled={filteredExams.length === 0}>
+            <button type="button" onClick={exportExams} className="admin-mock-secondary-button" disabled={filteredExams.length === 0}>
               <Download size={14} /> خروجی Excel
             </button>
           </div>
@@ -490,11 +490,11 @@ export const ManageMockExams: React.FC = () => {
             </label>
           </div>
           {loading ? (
-            <p style={muted}>در حال دریافت اطلاعات...</p>
+            <p className="admin-mock-muted">در حال دریافت اطلاعات...</p>
           ) : exams.length === 0 ? (
-            <p style={muted}>هنوز آزمونی تعریف نشده است.</p>
+            <p className="admin-mock-muted">هنوز آزمونی تعریف نشده است.</p>
           ) : filteredExams.length === 0 ? (
-            <p style={muted}>با فیلترهای انتخاب‌شده آزمونی پیدا نشد.</p>
+            <p className="admin-mock-muted">با فیلترهای انتخاب‌شده آزمونی پیدا نشد.</p>
           ) : (
           <div className="mock-exam-scroll-list">
             {filteredExams.map((exam) => (
@@ -510,7 +510,7 @@ export const ManageMockExams: React.FC = () => {
                   <div>
                     <div className="admin-extracted-managemockexams-16">
                       <strong className="admin-extracted-managemockexams-17">{exam.title}</strong>
-                      <span style={badge}>{statusLabels[exam.status]}</span>
+                      <span className="admin-mock-badge">{statusLabels[exam.status]}</span>
                     </div>
                     <div className="admin-extracted-managemockexams-18">
                       {exam.level} · {exam.field} · {new Date(exam.examDate).toLocaleString('fa-IR')}
@@ -526,7 +526,7 @@ export const ManageMockExams: React.FC = () => {
                     )}
                   </div>
                   <div className="admin-extracted-managemockexams-21">
-                    <button onClick={() => editExam(exam)} style={secondaryButton}>
+                    <button onClick={() => editExam(exam)} className="admin-mock-secondary-button">
                       <Pencil size={14} /> ویرایش
                     </button>
                     <button onClick={() => {
@@ -539,7 +539,7 @@ export const ManageMockExams: React.FC = () => {
                           setShowSelectedOnly(false);
                           setPendingParticipantIds(exam.participants.map(item => item.student.id));
                         }
-                      }} style={secondaryButton}>
+                      }} className="admin-mock-secondary-button">
                       <Users size={14} /> شرکت‌کنندگان
                     </button>
                   </div>
@@ -696,113 +696,9 @@ export const ManageMockExams: React.FC = () => {
 
 const Field: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
   <div>
-    <label style={labelStyle}>{label}</label>
+    <label className="admin-mock-field-label">{label}</label>
     {children}
   </div>
 );
 
-const labelStyle: React.CSSProperties = {
-  color: '#94a3b8',
-  fontSize: 11,
-  fontWeight: 700,
-  display: 'block',
-  marginBottom: 9,
-};
 
-const input: React.CSSProperties = {
-  width: '100%',
-  boxSizing: 'border-box',
-  background: 'rgba(20,20,25,.85)',
-  border: '1px solid rgba(255,255,255,.09)',
-  color: '#fff',
-  padding: '11px 13px',
-  borderRadius: 11,
-  outline: 'none',
-  fontSize: 12,
-};
-
-const card: React.CSSProperties = {
-  background: 'rgba(14,14,17,.75)',
-  border: '1px solid rgba(255,255,255,.08)',
-  padding: 24,
-  borderRadius: 20,
-  display: 'flex',
-  flexDirection: 'column',
-  gap: 18,
-};
-
-const grid: React.CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))',
-  gap: 16,
-};
-
-const sectionTitle: React.CSSProperties = {
-  color: '#fff',
-  fontSize: 14,
-  fontWeight: 800,
-  display: 'flex',
-  alignItems: 'center',
-  gap: 8,
-  borderBottom: '1px solid rgba(255,255,255,.06)',
-  paddingBottom: 12,
-};
-
-const muted: React.CSSProperties = {
-  color: '#64748b',
-  fontSize: 12,
-  textAlign: 'center',
-  padding: 20,
-};
-
-const badge: React.CSSProperties = {
-  fontSize: 10,
-  color: '#ffb4c4',
-  background: 'rgba(109,0,26,.25)',
-  padding: '3px 8px',
-  borderRadius: 7,
-};
-
-const calendarNavButton: React.CSSProperties = {
-  background: '#1d1d24',
-  color: '#fff',
-  border: '1px solid #333',
-  borderRadius: 8,
-  width: 38,
-  height: 38,
-  cursor: 'pointer',
-};
-
-const primaryButton: React.CSSProperties = {
-  border: 0,
-  borderRadius: 11,
-  padding: '11px 18px',
-  background: 'linear-gradient(135deg,#6D001A,#a21c3a)',
-  color: '#fff',
-  fontWeight: 800,
-  fontSize: 12,
-  cursor: 'pointer',
-};
-
-const secondaryButton: React.CSSProperties = {
-  border: '1px solid rgba(255,255,255,.1)',
-  borderRadius: 10,
-  padding: '9px 13px',
-  background: 'rgba(255,255,255,.04)',
-  color: '#e2e8f0',
-  fontWeight: 700,
-  fontSize: 11,
-  cursor: 'pointer',
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: 6,
-};
-
-const errorBox: React.CSSProperties = {
-  background: 'rgba(239,68,68,.08)',
-  border: '1px solid rgba(239,68,68,.2)',
-  color: '#fca5a5',
-  padding: '12px 15px',
-  borderRadius: 12,
-  fontSize: 12,
-};
