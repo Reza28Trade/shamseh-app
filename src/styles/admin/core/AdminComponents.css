@@ -2497,109 +2497,173 @@
 }
 
 
-/* Audit table geometry: one continuous dashboard-style row surface, RTL aligned. */
-.admin-shell .admin-main .admin-page-content .admin-legacy-page .admin-data-table-wrap:has(table.admin-audit-table) {
-  direction:rtl;
-  width:100%;
-  max-width:100%;
-  min-width:0;
-  overflow:auto;
-  max-height:min(720px,72vh);
-  padding:7px;
+/* Audit log table: semantic table layout with one continuous surface per row. */
+.admin-shell .admin-main .admin-page-content .admin-logs-page .admin-logs-table-wrap {
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  max-height:min(700px,72vh)!important;
+  overflow-x:auto!important;
+  overflow-y:auto!important;
+  padding:7px!important;
+  direction:rtl!important;
+  overscroll-behavior:contain;
+  scrollbar-gutter:stable;
+  scrollbar-width:thin;
+  scrollbar-color:var(--admin-border) transparent;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page table.admin-audit-table {
-  display:grid;
-  direction:rtl;
-  width:100%;
-  min-width:900px;
-  table-layout:auto;
-  border:0;
-  border-collapse:separate;
-  border-spacing:0;
-  background:transparent;
+.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table {
+  display:table!important;
+  direction:rtl!important;
+  width:100%!important;
+  min-width:860px!important;
+  max-width:none!important;
+  table-layout:fixed!important;
+  border:0!important;
+  border-collapse:separate!important;
+  border-spacing:0 8px!important;
+  background:transparent!important;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page table.admin-audit-table thead,
-.admin-shell .admin-main .admin-page-content .admin-legacy-page table.admin-audit-table tbody {
-  display:grid;
-  width:100%;
-  min-width:0;
+.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table col.audit-col-time {width:17%}
+.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table col.audit-col-action {width:21%}
+.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table col.audit-col-entity {width:25%}
+.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table col.audit-col-user {width:15%}
+.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table col.audit-col-details {width:22%}
+.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table thead {
+  display:table-header-group!important;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page table.admin-audit-table thead {
-  position:sticky;
-  top:0;
-  z-index:3;
+.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table thead tr {
+  display:table-row!important;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page table.admin-audit-table tr {
-  display:grid;
-  grid-template-columns:minmax(145px,1.05fr) minmax(175px,1.25fr) minmax(175px,1.25fr) minmax(110px,.8fr) minmax(90px,.65fr);
-  direction:rtl;
-  width:100%;
-  min-width:0;
+.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table thead th {
+  position:sticky!important;
+  top:0!important;
+  z-index:4!important;
+  display:table-cell!important;
+  padding:11px 13px!important;
+  border:0!important;
+  border-bottom:1px solid var(--admin-content-border)!important;
+  background:var(--admin-content-inner)!important;
+  color:var(--admin-sub)!important;
+  box-shadow:none!important;
+  font-size:10px!important;
+  font-weight:850!important;
+  line-height:1.7!important;
+  text-align:right!important;
+  white-space:nowrap!important;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page table.admin-audit-table thead th {
-  min-width:0;
-  background:var(--admin-content-inner);
-  box-shadow:none;
-  overflow-wrap:anywhere;
+.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table thead th:first-child {border-radius:0 10px 10px 0!important}
+.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table thead th:last-child {border-radius:10px 0 0 10px!important}
+.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table tbody {
+  display:table-row-group!important;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page table.admin-audit-table tbody {
-  gap:8px;
-  padding-top:8px;
+.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table tbody tr.admin-audit-row {
+  display:table-row!important;
+  min-height:0!important;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page table.admin-audit-table tbody tr.admin-audit-row {
-  min-height:62px;
-  align-items:stretch;
-  border:1px solid rgba(255,255,255,.62);
-  border-radius:12px;
-  background:var(--admin-dashboard-row-surface);
-  box-shadow:inset 3px 3px 7px rgba(177,169,157,.38),inset -3px -3px 7px rgba(255,255,255,.82);
-  overflow:hidden;
+.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table tbody tr.admin-audit-row td {
+  display:table-cell!important;
+  min-width:0!important;
+  padding:13px 14px!important;
+  border-top:1px solid rgba(255,255,255,.62)!important;
+  border-bottom:1px solid rgba(255,255,255,.62)!important;
+  border-inline:0!important;
+  border-radius:0!important;
+  background:var(--admin-dashboard-row-surface)!important;
+  background-image:none!important;
+  color:var(--admin-text)!important;
+  box-shadow:none!important;
+  font-size:11px!important;
+  line-height:1.8!important;
+  text-align:right!important;
+  vertical-align:middle!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
 }
-.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-legacy-page table.admin-audit-table tbody tr.admin-audit-row {
-  border-color:rgba(255,255,255,.045);
-  box-shadow:inset 3px 3px 7px rgba(12,11,11,.55),inset -3px -3px 7px rgba(52,48,48,.42);
+.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table tbody tr.admin-audit-row td:first-child {
+  border-right:1px solid rgba(255,255,255,.62)!important;
+  border-radius:0 12px 12px 0!important;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page table.admin-audit-table tbody tr.admin-audit-row:hover {
+.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table tbody tr.admin-audit-row td:last-child {
+  border-left:1px solid rgba(255,255,255,.62)!important;
+  border-radius:12px 0 0 12px!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-logs-page table.admin-audit-table tbody tr.admin-audit-row td {
+  border-top-color:rgba(255,255,255,.045)!important;
+  border-bottom-color:rgba(255,255,255,.045)!important;
+  background:var(--admin-dashboard-row-surface)!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-logs-page table.admin-audit-table tbody tr.admin-audit-row td:first-child {border-right-color:rgba(255,255,255,.045)!important}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-logs-page table.admin-audit-table tbody tr.admin-audit-row td:last-child {border-left-color:rgba(255,255,255,.045)!important}
+.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table tbody tr.admin-audit-row:hover td {
   filter:brightness(1.015);
+  box-shadow:none!important;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page table.admin-audit-table tbody tr.admin-audit-row td {
-  display:flex;
-  align-items:center;
-  min-width:0;
-  padding:12px 13px;
-  border:0;
-  border-radius:0;
-  background:transparent;
-  box-shadow:none;
-  overflow-wrap:anywhere;
-  word-break:normal;
+.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table tbody tr.admin-audit-detail-row {
+  display:table-row!important;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page table.admin-audit-table tbody tr.admin-audit-row td + td {
-  border-inline-start:1px solid var(--admin-content-border);
+.admin-shell .admin-main .admin-page-content .admin-logs-page table.admin-audit-table tbody tr.admin-audit-detail-row td {
+  display:table-cell!important;
+  padding:14px!important;
+  border:1px solid var(--admin-course-panel-border)!important;
+  border-radius:12px!important;
+  background:var(--admin-content-inner)!important;
+  box-shadow:none!important;
 }
-.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-legacy-page table.admin-audit-table tbody tr.admin-audit-row td + td {
-  border-inline-start-color:rgba(255,255,255,.055);
+.admin-shell .admin-main .admin-page-content .admin-logs-page .admin-logs-toolbar {
+  display:grid!important;
+  grid-template-columns:minmax(150px,1fr) minmax(0,2fr)!important;
+  align-items:center!important;
+  gap:14px!important;
+  width:100%!important;
+  margin-bottom:16px!important;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page table.admin-audit-table tbody tr.admin-audit-detail-row {
-  display:grid;
-  grid-template-columns:minmax(0,1fr);
-  width:100%;
+.admin-shell .admin-main .admin-page-content .admin-logs-page .admin-logs-toolbar-actions {
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  grid-template-areas:"filters refresh"!important;
+  align-items:center!important;
+  gap:10px!important;
+  min-width:0!important;
+  width:100%!important;
 }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page table.admin-audit-table tbody tr.admin-audit-detail-row td {
-  display:block;
-  width:100%;
-  min-width:0;
-  padding:14px;
-  border:1px solid var(--admin-course-panel-border);
-  border-radius:12px;
-  background:var(--admin-content-inner);
-  box-shadow:none;
+.admin-shell .admin-main .admin-page-content .admin-logs-page .admin-logs-toolbar-actions > .admin-extracted-auditlogs-11 {
+  grid-area:filters!important;
+  display:grid!important;
+  grid-template-columns:minmax(220px,1.4fr) minmax(190px,1fr)!important;
+  align-items:center!important;
+  gap:10px!important;
+  min-width:0!important;
+  width:100%!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-logs-page .admin-logs-toolbar-actions > .admin-logs-refresh {
+  grid-area:refresh!important;
+  justify-self:end!important;
+  white-space:nowrap!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-logs-page .audit-search-field {
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-logs-page .admin-audit-filter--select {
+  width:100%!important;
+  min-width:0!important;
 }
 @media(max-width:760px) {
-  .admin-shell .admin-main .admin-page-content .admin-legacy-page table.admin-audit-table {
-    min-width:780px;
+  .admin-shell .admin-main .admin-page-content .admin-logs-page .admin-logs-toolbar {
+    grid-template-columns:minmax(0,1fr)!important;
   }
-  .admin-shell .admin-main .admin-page-content .admin-legacy-page table.admin-audit-table tr {
-    grid-template-columns:minmax(125px,1fr) minmax(155px,1.2fr) minmax(155px,1.2fr) minmax(100px,.8fr) minmax(82px,.65fr);
+  .admin-shell .admin-main .admin-page-content .admin-logs-page .admin-logs-toolbar-actions {
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-areas:"filters" "refresh"!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-logs-page .admin-logs-toolbar-actions > .admin-extracted-auditlogs-11 {
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-logs-page .admin-logs-toolbar-actions > .admin-logs-refresh {
+    justify-self:start!important;
   }
 }
