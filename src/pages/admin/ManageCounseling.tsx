@@ -226,8 +226,8 @@ export const ManageCounseling: React.FC = () => {
   const levelLabel = (level?: string | null) => level === 'MASTER' ? 'ارشد' : level === 'DOCTORATE' ? 'دکتری' : 'بدون مقطع';
 
   return (
-    <div className="admin-legacy-page admin-counseling-page" className="admin-extracted-managecounseling-1">
-      <div className="counseling-page-head" className="admin-extracted-managecounseling-2">
+    <div className="admin-legacy-page admin-counseling-page admin-extracted-managecounseling-1">
+      <div className="counseling-page-head admin-extracted-managecounseling-2">
         <div>
           <h2 className="admin-extracted-managecounseling-3">مدیریت مشاوران و گفت‌وگوها</h2>
           <p className="admin-extracted-managecounseling-4">تخصیص هنرجو، انتقال مشاور و نظارت بر تاریخچه گفت‌وگوهای آنلاین</p>
@@ -238,7 +238,7 @@ export const ManageCounseling: React.FC = () => {
       {error && <div role="alert" className="admin-extracted-managecounseling-5">{error}</div>}
       {notice && <div role="status" className="admin-extracted-managecounseling-6">{notice}</div>}
 
-      <div className="counseling-stats-grid" className="admin-extracted-managecounseling-7">
+      <div className="counseling-stats-grid admin-extracted-managecounseling-7">
         {[
           { label: 'مشاوران فعال', value: counselors.filter(item => item.isActive).length, icon: UserRound },
           { label: 'هنرجوهای دارای مشاور', value: new Set(activeAssignments.map(item => item.studentId)).size, icon: Users },
@@ -262,7 +262,7 @@ export const ManageCounseling: React.FC = () => {
         {loading ? <p className="admin-extracted-managecounseling-19">در حال دریافت اطلاعات…</p> : counselors.length === 0 ? <p className="admin-extracted-managecounseling-20">هنوز حساب مشاوری تعریف نشده است.</p> : (
           <>
           <label className="counseling-account-search"><Search size={15}/><input type="search" value={counselorSearch} onChange={e => setCounselorSearch(e.target.value)} placeholder="جست‌وجوی نام مشاور یا نام کاربری" aria-label="جست‌وجوی مشاوران"/></label>
-          <div className="counseling-account-list" className="admin-extracted-managecounseling-21">
+          <div className="counseling-account-list admin-extracted-managecounseling-21">
             {filteredCounselors.map(counselor => <div className="counseling-account-item" key={counselor.id} className="admin-extracted-managecounseling-22">
               <div className="admin-extracted-managecounseling-23">
                 <div><strong className="admin-extracted-managecounseling-24">{counselor.displayName}</strong><div className="admin-extracted-managecounseling-25">نام کاربری: {counselor.user.username}</div></div>
@@ -310,8 +310,8 @@ export const ManageCounseling: React.FC = () => {
           <div className="admin-extracted-managecounseling-35"><Search size={14} className="admin-extracted-managecounseling-36"/><input value={search} onChange={e => setSearch(e.target.value)} placeholder="جست‌وجوی هنرجو، مشاور یا پیام" style={{ ...inputStyle, paddingRight: 34, paddingLeft: 12 }}/></div>
         </div>
         {loading ? <p className="admin-extracted-managecounseling-37">در حال دریافت گفت‌وگوها…</p> : filteredConversations.length === 0 ? <p className="admin-extracted-managecounseling-38">گفت‌وگویی مطابق جست‌وجو پیدا نشد.</p> : (
-          <div className="admin-counseling-conversations-grid" className="admin-extracted-managecounseling-39">
-            <div className="counseling-conversation-list" className="admin-extracted-managecounseling-40">
+          <div className="admin-counseling-conversations-grid admin-extracted-managecounseling-39">
+            <div className="counseling-conversation-list admin-extracted-managecounseling-40">
               {filteredConversations.map(item => <button key={item.id} type="button" onClick={() => void openConversation(item.id)} style={{ width: '100%', textAlign: 'right', padding: 12, borderRadius: 11, border: `1px solid ${selectedConversation === item.id ? 'var(--admin-accent)' : 'var(--admin-border)'}`, background: selectedConversation === item.id ? 'var(--admin-accent-soft)' : 'var(--admin-inner)', color: 'var(--admin-text)', cursor: 'pointer' }}>
                 <strong className="admin-extracted-managecounseling-41">{item.student.fullName}</strong><span className="admin-extracted-managecounseling-42">مشاور: {item.counselor.displayName}</span><span className="admin-extracted-managecounseling-43">{item._count.messages} پیام · {item.messages[0] ? dateLabel(item.messages[0].createdAt) : 'بدون پیام'}</span>
                 {item.messages[0] && <span className="admin-extracted-managecounseling-44">{item.messages[0].attachmentName ? '📎 ' + item.messages[0].attachmentName : item.messages[0].content}</span>}
@@ -319,7 +319,7 @@ export const ManageCounseling: React.FC = () => {
             </div>
             <div className="admin-extracted-managecounseling-45">
               {!selected ? <div className="admin-extracted-managecounseling-46"><History size={22} className="admin-extracted-managecounseling-47"/><div>برای مشاهده تاریخچه، یک گفت‌وگو را انتخاب کنید.</div></div> : <>
-                <div className="counseling-selected-student" className="admin-extracted-managecounseling-48"><strong className="admin-extracted-managecounseling-49">{selected.student.fullName}</strong><div className="admin-extracted-managecounseling-50">مشاور: {selected.counselor.displayName} · کد هنرجو: {selected.student.nationalId}</div></div>
+                <div className="counseling-selected-student admin-extracted-managecounseling-48"><strong className="admin-extracted-managecounseling-49">{selected.student.fullName}</strong><div className="admin-extracted-managecounseling-50">مشاور: {selected.counselor.displayName} · کد هنرجو: {selected.student.nationalId}</div></div>
                 <div className="admin-extracted-managecounseling-51">
                   {messagesLoading ? <p className="admin-extracted-managecounseling-52">در حال دریافت تاریخچه…</p> : messages.length === 0 ? <p className="admin-extracted-managecounseling-53">هنوز پیامی ثبت نشده است.</p> : messages.map(message => <div key={message.id} className="admin-extracted-managecounseling-54">{message.content && <div className="admin-extracted-managecounseling-55">{message.content}</div>}
                     {message.attachmentName && <a href={`/api/counseling/conversations/${selectedConversation}/messages/${message.id}/attachment`} className="admin-extracted-managecounseling-56"><Paperclip size={14}/><span className="admin-extracted-managecounseling-57">{message.attachmentName}<small className="admin-extracted-managecounseling-58">{message.attachmentSize ? (message.attachmentSize / 1024 / 1024).toFixed(2) + ' MB' : 'پیوست'}</small></span><Download size={14}/></a>}
