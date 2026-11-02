@@ -2361,3 +2361,95 @@
   background: var(--admin-card);
   box-shadow: none;
 }
+
+
+/* Canonical admin data-table component.
+   Modules opt in with .admin-data-table-wrap and .admin-data-table;
+   page styles may control geometry only, never table colors or typography. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-data-table-wrap {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow: auto;
+  border: 1px solid var(--admin-content-border);
+  border-radius: var(--admin-content-radius);
+  background: var(--admin-content-surface);
+  scrollbar-width: thin;
+  scrollbar-color: var(--admin-border) transparent;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table {
+  width: 100%;
+  min-width: 720px;
+  border: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: transparent;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 12px 14px;
+  border: 0;
+  border-bottom: 1px solid var(--admin-content-border);
+  background: var(--admin-content-inner);
+  color: var(--admin-sub);
+  font-size: 10px;
+  font-weight: 850;
+  line-height: 1.7;
+  text-align: right;
+  white-space: nowrap;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table tbody td {
+  padding: 12px 14px;
+  border: 0;
+  border-bottom: 1px solid var(--admin-content-border);
+  background: var(--admin-content-surface);
+  color: var(--admin-text);
+  font-size: 11px;
+  line-height: 1.8;
+  text-align: right;
+  vertical-align: middle;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table tbody tr:nth-child(even) td {
+  background: var(--admin-content-inner);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table tbody tr:hover td {
+  background: var(--admin-accent-soft);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 7px 11px;
+  border: 1px solid var(--admin-brand-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-control);
+  color: var(--admin-text);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.5;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color .16s ease, border-color .16s ease, color .16s ease, box-shadow .16s ease;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-button:hover:not(:disabled) {
+  border-color: var(--admin-accent);
+  background: var(--admin-accent-soft);
+  color: var(--admin-text);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-button:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-button {
+    transition: none;
+  }
+}
