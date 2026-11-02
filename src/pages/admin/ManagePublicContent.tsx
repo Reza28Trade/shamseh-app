@@ -49,11 +49,7 @@ const calculateCoverage = (questions: QuestionRow[], startQuestion: number) => {
 
 export const ManagePublicContent: React.FC = () => {
   const colors = {
-    bg: 'var(--admin-control)',
-    alt: 'var(--admin-inner)',
-    text: 'var(--admin-text)',
     muted: 'var(--admin-sub)',
-    border: 'var(--admin-border)',
     accent: 'var(--admin-accent)',
   };
   const [tab, setTab] = useState<'rules' | 'analysis' | 'news'>('rules');
