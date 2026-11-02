@@ -25,3 +25,8 @@
 
 
 }
+
+
+/* Reusable component styles moved out of TSX. */
+.admin-shared-manageregistrations-button-style{border:1px solid var(--admin-brand-border);background:var(--admin-accent-soft);color:var(--admin-text);padding:8px 11px;border-radius:9px;font:inherit;font-size:12px;font-weight:800;cursor:pointer}
+.admin-shared-manageregistrations-input-style{border:1px solid var(--admin-border);background:var(--admin-control);color:var(--admin-text);padding:9px 10px;border-radius:9px;font:inherit;font-size:12px;min-width:0}
