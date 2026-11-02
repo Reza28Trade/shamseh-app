@@ -1358,7 +1358,7 @@
 .admin-extracted-manageregistrations-10{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:12px!important;flex-wrap:wrap!important;padding:12px!important;border:1px solid var(--admin-border)!important;border-radius:10px!important;background:var(--admin-inner)!important}
 .admin-extracted-manageregistrations-11{display:grid!important;gap:5px!important;min-width:180px!important}
 .admin-extracted-manageregistrations-12{font-size:11px!important;color:var(--admin-sub)!important}
-.admin-extracted-manageregistrations-13{color:#c65b58!important;font-size:13px!important}
+.admin-extracted-manageregistrations-13{color:var(--admin-warning-text, var(--admin-sub))!important;font-size:13px!important}
 .admin-extracted-manageregistrations-14{font-size:11px!important;color:var(--admin-sub)!important}
 .admin-extracted-manageregistrations-15{padding:18px!important;text-align:center!important;color:var(--admin-sub)!important;font-size:12px!important}
 .admin-extracted-manageregistrations-16{background:var(--admin-card)!important;border:1px solid var(--admin-border)!important;border-radius:14px!important;padding:14px!important;display:grid!important;gap:10px!important}
@@ -1369,7 +1369,7 @@
 .admin-extracted-manageregistrations-21{display:flex!important;justify-content:space-between!important;gap:10px!important;flex-wrap:wrap!important;padding:10px!important;border:1px solid var(--admin-border)!important;border-radius:9px!important;background:var(--admin-inner)!important}
 .admin-extracted-manageregistrations-22{font-size:11px!important;color:var(--admin-sub)!important;margin-top:4px!important}
 .admin-extracted-manageregistrations-23{font-size:11px!important;color:var(--admin-sub)!important;margin-top:3px!important}
-.admin-extracted-manageregistrations-24{color:#1d9a72!important;font-size:12px!important;align-self:center!important}
+.admin-extracted-manageregistrations-24{color:var(--admin-accent)!important;font-size:12px!important;align-self:center!important}
 .admin-extracted-manageregistrations-25{background:var(--admin-card)!important;border:1px solid var(--admin-border)!important;border-radius:14px!important;padding:14px!important;display:grid!important;gap:12px!important}
 .admin-extracted-manageregistrations-26{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:10px!important;flex-wrap:wrap!important}
 .admin-extracted-manageregistrations-27{margin:0!important;font-size:15px!important}
@@ -1389,8 +1389,8 @@
 .admin-extracted-manageregistrations-41{padding:24px!important;text-align:center!important;color:var(--admin-sub)!important}
 .admin-extracted-manageregistrations-42{display:flex!important;gap:8px!important;flex-wrap:wrap!important}
 .admin-extracted-manageregistrations-43{display:flex!important;gap:10px!important;flex-wrap:wrap!important}
-.admin-extracted-manageregistrations-44{padding:12px!important;border-radius:10px!important;background:#fff0ef!important;color:#a63730!important;font-size:12px!important}
-.admin-extracted-manageregistrations-45{padding:12px!important;border-radius:10px!important;background:#eaf6ef!important;color:#216743!important;font-size:12px!important}
+.admin-extracted-manageregistrations-44{padding:12px!important;border-radius:10px!important;background:var(--admin-accent-soft)!important;color:var(--admin-warning-text, var(--admin-sub))!important;font-size:12px!important}
+.admin-extracted-manageregistrations-45{padding:12px!important;border-radius:10px!important;background:var(--admin-accent-soft)!important;color:var(--admin-accent)!important;font-size:12px!important}
 .admin-extracted-manageregistrations-46{font-size:12px!important;color:var(--admin-sub)!important}
 .admin-extracted-manageregistrations-47{position:fixed!important;inset:0!important;z-index:1000!important;background:rgba(0,0,0,.55)!important;display:grid!important;place-items:center!important;padding:16px!important}
 .admin-extracted-manageregistrations-48{width:min(100%,620px)!important;max-height:90vh!important;overflow-y:auto!important;background:var(--admin-card)!important;color:var(--admin-text)!important;border:1px solid var(--admin-border)!important;border-radius:16px!important;padding:20px!important;display:grid!important;gap:13px!important}
@@ -2160,3 +2160,81 @@
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-table-cell { padding:7px;border-bottom:1px solid var(--admin-border); }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-table-head-row { background:var(--admin-inner);text-align:right; }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-analysis-meta { margin-bottom:8px;color:var(--admin-sub);font-size:11px; }
+
+
+/* Registration and finance page: data-driven states expressed as semantic classes. */
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-stat-value {
+  display: block;
+  min-width: 0;
+  color: var(--admin-text);
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-stat-value.is-accent,
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-balance-cell.is-settled,
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-balance-summary.is-settled {
+  color: var(--admin-accent);
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-stat-value.is-warning,
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-debtor-count.has-debtors,
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-balance-cell.is-due,
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-balance-summary.is-due {
+  color: var(--admin-warning-text, var(--admin-sub));
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-debtor-count {
+  color: var(--admin-sub);
+  font-size: 11px;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-action-button,
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 35px;
+  padding: 8px 11px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-control);
+  color: var(--admin-text);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-action-button--primary,
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-tab.is-active {
+  border-color: var(--admin-accent);
+  background: var(--admin-accent);
+  color: #fff;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-action-button--danger {
+  color: var(--admin-warning-text, var(--admin-sub));
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-action-button:disabled {
+  opacity: .65;
+  cursor: wait;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-search-input {
+  flex: 1 1 220px;
+  min-width: 0;
+  min-height: var(--admin-control-height);
+  padding: 9px 11px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-control);
+  color: var(--admin-text);
+  font: inherit;
+  font-size: 11px;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-balance-cell {
+  padding: 10px;
+  border-bottom: 1px solid var(--admin-border);
+  white-space: nowrap;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-balance-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+}
