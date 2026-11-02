@@ -388,11 +388,6 @@
   color:var(--admin-accent)!important;
 }
 
-.admin-shell .admin-main .admin-page-content > .admin-dashboard-page > .admin-recent-activity .admin-activity-row {
-  min-height:64px!important;
-  padding:12px!important;
-}
-
 .admin-shell .admin-main .admin-page-content > .admin-dashboard-page > .admin-operations-panel .admin-followup-card {
   min-height:64px!important;
   padding:12px!important;
@@ -488,7 +483,6 @@
 
 .admin-dashboard-page .admin-stat,
 .admin-dashboard-page .admin-followup-card,
-.admin-dashboard-page .admin-activity-row,
 .admin-dashboard-page .admin-action-row,
 .admin-dashboard-page .admin-upcoming-row {
           flex-direction:row!important;
@@ -501,7 +495,6 @@
 
 .admin-dashboard-page .admin-stat-icon,
 .admin-dashboard-page .admin-followup-icon,
-.admin-dashboard-page .admin-activity-mark,
 .admin-dashboard-page .admin-action-icon,
 .admin-dashboard-page .admin-upcoming-icon {
           width:36px!important;height:36px!important;min-width:36px;min-height:36px;
@@ -509,8 +502,7 @@
         }
 
 .admin-dashboard-page .admin-stat-copy,
-.admin-dashboard-page .admin-action-copy,
-.admin-dashboard-page .admin-activity-copy {
+.admin-dashboard-page .admin-action-copy {
           display:flex!important;flex:1 1 auto!important;flex-direction:column!important;
           align-items:flex-start!important;justify-content:center!important;
           min-width:0;text-align:right!important;gap:3px;
