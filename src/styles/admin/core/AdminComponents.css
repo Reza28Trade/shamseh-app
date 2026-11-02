@@ -1924,7 +1924,7 @@
 }
 
 
-/* System audit log controls and expanded-row state. */
+/* System audit log filters use the shared control tokens. */
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-audit-filter {
   box-sizing: border-box;
   max-width: 100%;
@@ -1945,9 +1945,6 @@
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-audit-filter--select {
   min-width: 190px;
-}
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page table.admin-data-table tbody tr.admin-audit-row.is-expanded td {
-  background: var(--admin-accent-soft);
 }
 
 
@@ -2354,6 +2351,11 @@
   border-spacing: 0 7px;
   background: transparent;
 }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table :is(th,td):nth-child(1) { width: 16%; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table :is(th,td):nth-child(2) { width: 26%; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table :is(th,td):nth-child(3) { width: 24%; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table :is(th,td):nth-child(4) { width: 16%; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table :is(th,td):nth-child(5) { width: 18%; }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) table.admin-data-table thead th {
   position: sticky;
   top: 0;
@@ -2457,7 +2459,7 @@
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-button:focus-visible::before {
   transform: skewX(28deg) translateX(280%);
 }
-.admin-shell .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-button:disabled {
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-button:disabled {
   cursor: not-allowed;
   opacity: .55;
   transform: none;
