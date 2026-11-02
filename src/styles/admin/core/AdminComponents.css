@@ -1406,7 +1406,7 @@
 .admin-extracted-manageregistrations-58{color:var(--admin-sub)!important;font-size:11px!important}
 .admin-extracted-manageregistrations-59{display:flex!important;gap:8px!important;align-items:center!important;font-size:12px!important}
 .admin-extracted-manageregistrations-60{display:grid!important;gap:6px!important;font-size:12px!important}
-.admin-extracted-manageregistrations-61{color:#b44c48!important}
+.admin-extracted-manageregistrations-61{color:var(--admin-warning-text, var(--admin-sub))!important}
 .admin-extracted-manageregistrations-62{display:grid!important;gap:6px!important;font-size:12px!important}
 .admin-extracted-manageregistrations-63{display:flex!important;gap:8px!important;justify-content:flex-end!important;flex-wrap:wrap!important}
 .admin-extracted-manageregistrations-64{background:var(--admin-card)!important;border:1px solid var(--admin-border)!important;border-radius:14px!important;overflow:hidden!important}
@@ -1469,7 +1469,7 @@
 .admin-extracted-manageregistrations-121{padding:13px!important;border:1px solid var(--admin-border)!important;border-radius:12px!important;display:grid!important;gap:10px!important}
 .admin-extracted-manageregistrations-122{margin:0!important;font-size:13px!important}
 .admin-extracted-manageregistrations-123{padding:11px!important;border-radius:10px!important;background:var(--admin-inner)!important;display:grid!important;gap:8px!important;font-size:12px!important}
-.admin-extracted-manageregistrations-124{color:#c65b58!important}
+.admin-extracted-manageregistrations-124{color:var(--admin-warning-text, var(--admin-sub))!important}
 .admin-extracted-manageregistrations-125{display:flex!important;gap:8px!important;flex-wrap:wrap!important}
 .admin-extracted-manageregistrations-126{color:var(--admin-accent)!important;font-size:11px!important}
 .admin-extracted-manageregistrations-127{padding:13px!important;border:1px solid var(--admin-border)!important;border-radius:12px!important;display:grid!important;gap:8px!important}
@@ -1551,7 +1551,7 @@
 .admin-extracted-managecounseling-2{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:12px!important;flex-wrap:wrap!important}
 .admin-extracted-managecounseling-3{margin:0!important;font-size:17px!important;font-weight:900!important}
 .admin-extracted-managecounseling-4{margin:6px 0 0!important;color:var(--admin-sub)!important;font-size:11px!important}
-.admin-extracted-managecounseling-5{padding:12px!important;border-radius:10px!important;color:#d92d20!important;background:rgba(217,45,32,.08)!important;font-size:12px!important}
+.admin-extracted-managecounseling-5{padding:12px!important;border-radius:10px!important;color:var(--admin-warning-text, var(--admin-sub))!important;background:var(--admin-accent-soft)!important;font-size:12px!important}
 .admin-extracted-managecounseling-6{padding:12px!important;border-radius:10px!important;color:#16805d!important;background:rgba(22,128,93,.09)!important;font-size:12px!important}
 .admin-extracted-managecounseling-7{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important;gap:12px!important}
 .admin-extracted-managecounseling-8{width:38px!important;height:38px!important;display:grid!important;place-items:center!important;border-radius:11px!important;color:var(--admin-accent)!important;background:var(--admin-accent-soft)!important}
@@ -1644,7 +1644,7 @@
 .admin-extracted-managemockexams-20{color:#38bdf8!important;font-size:11px!important;display:inline-flex!important;align-items:center!important;gap:5px!important;margin-top:7px!important}
 .admin-extracted-managemockexams-21{display:flex!important;gap:8px!important;flex-wrap:wrap!important}
 .admin-extracted-managemockexams-22{border-top:1px solid rgba(255,255,255,.06)!important;padding-top:14px!important}
-.admin-extracted-managemockexams-23{color:#cbd5e1!important;font-size:12px!important;font-weight:800!important;margin-bottom:10px!important}
+.admin-extracted-managemockexams-23{color:var(--admin-sub)!important;font-size:12px!important;font-weight:800!important;margin-bottom:10px!important}
 
 
 /* Centralized static component presentation: AuditLogs.css */
@@ -1654,7 +1654,7 @@
 .admin-extracted-auditlogs-3{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:14px!important;flex-wrap:wrap!important}
 .admin-extracted-auditlogs-4{font-size:20px!important;font-weight:900!important;margin:0 0 6px!important;display:flex!important;align-items:center!important;gap:10px!important}
 .admin-extracted-auditlogs-5{font-size:13px!important;color:var(--admin-sub, #667675)!important;margin:0!important;line-height:1.8!important}
-.admin-extracted-auditlogs-6{display:flex!important;align-items:flex-start!important;gap:12px!important;padding:16px!important;border-radius:12px!important;border:1px solid #e8b4b4!important;background:#fff1f1!important;color:#8b2525!important}
+.admin-extracted-auditlogs-6{display:flex!important;align-items:flex-start!important;gap:12px!important;padding:16px!important;border-radius:12px!important;border:1px solid var(--admin-border)!important;background:var(--admin-accent-soft)!important;color:var(--admin-warning-text, var(--admin-sub))!important}
 .admin-extracted-auditlogs-7{margin:6px 0 0!important;line-height:1.8!important}
 .admin-extracted-auditlogs-8{background:var(--admin-card, #fff)!important;color:var(--admin-text, #202a2a)!important;border:1px solid var(--admin-border, #d8e3e0)!important;padding:16px!important;border-radius:18px!important;box-shadow:var(--admin-shadow, 0 8px 24px rgba(0,0,0,.05))!important;min-width:0!important}
 .admin-extracted-auditlogs-9{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;flex-wrap:wrap!important;margin-bottom:12px!important}
