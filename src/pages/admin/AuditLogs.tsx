@@ -133,7 +133,7 @@ export const AuditLogs: React.FC = () => {
         </section>
       )}
 
-      <section className="admin-extracted-auditlogs-8 admin-logs-panel">
+      <section className="admin-extracted-auditlogs-8 admin-logs-panel admin-master-panel">
         <div className="admin-extracted-auditlogs-9 admin-logs-toolbar">
           <div className="admin-extracted-auditlogs-10">
             <ShieldAlert size={17} />
