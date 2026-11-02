@@ -507,8 +507,8 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
             {manualFinanceOpen && <div className="detail-course-active student-finance-manual-form">
               <strong>دوره‌های مشمول این پرونده</strong>
               <div className="student-finance-course-options">{apiCourses.filter(course=>course.level===financeStudent.academicLevel).map(course=><label key={course.id} className="student-finance-course-option"><input type="checkbox" checked={manualCourseIds.includes(course.id)} onChange={()=>setManualCourseIds(current=>current.includes(course.id)?current.filter(id=>id!==course.id):[...current,course.id])}/>{course.title} · {course.academicYear == null ? '—' : faDigits(course.academicYear)} · {faDigits(termLabel(course.term))}</label>)}</div>
-              <label>شهریه اولیه (تومان)<input type="number" min="1" value={manualOriginalTuition} onChange={e=>setManualOriginalTuition(e.target.value)}/></label>
-              <label>تخفیف (تومان)<input type="number" min="0" value={manualDiscount} onChange={e=>setManualDiscount(e.target.value)}/></label>
+              <label>شهریه اولیه (تومان)<input type="text" inputMode="numeric" min="1" value={faDigits(manualOriginalTuition)} onChange={e=>setManualOriginalTuition(enDigits(e.target.value))}/></label>
+              <label>تخفیف (تومان)<input type="text" inputMode="numeric" min="0" value={faDigits(manualDiscount)} onChange={e=>setManualDiscount(enDigits(e.target.value))}/></label>
               <label>دلیل تخفیف (اختیاری)<input value={manualDiscountReason} onChange={e=>setManualDiscountReason(e.target.value)}/></label>
               <h4>پرداخت‌های قبلی ثبت‌شده</h4>
               {manualPayments.map((payment,index)=><div key={index} className="student-finance-payment-row">
@@ -522,7 +522,7 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
               <h4>برنامه اقساط (جمع اقساط برابر شهریه نهایی باشد)</h4>
               {manualInstallments.map((installment,index)=><div key={index} className="student-finance-installment-row">
                 <input aria-label={'مبلغ قسط '+faDigits(index+1)} type="text" inputMode="numeric" placeholder={'مبلغ قسط '+faDigits(index+1)+' (تومان)'} value={faDigits(installment.amount)} onChange={e=>setManualInstallments(rows=>rows.map((row,i)=>i===index?{...row,amount:enDigits(e.target.value)}:row))}/>
-                <label>سررسید قسط {faDigits(index+1)}<input aria-label={'سررسید قسط '+(index+1)} type="text" inputMode="numeric" placeholder="۱۴۰۵/۰۷/۳۰" value={installment.dueDate} onChange={e=>setManualInstallments(rows=>rows.map((row,i)=>i===index?{...row,dueDate:e.target.value.replace(/[۰-۹]/g,d=>String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))}:row))}/></label>
+                <label>سررسید قسط {faDigits(index+1)}<input aria-label={'سررسید قسط '+(index+1)} type="text" inputMode="numeric" placeholder="۱۴۰۵/۰۷/۳۰" value={faDigits(installment.dueDate)} onChange={e=>setManualInstallments(rows=>rows.map((row,i)=>i===index?{...row,dueDate:enDigits(e.target.value)}:row))}/></label>
                 {manualInstallments.length>1 && <button type="button" className="secondary-action" onClick={()=>setManualInstallments(rows=>rows.filter((_,i)=>i!==index))}>حذف قسط</button>}
               </div>)}
               <button type="button" className="secondary-action" onClick={()=>setManualInstallments(rows=>[...rows,{amount:'',dueDate:''}])}>افزودن قسط با سررسید دستی</button>
