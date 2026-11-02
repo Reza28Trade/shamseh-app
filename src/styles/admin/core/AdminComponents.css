@@ -2244,3 +2244,84 @@
   line-height: 2;
   background: var(--admin-control);
 }
+
+
+/* Bookstore presentation: colors, surfaces and typography are centralized here. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-card-description,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-book-meta,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-book-data,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-order-details,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-empty,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-field-label,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-upload-field,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-levels legend {
+  color: var(--admin-sub);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-card-description { margin:0;font-size:11px;line-height:1.8; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-error {
+  padding:12px;
+  border:1px solid var(--admin-border);
+  border-radius:var(--admin-control-radius);
+  background:var(--admin-danger-soft);
+  color:var(--admin-danger-text);
+  font-size:11px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-field-label,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-levels legend { font-size:11px; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-levels {
+  border:1px solid var(--admin-border);
+  border-radius:var(--admin-control-radius);
+  background:var(--admin-inner);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-level-option { font-size:11px; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-upload-field { font-size:11px; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-upload-input { font-size:11px; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-cover-preview,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-book-cover {
+  border:1px solid var(--admin-border);
+  border-radius:var(--admin-control-radius);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-book-row,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-order-card {
+  border:1px solid var(--admin-border);
+  border-radius:var(--admin-surface-radius);
+  background:var(--admin-card);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-book-meta { font-size:10px; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-book-data { font-size:11px; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-book-discount { color:var(--admin-accent);font-size:11px;font-weight:800; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-order-details { font-size:11px;line-height:1.9; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-receipt-link { color:var(--admin-accent);font-size:11px; }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-danger-action {
+  border-color:var(--admin-border)!important;
+  background:var(--admin-accent-soft)!important;
+  color:var(--admin-warning-text)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-cover-preview { width:100px;height:130px;object-fit:contain; }
+
+
+/* Registration page shared buttons and filters. */
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-shared-manageregistrations-button-style {
+  min-height:35px;
+  padding:8px 11px;
+  border:1px solid var(--admin-brand-border);
+  border-radius:var(--admin-control-radius);
+  background:var(--admin-accent-soft);
+  color:var(--admin-text);
+  font:inherit;
+  font-size:11px;
+  font-weight:800;
+  cursor:pointer;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-shared-manageregistrations-input-style {
+  box-sizing:border-box;
+  min-width:0;
+  min-height:var(--admin-control-height);
+  padding:9px 10px;
+  border:1px solid var(--admin-border);
+  border-radius:var(--admin-control-radius);
+  background:var(--admin-control);
+  color:var(--admin-text);
+  font:inherit;
+  font-size:11px;
+}
