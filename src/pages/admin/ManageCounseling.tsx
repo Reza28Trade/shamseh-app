@@ -33,20 +33,6 @@ type Conversation = {
 };
 type Message = { id: string; content: string; senderUserId: string; readAt: string | null; createdAt: string; attachmentName?: string | null; attachmentMimeType?: string | null; attachmentSize?: number | null };
 
-const inputStyle: React.CSSProperties = {
-  width: '100%', minWidth: 0, padding: '10px 12px', border: '1px solid var(--admin-border)',
-  borderRadius: 10, background: 'var(--admin-control)', color: 'var(--admin-text)', font: 'inherit', fontSize: 12,
-};
-const buttonStyle: React.CSSProperties = {
-  display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '9px 12px',
-  border: '1px solid var(--admin-brand-border)', borderRadius: 10, background: 'var(--admin-accent-soft)',
-  color: 'var(--admin-text)', fontSize: 11, fontWeight: 800, cursor: 'pointer',
-};
-const cardStyle: React.CSSProperties = {
-  minWidth: 0, padding: 18, border: '1px solid var(--admin-border)', borderRadius: 16,
-  background: 'var(--admin-card)',
-};
-
 export const ManageCounseling: React.FC = () => {
   const [counselors, setCounselors] = useState<Counselor[]>([]);
   const [students, setStudents] = useState<StudentOption[]>([]);
@@ -232,7 +218,7 @@ export const ManageCounseling: React.FC = () => {
           <h2 className="admin-extracted-managecounseling-3">مدیریت مشاوران و گفت‌وگوها</h2>
           <p className="admin-extracted-managecounseling-4">تخصیص هنرجو، انتقال مشاور و نظارت بر تاریخچه گفت‌وگوهای آنلاین</p>
         </div>
-        <button type="button" onClick={() => void load()} disabled={loading} style={buttonStyle}><RefreshCw size={14} /> بروزرسانی</button>
+        <button type="button" onClick={() => void load()} disabled={loading} className="admin-counseling-button"><RefreshCw size={14} /> بروزرسانی</button>
       </div>
 
       {error && <div role="alert" className="admin-extracted-managecounseling-5">{error}</div>}
@@ -244,20 +230,20 @@ export const ManageCounseling: React.FC = () => {
           { label: 'هنرجوهای دارای مشاور', value: new Set(activeAssignments.map(item => item.studentId)).size, icon: Users },
           { label: 'هنرجوهای بدون مشاور', value: Math.max(0, students.length - new Set(activeAssignments.map(item => item.studentId)).size), icon: UserRound },
           { label: 'پرونده‌های گفتگو', value: conversations.length, icon: MessageSquare },
-        ].map(item => { const Icon = item.icon; return <div key={item.label} style={{ ...cardStyle, display: 'flex', alignItems: 'center', gap: 12, padding: 15 }}><div className="admin-extracted-managecounseling-8"><Icon size={18}/></div><div><div className="admin-extracted-managecounseling-9">{item.label}</div><strong className="admin-extracted-managecounseling-10">{item.value}</strong></div></div>; })}
+        ].map(item => { const Icon = item.icon; return <div key={item.label} className="admin-counseling-stat-card"><div className="admin-extracted-managecounseling-8"><Icon size={18}/></div><div><div className="admin-extracted-managecounseling-9">{item.label}</div><strong className="admin-extracted-managecounseling-10">{item.value}</strong></div></div>; })}
       </div>
 
-      <section className="counseling-account-section" style={cardStyle}>
+      <section className="counseling-account-section" className="admin-counseling-card">
         <div className="admin-extracted-managecounseling-11">
           <h3 className="admin-extracted-managecounseling-12">حساب مشاوران</h3>
-          <button type="button" onClick={() => setShowCreate(value => !value)} style={buttonStyle}><Plus size={14}/>{showCreate ? 'بستن فرم' : 'تعریف مشاور جدید'}</button>
+          <button type="button" onClick={() => setShowCreate(value => !value)} className="admin-counseling-button"><Plus size={14}/>{showCreate ? 'بستن فرم' : 'تعریف مشاور جدید'}</button>
         </div>
         {showCreate && <form onSubmit={createCounselor} className="admin-extracted-managecounseling-13">
-          <label className="admin-extracted-managecounseling-14">نام نمایشی<input required value={displayName} onChange={e => setDisplayName(e.target.value)} style={{ ...inputStyle, display: 'block', marginTop: 6 }} /></label>
-          <label className="admin-extracted-managecounseling-15">نام کاربری<input required value={username} onChange={e => setUsername(e.target.value)} autoComplete="off" style={{ ...inputStyle, display: 'block', marginTop: 6 }} /></label>
-          <label className="admin-extracted-managecounseling-16">رمز عبور (حداقل ۱۰ نویسه)<input required minLength={10} type="password" value={password} onChange={e => setPassword(e.target.value)} autoComplete="new-password" style={{ ...inputStyle, display: 'block', marginTop: 6 }} /></label>
-          <label className="admin-extracted-managecounseling-17">توضیح اختیاری<input value={bio} onChange={e => setBio(e.target.value)} style={{ ...inputStyle, display: 'block', marginTop: 6 }} /></label>
-          <div className="admin-extracted-managecounseling-18"><button disabled={saving} style={buttonStyle}>{saving ? 'در حال ثبت…' : 'ساخت حساب مشاور'}</button></div>
+          <label className="admin-extracted-managecounseling-14">نام نمایشی<input required value={displayName} onChange={e => setDisplayName(e.target.value)} className="admin-counseling-input admin-counseling-input--stacked" /></label>
+          <label className="admin-extracted-managecounseling-15">نام کاربری<input required value={username} onChange={e => setUsername(e.target.value)} autoComplete="off" className="admin-counseling-input admin-counseling-input--stacked" /></label>
+          <label className="admin-extracted-managecounseling-16">رمز عبور (حداقل ۱۰ نویسه)<input required minLength={10} type="password" value={password} onChange={e => setPassword(e.target.value)} autoComplete="new-password" className="admin-counseling-input admin-counseling-input--stacked" /></label>
+          <label className="admin-extracted-managecounseling-17">توضیح اختیاری<input value={bio} onChange={e => setBio(e.target.value)} className="admin-counseling-input admin-counseling-input--stacked" /></label>
+          <div className="admin-extracted-managecounseling-18"><button disabled={saving} className="admin-counseling-button">{saving ? 'در حال ثبت…' : 'ساخت حساب مشاور'}</button></div>
         </form>}
         {loading ? <p className="admin-extracted-managecounseling-19">در حال دریافت اطلاعات…</p> : counselors.length === 0 ? <p className="admin-extracted-managecounseling-20">هنوز حساب مشاوری تعریف نشده است.</p> : (
           <>
@@ -266,17 +252,17 @@ export const ManageCounseling: React.FC = () => {
             {filteredCounselors.map(counselor => <div className="counseling-account-item" key={counselor.id} className="admin-extracted-managecounseling-22">
               <div className="admin-extracted-managecounseling-23">
                 <div><strong className="admin-extracted-managecounseling-24">{counselor.displayName}</strong><div className="admin-extracted-managecounseling-25">نام کاربری: {counselor.user.username}</div></div>
-                <span style={{ color: counselor.isActive ? '#16805d' : '#b54708', background: counselor.isActive ? 'rgba(22,128,93,.1)' : 'rgba(181,71,8,.1)', borderRadius: 7, padding: '4px 7px', fontSize: 9, fontWeight: 800 }}>{counselor.isActive ? 'فعال' : 'غیرفعال'}</span>
+                <span className={`admin-counselor-status${counselor.isActive ? ' is-active' : ' is-inactive'}`}>{counselor.isActive ? 'فعال' : 'غیرفعال'}</span>
               </div>
               {counselor.bio && <p className="admin-extracted-managecounseling-26">{counselor.bio}</p>}
-              <button type="button" onClick={() => void toggleCounselor(counselor)} style={{ ...buttonStyle, marginTop: 12, borderColor: 'var(--admin-border)', background: 'var(--admin-card)' }}>{counselor.isActive ? <EyeOff size={13}/> : <Eye size={13}/>} {counselor.isActive ? 'غیرفعال‌سازی' : 'فعال‌سازی'}</button>
+              <button type="button" onClick={() => void toggleCounselor(counselor)} className="admin-counseling-button admin-counseling-button--spaced">{counselor.isActive ? <EyeOff size={13}/> : <Eye size={13}/>} {counselor.isActive ? 'غیرفعال‌سازی' : 'فعال‌سازی'}</button>
             </div>)}
           </div>
           </>
         )}
       </section>
 
-      <section className="counseling-assignment-section" style={cardStyle}>
+      <section className="counseling-assignment-section" className="admin-counseling-card">
         <h3 className="admin-extracted-managecounseling-27">تخصیص یا انتقال هنرجو</h3>
         <p className="admin-extracted-managecounseling-28">برای جلوگیری از فهرست طولانی، هر صفحه ۱۰ هنرجو دارد. جست‌وجو، فیلتر و انتخاب‌ها هنگام جابه‌جایی صفحه حفظ می‌شوند.</p>
         <div className="counseling-student-tools">
@@ -300,19 +286,19 @@ export const ManageCounseling: React.FC = () => {
         <div className="counseling-student-pagination"><span>صفحه {studentPage} از {studentPageCount}</span><div><button type="button" disabled={studentPage <= 1} onClick={() => setStudentPage(page => Math.max(1, page - 1))}>صفحه قبل</button><button type="button" disabled={studentPage >= studentPageCount} onClick={() => setStudentPage(page => Math.min(studentPageCount, page + 1))}>صفحه بعد</button></div></div>
         <form onSubmit={assignStudent} className="counseling-assignment-submit">
           <label className="admin-extracted-managecounseling-31">مشاور فعال<select required value={counselorId} onChange={e => setCounselorId(e.target.value)}><option value="">انتخاب مشاور</option>{counselors.filter(item => item.isActive).map(item => <option key={item.id} value={item.id}>{item.displayName}</option>)}</select></label>
-          <button disabled={saving || loading || !selectedStudentIds.length || !counselorId} style={{ ...buttonStyle, minHeight: 39 }}><ArrowLeftRight size={14}/>{saving ? 'در حال ثبت…' : 'ثبت تخصیص برای ' + selectedStudentIds.length + ' هنرجو'}</button>
+          <button disabled={saving || loading || !selectedStudentIds.length || !counselorId} className="admin-counseling-button admin-counseling-button--tall"><ArrowLeftRight size={14}/>{saving ? 'در حال ثبت…' : 'ثبت تخصیص برای ' + selectedStudentIds.length + ' هنرجو'}</button>
         </form>
       </section>
 
-      <section className="counseling-conversation-section" style={cardStyle}>
+      <section className="counseling-conversation-section" className="admin-counseling-card">
         <div className="admin-extracted-managecounseling-32">
           <div><h3 className="admin-extracted-managecounseling-33">نظارت بر گفت‌وگوها</h3><p className="admin-extracted-managecounseling-34">ادمین می‌تواند تاریخچه را مشاهده کند؛ ارسال پیام از طرف ادمین غیرفعال است.</p></div>
-          <div className="admin-extracted-managecounseling-35"><Search size={14} className="admin-extracted-managecounseling-36"/><input value={search} onChange={e => setSearch(e.target.value)} placeholder="جست‌وجوی هنرجو، مشاور یا پیام" style={{ ...inputStyle, paddingRight: 34, paddingLeft: 12 }}/></div>
+          <div className="admin-extracted-managecounseling-35"><Search size={14} className="admin-extracted-managecounseling-36"/><input value={search} onChange={e => setSearch(e.target.value)} placeholder="جست‌وجوی هنرجو، مشاور یا پیام" className="admin-counseling-input admin-counseling-input--search"/></div>
         </div>
         {loading ? <p className="admin-extracted-managecounseling-37">در حال دریافت گفت‌وگوها…</p> : filteredConversations.length === 0 ? <p className="admin-extracted-managecounseling-38">گفت‌وگویی مطابق جست‌وجو پیدا نشد.</p> : (
           <div className="admin-counseling-conversations-grid admin-extracted-managecounseling-39">
             <div className="counseling-conversation-list admin-extracted-managecounseling-40">
-              {filteredConversations.map(item => <button key={item.id} type="button" onClick={() => void openConversation(item.id)} style={{ width: '100%', textAlign: 'right', padding: 12, borderRadius: 11, border: `1px solid ${selectedConversation === item.id ? 'var(--admin-accent)' : 'var(--admin-border)'}`, background: selectedConversation === item.id ? 'var(--admin-accent-soft)' : 'var(--admin-inner)', color: 'var(--admin-text)', cursor: 'pointer' }}>
+              {filteredConversations.map(item => <button key={item.id} type="button" onClick={() => void openConversation(item.id)} className={`admin-counseling-conversation-button${selectedConversation === item.id ? ' is-selected' : ''}`}>
                 <strong className="admin-extracted-managecounseling-41">{item.student.fullName}</strong><span className="admin-extracted-managecounseling-42">مشاور: {item.counselor.displayName}</span><span className="admin-extracted-managecounseling-43">{item._count.messages} پیام · {item.messages[0] ? dateLabel(item.messages[0].createdAt) : 'بدون پیام'}</span>
                 {item.messages[0] && <span className="admin-extracted-managecounseling-44">{item.messages[0].attachmentName ? '📎 ' + item.messages[0].attachmentName : item.messages[0].content}</span>}
               </button>)}
@@ -331,7 +317,7 @@ export const ManageCounseling: React.FC = () => {
         )}
       </section>
 
-      <section style={cardStyle}>
+      <section className="admin-counseling-card">
         <h3 className="admin-extracted-managecounseling-60"><ShieldCheck size={16} color="var(--admin-accent)"/> تاریخچه تخصیص‌ها</h3>
         {assignments.length === 0 ? <p className="admin-extracted-managecounseling-61">هنوز تخصیصی ثبت نشده است.</p> : <><div className="admin-extracted-managecounseling-62"><table className="admin-extracted-managecounseling-63"><thead><tr>{['هنرجو','مشاور','شروع مسئولیت','پایان مسئولیت','ثبت‌کننده'].map(label => <th key={label} className="admin-extracted-managecounseling-64">{label}</th>)}</tr></thead><tbody>{visibleAssignments.map(item => <tr key={item.id}><td className="admin-extracted-managecounseling-65">{item.student.fullName}<div className="admin-extracted-managecounseling-66">{item.student.nationalId}</div></td><td className="admin-extracted-managecounseling-67">{item.counselor.displayName}</td><td className="admin-extracted-managecounseling-68">{dateLabel(item.startedAt)}</td><td className="admin-extracted-managecounseling-69">{item.endedAt ? dateLabel(item.endedAt) : <span className="admin-extracted-managecounseling-70">فعال</span>}</td><td className="admin-extracted-managecounseling-71">{item.assignedBy.username}</td></tr>)}</tbody></table></div>
           <div className="counseling-assignment-pagination"><span>نمایش {(assignmentPage - 1) * assignmentPageSize + 1} تا {Math.min(assignmentPage * assignmentPageSize, assignments.length)} از {assignments.length} تخصیص</span><div><span>صفحه {assignmentPage} از {assignmentPageCount}</span><button type="button" disabled={assignmentPage <= 1} onClick={() => setAssignmentPage(page => Math.max(1, page - 1))}>صفحه قبل</button><button type="button" disabled={assignmentPage >= assignmentPageCount} onClick={() => setAssignmentPage(page => Math.min(assignmentPageCount, page + 1))}>صفحه بعد</button></div></div></>}
