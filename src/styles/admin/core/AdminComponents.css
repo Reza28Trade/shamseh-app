@@ -1844,3 +1844,98 @@
   cursor: not-allowed;
   opacity: .55;
 }
+
+
+/* Counseling: shared form, card and action styling. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-counseling-page .admin-counseling-card {
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-surface-radius);
+  background: var(--admin-card);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-counseling-page .admin-counseling-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-surface-radius);
+  background: var(--admin-card);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-counseling-page .admin-counseling-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--admin-control-height);
+  padding: 9px 11px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-control);
+  color: var(--admin-text);
+  font: inherit;
+  font-size: 11px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-counseling-page .admin-counseling-input--stacked {
+  display: block;
+  margin-top: 6px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-counseling-page .admin-counseling-input--search {
+  padding-right: 34px;
+  padding-left: 12px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-counseling-page .admin-counseling-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 35px;
+  padding: 8px 11px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-accent-soft);
+  color: var(--admin-text);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-counseling-page .admin-counseling-button--spaced {
+  margin-top: 12px;
+  background: var(--admin-card);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-counseling-page .admin-counseling-button--tall {
+  min-height: 39px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-counseling-page .admin-counselor-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 7px;
+  border: 1px solid var(--admin-border);
+  border-radius: 7px;
+  font-size: 10px;
+  font-weight: 800;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-counseling-page .admin-counselor-status.is-active {
+  background: var(--admin-accent-soft);
+  color: var(--admin-accent);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-counseling-page .admin-counselor-status.is-inactive {
+  background: var(--admin-inner);
+  color: var(--admin-sub);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-counseling-page .admin-counseling-conversation-button {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-inner);
+  color: var(--admin-text);
+  text-align: right;
+  cursor: pointer;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-counseling-page .admin-counseling-conversation-button.is-selected {
+  border-color: var(--admin-accent);
+  background: var(--admin-accent-soft);
+}
