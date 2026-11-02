@@ -287,10 +287,10 @@ ${value}`.trim();
 
 
   return (
-    <div className="admin-legacy-page admin-public-content-page" style={{ color: colors.text, display: 'flex', flexDirection: 'column', gap: 14, width: '100%', maxWidth: 'none', minWidth: 0, margin: 0 }}>
-      <header style={{ padding: '15px 18px', borderRadius: 14, background: 'var(--admin-card)', border: `1px solid ${colors.border}` }}>
+    <div className="admin-legacy-page admin-public-content-page">
+      <header>
         <div className="admin-extracted-managepubliccontent-1"><BookOpenText size={17} color={colors.accent} /><h2 className="admin-extracted-managepubliccontent-2">مدیریت محتوای عمومی</h2></div>
-        <p style={{ color: colors.muted, fontSize: 12, lineHeight: 1.8, margin: 0 }}>قوانین و تحلیل کنکورهایی که در صفحه اصلی برای هنرجویان نمایش داده می‌شوند را از این بخش مدیریت کنید.</p>
+        <p className="admin-public-intro">قوانین و تحلیل کنکورهایی که در صفحه اصلی برای هنرجویان نمایش داده می‌شوند را از این بخش مدیریت کنید.</p>
       </header>
 
       <div className="admin-extracted-managepubliccontent-3">
@@ -301,7 +301,7 @@ ${value}`.trim();
 
       {error && <div role="alert" className="admin-public-feedback is-error">{error}</div>}
       {success && <div role="status" className="admin-extracted-managepubliccontent-4">{success}</div>}
-      {loading ? <div style={{ padding: 32, textAlign: 'center', color: colors.muted }}>در حال دریافت اطلاعات...</div> : tab === 'news' ? (
+      {loading ? <div className="admin-public-loading">در حال دریافت اطلاعات...</div> : tab === 'news' ? (
         <section style={{ border: '1px solid ' + colors.border, borderRadius: 16, padding: 18, background: colors.alt, display: 'grid', gap: 14 }}>
           <div className="admin-extracted-managepubliccontent-5">
             <div><h2 className="admin-extracted-managepubliccontent-6">مدیریت اخبار و اطلاعیه‌ها</h2><p style={{ margin: '5px 0 0', color: colors.muted, fontSize: 12 }}>خبرها را از اینجا اضافه، ویرایش، منتشر یا حذف کنید.</p></div>
