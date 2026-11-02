@@ -1309,3 +1309,33 @@
   )::before{transition:none!important}
 }
 
+
+/* Preserve selected states above the shared glass action base. */
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-section-switch button.primary-action{
+  background:var(--admin-accent)!important;border-color:var(--admin-accent)!important;
+  color:var(--admin-on-accent)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-term-switch button.active{
+  background:var(--admin-accent-soft)!important;border-color:var(--admin-brand-border)!important;
+  color:var(--admin-accent)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-finance-manual-form{
+  display:grid;gap:10px;margin-bottom:12px;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-finance-course-options{
+  display:grid;gap:6px;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-finance-course-option{
+  display:flex;align-items:center;gap:8px;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page :is(
+  .student-finance-payment-row,.student-finance-installment-row
+){
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-finance-installment-row{
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+}
+.admin-shell .admin-main .admin-page-content .admin-students-page .student-finance-registration-card{
+  margin-bottom:12px;
+}
