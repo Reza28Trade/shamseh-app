@@ -402,16 +402,12 @@ export const ManageStudents: React.FC<ManageStudentsProps> = ({
 
   return (
     <div className="admin-legacy-page admin-students-page">
-      <section className="students-page-head admin-master-panel">
-        <div>
-          <h2><Users size={19} /> مدیریت هنرجویان</h2>
-          <p>مدیریت هنرجویان، دوره‌ها و ثبت‌نام‌ها بر اساس مقطع و ترم تحصیلی</p>
-        </div>
-        <div className="students-head-actions">
+      <div className="students-toolbar">
+        <div className="students-toolbar-actions">
           <button type="button" onClick={() => void exportStudents()}><Download size={15}/> خروجی Excel</button>
           <button type="button" onClick={downloadTemplate}><FileSpreadsheet size={15}/> فایل نمونه</button>
         </div>
-      </section>
+      </div>
 
       <section className="students-stats">
         <div className="student-stat admin-master-panel"><span>کل هنرجویان</span><strong>{apiStudents.length}</strong></div>
