@@ -10,17 +10,15 @@
   padding:0;
   gap:14px;
 }
-.admin-students-page > .students-page-head {
-  min-height:76px;
+.admin-students-page > .students-toolbar {
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  gap:14px;
+  justify-content:flex-start;
+  min-height:34px;
+  width:100%;
+  min-width:0;
 }
-.admin-students-page .students-page-head h2,
-.admin-students-page .section-title h3 { margin:0; }
-.admin-students-page .students-page-head p { margin:4px 0 0; }
-.admin-students-page .students-head-actions {
+.admin-students-page .students-toolbar-actions {
   display:flex;
   flex-wrap:wrap;
   align-items:center;
@@ -322,12 +320,8 @@
   .admin-students-page > .students-stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
 @media(max-width:700px) {
-  .admin-students-page .students-page-head {
-    align-items:stretch;
-    flex-direction:column;
-  }
-  .admin-students-page .students-head-actions { width:100%; }
-  .admin-students-page .students-head-actions button { flex:1 1 auto; justify-content:center; }
+  .admin-students-page .students-toolbar-actions { width:100%; }
+  .admin-students-page .students-toolbar-actions button { flex:0 0 auto; }
   .admin-students-page .student-search { width:100%; min-width:0; }
   .admin-students-page .list-head { align-items:stretch; flex-direction:column; }
 }
