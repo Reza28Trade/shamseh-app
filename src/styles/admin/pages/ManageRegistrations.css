@@ -214,6 +214,18 @@
 .admin-finance-registration-list-panel {
   gap: 12px;
 }
+.admin-finance-registration-list-panel > .admin-extracted-manageregistrations-42 {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+}
+.admin-finance-registration-list-panel > .admin-extracted-manageregistrations-42 .admin-action-button {
+  min-height: 34px;
+}
 .admin-finance-registration-list-panel > .admin-extracted-manageregistrations-43 {
   display: grid;
   grid-template-columns: minmax(220px, 1fr) minmax(155px, 220px);
