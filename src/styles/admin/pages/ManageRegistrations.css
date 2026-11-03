@@ -38,7 +38,7 @@
 }
 
 .admin-finance-registration-page > section > :is(
-  .admin-extracted-manageregistrations-30,
+  .admin-data-table-wrap,
   .admin-extracted-manageregistrations-67,
   .admin-extracted-manageregistrations-88
 ) {
@@ -190,4 +190,16 @@
   .admin-finance-archived-debtors .admin-action-row .admin-action-button {
     margin-inline-start: 48px;
   }
+}
+
+/* Ledger composition only; its surface and table styling come from shared admin components. */
+.admin-finance-ledger-panel {
+  gap: 10px;
+}
+.admin-finance-ledger-description {
+  margin: -2px 0 2px;
+  max-width: 760px;
+  color: var(--admin-sub);
+  font-size: 11px;
+  line-height: 1.8;
 }
