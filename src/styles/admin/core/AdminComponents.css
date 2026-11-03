@@ -2043,6 +2043,42 @@
   background: var(--admin-card);
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-toolbar { display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px; }
+
+/* Exam-analysis filters: override the legacy flex toolbar with a compact grid. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-analysis-panel > .admin-public-toolbar {
+  display:grid!important;
+  grid-template-columns:minmax(240px,1fr) 145px 145px auto!important;
+  align-items:center!important;
+  gap:8px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-analysis-panel > .admin-public-toolbar > * {
+  min-width:0;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-analysis-panel > .admin-public-toolbar .admin-public-input {
+  min-height:36px;
+}
+@media(max-width:900px) {
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-analysis-panel > .admin-public-toolbar {
+    grid-template-columns:minmax(0,1fr) 140px 140px!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-analysis-panel > .admin-public-toolbar > button {
+    grid-column:1/-1;
+    justify-self:start;
+  }
+}
+@media(max-width:700px) {
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-analysis-panel > .admin-public-toolbar {
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-analysis-panel > .admin-public-toolbar > button {
+    grid-column:auto;
+    justify-self:stretch;
+  }
+}
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-coverage-summary {
   padding: 8px 12px;
   border: 1px solid var(--admin-border);
