@@ -211,7 +211,7 @@ export function ManageRegistrations(){
           <thead><tr>{['تاریخ','هنرجو / کد ملی','نوع رویداد','مبلغ (تومان)','وضعیت','جزئیات'].map(label=><th key={label}>{label}</th>)}</tr></thead>
           <tbody>{financialTransactions.map(row=><tr key={row.id}>
             <td>{row.date?new Date(row.date).toLocaleDateString('fa-IR'):'—'}</td>
-            <td><strong>{row.student}</strong><div>{row.nationalId}</div></td>
+            <td><strong>{row.student}</strong><span className="admin-finance-ledger-national-id"> · {row.nationalId}</span></td>
             <td>{row.kind}</td>
             <td>{money(row.amount)}</td>
             <td>{row.status}</td>
