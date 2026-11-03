@@ -1445,7 +1445,6 @@
 .admin-extracted-manageregistrations-87{font-size:11px!important;color:var(--admin-sub)!important}
 .admin-extracted-manageregistrations-88{overflow-x:auto!important}
 .admin-extracted-manageregistrations-93{font-size:10px!important;color:var(--admin-sub)!important;margin-top:4px!important}
-.admin-extracted-manageregistrations-95{padding:10px!important;border-bottom:1px solid var(--admin-border)!important;white-space:nowrap!important}
 .admin-extracted-manageregistrations-99{padding:24px!important;text-align:center!important;color:var(--admin-sub)!important}
 .admin-extracted-manageregistrations-100{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:10px!important;flex-wrap:wrap!important;padding:12px 15px!important}
 .admin-extracted-manageregistrations-101{font-size:11px!important;color:var(--admin-sub)!important}
@@ -2301,7 +2300,7 @@
   scrollbar-width:thin; scrollbar-color:var(--admin-border) transparent;
 }
 .admin-shell .admin-main .admin-page-content :is(.admin-legacy-page:not(.admin-accounts-page),.admin-finance-registration-page) table.admin-data-table {
-  width:100%; min-width:900px; table-layout:auto; border:0; border-collapse:separate;
+  width:100%; table-layout:auto; border:0; border-collapse:separate;
   border-spacing:0 8px; background:transparent;
 }
 .admin-shell .admin-main .admin-page-content :is(.admin-legacy-page:not(.admin-accounts-page),.admin-finance-registration-page) table.admin-data-table thead th {
