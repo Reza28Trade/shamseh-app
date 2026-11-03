@@ -2290,6 +2290,13 @@
   border-right: 0 !important;
   box-shadow: none !important;
 }
+
+/* Registration list follows the same borderless ledger table treatment. */
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-registration-list-panel table.admin-data-table :is(th,td) {
+  border-left: 0 !important;
+  border-right: 0 !important;
+  box-shadow: none !important;
+}
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-action-button.is-danger {
   color:var(--admin-warning-text, var(--admin-sub));
 }
