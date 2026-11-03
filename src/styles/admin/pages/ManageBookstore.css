@@ -1,7 +1,7 @@
 /* Bookstore page layout only. Visual surfaces, controls and actions come from the shared admin system. */
 .admin-bookstore-page{display:grid;gap:16px;min-width:0;width:100%;direction:rtl;}
 .admin-bookstore-page .bookstore-card{min-width:0;padding:18px;}
-.admin-bookstore-page .bookstore-section-title{margin:0 0 12px;font-size:13px;font-weight:900;}
+.admin-bookstore-page .bookstore-section-title{margin:0 0 12px;}
 .admin-bookstore-page .bookstore-form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:stretch;}
 .admin-bookstore-page .bookstore-field{display:grid;gap:6px;min-width:0;}
 .admin-bookstore-page .bookstore-levels{display:flex;gap:12px;flex-wrap:wrap;align-items:center;align-content:center;min-height:42px;margin:0;padding:8px 12px;}
