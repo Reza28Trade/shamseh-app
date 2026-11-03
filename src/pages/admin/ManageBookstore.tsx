@@ -28,12 +28,12 @@ export function ManageBookstore(){
     <label className="bookstore-field"><span className="bookstore-field-label">قیمت پشت جلد (تومان)</span><input placeholder="قیمت اصلی" type="number" min="1" value={price} onChange={e=>setPrice(e.target.value)}/></label>
     <label className="bookstore-field"><span className="bookstore-field-label">قیمت با تخفیف (اختیاری)</span><input placeholder="خالی = بدون تخفیف" type="number" min="0" value={discountedPrice} onChange={e=>setDiscountedPrice(e.target.value)}/></label>
     <input placeholder="موجودی کل" type="number" min="0" value={stock} onChange={e=>setStock(e.target.value)}/>
-   </div>
    <label className="bookstore-upload-field">بارگذاری جلد از کامپیوتر (JPG، PNG یا WebP؛ حداکثر ۵ مگابایت)<input type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>setCoverFile(e.target.files?.[0]||null)}/></label>
    <input type="url" placeholder="یا آدرس تصویر جلد (اختیاری)" value={coverImage} onChange={e=>{setCoverImage(e.target.value);setCoverFile(null);}}/>
    {coverFile&&<span className="bookstore-field-label">فایل انتخاب‌شده: {coverFile.name}</span>}
    {coverImage.trim()&&<img className="bookstore-cover-preview" src={coverImage.trim()} alt="پیش‌نمایش جلد کتاب" onError={e=>{e.currentTarget.style.visibility='hidden';}}/>}
    <textarea placeholder="توضیحات کتاب (اختیاری)" value={description} onChange={e=>setDescription(e.target.value)}/>
+   </div>
    <div className="bookstore-form-actions"><button className="admin-action-button" disabled={busy||!title.trim()||!price||Number(price)<=0||!academicLevels.length||(discountedPrice.trim()!==''&&(Number(discountedPrice)<0||Number(discountedPrice)>Number(price)))} onClick={()=>void createBook()}>{busy?'در حال ذخیره…':'ثبت کتاب'}</button></div>
   </div>
   <div className="bookstore-card admin-master-panel"><h3 className="bookstore-section-title">فهرست کتاب‌ها و موجودی</h3><div className="bookstore-book-list">{books.map(b=><div key={b.id} className="bookstore-book-row admin-surface-card">
