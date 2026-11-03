@@ -2208,7 +2208,7 @@
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-field-label,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-levels legend { font-size:11px; }
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-levels {
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-level-options {
   border:1px solid var(--admin-border);
   border-radius:var(--admin-control-radius);
   background:var(--admin-control);
