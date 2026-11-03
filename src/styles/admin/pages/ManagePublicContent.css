@@ -27,6 +27,7 @@
 }
 @media(max-width:480px){
  .admin-public-content-page .admin-public-input--wide{min-width:280px;}
+}
 
 /* Rules and exam analysis reuse the canonical admin panel composition. */
 .admin-public-content-page > .admin-public-tabs {
@@ -49,9 +50,9 @@
 }
 .admin-public-content-page .admin-public-analysis-panel > .admin-public-toolbar {
   display:grid;
-  grid-template-columns:minmax(220px,1fr) minmax(135px,180px) minmax(135px,180px) auto;
+  grid-template-columns:minmax(260px,1fr) minmax(130px,155px) minmax(130px,155px) auto;
   align-items:center;
-  gap:9px;
+  gap:8px;
   padding:0;
   border:0;
   border-radius:0;
@@ -77,7 +78,10 @@
 }
 @media(max-width:900px){
  .admin-public-content-page .admin-public-analysis-panel > .admin-public-toolbar {
-   grid-template-columns:minmax(0,1fr) minmax(130px,180px);
+   grid-template-columns:minmax(0,1fr) minmax(125px,155px);
+ }
+ .admin-public-content-page .admin-public-analysis-panel > .admin-public-toolbar .admin-public-input {
+   min-height:36px;
  }
 }
 @media(max-width:700px){
@@ -93,7 +97,6 @@
  .admin-public-content-page .admin-public-analysis-panel > .admin-public-toolbar {
    grid-template-columns:minmax(0,1fr);
  }
-}
 }
 
 
