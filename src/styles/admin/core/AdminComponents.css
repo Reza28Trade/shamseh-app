@@ -20,9 +20,9 @@
   --admin-page-title-size: 17px;
   --admin-section-title-size: 13px;
   width: 100%;
-  max-width: 1240px;
+  max-width: none;
   min-width: 0;
-  margin-inline: auto;
+  margin-inline: 0;
   display: flex;
   flex-direction: column;
   gap: var(--admin-page-gap);
@@ -2152,8 +2152,9 @@
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-action-button--primary,
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-tab.is-active {
   border-color: var(--admin-accent);
-  background: var(--admin-accent);
-  color: #fff;
+  background: var(--admin-accent-soft);
+  color: var(--admin-accent);
+  box-shadow: var(--admin-shadow-control);
 }
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-action-button--danger {
   color: var(--admin-warning-text, var(--admin-sub));
