@@ -2211,7 +2211,8 @@
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-levels {
   border:1px solid var(--admin-border);
   border-radius:var(--admin-control-radius);
-  background:var(--admin-inner);
+  background:var(--admin-control);
+  box-shadow:var(--admin-shadow-control);
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-level-option { font-size:11px; }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-upload-field { font-size:11px; }
