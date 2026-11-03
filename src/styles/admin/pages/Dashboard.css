@@ -259,7 +259,8 @@
 
 .admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-stat,
 .admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-action-center,
-.admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-upcoming-panel {
+.admin-shell .admin-main .admin-page-content > .admin-dashboard-page .admin-upcoming-panel,
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-action-center {
   background:var(--admin-bg)!important;
   border:1px solid rgba(255,255,255,.56)!important;
   box-shadow:
@@ -277,7 +278,8 @@
     0 0 0 1px rgba(0,128,128,.08)!important;
 }
 
-.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page :is(.admin-action-row,.admin-upcoming-row) {
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page :is(.admin-action-row,.admin-upcoming-row),
+.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-finance-registration-page .admin-action-row {
   background:var(--admin-dashboard-row-surface)!important;
   border:1px solid rgba(255,255,255,.62)!important;
   box-shadow:
@@ -285,7 +287,8 @@
     inset -3px -3px 7px rgba(255,255,255,.82)!important;
 }
 
-.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page :is(.admin-stat-icon,.admin-action-icon,.admin-upcoming-icon,.admin-action-summary,.admin-refresh-button) {
+.admin-shell.admin-theme-light .admin-main .admin-page-content > .admin-dashboard-page :is(.admin-stat-icon,.admin-action-icon,.admin-upcoming-icon,.admin-action-summary,.admin-refresh-button),
+.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-finance-registration-page :is(.admin-action-icon,.admin-action-summary) {
   background:var(--admin-dashboard-icon-surface)!important;
   border:1px solid rgba(255,255,255,.62)!important;
   box-shadow:
@@ -316,7 +319,8 @@
     inset 1px 1px 0 rgba(255,255,255,.035)!important;
 }
 
-.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page :is(.admin-action-row,.admin-upcoming-row) {
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page :is(.admin-action-row,.admin-upcoming-row),
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-finance-registration-page .admin-action-row {
   background:var(--admin-dashboard-row-surface)!important;
   border:1px solid rgba(255,255,255,.045)!important;
   box-shadow:
@@ -324,7 +328,8 @@
     inset -3px -3px 7px rgba(52,48,48,.42)!important;
 }
 
-.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page :is(.admin-stat-icon,.admin-action-icon,.admin-upcoming-icon,.admin-action-summary,.admin-refresh-button) {
+.admin-shell.admin-theme-dark .admin-main .admin-page-content > .admin-dashboard-page :is(.admin-stat-icon,.admin-action-icon,.admin-upcoming-icon,.admin-action-summary,.admin-refresh-button),
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-finance-registration-page :is(.admin-action-icon,.admin-action-summary) {
   background:var(--admin-dashboard-icon-surface)!important;
   border:1px solid rgba(255,255,255,.055)!important;
   box-shadow:
