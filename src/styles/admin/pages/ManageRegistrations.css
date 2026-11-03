@@ -209,3 +209,32 @@
   font-size: 10px;
   white-space: nowrap;
 }
+
+/* Registration list controls stay inside their own shared panel. */
+.admin-finance-registration-list-panel {
+  gap: 12px;
+}
+.admin-finance-registration-list-panel > .admin-extracted-manageregistrations-43 {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(155px, 220px);
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+}
+.admin-finance-registration-list-panel .admin-finance-search-input,
+.admin-finance-registration-list-panel .admin-shared-manageregistrations-input-style {
+  width: 100%;
+  min-width: 0;
+}
+.admin-finance-registration-list-panel .admin-data-table-wrap {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+@media (max-width: 720px) {
+  .admin-finance-registration-list-panel > .admin-extracted-manageregistrations-43 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
