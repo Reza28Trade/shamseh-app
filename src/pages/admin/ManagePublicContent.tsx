@@ -289,7 +289,7 @@ ${value}`.trim();
         <p className="admin-public-intro">قوانین و تحلیل کنکورهایی که در صفحه اصلی برای هنرجویان نمایش داده می‌شوند را از این بخش مدیریت کنید.</p>
       </header>
 
-      <div className="admin-action-center admin-master-panel admin-public-tabs admin-extracted-managepubliccontent-3">
+      <div className="admin-action-center admin-master-panel admin-public-tabs accounts-admin-actions admin-extracted-managepubliccontent-3">
         <button type="button" onClick={() => { setTab('rules'); setError(''); }} className={`admin-public-button${tab === 'rules' ? ' is-active' : ''}`}><FileText size={15} /> قوانین و مقررات</button>
         <button type="button" onClick={() => { setTab('analysis'); setError(''); }} className={`admin-public-button${tab === 'analysis' ? ' is-active' : ''}`}><BookOpenText size={15} /> تحلیل کنکور سال‌های قبل</button>
         <button type="button" onClick={() => { setTab('news'); setError(''); }} className={`admin-public-button${tab === 'news' ? ' is-active' : ''}`}><FileText size={15} /> اخبار و اسلایدر</button>
@@ -298,12 +298,12 @@ ${value}`.trim();
       {error && <div role="alert" className="admin-public-feedback is-error">{error}</div>}
       {success && <div role="status" className="admin-extracted-managepubliccontent-4">{success}</div>}
       {loading ? <div className="admin-public-loading">در حال دریافت اطلاعات...</div> : tab === 'news' ? (
-        <section className="admin-public-panel admin-public-news-panel">
-          <div className="admin-extracted-managepubliccontent-5">
-            <div><h2 className="admin-extracted-managepubliccontent-6">مدیریت اخبار و اطلاعیه‌ها</h2><p className="admin-public-muted-copy admin-public-copy--compact">خبرها را از اینجا اضافه، ویرایش، منتشر یا حذف کنید.</p></div>
+        <section className="admin-public-panel admin-public-news-panel accounts-card accounts-list-card admin-panel-card admin-master-panel">
+          <header className="accounts-card-head accounts-list-head admin-extracted-managepubliccontent-5">
+            <div><span className="accounts-eyebrow">حساب‌های محتوایی</span><h2 className="admin-extracted-managepubliccontent-6">مدیریت اخبار و اطلاعیه‌ها</h2><p className="admin-public-muted-copy admin-public-copy--compact">خبرها را از اینجا اضافه، ویرایش، منتشر یا حذف کنید.</p></div>
             <button type="button" onClick={() => { setNewsEditingId(null); setNewsForm(emptyNewsForm); setShowNewsForm(true); setError(''); setSuccess(''); }} className="admin-public-button admin-public-button--primary"><Plus size={15}/> افزودن خبر جدید</button>
           </div>
-          {showNewsForm && <form onSubmit={(event) => void saveNews(event)} className="admin-public-form-card">
+          {showNewsForm && <form onSubmit={(event) => void saveNews(event)} className="admin-public-form-card accounts-card accounts-create-card admin-panel-card admin-master-panel">
             <h3 className="admin-extracted-managepubliccontent-7">{newsEditingId ? 'ویرایش خبر' : 'ثبت خبر جدید'}</h3>
             <label className="admin-extracted-managepubliccontent-8">عنوان خبر *
               <input required maxLength={180} value={newsForm.title} onChange={(event) => setNewsForm({ ...newsForm, title: event.target.value })} placeholder="مثلاً آغاز ثبت‌نام آزمون آزمایشی" className="admin-public-input"/>
@@ -351,7 +351,8 @@ ${value}`.trim();
           </div>}
         </section>
       ) : tab === 'rules' ? (
-        <form onSubmit={saveRules} className="admin-action-center admin-master-panel admin-public-form-card admin-public-form-card--spaced">
+        <form onSubmit={saveRules} className="admin-action-center admin-master-panel admin-public-form-card admin-public-form-card--spaced accounts-card accounts-create-card admin-panel-card">
+          <header className="accounts-card-head"><div><span className="accounts-eyebrow">محتوای عمومی</span><h2>قوانین و مقررات</h2></div></header>
           <label className="admin-extracted-managepubliccontent-25">عنوان صفحه قوانین
             <input required value={rulesTitle} onChange={(event) => setRulesTitle(event.target.value)} className="admin-public-input" />
           </label>
@@ -376,8 +377,9 @@ ${value}`.trim();
           </div>
         </form>
       ) : (
-        <section className="admin-action-center admin-master-panel admin-public-analysis-panel admin-extracted-managepubliccontent-28">
-          <div className="admin-public-toolbar">
+        <section className="admin-action-center admin-master-panel admin-public-analysis-panel accounts-card accounts-list-card admin-panel-card admin-extracted-managepubliccontent-28">
+          <header className="accounts-card-head accounts-list-head"><div><span className="accounts-eyebrow">محتوای عمومی</span><h2>تحلیل کنکور سال‌های قبل</h2></div></header>
+        <div className="admin-public-toolbar">
             <div className="admin-extracted-managepubliccontent-29"><Search size={15} color={colors.muted} className="admin-extracted-managepubliccontent-30" /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="جست‌وجوی عنوان، سال یا متن..." className="admin-public-input admin-public-input--search" /></div>
             <select value={yearFilter} onChange={(event) => setYearFilter(event.target.value)} className="admin-public-input"><option value="ALL">همه سال‌ها</option>{years.map((item) => <option key={item} value={item}>{item}</option>)}</select>
             <select value={publishFilter} onChange={(event) => setPublishFilter(event.target.value)} className="admin-public-input"><option value="ALL">همه وضعیت‌ها</option><option value="true">منتشرشده</option><option value="false">پیش‌نویس</option></select>
