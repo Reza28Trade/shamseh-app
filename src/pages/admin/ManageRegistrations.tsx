@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { JalaliDatePicker } from '../../components/JalaliDatePicker';
+import { Wallet } from 'lucide-react';
 import '../../styles/admin/pages/ManageRegistrations.css';
 
 type Payment = { id: string; purpose: string; status: string; claimedAmount: number; approvedAmount: number | null; rejectionReason: string | null; paymentDate?: string; createdAt?: string; trackingCode?: string | null; receipts: Array<{ id: string; mimeType: string; uploadedAt: string }> };
@@ -176,7 +177,7 @@ export function ManageRegistrations(){
       <p className="admin-finance-archived-debtors-description">این هنرجویان به پنل دسترسی ندارند؛ بدهی و سوابق مالی آن‌ها حفظ شده است. پس از دریافت وجه، تسویه را دستی ثبت کنید.</p>
       <div className="admin-action-list">
         {archivedDebtors.map(item=><article key={item.id} className="admin-action-row">
-          <span className="admin-action-icon" aria-hidden="true">₮</span>
+          <span className="admin-action-icon" aria-hidden="true"><Wallet size={18}/></span>
           <span className="admin-action-copy">
             <strong>{item.student?.fullName||item.applicantFullName}</strong>
             <small>کد ملی: {item.student?.nationalId||item.nationalId} · ثبت‌نام: {item.courses.map(course=>course.courseTitleSnapshot).join('، ')||'—'}</small>
