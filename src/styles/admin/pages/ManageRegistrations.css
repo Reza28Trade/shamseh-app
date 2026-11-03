@@ -161,3 +161,33 @@
 .admin-finance-registration-page > section.is-empty .admin-extracted-manageregistrations-15 {
   padding: 8px 10px;
 }
+
+/* Archived debt follow-up reuses Dashboard > Management Priorities > Needs Action. */
+.admin-finance-archived-debtors {
+  gap: 10px;
+}
+.admin-finance-archived-debtors-description {
+  margin: -2px 0 2px;
+  max-width: 760px;
+  color: var(--admin-sub);
+  font-size: 11px;
+  line-height: 1.8;
+}
+.admin-finance-archived-debtors .admin-action-row {
+  min-width: 0;
+}
+.admin-finance-archived-debtors .admin-action-copy {
+  overflow-wrap: anywhere;
+}
+.admin-finance-archived-debtors .admin-finance-archived-debt-amount {
+  color: var(--admin-warning-text, var(--admin-sub));
+  font-weight: 800;
+}
+@media (max-width: 720px) {
+  .admin-finance-archived-debtors .admin-action-row {
+    flex-wrap: wrap;
+  }
+  .admin-finance-archived-debtors .admin-action-row .admin-action-button {
+    margin-inline-start: 48px;
+  }
+}
