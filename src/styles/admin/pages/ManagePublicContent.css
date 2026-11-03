@@ -27,4 +27,71 @@
 }
 @media(max-width:480px){
  .admin-public-content-page .admin-public-input--wide{min-width:280px;}
+
+/* Rules and exam analysis reuse the canonical admin panel composition. */
+.admin-public-content-page > .admin-public-tabs {
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  flex-wrap:wrap;
+  gap:8px;
+  padding:10px;
+}
+.admin-public-content-page > .admin-public-tabs .admin-public-button {
+  min-height:35px;
+}
+.admin-public-content-page .admin-public-analysis-panel {
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  min-width:0;
+  padding:16px;
+}
+.admin-public-content-page .admin-public-analysis-panel > .admin-public-toolbar {
+  display:grid;
+  grid-template-columns:minmax(220px,1fr) minmax(135px,180px) minmax(135px,180px) auto;
+  align-items:center;
+  gap:9px;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+.admin-public-content-page .admin-public-analysis-panel > .admin-public-toolbar > * {
+  min-width:0;
+}
+.admin-public-content-page .admin-public-analysis-panel .admin-public-table-wrap {
+  width:100%;
+  min-width:0;
+  max-width:100%;
+}
+.admin-public-content-page .admin-public-analysis-panel .admin-public-record-card {
+  margin:0;
+}
+.admin-public-content-page .admin-public-form-card--spaced {
+  gap:14px;
+}
+.admin-public-content-page .admin-public-structured-card {
+  min-width:0;
+}
+@media(max-width:900px){
+ .admin-public-content-page .admin-public-analysis-panel > .admin-public-toolbar {
+   grid-template-columns:minmax(0,1fr) minmax(130px,180px);
+ }
+}
+@media(max-width:700px){
+ .admin-public-content-page > .admin-public-tabs {
+   align-items:stretch;
+ }
+ .admin-public-content-page > .admin-public-tabs .admin-public-button {
+   flex:1 1 145px;
+ }
+ .admin-public-content-page .admin-public-analysis-panel {
+   padding:13px;
+ }
+ .admin-public-content-page .admin-public-analysis-panel > .admin-public-toolbar {
+   grid-template-columns:minmax(0,1fr);
+ }
+}
 }
