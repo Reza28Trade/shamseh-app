@@ -289,7 +289,7 @@ ${value}`.trim();
         <p className="admin-public-intro">قوانین و تحلیل کنکورهایی که در صفحه اصلی برای هنرجویان نمایش داده می‌شوند را از این بخش مدیریت کنید.</p>
       </header>
 
-      <div className="admin-extracted-managepubliccontent-3">
+      <div className="admin-action-center admin-master-panel admin-public-tabs admin-extracted-managepubliccontent-3">
         <button type="button" onClick={() => { setTab('rules'); setError(''); }} className={`admin-public-button${tab === 'rules' ? ' is-active' : ''}`}><FileText size={15} /> قوانین و مقررات</button>
         <button type="button" onClick={() => { setTab('analysis'); setError(''); }} className={`admin-public-button${tab === 'analysis' ? ' is-active' : ''}`}><BookOpenText size={15} /> تحلیل کنکور سال‌های قبل</button>
         <button type="button" onClick={() => { setTab('news'); setError(''); }} className={`admin-public-button${tab === 'news' ? ' is-active' : ''}`}><FileText size={15} /> اخبار و اسلایدر</button>
@@ -351,7 +351,7 @@ ${value}`.trim();
           </div>}
         </section>
       ) : tab === 'rules' ? (
-        <form onSubmit={saveRules} className="admin-public-form-card admin-public-form-card--spaced">
+        <form onSubmit={saveRules} className="admin-action-center admin-master-panel admin-public-form-card admin-public-form-card--spaced">
           <label className="admin-extracted-managepubliccontent-25">عنوان صفحه قوانین
             <input required value={rulesTitle} onChange={(event) => setRulesTitle(event.target.value)} className="admin-public-input" />
           </label>
@@ -376,7 +376,7 @@ ${value}`.trim();
           </div>
         </form>
       ) : (
-        <div className="admin-extracted-managepubliccontent-28">
+        <section className="admin-action-center admin-master-panel admin-public-analysis-panel admin-extracted-managepubliccontent-28">
           <div className="admin-public-toolbar">
             <div className="admin-extracted-managepubliccontent-29"><Search size={15} color={colors.muted} className="admin-extracted-managepubliccontent-30" /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="جست‌وجوی عنوان، سال یا متن..." className="admin-public-input admin-public-input--search" /></div>
             <select value={yearFilter} onChange={(event) => setYearFilter(event.target.value)} className="admin-public-input"><option value="ALL">همه سال‌ها</option>{years.map((item) => <option key={item} value={item}>{item}</option>)}</select>
@@ -436,7 +436,7 @@ ${value}`.trim();
               </div>
             </article>
           ))}
-        </div>
+        </section>
       )}
     </div>
   );
