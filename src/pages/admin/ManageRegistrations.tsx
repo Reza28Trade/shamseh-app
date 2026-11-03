@@ -165,17 +165,26 @@ export function ManageRegistrations(){
         <strong className={`admin-finance-stat-value${card.tone.includes('--admin-accent') ? ' is-accent' : card.tone.includes('--admin-warning') ? ' is-warning' : ''}`}>{card.value}</strong>
       </article>)}
     </div>
-    <section className={`admin-extracted-manageregistrations-5${archivedDebtors.length ? "" : " is-empty"}`}>
-      <div className="admin-extracted-manageregistrations-6">
-        <div><h3 className="admin-extracted-manageregistrations-7">پیگیری بدهکاران بایگانی‌شده</h3><p className="admin-extracted-manageregistrations-8">این هنرجویان به پنل دسترسی ندارند؛ بدهی و سوابق مالی آن‌ها حفظ شده است. پس از دریافت وجه، تسویه را دستی ثبت کنید.</p></div>
-        <span className={`admin-finance-debtor-count${archivedDebtors.length ? ' has-debtors' : ''}`}>{new Intl.NumberFormat('fa-IR').format(archivedDebtors.length)} بدهکار</span>
+    <section className="admin-action-center admin-master-panel admin-finance-archived-debtors">
+      <div className="admin-panel-heading">
+        <div>
+          <span>اولویت‌های مدیریتی</span>
+          <h2>پیگیری بدهکاران بایگانی‌شده</h2>
+        </div>
+        <span className="admin-action-summary">{new Intl.NumberFormat('fa-IR').format(archivedDebtors.length)} بدهکار</span>
       </div>
-      <div className="admin-extracted-manageregistrations-9">
-        {archivedDebtors.map(item=><article key={item.id} className="admin-extracted-manageregistrations-10">
-          <div className="admin-extracted-manageregistrations-11"><strong>{item.student?.fullName||item.applicantFullName}</strong><span className="admin-extracted-manageregistrations-12">کد ملی: {item.student?.nationalId||item.nationalId} · ثبت‌نام: {item.courses.map(course=>course.courseTitleSnapshot).join('، ')||'—'}</span><strong className="admin-extracted-manageregistrations-13">مانده بدهی: {money(item.balance)}</strong>{item.manualSettlementAmount>0&&<span className="admin-extracted-manageregistrations-14">تسویه دستی قبلی: {money(item.manualSettlementAmount)}</span>}</div>
+      <p className="admin-finance-archived-debtors-description">این هنرجویان به پنل دسترسی ندارند؛ بدهی و سوابق مالی آن‌ها حفظ شده است. پس از دریافت وجه، تسویه را دستی ثبت کنید.</p>
+      <div className="admin-action-list">
+        {archivedDebtors.map(item=><article key={item.id} className="admin-action-row">
+          <span className="admin-action-icon" aria-hidden="true">₮</span>
+          <span className="admin-action-copy">
+            <strong>{item.student?.fullName||item.applicantFullName}</strong>
+            <small>کد ملی: {item.student?.nationalId||item.nationalId} · ثبت‌نام: {item.courses.map(course=>course.courseTitleSnapshot).join('، ')||'—'}</small>
+            <small className="admin-finance-archived-debt-amount">مانده بدهی: {money(item.balance)}{item.manualSettlementAmount>0?' · تسویه دستی قبلی: '+money(item.manualSettlementAmount):''}</small>
+          </span>
           <button type="button" className="admin-action-button is-active" onClick={()=>{const note=window.prompt('توضیح ثبت تسویه (مثلاً دریافت وجه نقد یا شناسه انتقال)');if(note?.trim())void action('/api/admin/registrations/'+encodeURIComponent(item.id)+'/settle-debt','PATCH',{note:note.trim()});}}>ثبت تسویه دستی</button>
         </article>)}
-        {!archivedDebtors.length&&<div className="admin-extracted-manageregistrations-15">هنرجوی بایگانی‌شده با بدهی باز وجود ندارد.</div>}
+        {!archivedDebtors.length&&<div className="admin-action-empty"><span><strong>هنرجوی بایگانی‌شده با بدهی باز وجود ندارد.</strong></span></div>}
       </div>
     </section>
     {archivedSettled.length>0&&<section className="admin-extracted-manageregistrations-16">
