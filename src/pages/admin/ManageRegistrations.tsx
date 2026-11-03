@@ -197,23 +197,27 @@ export function ManageRegistrations(){
         </div>)}
       </div>
     </section>}
-    <section className="admin-extracted-manageregistrations-25">
-      <div className="admin-extracted-manageregistrations-26">
-        <div><h3 className="admin-extracted-manageregistrations-27">دفتر کل و سوابق مالی</h3><p className="admin-extracted-manageregistrations-28">تاریخچه پیش‌پرداخت‌ها، اقساط و بازپرداخت‌ها؛ جدیدترین رویدادها در ابتدا</p></div>
-        <span className="admin-extracted-manageregistrations-29">{new Intl.NumberFormat('fa-IR').format(financialTransactions.length)} رویداد</span>
+    <section className="admin-action-center admin-master-panel admin-finance-ledger-panel">
+      <div className="admin-panel-heading">
+        <div>
+          <span>سوابق مالی</span>
+          <h2>دفتر کل و سوابق مالی</h2>
+        </div>
+        <span className="admin-action-summary">{new Intl.NumberFormat('fa-IR').format(financialTransactions.length)} رویداد</span>
       </div>
-      <div className="admin-extracted-manageregistrations-30 admin-data-table-wrap">
-        <table className="admin-extracted-manageregistrations-31 admin-data-table">
-          <thead className="admin-extracted-manageregistrations-32"><tr>{['تاریخ','هنرجو / کد ملی','نوع رویداد','مبلغ (تومان)','وضعیت','جزئیات'].map(label=><th key={label} className="admin-extracted-manageregistrations-33">{label}</th>)}</tr></thead>
+      <p className="admin-finance-ledger-description">تاریخچه پیش‌پرداخت‌ها، اقساط و بازپرداخت‌ها؛ جدیدترین رویدادها در ابتدا</p>
+      <div className="admin-data-table-wrap">
+        <table className="admin-data-table">
+          <thead><tr>{['تاریخ','هنرجو / کد ملی','نوع رویداد','مبلغ (تومان)','وضعیت','جزئیات'].map(label=><th key={label}>{label}</th>)}</tr></thead>
           <tbody>{financialTransactions.map(row=><tr key={row.id}>
-            <td className="admin-extracted-manageregistrations-34">{row.date?new Date(row.date).toLocaleDateString('fa-IR'):'—'}</td>
-            <td className="admin-extracted-manageregistrations-35"><strong>{row.student}</strong><div className="admin-extracted-manageregistrations-36">{row.nationalId}</div></td>
-            <td className="admin-extracted-manageregistrations-37">{row.kind}</td>
-            <td className="admin-extracted-manageregistrations-38">{money(row.amount)}</td>
-            <td className="admin-extracted-manageregistrations-39">{row.status}</td>
-            <td className="admin-extracted-manageregistrations-40">{row.detail}</td>
+            <td>{row.date?new Date(row.date).toLocaleDateString('fa-IR'):'—'}</td>
+            <td><strong>{row.student}</strong><div>{row.nationalId}</div></td>
+            <td>{row.kind}</td>
+            <td>{money(row.amount)}</td>
+            <td>{row.status}</td>
+            <td>{row.detail}</td>
           </tr>)}
-          {!financialTransactions.length&&<tr><td colSpan={6} className="admin-extracted-manageregistrations-41">هنوز رویداد مالی ثبت نشده است.</td></tr>}
+          {!financialTransactions.length&&<tr><td colSpan={6}>هنوز رویداد مالی ثبت نشده است.</td></tr>}
           </tbody>
         </table>
       </div>
