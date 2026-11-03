@@ -127,13 +127,13 @@ export const ManageManagementContact: React.FC = () => {
       {error && <div className="messages-error" role="alert">{error}</div>}
 
       <section className="messages-stats" aria-label="فیلتر وضعیت تیکت‌ها">
-        <button type="button" aria-pressed={statusFilter === 'ALL'} className={`messages-stat messages-stat-all ${statusFilter === 'ALL' ? 'is-active' : ''}`} onClick={() => setStatusFilter('ALL')}><span className="messages-stat-icon"><MessagesSquare size={17} /></span><span className="messages-stat-copy"><small>همه تیکت‌ها</small><strong>{counts.all}</strong></span></button>
-        <button type="button" aria-pressed={statusFilter === 'OPEN'} className={`messages-stat messages-stat-open ${statusFilter === 'OPEN' ? 'is-active' : ''}`} onClick={() => setStatusFilter('OPEN')}><span className="messages-stat-icon"><Clock3 size={17} /></span><span className="messages-stat-copy"><small>در انتظار پاسخ</small><strong>{counts.open}</strong></span></button>
-        <button type="button" aria-pressed={statusFilter === 'ANSWERED'} className={`messages-stat messages-stat-answered ${statusFilter === 'ANSWERED' ? 'is-active' : ''}`} onClick={() => setStatusFilter('ANSWERED')}><span className="messages-stat-icon"><CheckCircle2 size={17} /></span><span className="messages-stat-copy"><small>پاسخ داده شده</small><strong>{counts.answered}</strong></span></button>
-        <button type="button" aria-pressed={statusFilter === 'CLOSED'} className={`messages-stat messages-stat-closed ${statusFilter === 'CLOSED' ? 'is-active' : ''}`} onClick={() => setStatusFilter('CLOSED')}><span className="messages-stat-icon"><CircleDot size={17} /></span><span className="messages-stat-copy"><small>بسته شده</small><strong>{counts.closed}</strong></span></button>
+        <button type="button" aria-pressed={statusFilter === 'ALL'} className={`admin-master-panel messages-stat messages-stat-all ${statusFilter === 'ALL' ? 'is-active' : ''}`} onClick={() => setStatusFilter('ALL')}><span className="messages-stat-icon"><MessagesSquare size={17} /></span><span className="messages-stat-copy"><small>همه تیکت‌ها</small><strong>{counts.all}</strong></span></button>
+        <button type="button" aria-pressed={statusFilter === 'OPEN'} className={`admin-master-panel messages-stat messages-stat-open ${statusFilter === 'OPEN' ? 'is-active' : ''}`} onClick={() => setStatusFilter('OPEN')}><span className="messages-stat-icon"><Clock3 size={17} /></span><span className="messages-stat-copy"><small>در انتظار پاسخ</small><strong>{counts.open}</strong></span></button>
+        <button type="button" aria-pressed={statusFilter === 'ANSWERED'} className={`admin-master-panel messages-stat messages-stat-answered ${statusFilter === 'ANSWERED' ? 'is-active' : ''}`} onClick={() => setStatusFilter('ANSWERED')}><span className="messages-stat-icon"><CheckCircle2 size={17} /></span><span className="messages-stat-copy"><small>پاسخ داده شده</small><strong>{counts.answered}</strong></span></button>
+        <button type="button" aria-pressed={statusFilter === 'CLOSED'} className={`admin-master-panel messages-stat messages-stat-closed ${statusFilter === 'CLOSED' ? 'is-active' : ''}`} onClick={() => setStatusFilter('CLOSED')}><span className="messages-stat-icon"><CircleDot size={17} /></span><span className="messages-stat-copy"><small>بسته شده</small><strong>{counts.closed}</strong></span></button>
       </section>
 
-      <section className="messages-ticket-section">
+      <section className="admin-master-panel messages-ticket-section">
         <div className="messages-section-head">
           <div><h3>فهرست تیکت‌ها</h3><p>برای مشاهده جزئیات و پاسخ‌گویی، روی ردیف تیکت بزنید.</p></div>
           <div className="messages-table-tools">
@@ -190,7 +190,7 @@ export const ManageManagementContact: React.FC = () => {
       {selectedTicketId && (() => {
         const ticket = tickets.find(item => item.id === selectedTicketId);
         if (!ticket) return null;
-        return <section className="messages-detail-section">
+        return <section className="admin-master-panel messages-detail-section">
           <div className="messages-detail-head">
             <div><span className="messages-detail-kicker">پرونده انتخاب‌شده</span><h3>{ticket.subject}</h3><p>{ticket.student.fullName} · کد ملی: {ticket.student.nationalId}</p></div>
             <button type="button" className="messages-detail-close" onClick={() => setSelectedTicketId(null)}><X size={15}/> بستن جزئیات</button>
