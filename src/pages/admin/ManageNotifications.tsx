@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Bell, Send, Users, BookOpen, Globe, CalendarDays } from 'lucide-react';
+import { Send, Users, BookOpen, Globe, CalendarDays } from 'lucide-react';
 import '../../styles/admin/pages/ManageNotifications.css';
 
 type TargetType = 'GLOBAL' | 'COURSE' | 'STUDENT' | 'MOCK_EXAM';
