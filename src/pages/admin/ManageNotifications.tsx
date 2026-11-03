@@ -114,7 +114,7 @@ export const ManageNotifications: React.FC = () => {
         </header>
         {message && <div className={`notifications-feedback ${message.ok ? 'is-success' : 'is-error'}`} role="status">{message.text}</div>}
         <form onSubmit={sendNotification} className="notifications-form">
-          <div className="notifications-field">
+          <div className="notifications-field notifications-field--target">
             <label>گیرندگان اطلاعیه</label>
             <div className="notifications-target-grid">
               {[
@@ -136,7 +136,7 @@ export const ManageNotifications: React.FC = () => {
           </div>
 
           {targetType === 'COURSE' && (
-            <div className="notifications-field">
+            <div className="notifications-field notifications-field--recipient">
               <label htmlFor="notification-course">دورهٔ موردنظر</label>
               <select id="notification-course" value={courseId} onChange={e => setCourseId(e.target.value)} required>
                 <option value="">انتخاب دوره...</option>
@@ -145,7 +145,7 @@ export const ManageNotifications: React.FC = () => {
             </div>
           )}
           {targetType === 'MOCK_EXAM' && (
-            <div className="notifications-field">
+            <div className="notifications-field notifications-field--recipient">
               <label htmlFor="notification-mock-exam">آزمون آزمایشی</label>
               <select id="notification-mock-exam" value={mockExamId} onChange={e => setMockExamId(e.target.value)} required>
                 <option value="">انتخاب آزمون...</option>
@@ -155,7 +155,7 @@ export const ManageNotifications: React.FC = () => {
             </div>
           )}
           {targetType === 'STUDENT' && (
-            <div className="notifications-field">
+            <div className="notifications-field notifications-field--recipient">
               <label htmlFor="notification-student">هنرجوی موردنظر</label>
               <select id="notification-student" value={studentId} onChange={e => setStudentId(e.target.value)} required>
                 <option value="">انتخاب هنرجو...</option>
@@ -164,17 +164,17 @@ export const ManageNotifications: React.FC = () => {
             </div>
           )}
 
-          <div className="notifications-field">
+          <div className="notifications-field notifications-field--type">
             <label htmlFor="notification-type">نوع اطلاعیه</label>
             <select id="notification-type" value={type} onChange={e => setType(e.target.value as NotificationType)}>
               {types.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
             </select>
           </div>
-          <div className="notifications-field">
+          <div className="notifications-field notifications-field--title">
             <label htmlFor="notification-title">عنوان اطلاعیه</label>
             <input id="notification-title" value={title} onChange={e => setTitle(e.target.value)} placeholder="عنوان اطلاعیه را بنویسید..." required />
           </div>
-          <div className="notifications-field">
+          <div className="notifications-field notifications-field--content">
             <label htmlFor="notification-content">متن اطلاعیه</label>
             <textarea id="notification-content" value={content} onChange={e => setContent(e.target.value)} placeholder="متن اطلاعیه را بنویسید..." rows={5} required />
           </div>
