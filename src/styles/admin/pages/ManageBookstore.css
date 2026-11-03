@@ -3,10 +3,9 @@
 .admin-bookstore-page .bookstore-card{min-width:0;padding:18px;}
 .admin-bookstore-page .bookstore-section-title{margin:0 0 16px;}
 .admin-bookstore-page .bookstore-form-grid{display:grid;gap:16px;min-width:0;}
-.admin-bookstore-page .bookstore-form-primary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 16px;align-items:end;min-width:0;}
+.admin-bookstore-page .bookstore-form-primary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 16px;align-items:end;min-width:0;}
 .admin-bookstore-page .bookstore-form-pricing{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 16px;align-items:end;min-width:0;}
-.admin-bookstore-page .bookstore-title-field{grid-column:1/-1;}
-.admin-bookstore-page .bookstore-levels{grid-column:1/-1;display:grid;gap:9px;min-width:0;margin:0;padding:12px 14px;}
+.admin-bookstore-page .bookstore-levels{display:grid;gap:9px;min-width:0;min-height:100%;margin:0;padding:12px 14px;align-content:center;}
 .admin-bookstore-page .bookstore-levels legend{padding:0 5px;}
 .admin-bookstore-page .bookstore-level-options{display:flex;align-items:center;gap:20px;flex-wrap:wrap;min-width:0;}
 .admin-bookstore-page .bookstore-field{display:grid;gap:7px;min-width:0;}
@@ -46,7 +45,6 @@
 }
 @media(max-width:650px){
  .admin-bookstore-page .bookstore-form-primary,.admin-bookstore-page .bookstore-form-pricing,.admin-bookstore-page .bookstore-cover-fields{grid-template-columns:minmax(0,1fr);}
- .admin-bookstore-page .bookstore-title-field,.admin-bookstore-page .bookstore-levels{grid-column:auto;}
  .admin-bookstore-page .bookstore-book-actions{grid-template-columns:repeat(2,minmax(0,1fr));}
  .admin-bookstore-page .bookstore-order-head{align-items:flex-start;}
  .admin-bookstore-page .bookstore-order-actions>*{flex:1 1 auto;}
