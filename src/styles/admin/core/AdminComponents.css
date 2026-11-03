@@ -1,3 +1,76 @@
+
+/* Notifications page: apply the approved account-card heading and surface language. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-notifications-page > .notifications-form-card.accounts-create-card {
+  padding:18px!important;
+  gap:14px!important;
+  border:1px solid var(--admin-content-border)!important;
+  border-radius:var(--admin-content-radius)!important;
+  background:var(--admin-content-surface)!important;
+  background-image:none!important;
+  box-shadow:var(--admin-content-shadow)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-notifications-page > .notifications-form-card.accounts-create-card > .accounts-card-head {
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:10px!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0 0 12px!important;
+  border-bottom:1px solid var(--admin-border)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-notifications-page .accounts-card-head .accounts-eyebrow {
+  display:block!important;
+  margin:0 0 3px!important;
+  color:var(--admin-accent)!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  line-height:1.6!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-notifications-page .accounts-card-head h3 {
+  margin:0!important;
+  color:var(--admin-text)!important;
+  font-size:14px!important;
+  font-weight:850!important;
+  line-height:1.6!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field > label {
+  color:var(--admin-text)!important;
+  font-size:11px!important;
+  font-weight:750!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target {
+  min-height:38px!important;
+  padding:8px 10px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:var(--admin-control-radius)!important;
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target.is-active {
+  border-color:var(--admin-accent)!important;
+  background:var(--admin-accent-soft)!important;
+  color:var(--admin-accent)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-field :is(input,select,textarea) {
+  border:1px solid var(--admin-border)!important;
+  border-radius:var(--admin-control-radius)!important;
+  background:var(--admin-control)!important;
+  color:var(--admin-text)!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-submit {
+  border:1px solid var(--admin-accent)!important;
+  border-radius:var(--admin-control-radius)!important;
+  background:var(--admin-accent)!important;
+  color:var(--admin-on-accent)!important;
+}
+@media(max-width:700px) {
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-notifications-page > .notifications-form-card.accounts-create-card {
+    padding:14px!important;
+  }
+}
+
 /* Canonical admin component system.
    Loaded after module styles: this file owns shared visual language.
    Module styles own composition, grid geometry, ordering and responsive layout only. */
