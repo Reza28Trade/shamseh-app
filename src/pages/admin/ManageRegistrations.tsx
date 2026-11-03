@@ -126,6 +126,8 @@ export function ManageRegistrations(){
   const safeListPage=Math.min(listPage,pageCount);
   const pagedRegistrations=visibleRegistrations.slice((safeListPage-1)*pageSize,safeListPage*pageSize);
   const pagedRefunds=visibleRefunds.slice((safeListPage-1)*pageSize,safeListPage*pageSize);
+  const isTabActive=(target:'registrations'|'refunds')=>tab===target;
+  const statusOptionsFor=(currentTab:'registrations'|'refunds')=>currentTab==='registrations'?[['PENDING_REVIEW','در انتظار بررسی'],['NEEDS_CORRECTION','نیازمند اصلاح'],['APPROVED','تأییدشده'],['REJECTED','ردشده'],['ALL','همه']]:[['REQUESTED','درخواست جدید'],['RESERVED','رزروشده'],['PAID','پرداخت‌شده'],['REJECTED','ردشده'],['ALL','همه']];
   const approvedRegistrations=registrations.filter(item=>item.status==='APPROVED');
   const archivedDebtors=approvedRegistrations.filter(item=>item.student?.isArchived && item.balance>0.0001);
   const archivedSettled=approvedRegistrations.filter(item=>item.student?.isArchived && item.manualSettlementAmount>0 && item.balance<=0.0001);
@@ -243,14 +245,14 @@ export function ManageRegistrations(){
 
     {tab==='registrations'?<section className="admin-action-center admin-master-panel admin-finance-registration-list-panel admin-extracted-manageregistrations-64">
     <div className="admin-extracted-manageregistrations-42">
-      <button className={`admin-action-button${tab === 'registrations' ? ' is-active' : ''}`} onClick={()=>{setTab('registrations');setStatusFilter('PENDING_REVIEW');}}>ثبت‌نام‌ها و رسیدها</button>
-      <button className={`admin-action-button${tab === 'refunds' ? ' is-active' : ''}`} onClick={()=>{setTab('refunds');setStatusFilter('REQUESTED');}}>درخواست‌های بازپرداخت</button>
+      <button className={`admin-action-button${isTabActive('registrations') ? ' is-active' : ''}`} onClick={()=>{setTab('registrations');setStatusFilter('PENDING_REVIEW');}}>ثبت‌نام‌ها و رسیدها</button>
+      <button className={`admin-action-button${isTabActive('refunds') ? ' is-active' : ''}`} onClick={()=>{setTab('refunds');setStatusFilter('REQUESTED');}}>درخواست‌های بازپرداخت</button>
       <button className="admin-action-button" onClick={()=>void load()}>به‌روزرسانی</button>
     </div>
     <div className="admin-extracted-manageregistrations-43">
       <input className="admin-finance-search-input" placeholder="جست‌وجو بر اساس نام، کد ملی، موبایل یا کد رشته" value={search} onChange={e=>setSearch(e.target.value)}/>
       <select className="admin-shared-manageregistrations-input-style" value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}>
-        {(tab==='registrations'?[['PENDING_REVIEW','در انتظار بررسی'],['NEEDS_CORRECTION','نیازمند اصلاح'],['APPROVED','تأییدشده'],['REJECTED','ردشده'],['ALL','همه']]:[['REQUESTED','درخواست جدید'],['RESERVED','رزروشده'],['PAID','پرداخت‌شده'],['REJECTED','ردشده'],['ALL','همه']]).map(([value,label])=><option key={value} value={value}>{label}</option>)}
+        {statusOptionsFor(tab).map(([value,label])=><option key={value} value={value}>{label}</option>)}
       </select>
     </div>
       <div className="admin-extracted-manageregistrations-65"><strong>فهرست ثبت‌نام‌ها</strong><span className="admin-extracted-manageregistrations-66">{new Intl.NumberFormat('fa-IR').format(visibleRegistrations.length)} ثبت‌نام</span></div>
@@ -272,14 +274,14 @@ export function ManageRegistrations(){
       <div className="admin-extracted-manageregistrations-81"><span className="admin-extracted-manageregistrations-82">نمایش {new Intl.NumberFormat('fa-IR').format(activeListCount?(safeListPage-1)*pageSize+1:0)} تا {new Intl.NumberFormat('fa-IR').format(Math.min(safeListPage*pageSize,activeListCount))} از {new Intl.NumberFormat('fa-IR').format(activeListCount)}</span><div className="admin-extracted-manageregistrations-83"><button type="button" className="admin-action-button" disabled={safeListPage<=1} onClick={()=>setListPage(p=>Math.max(1,p-1))}>قبلی</button><span className="admin-extracted-manageregistrations-84">صفحه {new Intl.NumberFormat('fa-IR').format(safeListPage)} از {new Intl.NumberFormat('fa-IR').format(pageCount)}</span><button type="button" className="admin-action-button" disabled={safeListPage>=pageCount} onClick={()=>setListPage(p=>Math.min(pageCount,p+1))}>بعدی</button></div></div>
     </section>:<section className="admin-action-center admin-master-panel admin-finance-registration-list-panel admin-extracted-manageregistrations-85">
     <div className="admin-extracted-manageregistrations-42">
-      <button className={`admin-action-button${tab === 'registrations' ? ' is-active' : ''}`} onClick={()=>{setTab('registrations');setStatusFilter('PENDING_REVIEW');}}>ثبت‌نام‌ها و رسیدها</button>
-      <button className={`admin-action-button${tab === 'refunds' ? ' is-active' : ''}`} onClick={()=>{setTab('refunds');setStatusFilter('REQUESTED');}}>درخواست‌های بازپرداخت</button>
+      <button className={`admin-action-button${isTabActive('registrations') ? ' is-active' : ''}`} onClick={()=>{setTab('registrations');setStatusFilter('PENDING_REVIEW');}}>ثبت‌نام‌ها و رسیدها</button>
+      <button className={`admin-action-button${isTabActive('refunds') ? ' is-active' : ''}`} onClick={()=>{setTab('refunds');setStatusFilter('REQUESTED');}}>درخواست‌های بازپرداخت</button>
       <button className="admin-action-button" onClick={()=>void load()}>به‌روزرسانی</button>
     </div>
     <div className="admin-extracted-manageregistrations-43">
       <input className="admin-finance-search-input" placeholder="جست‌وجو بر اساس نام، کد ملی، موبایل یا کد رشته" value={search} onChange={e=>setSearch(e.target.value)}/>
       <select className="admin-shared-manageregistrations-input-style" value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}>
-        {(tab==='registrations'?[['PENDING_REVIEW','در انتظار بررسی'],['NEEDS_CORRECTION','نیازمند اصلاح'],['APPROVED','تأییدشده'],['REJECTED','ردشده'],['ALL','همه']]:[['REQUESTED','درخواست جدید'],['RESERVED','رزروشده'],['PAID','پرداخت‌شده'],['REJECTED','ردشده'],['ALL','همه']]).map(([value,label])=><option key={value} value={value}>{label}</option>)}
+        {statusOptionsFor(tab).map(([value,label])=><option key={value} value={value}>{label}</option>)}
       </select>
     </div>
       <div className="admin-extracted-manageregistrations-86"><strong>فهرست درخواست‌های بازپرداخت</strong><span className="admin-extracted-manageregistrations-87">{new Intl.NumberFormat('fa-IR').format(visibleRefunds.length)} درخواست</span></div>
