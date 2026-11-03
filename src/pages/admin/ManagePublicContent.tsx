@@ -302,7 +302,7 @@ ${value}`.trim();
           <header className="accounts-card-head accounts-list-head admin-extracted-managepubliccontent-5">
             <div><span className="accounts-eyebrow">حساب‌های محتوایی</span><h2 className="admin-extracted-managepubliccontent-6">مدیریت اخبار و اطلاعیه‌ها</h2><p className="admin-public-muted-copy admin-public-copy--compact">خبرها را از اینجا اضافه، ویرایش، منتشر یا حذف کنید.</p></div>
             <button type="button" onClick={() => { setNewsEditingId(null); setNewsForm(emptyNewsForm); setShowNewsForm(true); setError(''); setSuccess(''); }} className="admin-public-button admin-public-button--primary"><Plus size={15}/> افزودن خبر جدید</button>
-          </div>
+          </header>
           {showNewsForm && <form onSubmit={(event) => void saveNews(event)} className="admin-public-form-card accounts-card accounts-create-card admin-panel-card admin-master-panel">
             <h3 className="admin-extracted-managepubliccontent-7">{newsEditingId ? 'ویرایش خبر' : 'ثبت خبر جدید'}</h3>
             <label className="admin-extracted-managepubliccontent-8">عنوان خبر *
