@@ -1,36 +1,134 @@
-/* Layout and responsive composition only. Visual tokens, surfaces, controls and typography are owned by the central admin design system. */
-/* Notifications page composition only. Shared appearance is owned by AdminComponents.css. */
-
-.admin-notifications-page{width: 100%;max-width: 1240px;margin-inline: auto;gap: 16px;}
-.admin-notifications-page > header.notifications-page-head{min-height: 76px;padding: 16px 18px;display: flex;align-items: center;justify-content: space-between;gap: 14px;}
-.admin-notifications-page .notifications-eyebrow{display: flex;align-items: center;gap: 7px;margin-bottom: 5px;}
-.admin-notifications-page h2{display: flex;align-items: center;gap: 9px;margin: 0;}
-.admin-notifications-page .notifications-page-head p{margin: 5px 0 0;}
-.admin-notifications-page .notifications-form-card{min-width: 0;padding: clamp(14px,2vw,22px);}
-.admin-notifications-page .notifications-form{display: flex;flex-direction: column;gap: 16px;}
-.admin-notifications-page .notifications-field{display: flex;flex-direction: column;gap: 7px;min-width: 0;}
-.admin-notifications-page .notifications-target-grid{display: grid;grid-template-columns: repeat(4,minmax(0,1fr));gap: 10px;}
-.admin-notifications-page .notifications-target{display: flex;align-items: center;justify-content: center;gap: 8px;min-width: 0;min-height: 40px;padding: 10px 12px;}
-.admin-notifications-page .notifications-target svg{flex: 0 0 auto;}
-.admin-notifications-page .notifications-field :is(input,select,textarea){width: 100%;min-width: 0;min-height: 39px;}
-.admin-notifications-page .notifications-field textarea{min-height: 110px;}
-.admin-notifications-page .notifications-form-footer{display: flex;align-items: center;justify-content: space-between;gap: 12px;padding-top: 14px;}
-.admin-notifications-page .notifications-submit{display: inline-flex;align-items: center;justify-content: center;gap: 8px;min-height: 40px;padding-inline: 17px;}
-.admin-notifications-page .notifications-feedback{margin-bottom: 16px;padding: 11px 13px;}
-.admin-notifications-page .notifications-recipient-hint{margin-top: 6px;}
-@media(max-width:900px){
-.admin-notifications-page .notifications-target-grid{grid-template-columns: repeat(2,minmax(0,1fr));}
-
-
+/* Layout and responsive composition only. Shared visual language is owned by AdminComponents.css. */
+.admin-notifications-page {
+  width:100%;
+  max-width:none;
+  min-width:0;
+  margin-inline:0;
+  gap:14px;
 }
-@media(max-width:760px){
-.admin-notifications-page{gap: 12px;}
-.admin-notifications-page > header.notifications-page-head,
-  .admin-notifications-page .notifications-form-card{padding: 14px;}
-.admin-notifications-page .notifications-target-grid{grid-template-columns: minmax(0,1fr);}
-.admin-notifications-page .notifications-form-footer{align-items: stretch;flex-direction: column;}
-.admin-notifications-page .notifications-submit{width: 100%;}
-
-
+.admin-notifications-page > .notifications-page-head {
+  min-width:0;
+  padding:15px!important;
 }
-
+.admin-notifications-page > .notifications-page-head .accounts-card-head {
+  width:100%;
+}
+.admin-notifications-page > .notifications-page-head h2 {
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.admin-notifications-page > .notifications-page-head p {
+  margin:5px 0 0;
+}
+.admin-notifications-page > .notifications-form-card {
+  display:flex;
+  flex-direction:column;
+  gap:13px;
+  min-width:0;
+  padding:15px!important;
+}
+.admin-notifications-page > .notifications-form-card > .accounts-card-head {
+  margin:0;
+}
+.admin-notifications-page .notifications-form {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  align-items:start;
+  gap:12px;
+  min-width:0;
+}
+.admin-notifications-page .notifications-field {
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  min-width:0;
+}
+.admin-notifications-page .notifications-field--target,
+.admin-notifications-page .notifications-field--content,
+.admin-notifications-page .notifications-form-footer {
+  grid-column:1/-1;
+}
+.admin-notifications-page .notifications-target-grid {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:8px;
+}
+.admin-notifications-page .notifications-target {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  min-width:0;
+  min-height:38px;
+  padding:8px 10px;
+}
+.admin-notifications-page .notifications-target svg {
+  flex:0 0 auto;
+}
+.admin-notifications-page .notifications-field :is(input,select,textarea) {
+  width:100%;
+  min-width:0;
+  min-height:37px;
+}
+.admin-notifications-page .notifications-field textarea {
+  min-height:112px;
+}
+.admin-notifications-page .notifications-recipient-hint {
+  margin-top:3px;
+}
+.admin-notifications-page .notifications-form-footer {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding-top:10px;
+  border-top:1px solid var(--admin-border);
+}
+.admin-notifications-page .notifications-submit {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  min-height:37px;
+  padding-inline:16px;
+}
+.admin-notifications-page .notifications-feedback {
+  margin:0;
+  padding:9px 12px;
+  border-radius:10px;
+}
+@media(max-width:900px) {
+  .admin-notifications-page .notifications-target-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+@media(max-width:700px) {
+  .admin-notifications-page {
+    gap:12px;
+  }
+  .admin-notifications-page .notifications-form {
+    grid-template-columns:minmax(0,1fr);
+    gap:11px;
+  }
+  .admin-notifications-page .notifications-field--target,
+  .admin-notifications-page .notifications-field--content,
+  .admin-notifications-page .notifications-form-footer {
+    grid-column:auto;
+  }
+  .admin-notifications-page .notifications-target-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .admin-notifications-page .notifications-form-footer {
+    align-items:stretch;
+    flex-direction:column;
+  }
+  .admin-notifications-page .notifications-submit {
+    width:100%;
+  }
+}
+@media(max-width:420px) {
+  .admin-notifications-page .notifications-target-grid {
+    grid-template-columns:minmax(0,1fr);
+  }
+}
