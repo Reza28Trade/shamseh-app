@@ -6,21 +6,6 @@
   margin-inline:0;
   gap:14px;
 }
-.admin-notifications-page > .notifications-page-head {
-  min-width:0;
-  padding:15px!important;
-}
-.admin-notifications-page > .notifications-page-head .accounts-card-head {
-  width:100%;
-}
-.admin-notifications-page > .notifications-page-head h2 {
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.admin-notifications-page > .notifications-page-head p {
-  margin:5px 0 0;
-}
 .admin-notifications-page > .notifications-form-card {
   display:flex;
   flex-direction:column;
