@@ -2044,6 +2044,45 @@
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-toolbar { display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px; }
 
+/* Public-content record cards: consistent inner gutters and action spacing. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-record-card {
+  box-sizing:border-box;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:14px;
+  padding:14px 16px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-record-card > div:first-child {
+  flex:1 1 auto;
+  min-width:0;
+  padding:0 2px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-record-card :is(.admin-public-record-summary,.admin-public-analysis-preview) {
+  margin:7px 0 0;
+  line-height:1.9;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-record-card :is(.admin-extracted-managepubliccontent-24,.admin-extracted-managepubliccontent-51) {
+  display:flex;
+  flex:0 0 auto;
+  align-items:center;
+  justify-content:flex-start;
+  gap:8px;
+  padding:0 2px;
+}
+@media(max-width:700px) {
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-record-card {
+    flex-direction:column;
+    align-items:stretch;
+    gap:10px;
+    padding:12px!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-record-card :is(.admin-extracted-managepubliccontent-24,.admin-extracted-managepubliccontent-51) {
+    justify-content:flex-start;
+    flex-wrap:wrap;
+  }
+}
+
 /* Exam-analysis filters: override the legacy flex toolbar with a compact grid. */
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-public-content-page .admin-public-analysis-panel > .admin-public-toolbar {
   display:grid!important;
