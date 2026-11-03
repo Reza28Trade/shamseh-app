@@ -404,8 +404,8 @@ ${value}`.trim();
                 <div><strong className="admin-extracted-managepubliccontent-44">جدول وضعیت پوشش سؤال‌ها</strong><p className="admin-public-muted-copy admin-public-copy--table-help">برای هر سؤال فقط وضعیت پوشش را انتخاب کن؛ درصد پوشش خودکار محاسبه می‌شود.</p></div>
                 <div className="admin-public-coverage-summary">درصد پوشش محاسبه‌شده: {calculateCoverage(form.questions, Number(form.startQuestionNumber) || 1) == null ? '—' : `${calculateCoverage(form.questions, Number(form.startQuestionNumber) || 1)}٪`}</div>
               </div>
-              <div className="admin-public-table-wrap">
-                <table className="admin-extracted-managepubliccontent-45">
+              <div className="admin-public-table-wrap admin-data-table-wrap">
+                <table className="admin-extracted-managepubliccontent-45 admin-data-table">
                   <thead><tr className="admin-public-table-head-row">{['شماره سؤال', 'وضعیت پوشش', 'توضیحات'].map((label) => <th key={label} className="admin-public-table-heading">{label}</th>)}</tr></thead>
                   <tbody>{form.questions.map((question, index) => <tr key={index}>
                     <td className="admin-public-table-cell admin-public-table-cell--number"><input aria-label={`شماره سؤال ${index + 1}`} value={question.questionNumber} onChange={(event) => setForm((current) => ({ ...current, questions: current.questions.map((row, rowIndex) => rowIndex === index ? { ...row, questionNumber: event.target.value } : row) }))} className="admin-public-input admin-public-input--compact" /></td>
