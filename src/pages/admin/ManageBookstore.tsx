@@ -23,9 +23,9 @@ export function ManageBookstore(){
    <h3 className="bookstore-section-title">افزودن کتاب</h3>
    <div className="bookstore-form-grid">
     <div className="bookstore-form-primary">
-     <input placeholder="عنوان کتاب" value={title} onChange={e=>setTitle(e.target.value)}/>
-     <fieldset className="bookstore-levels"><legend>مقطع تحصیلی (امکان انتخاب هر دو)</legend>{[{value:"MASTER",label:"کارشناسی ارشد"},{value:"DOCTORATE",label:"دکتری"}].map(level=><label className="bookstore-level-option" key={level.value}><input type="checkbox" checked={academicLevels.includes(level.value)} onChange={e=>setAcademicLevels(current=>e.target.checked?[...current,level.value]:current.filter(v=>v!==level.value))}/>{level.label}</label>)}</fieldset>
-     <input placeholder="رشته (مثلاً پژوهش هنر)" value={field} onChange={e=>setField(e.target.value)}/>
+     <label className="bookstore-field bookstore-title-field"><span className="bookstore-field-label">عنوان کتاب</span><input placeholder="عنوان کامل کتاب" value={title} onChange={e=>setTitle(e.target.value)}/></label>
+     <label className="bookstore-field"><span className="bookstore-field-label">رشته</span><input placeholder="مثلاً پژوهش هنر" value={field} onChange={e=>setField(e.target.value)}/></label>
+     <fieldset className="bookstore-levels"><legend>مقطع تحصیلی <span>(امکان انتخاب هر دو)</span></legend><div className="bookstore-level-options">{[{value:"MASTER",label:"کارشناسی ارشد"},{value:"DOCTORATE",label:"دکتری"}].map(level=><label className="bookstore-level-option" key={level.value}><input type="checkbox" checked={academicLevels.includes(level.value)} onChange={e=>setAcademicLevels(current=>e.target.checked?[...current,level.value]:current.filter(v=>v!==level.value))}/>{level.label}</label>)}</div></fieldset>
     </div>
     <div className="bookstore-form-pricing">
      <label className="bookstore-field"><span className="bookstore-field-label">قیمت پشت جلد (تومان)</span><input placeholder="قیمت اصلی" type="number" min="1" value={price} onChange={e=>setPrice(e.target.value)}/></label>
