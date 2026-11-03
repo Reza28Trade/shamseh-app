@@ -203,3 +203,9 @@
   font-size: 11px;
   line-height: 1.8;
 }
+
+.admin-finance-ledger-national-id {
+  color: var(--admin-sub);
+  font-size: 10px;
+  white-space: nowrap;
+}
