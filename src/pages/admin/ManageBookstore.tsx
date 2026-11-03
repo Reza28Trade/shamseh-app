@@ -22,17 +22,23 @@ export function ManageBookstore(){
   <div className="bookstore-card admin-master-panel">
    <h3 className="bookstore-section-title">افزودن کتاب</h3>
    <div className="bookstore-form-grid">
-    <input placeholder="عنوان کتاب" value={title} onChange={e=>setTitle(e.target.value)}/>
-    <fieldset className="bookstore-levels"><legend>مقطع تحصیلی (امکان انتخاب هر دو)</legend>{[{value:"MASTER",label:"کارشناسی ارشد"},{value:"DOCTORATE",label:"دکتری"}].map(level=><label className="bookstore-level-option" key={level.value}><input type="checkbox" checked={academicLevels.includes(level.value)} onChange={e=>setAcademicLevels(current=>e.target.checked?[...current,level.value]:current.filter(v=>v!==level.value))}/>{level.label}</label>)}</fieldset>
-    <input placeholder="رشته (مثلاً پژوهش هنر)" value={field} onChange={e=>setField(e.target.value)}/>
-    <label className="bookstore-field"><span className="bookstore-field-label">قیمت پشت جلد (تومان)</span><input placeholder="قیمت اصلی" type="number" min="1" value={price} onChange={e=>setPrice(e.target.value)}/></label>
-    <label className="bookstore-field"><span className="bookstore-field-label">قیمت با تخفیف (اختیاری)</span><input placeholder="خالی = بدون تخفیف" type="number" min="0" value={discountedPrice} onChange={e=>setDiscountedPrice(e.target.value)}/></label>
-    <input placeholder="موجودی کل" type="number" min="0" value={stock} onChange={e=>setStock(e.target.value)}/>
-   <label className="bookstore-upload-field">بارگذاری جلد از کامپیوتر (JPG، PNG یا WebP؛ حداکثر ۵ مگابایت)<input type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>setCoverFile(e.target.files?.[0]||null)}/></label>
-   <input type="url" placeholder="یا آدرس تصویر جلد (اختیاری)" value={coverImage} onChange={e=>{setCoverImage(e.target.value);setCoverFile(null);}}/>
-   {coverFile&&<span className="bookstore-field-label">فایل انتخاب‌شده: {coverFile.name}</span>}
-   {coverImage.trim()&&<img className="bookstore-cover-preview" src={coverImage.trim()} alt="پیش‌نمایش جلد کتاب" onError={e=>{e.currentTarget.style.visibility='hidden';}}/>}
-   <textarea placeholder="توضیحات کتاب (اختیاری)" value={description} onChange={e=>setDescription(e.target.value)}/>
+    <div className="bookstore-form-primary">
+     <input placeholder="عنوان کتاب" value={title} onChange={e=>setTitle(e.target.value)}/>
+     <fieldset className="bookstore-levels"><legend>مقطع تحصیلی (امکان انتخاب هر دو)</legend>{[{value:"MASTER",label:"کارشناسی ارشد"},{value:"DOCTORATE",label:"دکتری"}].map(level=><label className="bookstore-level-option" key={level.value}><input type="checkbox" checked={academicLevels.includes(level.value)} onChange={e=>setAcademicLevels(current=>e.target.checked?[...current,level.value]:current.filter(v=>v!==level.value))}/>{level.label}</label>)}</fieldset>
+     <input placeholder="رشته (مثلاً پژوهش هنر)" value={field} onChange={e=>setField(e.target.value)}/>
+    </div>
+    <div className="bookstore-form-pricing">
+     <label className="bookstore-field"><span className="bookstore-field-label">قیمت پشت جلد (تومان)</span><input placeholder="قیمت اصلی" type="number" min="1" value={price} onChange={e=>setPrice(e.target.value)}/></label>
+     <label className="bookstore-field"><span className="bookstore-field-label">قیمت با تخفیف (اختیاری)</span><input placeholder="خالی = بدون تخفیف" type="number" min="0" value={discountedPrice} onChange={e=>setDiscountedPrice(e.target.value)}/></label>
+     <label className="bookstore-field"><span className="bookstore-field-label">موجودی کل</span><input placeholder="تعداد موجودی" type="number" min="0" value={stock} onChange={e=>setStock(e.target.value)}/></label>
+    </div>
+    <div className="bookstore-cover-fields">
+     <label className="bookstore-upload-field">بارگذاری جلد از کامپیوتر (JPG، PNG یا WebP؛ حداکثر ۵ مگابایت)<input type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>setCoverFile(e.target.files?.[0]||null)}/></label>
+     <label className="bookstore-field"><span className="bookstore-field-label">آدرس تصویر جلد (اختیاری)</span><input type="url" placeholder="https://…" value={coverImage} onChange={e=>{setCoverImage(e.target.value);setCoverFile(null);}}/></label>
+     {coverFile&&<span className="bookstore-field-label bookstore-selected-file">فایل انتخاب‌شده: {coverFile.name}</span>}
+     {coverImage.trim()&&<img className="bookstore-cover-preview" src={coverImage.trim()} alt="پیش‌نمایش جلد کتاب" onError={e=>{e.currentTarget.style.visibility='hidden';}}/>}
+    </div>
+    <label className="bookstore-field bookstore-description-field"><span className="bookstore-field-label">توضیحات کتاب (اختیاری)</span><textarea placeholder="توضیحات کتاب را وارد کنید" value={description} onChange={e=>setDescription(e.target.value)}/></label>
    </div>
    <div className="bookstore-form-actions"><button className="admin-action-button" disabled={busy||!title.trim()||!price||Number(price)<=0||!academicLevels.length||(discountedPrice.trim()!==''&&(Number(discountedPrice)<0||Number(discountedPrice)>Number(price)))} onClick={()=>void createBook()}>{busy?'در حال ذخیره…':'ثبت کتاب'}</button></div>
   </div>
