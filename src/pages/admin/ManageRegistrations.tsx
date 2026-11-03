@@ -165,7 +165,7 @@ export function ManageRegistrations(){
         <strong className={`admin-finance-stat-value${card.tone.includes('--admin-accent') ? ' is-accent' : card.tone.includes('--admin-warning') ? ' is-warning' : ''}`}>{card.value}</strong>
       </article>)}
     </div>
-    <section className="admin-extracted-manageregistrations-5">
+    <section className={`admin-extracted-manageregistrations-5${archivedDebtors.length ? "" : " is-empty"}`}>
       <div className="admin-extracted-manageregistrations-6">
         <div><h3 className="admin-extracted-manageregistrations-7">پیگیری بدهکاران بایگانی‌شده</h3><p className="admin-extracted-manageregistrations-8">این هنرجویان به پنل دسترسی ندارند؛ بدهی و سوابق مالی آن‌ها حفظ شده است. پس از دریافت وجه، تسویه را دستی ثبت کنید.</p></div>
         <span className={`admin-finance-debtor-count${archivedDebtors.length ? ' has-debtors' : ''}`}>{new Intl.NumberFormat('fa-IR').format(archivedDebtors.length)} بدهکار</span>
@@ -209,8 +209,8 @@ export function ManageRegistrations(){
       </div>
     </section>
     <div className="admin-extracted-manageregistrations-42">
-      <button className={`admin-finance-tab${tab === 'registrations' ? ' is-active' : ''}`} onClick={()=>{setTab('registrations');setStatusFilter('PENDING_REVIEW');}}>ثبت‌نام‌ها و رسیدها</button>
-      <button className={`admin-finance-tab${tab === 'refunds' ? ' is-active' : ''}`} onClick={()=>{setTab('refunds');setStatusFilter('REQUESTED');}}>درخواست‌های بازپرداخت</button>
+      <button className={`admin-action-button${tab === 'registrations' ? ' is-active' : ''}`} onClick={()=>{setTab('registrations');setStatusFilter('PENDING_REVIEW');}}>ثبت‌نام‌ها و رسیدها</button>
+      <button className={`admin-action-button${tab === 'refunds' ? ' is-active' : ''}`} onClick={()=>{setTab('refunds');setStatusFilter('REQUESTED');}}>درخواست‌های بازپرداخت</button>
       <button className="admin-shared-manageregistrations-button-style" onClick={()=>void load()}>به‌روزرسانی</button>
     </div>
     <div className="admin-extracted-manageregistrations-43">
