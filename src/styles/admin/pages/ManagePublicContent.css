@@ -249,3 +249,54 @@
 @media(prefers-reduced-motion:reduce) {
   .admin-public-content-page .admin-public-button { transition:none!important; }
 }
+
+
+/* Slightly tighter typography, matching the compact manager-accounts scale. */
+.admin-shell .admin-main .admin-page-content .admin-public-content-page {
+  font-size:11px;
+}
+.admin-public-content-page .accounts-card-head h2 {
+  font-size:14px!important;
+}
+.admin-public-content-page :is(
+  .admin-public-intro,
+  .admin-public-muted-copy,
+  .admin-public-description,
+  .admin-public-record-summary,
+  .admin-public-analysis-preview,
+  .admin-public-analysis-meta,
+  .admin-public-record-meta,
+  .admin-public-field-hint,
+  .admin-public-copy--compact,
+  .admin-public-copy--small,
+  .admin-public-copy--meta,
+  .admin-public-copy--description,
+  .admin-public-copy--table-help
+) {
+  font-size:10px!important;
+  line-height:1.8;
+}
+.admin-public-content-page :is(
+  label,
+  .admin-public-button,
+  .admin-public-upload-button,
+  .admin-public-publish-status,
+  .admin-public-coverage-summary,
+  .admin-public-table-wrap th,
+  .admin-public-table-wrap td
+) {
+  font-size:10px!important;
+}
+.admin-public-content-page .admin-public-input {
+  font-size:11px!important;
+}
+.admin-public-content-page :is(
+  .admin-public-form-card h3,
+  .admin-public-structured-card strong,
+  .admin-public-record-card strong
+) {
+  font-size:12px!important;
+}
+.admin-public-content-page .admin-public-tabs .admin-public-button {
+  font-size:10px!important;
+}
