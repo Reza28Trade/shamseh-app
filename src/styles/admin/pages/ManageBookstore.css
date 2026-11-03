@@ -1,23 +1,27 @@
-/* Bookstore page layout and responsive composition only. */
+/* Bookstore page layout only. Visual surfaces, controls and actions come from the shared admin system. */
 .admin-bookstore-page{display:grid;gap:16px;min-width:0;width:100%;direction:rtl;}
 .admin-bookstore-page .bookstore-card{min-width:0;padding:18px;}
-.admin-bookstore-page .bookstore-card-head{margin:0 0 6px;}
+.admin-bookstore-page .bookstore-section-title{margin:0 0 12px;font-size:13px;font-weight:900;}
 .admin-bookstore-page .bookstore-form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:stretch;}
 .admin-bookstore-page .bookstore-field{display:grid;gap:6px;min-width:0;}
 .admin-bookstore-page .bookstore-levels{display:flex;gap:12px;flex-wrap:wrap;align-items:center;align-content:center;min-height:42px;margin:0;padding:8px 12px;}
 .admin-bookstore-page .bookstore-level-option{display:inline-flex;align-items:center;gap:6px;}
 .admin-bookstore-page .bookstore-level-option input{width:auto;min-height:0;}
-.admin-bookstore-page .bookstore-upload-field{display:grid;gap:6px;}
+.admin-bookstore-page .bookstore-upload-field{display:grid;gap:6px;min-width:0;}
+.admin-bookstore-page .bookstore-upload-field:has(input[type="file"]){grid-column:1/-1;}
 .admin-bookstore-page .bookstore-upload-input{max-width:220px;}
-.admin-bookstore-page .bookstore-form-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.admin-bookstore-page textarea{width:100%;min-height:92px;grid-column:1/-1;}
+.admin-bookstore-page .bookstore-cover-preview{display:block;max-width:110px;max-height:135px;object-fit:contain;}
+.admin-bookstore-page .bookstore-form-actions{display:flex;justify-content:flex-start;gap:8px;flex-wrap:wrap;margin-top:12px;}
 .admin-bookstore-page .bookstore-book-list,.admin-bookstore-page .bookstore-order-list{display:grid;gap:12px;}
-.admin-bookstore-page .bookstore-book-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto auto;gap:12px;align-items:center;padding:12px;min-width:0;}
-.admin-bookstore-page .bookstore-book-main{display:flex;align-items:center;gap:12px;min-width:0;}
-.admin-bookstore-page .bookstore-book-cover{width:48px;height:64px;object-fit:contain;flex:0 0 auto;}
-.admin-bookstore-page .bookstore-book-copy{min-width:0;}
+.admin-bookstore-page .bookstore-book-row{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;align-items:start;padding:14px;min-width:0;}
+.admin-bookstore-page .bookstore-book-main{display:flex;align-items:flex-start;gap:12px;min-width:0;}
+.admin-bookstore-page .bookstore-book-cover{width:56px;height:74px;object-fit:contain;flex:0 0 auto;}
+.admin-bookstore-page .bookstore-book-copy{min-width:0;flex:1;}
 .admin-bookstore-page .bookstore-book-meta,.admin-bookstore-page .bookstore-book-data,.admin-bookstore-page .bookstore-book-discount{margin-top:4px;}
-.admin-bookstore-page .bookstore-order-card{display:grid;gap:8px;padding:14px;}
+.admin-bookstore-page .bookstore-book-actions{display:flex;flex-wrap:wrap;gap:7px;justify-content:flex-start;}
+.admin-bookstore-page .bookstore-order-card{display:grid;gap:10px;padding:14px;}
 .admin-bookstore-page .bookstore-order-head{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;}
 .admin-bookstore-page .bookstore-order-actions{display:flex;gap:7px;flex-wrap:wrap;}
-@media(max-width:900px){.admin-bookstore-page .bookstore-form-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.admin-bookstore-page .bookstore-book-row{grid-template-columns:minmax(0,1fr) auto auto;}.admin-bookstore-page .bookstore-book-main{grid-column:1/-1;}}
-@media(max-width:600px){.admin-bookstore-page .bookstore-form-grid{grid-template-columns:minmax(0,1fr);}.admin-bookstore-page .bookstore-book-row{grid-template-columns:repeat(2,minmax(0,1fr));}.admin-bookstore-page .bookstore-book-main{grid-column:1/-1;}.admin-bookstore-page .bookstore-order-actions>*{flex:1 1 auto;}}
+@media(max-width:900px){.admin-bookstore-page .bookstore-form-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:600px){.admin-bookstore-page .bookstore-form-grid{grid-template-columns:minmax(0,1fr);}.admin-bookstore-page .bookstore-order-actions>*{flex:1 1 auto;}.admin-bookstore-page .bookstore-book-actions>*{flex:1 1 auto;}}
