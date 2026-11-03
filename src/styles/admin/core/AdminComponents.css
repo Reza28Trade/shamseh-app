@@ -1377,17 +1377,6 @@
 .admin-extracted-manageregistrations-2{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(155px,1fr))!important;gap:10px!important}
 .admin-extracted-manageregistrations-3{background:var(--admin-card)!important;border:1px solid var(--admin-border)!important;border-radius:12px!important;padding:14px 15px!important;display:grid!important;gap:8px!important;min-width:0!important}
 .admin-extracted-manageregistrations-4{font-size:11px!important;color:var(--admin-sub)!important;line-height:1.7!important}
-.admin-extracted-manageregistrations-5{background:var(--admin-card)!important;border:1px solid var(--admin-border)!important;border-radius:14px!important;padding:14px!important;display:grid!important;gap:12px!important}
-.admin-extracted-manageregistrations-6{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:10px!important;flex-wrap:wrap!important}
-.admin-extracted-manageregistrations-7{margin:0!important;font-size:15px!important}
-.admin-extracted-manageregistrations-8{margin:5px 0 0!important;font-size:11px!important;color:var(--admin-sub)!important}
-.admin-extracted-manageregistrations-9{display:grid!important;gap:8px!important;max-height:280px!important;overflow-y:auto!important}
-.admin-extracted-manageregistrations-10{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:12px!important;flex-wrap:wrap!important;padding:12px!important;border:1px solid var(--admin-border)!important;border-radius:10px!important;background:var(--admin-inner)!important}
-.admin-extracted-manageregistrations-11{display:grid!important;gap:5px!important;min-width:180px!important}
-.admin-extracted-manageregistrations-12{font-size:11px!important;color:var(--admin-sub)!important}
-.admin-extracted-manageregistrations-13{color:var(--admin-warning-text, var(--admin-sub))!important;font-size:13px!important}
-.admin-extracted-manageregistrations-14{font-size:11px!important;color:var(--admin-sub)!important}
-.admin-extracted-manageregistrations-15{padding:18px!important;text-align:center!important;color:var(--admin-sub)!important;font-size:12px!important}
 .admin-extracted-manageregistrations-16{background:var(--admin-card)!important;border:1px solid var(--admin-border)!important;border-radius:14px!important;padding:14px!important;display:grid!important;gap:10px!important}
 .admin-extracted-manageregistrations-17{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:10px!important;flex-wrap:wrap!important}
 .admin-extracted-manageregistrations-18{margin:0!important;font-size:15px!important}
