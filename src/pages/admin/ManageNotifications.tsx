@@ -98,15 +98,20 @@ export const ManageNotifications: React.FC = () => {
 
   return (
     <div className="admin-legacy-page admin-notifications-page">
-      <header className="notifications-page-head">
-        <div>
-          <span className="notifications-eyebrow"><Bell size={14} /> مرکز مدیریت شمسه</span>
-          <h2><Bell size={20} /> ارسال اطلاعیه</h2>
-          <p>ارسال پیام عمومی، مخصوص یک دوره یا مخصوص یک هنرجو</p>
+      <header className="notifications-page-head accounts-card accounts-list-card admin-panel-card admin-master-panel">
+        <div className="accounts-card-head accounts-list-head">
+          <div>
+            <span className="accounts-eyebrow">ارتباط با هنرجویان</span>
+            <h2><Bell size={16} /> ارسال اطلاعیه</h2>
+            <p>ارسال پیام عمومی، مخصوص یک دوره، یک هنرجو یا شرکت‌کنندگان آزمون</p>
+          </div>
         </div>
       </header>
 
-      <section className="notifications-form-card">
+      <section className="notifications-form-card accounts-card accounts-create-card admin-panel-card admin-master-panel">
+        <header className="accounts-card-head">
+          <div><span className="accounts-eyebrow">تنظیم پیام</span><h3>مشخصات و محتوای اطلاعیه</h3></div>
+        </header>
         {message && <div className={`notifications-feedback ${message.ok ? 'is-success' : 'is-error'}`} role="status">{message.text}</div>}
         <form onSubmit={sendNotification} className="notifications-form">
           <div className="notifications-field">
