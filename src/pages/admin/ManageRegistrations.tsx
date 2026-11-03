@@ -227,12 +227,6 @@ export function ManageRegistrations(){
       <button className={`admin-action-button${tab === 'refunds' ? ' is-active' : ''}`} onClick={()=>{setTab('refunds');setStatusFilter('REQUESTED');}}>درخواست‌های بازپرداخت</button>
       <button className="admin-action-button" onClick={()=>void load()}>به‌روزرسانی</button>
     </div>
-    <div className="admin-extracted-manageregistrations-43">
-      <input className="admin-finance-search-input" placeholder="جست‌وجو بر اساس نام، کد ملی، موبایل یا کد رشته" value={search} onChange={e=>setSearch(e.target.value)}/>
-      <select className="admin-shared-manageregistrations-input-style" value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}>
-        {(tab==='registrations'?[['PENDING_REVIEW','در انتظار بررسی'],['NEEDS_CORRECTION','نیازمند اصلاح'],['APPROVED','تأییدشده'],['REJECTED','ردشده'],['ALL','همه']]:[['REQUESTED','درخواست جدید'],['RESERVED','رزروشده'],['PAID','پرداخت‌شده'],['REJECTED','ردشده'],['ALL','همه']]).map(([value,label])=><option key={value} value={value}>{label}</option>)}
-      </select>
-    </div>
     {error&&<div role="alert" className="admin-extracted-manageregistrations-44">{error}</div>}
     {notice&&<div role="status" className="admin-extracted-manageregistrations-45">{notice}</div>}
     {loading&&<p className="admin-extracted-manageregistrations-46">در حال دریافت اطلاعات…</p>}
@@ -252,8 +246,14 @@ export function ManageRegistrations(){
       </form>
     </div>}
 
-    {tab==='registrations'?<section className="admin-extracted-manageregistrations-64">
+    {tab==='registrations'?<section className="admin-action-center admin-master-panel admin-finance-registration-list-panel admin-extracted-manageregistrations-64">
       <div className="admin-extracted-manageregistrations-65"><strong>فهرست ثبت‌نام‌ها</strong><span className="admin-extracted-manageregistrations-66">{new Intl.NumberFormat('fa-IR').format(visibleRegistrations.length)} ثبت‌نام</span></div>
+    <div className="admin-extracted-manageregistrations-43">
+      <input className="admin-finance-search-input" placeholder="جست‌وجو بر اساس نام، کد ملی، موبایل یا کد رشته" value={search} onChange={e=>setSearch(e.target.value)}/>
+      <select className="admin-shared-manageregistrations-input-style" value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}>
+        {(tab==='registrations'?[['PENDING_REVIEW','در انتظار بررسی'],['NEEDS_CORRECTION','نیازمند اصلاح'],['APPROVED','تأییدشده'],['REJECTED','ردشده'],['ALL','همه']]:[['REQUESTED','درخواست جدید'],['RESERVED','رزروشده'],['PAID','پرداخت‌شده'],['REJECTED','ردشده'],['ALL','همه']]).map(([value,label])=><option key={value} value={value}>{label}</option>)}
+      </select>
+    </div>
       <div className="admin-extracted-manageregistrations-67 admin-data-table-wrap"><table className="admin-extracted-manageregistrations-68 admin-data-table">
         <thead className="admin-extracted-manageregistrations-69"><tr>{['هنرجو / کد ملی','مقطع و رشته','دوره‌ها','شهریه نهایی','پرداخت‌شده','مانده','وضعیت','جزئیات'].map(label=><th key={label} className="admin-extracted-manageregistrations-70">{label}</th>)}</tr></thead>
         <tbody>{pagedRegistrations.map(item=>{const paid=item.payments.filter(p=>p.status==='APPROVED').reduce((sum,p)=>sum+(p.approvedAmount??0),0);const balance=Math.max(0,item.finalTuition-paid);return <tr key={item.id}>
