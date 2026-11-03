@@ -2303,6 +2303,9 @@
 }
 .admin-shell .admin-main .admin-page-content :is(.admin-legacy-page:not(.admin-accounts-page),.admin-finance-registration-page) table.admin-data-table tbody td:first-child {border-right-width:1px; border-radius:0 12px 12px 0}
 .admin-shell .admin-main .admin-page-content :is(.admin-legacy-page:not(.admin-accounts-page),.admin-finance-registration-page) table.admin-data-table tbody td:last-child {border-left-width:1px; border-radius:12px 0 0 12px}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-action-button.is-danger {
+  color:var(--admin-warning-text, var(--admin-sub));
+}
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-action-button.is-active {
   border-color:var(--admin-brand-border);
   background:var(--admin-accent-soft);
