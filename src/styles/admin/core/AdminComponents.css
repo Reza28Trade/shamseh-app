@@ -2,6 +2,15 @@
    Loaded after module styles: this file owns shared visual language.
    Module styles own composition, grid geometry, ordering and responsive layout only. */
 
+/* Match the approved full-width content frame used by Dashboard and Manager Accounts. */
+.admin-shell .admin-main .admin-page-content :is(.admin-legacy-page.admin-logs-page,.admin-legacy-page.admin-bookstore-page) {
+  width:100%;
+  max-width:none;
+  min-width:0;
+  margin-inline:0;
+  box-sizing:border-box;
+}
+
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) {
   --admin-page-gap: 16px;
   --admin-section-gap: 12px;
