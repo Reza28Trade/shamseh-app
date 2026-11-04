@@ -35,7 +35,7 @@ export class ManagementContactService {
       },
       include: { messages: { orderBy: { createdAt: 'asc' } } },
     });
-    return this.publicTicket(ticket);
+    return this.publicTicket(ticket, user.id);
   }
 
   async listStudentTickets(user: AuthenticatedUser) {
@@ -45,7 +45,7 @@ export class ManagementContactService {
       orderBy: { updatedAt: 'desc' },
       include: { messages: { orderBy: { createdAt: 'asc' } } },
     });
-    return tickets.map((ticket) => this.publicTicket(ticket));
+    return tickets.map((ticket) => this.publicTicket(ticket, user.id));
   }
 
   async listManagementTickets(user: AuthenticatedUser) {
@@ -53,11 +53,11 @@ export class ManagementContactService {
     const tickets = await this.prisma.managementContactTicket.findMany({
       orderBy: { updatedAt: 'desc' },
       include: {
-        student: { select: { id: true, fullName: true, nationalId: true } },
+        student: { select: { id: true, userId: true, fullName: true, nationalId: true } },
         messages: { orderBy: { createdAt: 'asc' } },
       },
     });
-    return tickets.map((ticket) => ({ ...this.publicTicket(ticket), student: ticket.student }));
+    return tickets.map((ticket) => ({ ...this.publicTicket(ticket, ticket.student.userId), student: { id: ticket.student.id, fullName: ticket.student.fullName, nationalId: ticket.student.nationalId } }));
   }
 
   async addManagementReply(user: AuthenticatedUser, ticketId: string, dto: CreateMessageDto) {
@@ -91,7 +91,7 @@ export class ManagementContactService {
     return this.prisma.managementContactTicket.update({ where: { id: ticketId }, data: { status } });
   }
 
-  private publicTicket(ticket: any) {
+  private publicTicket(ticket: any, studentUserId?: string) {
     return {
       id: ticket.id,
       studentId: ticket.studentId,
@@ -103,6 +103,7 @@ export class ManagementContactService {
         id: message.id,
         ticketId: message.ticketId,
         senderUserId: message.senderUserId,
+        senderRole: studentUserId && message.senderUserId === studentUserId ? 'STUDENT' : 'ADMIN',
         content: message.content,
         createdAt: message.createdAt,
       })) ?? [],
