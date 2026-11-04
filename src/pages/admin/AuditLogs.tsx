@@ -150,7 +150,7 @@ export const AuditLogs: React.FC = () => {
             <option value="all">همهٔ نوع رویدادها</option>
             {actions.map((action) => <option key={action} value={action}>{formatAction(action)}</option>)}
           </select>
-          <button type="button" onClick={() => void loadLogs(true)} disabled={loading || refreshing} className="admin-refresh-button">
+          <button type="button" onClick={() => void loadLogs(true)} disabled={loading || refreshing} className="admin-refresh-button admin-action-button">
             <RefreshCw size={15} className={refreshing ? 'admin-spinning' : ''} />
             به‌روزرسانی
           </button>
