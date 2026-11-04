@@ -159,7 +159,7 @@ export const ManageManagementContact: React.FC = () => {
         ) : (
           <>
           <div className="messages-table-wrap">
-            <table className="messages-table">
+            <table className="messages-table admin-data-table admin-data-table--seamless">
               <thead><tr><th>موضوع تیکت</th><th>هنرجو</th><th>تعداد پیام</th><th>آخرین بروزرسانی</th><th>وضعیت</th><th>جزئیات</th></tr></thead>
               <tbody>
                 {visibleTickets.map(ticket => (
