@@ -99,3 +99,53 @@
 
 }
 .admin-shell .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-stats{position:relative!important;overflow:visible!important;padding:2px!important;box-sizing:border-box!important;}
+
+/* Drawer placement only; its surface, controls and typography stay centralized. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-overlay {
+  position:fixed;
+  inset:0;
+  z-index:1200;
+  display:flex;
+  align-items:stretch;
+  justify-content:flex-start;
+  direction:ltr;
+  padding:0;
+  background:rgba(20,18,18,.46);
+  backdrop-filter:blur(2px);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-drawer {
+  display:flex;
+  flex:0 0 min(560px,92vw);
+  flex-direction:column;
+  width:min(560px,92vw);
+  max-width:92vw;
+  height:100dvh;
+  max-height:100dvh;
+  min-height:100dvh;
+  margin:0;
+  padding:20px;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  direction:rtl;
+  border-radius:0 18px 18px 0;
+  box-sizing:border-box;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-drawer .messages-detail-head {
+  flex:0 0 auto;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-drawer .messages-thread {
+  flex:1 1 auto;
+  min-height:120px;
+  overflow-y:auto;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-drawer .messages-reply-form {
+  flex:0 0 auto;
+}
+@media(max-width:600px) {
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-drawer {
+    flex-basis:min(520px,94vw);
+    width:min(520px,94vw);
+    max-width:94vw;
+    padding:14px;
+  }
+}
