@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { CheckCircle2, Clock3, Send } from 'lucide-react';
 
 type TicketStatus = 'OPEN' | 'ANSWERED' | 'CLOSED';
-type TicketMessage = { id: string; content: string; createdAt: string; senderUserId: string };
+type TicketMessage = { id: string; content: string; createdAt: string; senderUserId: string; senderRole: 'STUDENT' | 'ADMIN' };
 type Ticket = { id: string; studentId: string; subject: string; status: TicketStatus; createdAt: string; updatedAt: string; messages: TicketMessage[] };
 
 interface Props { isDark: boolean }
@@ -15,6 +15,8 @@ export const StudentManagementContact: React.FC<Props> = ({ isDark }) => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [replyText, setReplyText] = useState<Record<string, string>>({});
+  const [replyingTicketId, setReplyingTicketId] = useState<string | null>(null);
 
   const card = isDark ? '#1D1B1B' : '#F7F1E8';
   const inner = isDark ? '#302D2D' : '#E5D9CB';
@@ -65,6 +67,28 @@ export const StudentManagementContact: React.FC<Props> = ({ isDark }) => {
     }
   };
 
+  const replyToTicket = async (ticketId: string) => {
+    const message = replyText[ticketId]?.trim();
+    if (!message || replyingTicketId) return;
+    setReplyingTicketId(ticketId);
+    setError('');
+    try {
+      const response = await fetch(`/api/management-contact/tickets/${ticketId}/messages`, {
+        method: 'POST', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: message }),
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || 'ارسال پیام انجام نشد.');
+      setReplyText(current => ({ ...current, [ticketId]: '' }));
+      await loadTickets();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'ارسال پیام انجام نشد.');
+    } finally {
+      setReplyingTicketId(null);
+    }
+  };
+
   const statusLabel = (status: TicketStatus) => status === 'ANSWERED' ? 'پاسخ داده شده' : status === 'CLOSED' ? 'بسته شده' : 'در انتظار پاسخ';
 
   return <section style={{ display: 'flex', flexDirection: 'column', gap: 18, color: text }}>
@@ -97,10 +121,18 @@ export const StudentManagementContact: React.FC<Props> = ({ isDark }) => {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {ticket.messages.map(message => <div key={message.id} style={{ background: card, border: `1px solid ${border}`, padding: 12, borderRadius: 10 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap', marginBottom: 6, fontSize: 10, color: accent, fontWeight: 900 }}>{message.id === ticket.messages[0]?.id ? 'پیام شما' : 'پاسخ مدیریت'}<time style={{ color: sub, fontWeight: 500 }}>{new Date(message.createdAt).toLocaleString('fa-IR')}</time></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap', marginBottom: 6, fontSize: 10, color: accent, fontWeight: 900 }}>{message.senderRole === 'STUDENT' ? 'پیام شما' : 'پاسخ مدیریت'}<time style={{ color: sub, fontWeight: 500 }}>{new Date(message.createdAt).toLocaleString('fa-IR')}</time></div>
                 <p style={{ margin: 0, color: text, fontSize: 12, lineHeight: 1.9, whiteSpace: 'pre-wrap' }}>{message.content}</p>
               </div>)}
             </div>
+            {ticket.status !== 'CLOSED' && <form onSubmit={event => { event.preventDefault(); void replyToTicket(ticket.id); }} style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingTop: 8 }}>
+              <label htmlFor={`student-ticket-reply-${ticket.id}`} style={{ color: sub, fontSize: 11, fontWeight: 800 }}>ادامه گفت‌وگو</label>
+              <textarea id={`student-ticket-reply-${ticket.id}`} value={replyText[ticket.id] || ''} onChange={event => setReplyText(current => ({ ...current, [ticket.id]: event.target.value }))} rows={3} maxLength={10000} placeholder="پیام خود را در همین تیکت بنویسید..." style={{ width: '100%', boxSizing: 'border-box', resize: 'vertical', background: card, border: `1px solid ${border}`, color: text, padding: '11px 12px', borderRadius: 10, font: 'inherit', lineHeight: 1.9 }} />
+              <button type="submit" disabled={replyingTicketId === ticket.id || !replyText[ticket.id]?.trim()} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', alignSelf: 'flex-start', gap: 7, padding: '9px 14px', border: 0, borderRadius: 9, color: '#fff', background: accent, fontSize: 11, fontWeight: 850, cursor: 'pointer', opacity: replyingTicketId === ticket.id ? .7 : 1 }}>
+                <Send size={14} /> {replyingTicketId === ticket.id ? 'در حال ارسال...' : 'ارسال پیام'}
+              </button>
+            </form>}
+
           </article>)}
         </div>}
     </div>
