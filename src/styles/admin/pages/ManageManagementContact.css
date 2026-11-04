@@ -124,7 +124,7 @@
   min-height:100dvh;
   margin:0;
   padding:20px;
-  overflow-y:auto;
+  overflow:hidden;
   overscroll-behavior:contain;
   direction:rtl;
   border-radius:0 18px 18px 0;
@@ -147,5 +147,89 @@
     width:min(520px,94vw);
     max-width:94vw;
     padding:14px;
+  }
+}
+
+/* Drawer information hierarchy and fixed composer layout. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-drawer .messages-detail-head {
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:start!important;
+  gap:14px!important;
+  padding:0 0 16px!important;
+  margin:0!important;
+  border-bottom:1px solid var(--admin-content-border)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-drawer .messages-detail-head > div {
+  min-width:0!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-drawer .messages-detail-kicker {
+  display:inline-flex!important;
+  margin:0 0 7px!important;
+  color:var(--admin-accent)!important;
+  font-size:10px!important;
+  font-weight:800!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-drawer .messages-detail-head h3 {
+  margin:0 0 7px!important;
+  color:var(--admin-text)!important;
+  font-size:16px!important;
+  font-weight:850!important;
+  overflow-wrap:anywhere!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-drawer .messages-detail-head p {
+  margin:0!important;
+  color:var(--admin-sub)!important;
+  font-size:11px!important;
+  line-height:1.8!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-drawer .messages-detail-close {
+  white-space:nowrap!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-drawer .messages-thread-head {
+  flex:0 0 auto!important;
+  margin:12px 0 8px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-drawer .messages-thread {
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+  align-content:start!important;
+  padding:8px 3px 16px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-drawer .messages-reply-form {
+  flex:0 0 auto!important;
+  margin:12px 0 0!important;
+  padding:13px!important;
+  border:1px solid var(--admin-content-border)!important;
+  border-radius:13px!important;
+  background:var(--admin-content-inner)!important;
+  box-shadow:var(--admin-shadow-control)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-drawer .messages-reply-form label {
+  margin:0!important;
+  color:var(--admin-text)!important;
+  font-size:11px!important;
+  font-weight:800!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-drawer .messages-reply-form textarea {
+  min-height:86px!important;
+  resize:vertical!important;
+  border-radius:10px!important;
+  box-shadow:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-drawer .messages-reply-actions {
+  display:flex!important;
+  justify-content:flex-start!important;
+  flex-wrap:wrap!important;
+  gap:8px!important;
+}
+@media(max-width:600px) {
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-drawer .messages-detail-head {
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-detail-drawer .messages-detail-close {
+    justify-self:start!important;
   }
 }
