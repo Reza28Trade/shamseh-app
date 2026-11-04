@@ -696,3 +696,45 @@
   min-height:0!important;
   overflow:visible!important;
 }
+
+
+/* Compact student identity summary: two balanced columns instead of six tall cards. */
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-registration-detail-facts {
+  display:grid!important;
+  flex:0 0 auto!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-rows:minmax(58px,auto)!important;
+  align-items:stretch!important;
+  gap:7px!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  overflow:visible!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-registration-detail-fact {
+  display:flex!important;
+  flex:initial!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:stretch!important;
+  gap:3px!important;
+  min-width:0!important;
+  min-height:58px!important;
+  height:auto!important;
+  padding:7px 9px!important;
+  border-radius:9px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-registration-detail-fact > span {
+  font-size:9px!important;
+  line-height:1.5!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-registration-detail-fact > strong {
+  font-size:11px!important;
+  line-height:1.6!important;
+  font-weight:800!important;
+}
+@media(max-width:390px) {
+  .admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-registration-detail-facts {
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+}
