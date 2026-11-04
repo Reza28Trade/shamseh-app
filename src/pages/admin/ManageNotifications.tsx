@@ -115,7 +115,7 @@ export const ManageNotifications: React.FC = () => {
                 <button
                   key={value as string}
                   type="button"
-                  className={`notifications-target ${targetType === value ? 'is-active' : ''}`}
+                  className={`admin-action-button notifications-target ${targetType === value ? 'is-active' : ''}`}
                   onClick={() => setTargetType(value as TargetType)}
                 >
                   {React.createElement(Icon as React.ElementType, { size: 16 })}
@@ -170,7 +170,7 @@ export const ManageNotifications: React.FC = () => {
           </div>
           <div className="notifications-form-footer">
             <span>پیش از ارسال، گیرنده و متن اطلاعیه را بررسی کنید.</span>
-            <button type="submit" className="notifications-submit" disabled={sending || loading}>
+            <button type="submit" className="admin-action-button notifications-submit" disabled={sending || loading}>
               <Send size={15} /> {sending ? 'در حال ارسال...' : 'ارسال اطلاعیه'}
             </button>
           </div>
