@@ -632,3 +632,157 @@
     .messages-send,.messages-cancel,.messages-pagination button
   )::before {transition:none!important;}
 }
+
+/* Final correction — ticket table, search control and light-theme surfaces.
+   Use the existing admin content tokens; keep the table RTL and rows visually
+   distinct instead of rendering a flat, continuous grid. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-ticket-section {
+  background:var(--admin-content-surface)!important;
+  border:1px solid var(--admin-content-border)!important;
+  border-radius:var(--admin-content-radius)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table-filters {
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  min-width:0!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-search {
+  position:relative!important;
+  display:flex!important;
+  flex:1 1 420px!important;
+  align-items:center!important;
+  gap:10px!important;
+  min-width:0!important;
+  min-height:42px!important;
+  padding:0 13px!important;
+  border:1px solid var(--admin-content-border)!important;
+  border-radius:11px!important;
+  background:var(--admin-control)!important;
+  color:var(--admin-sub)!important;
+  box-shadow:var(--admin-shadow-control)!important;
+  direction:rtl!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-search > svg {
+  display:block!important;
+  flex:0 0 16px!important;
+  width:16px!important;
+  height:16px!important;
+  color:var(--admin-sub)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-search input {
+  display:block!important;
+  flex:1 1 auto!important;
+  width:100%!important;
+  min-width:0!important;
+  height:40px!important;
+  min-height:40px!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  outline:0!important;
+  background:transparent!important;
+  background-color:transparent!important;
+  box-shadow:none!important;
+  color:var(--admin-text)!important;
+  font:inherit!important;
+  font-size:11px!important;
+  line-height:1.6!important;
+  appearance:none!important;
+  -webkit-appearance:none!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-search input:focus,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-search:focus-within {
+  outline:0!important;
+  border-color:var(--admin-brand-border)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-search input::placeholder {
+  color:var(--admin-sub)!important;
+  opacity:.82!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table-wrap {
+  overflow:auto!important;
+  border:1px solid var(--admin-content-border)!important;
+  border-radius:12px!important;
+  background:var(--admin-control)!important;
+  box-shadow:var(--admin-shadow-control)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table {
+  width:100%!important;
+  min-width:760px!important;
+  border-collapse:separate!important;
+  border-spacing:0 7px!important;
+  table-layout:auto!important;
+  background:transparent!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table thead th {
+  position:sticky!important;
+  top:0!important;
+  z-index:5!important;
+  padding:10px 13px!important;
+  border:0!important;
+  border-bottom:1px solid var(--admin-content-border)!important;
+  background:var(--admin-content-surface)!important;
+  color:var(--admin-sub)!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  text-align:right!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table tbody tr {
+  background:transparent!important;
+  cursor:pointer!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table tbody td {
+  padding:11px 13px!important;
+  border-top:1px solid rgba(255,255,255,.68)!important;
+  border-bottom:1px solid rgba(255,255,255,.68)!important;
+  background:var(--admin-dashboard-row-surface)!important;
+  color:var(--admin-text)!important;
+  box-shadow:inset 2px 2px 5px rgba(177,169,157,.22),inset -2px -2px 5px rgba(255,255,255,.64)!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table tbody td:first-child {
+  border-right:1px solid rgba(255,255,255,.68)!important;
+  border-radius:0 10px 10px 0!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table tbody td:last-child {
+  border-left:1px solid rgba(255,255,255,.68)!important;
+  border-radius:10px 0 0 10px!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table tbody td {
+  padding:11px 13px!important;
+  border-top:1px solid rgba(255,255,255,.045)!important;
+  border-bottom:1px solid rgba(255,255,255,.045)!important;
+  background:var(--admin-dashboard-row-surface)!important;
+  color:var(--admin-text)!important;
+  box-shadow:inset 2px 2px 5px rgba(12,11,11,.42),inset -2px -2px 5px rgba(52,48,48,.32)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table tbody td:first-child {
+  border-right:1px solid rgba(255,255,255,.045)!important;
+  border-radius:0 10px 10px 0!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table tbody td:last-child {
+  border-left:1px solid rgba(255,255,255,.045)!important;
+  border-radius:10px 0 0 10px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table tbody tr:hover td,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table tbody tr.is-selected td {
+  background:var(--admin-accent-soft)!important;
+  border-top-color:var(--admin-brand-border)!important;
+  border-bottom-color:var(--admin-brand-border)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table tbody tr:last-child td {
+  border-bottom:1px solid var(--admin-content-border)!important;
+}
+@media(max-width:700px) {
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table-filters {
+    align-items:stretch!important;
+    flex-direction:column!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-search {
+    flex-basis:auto!important;
+    width:100%!important;
+  }
+}
