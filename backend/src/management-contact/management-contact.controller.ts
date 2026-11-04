@@ -28,6 +28,15 @@ export class ManagementContactController {
     return this.managementContactService.listManagementTickets(req.user);
   }
 
+  @Post('management-contact/tickets/:ticketId/messages')
+  addStudentMessage(
+    @Req() req: AuthenticatedRequest,
+    @Param('ticketId') ticketId: string,
+    @Body() dto: CreateMessageDto,
+  ) {
+    return this.managementContactService.addStudentMessage(req.user, ticketId, dto);
+  }
+
   @Post('admin/management-contact/tickets/:ticketId/messages')
   addManagementReply(
     @Req() req: AuthenticatedRequest,
