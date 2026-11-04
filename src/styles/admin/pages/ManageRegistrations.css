@@ -460,3 +460,66 @@
   max-width:100%!important;
   overflow-wrap:anywhere!important;
 }
+
+
+/* Semantic, isolated layout for registration drawer facts. */
+.admin-registration-detail-facts {
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:8px!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+}
+.admin-registration-detail-fact {
+  position:relative!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  gap:5px!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  height:auto!important;
+  margin:0!important;
+  padding:10px 12px!important;
+  overflow:visible!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:10px!important;
+  background:var(--admin-inner)!important;
+  text-align:right!important;
+  direction:rtl!important;
+}
+.admin-registration-detail-fact > span,
+.admin-registration-detail-fact > strong {
+  position:static!important;
+  inset:auto!important;
+  float:none!important;
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  min-width:0!important;
+  max-width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  transform:none!important;
+  text-align:right!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  overflow-wrap:anywhere!important;
+  word-break:break-word!important;
+  line-height:1.8!important;
+}
+.admin-registration-detail-fact > span {
+  color:var(--admin-sub)!important;
+  font-size:10px!important;
+  font-weight:600!important;
+}
+.admin-registration-detail-fact > strong {
+  color:var(--admin-text)!important;
+  font-size:12px!important;
+  font-weight:800!important;
+}
