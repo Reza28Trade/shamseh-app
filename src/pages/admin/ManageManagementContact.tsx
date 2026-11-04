@@ -127,17 +127,17 @@ export const ManageManagementContact: React.FC = () => {
       {error && <div className="messages-error" role="alert">{error}</div>}
 
       <section className="messages-stats" aria-label="فیلتر وضعیت تیکت‌ها">
-        <button type="button" aria-pressed={statusFilter === 'ALL'} className={`admin-master-panel messages-stat messages-stat-all ${statusFilter === 'ALL' ? 'is-active' : ''}`} onClick={() => setStatusFilter('ALL')}><span className="messages-stat-icon"><MessagesSquare size={17} /></span><span className="messages-stat-copy"><small>همه تیکت‌ها</small><strong>{counts.all}</strong></span></button>
-        <button type="button" aria-pressed={statusFilter === 'OPEN'} className={`admin-master-panel messages-stat messages-stat-open ${statusFilter === 'OPEN' ? 'is-active' : ''}`} onClick={() => setStatusFilter('OPEN')}><span className="messages-stat-icon"><Clock3 size={17} /></span><span className="messages-stat-copy"><small>در انتظار پاسخ</small><strong>{counts.open}</strong></span></button>
-        <button type="button" aria-pressed={statusFilter === 'ANSWERED'} className={`admin-master-panel messages-stat messages-stat-answered ${statusFilter === 'ANSWERED' ? 'is-active' : ''}`} onClick={() => setStatusFilter('ANSWERED')}><span className="messages-stat-icon"><CheckCircle2 size={17} /></span><span className="messages-stat-copy"><small>پاسخ داده شده</small><strong>{counts.answered}</strong></span></button>
-        <button type="button" aria-pressed={statusFilter === 'CLOSED'} className={`admin-master-panel messages-stat messages-stat-closed ${statusFilter === 'CLOSED' ? 'is-active' : ''}`} onClick={() => setStatusFilter('CLOSED')}><span className="messages-stat-icon"><CircleDot size={17} /></span><span className="messages-stat-copy"><small>بسته شده</small><strong>{counts.closed}</strong></span></button>
+        <button type="button" aria-pressed={statusFilter === 'ALL'} className={`admin-master-panel messages-stat messages-stat-all ${statusFilter === 'ALL' ? 'is-active' : ''}`} onClick={() => setStatusFilter('ALL')}><span className="messages-stat-icon"><MessagesSquare size={17} /></span><span className="messages-stat-copy"><small>همه تیکت‌ها</small><strong>{new Intl.NumberFormat('fa-IR').format(counts.all)}</strong></span></button>
+        <button type="button" aria-pressed={statusFilter === 'OPEN'} className={`admin-master-panel messages-stat messages-stat-open ${statusFilter === 'OPEN' ? 'is-active' : ''}`} onClick={() => setStatusFilter('OPEN')}><span className="messages-stat-icon"><Clock3 size={17} /></span><span className="messages-stat-copy"><small>در انتظار پاسخ</small><strong>{new Intl.NumberFormat('fa-IR').format(counts.open)}</strong></span></button>
+        <button type="button" aria-pressed={statusFilter === 'ANSWERED'} className={`admin-master-panel messages-stat messages-stat-answered ${statusFilter === 'ANSWERED' ? 'is-active' : ''}`} onClick={() => setStatusFilter('ANSWERED')}><span className="messages-stat-icon"><CheckCircle2 size={17} /></span><span className="messages-stat-copy"><small>پاسخ داده شده</small><strong>{new Intl.NumberFormat('fa-IR').format(counts.answered)}</strong></span></button>
+        <button type="button" aria-pressed={statusFilter === 'CLOSED'} className={`admin-master-panel messages-stat messages-stat-closed ${statusFilter === 'CLOSED' ? 'is-active' : ''}`} onClick={() => setStatusFilter('CLOSED')}><span className="messages-stat-icon"><CircleDot size={17} /></span><span className="messages-stat-copy"><small>بسته شده</small><strong>{new Intl.NumberFormat('fa-IR').format(counts.closed)}</strong></span></button>
       </section>
 
       <section className="admin-master-panel messages-ticket-section">
         <div className="messages-section-head">
           <div><h3>فهرست تیکت‌ها</h3><p>برای مشاهده جزئیات و پاسخ‌گویی، روی ردیف تیکت بزنید.</p></div>
           <div className="messages-table-tools">
-            <span className="messages-total messages-count-pill">{filteredTickets.length} مورد</span>
+            <span className="messages-total admin-action-summary">{new Intl.NumberFormat('fa-IR').format(filteredTickets.length)} مورد</span>
             <button className="messages-refresh" onClick={() => void loadTickets()} disabled={loading}>
               <RefreshCw size={14} className={loading ? 'messages-spin' : ''} /> بروزرسانی
             </button>
