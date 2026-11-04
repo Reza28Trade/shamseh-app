@@ -517,6 +517,46 @@
   border-color:var(--admin-status-success);
   background:var(--admin-status-success-soft)}
 
+
+/* Shared compact summary badge, matching the Finance > archived debt count. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-summary {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:max-content;
+  min-height:26px;
+  padding:4px 10px;
+  border:1px solid var(--admin-brand-border);
+  border-radius:999px;
+  background:var(--admin-accent-soft);
+  color:var(--admin-accent);
+  font-size:11px;
+  font-weight:800;
+  line-height:1.5;
+  white-space:nowrap;
+}
+
+/* Search is a single continuous surface; the input itself stays transparent. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .messages-search {
+  background:var(--admin-content-inner);
+  background-color:var(--admin-content-inner);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .messages-search input {
+  border:0;
+  outline:0;
+  background:transparent;
+  background-color:transparent;
+  box-shadow:none;
+  color:var(--admin-text);
+  -webkit-appearance:none;
+  appearance:none;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .messages-search input:focus {
+  outline:0;
+  background:transparent;
+  box-shadow:none;
+}
+
 /* Shared controls and nested module surfaces. */
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) button:not(.primary-action):not(.messages-send):not(.notifications-submit):not([data-variant="primary"]) {
   border: 1px solid var(--admin-border);
