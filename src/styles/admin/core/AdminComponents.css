@@ -520,20 +520,21 @@
 
 /* Shared compact summary badge, matching the Finance > archived debt count. */
 .admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .admin-action-summary {
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:max-content;
-  min-height:26px;
-  padding:4px 10px;
-  border:1px solid var(--admin-brand-border);
-  border-radius:999px;
-  background:var(--admin-accent-soft);
-  color:var(--admin-accent);
-  font-size:11px;
-  font-weight:800;
-  line-height:1.5;
-  white-space:nowrap;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:max-content!important;
+  min-height:26px!important;
+  padding:4px 10px!important;
+  border:1px solid var(--admin-brand-border)!important;
+  border-radius:999px!important;
+  background:var(--admin-accent-soft)!important;
+  color:var(--admin-accent)!important;
+  box-shadow:var(--admin-shadow-control)!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  line-height:1.5!important;
+  white-space:nowrap!important;
 }
 
 /* Search is a single continuous surface; the input itself stays transparent. */
@@ -3312,4 +3313,74 @@
 .admin-shell.admin-theme-light .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-stat-icon {
   background:var(--admin-accent-soft)!important;
   color:var(--admin-accent)!important;
+}
+
+/* Canonical conversation thread elements shared by admin ticket drawers. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .messages-thread-head {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:11px 0;
+  margin:14px 0 12px;
+  border-bottom:1px solid var(--admin-content-border);
+  color:var(--admin-text);
+  font-size:12px;
+  font-weight:800;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .messages-thread {
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  min-width:0;
+  padding:4px 2px 12px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .messages-bubble {
+  display:flex;
+  flex-direction:column;
+  width:min(88%,680px);
+  min-width:0;
+  padding:11px 13px;
+  border:1px solid var(--admin-content-border);
+  border-radius:13px;
+  background:var(--admin-content-inner);
+  color:var(--admin-text);
+  box-shadow:var(--admin-shadow-control);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .messages-bubble-student {
+  align-self:flex-start;
+  border-top-left-radius:5px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .messages-bubble-support {
+  align-self:flex-end;
+  border-top-right-radius:5px;
+  background:var(--admin-accent-soft);
+  border-color:var(--admin-brand-border);
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .messages-bubble-meta {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:6px 12px;
+  margin-bottom:7px;
+  color:var(--admin-sub);
+  font-size:10px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .messages-bubble-meta strong {
+  color:var(--admin-accent);
+  font-size:11px;
+  font-weight:850;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .messages-bubble-meta time {
+  white-space:nowrap;
+  font-size:10px;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page:not(.admin-accounts-page) .messages-bubble p {
+  margin:0;
+  color:var(--admin-text);
+  font-size:12px;
+  line-height:1.9;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
 }
