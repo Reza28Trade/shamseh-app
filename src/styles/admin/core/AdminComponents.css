@@ -2923,3 +2923,62 @@
   border-color:var(--admin-brand-border)!important;
   box-shadow:0 0 0 1px rgba(72,209,204,.12),8px 8px 18px rgba(13,12,12,.62),-8px -8px 18px rgba(48,45,45,.5),inset 1px 1px 0 rgba(255,255,255,.035)!important;
 }
+
+
+/* Notification recipient choices: dashboard card finish, compact control dimensions. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target {
+  position:relative!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:38px!important;
+  height:38px!important;
+  padding:7px 10px!important;
+  overflow:hidden!important;
+  border:1px solid var(--admin-content-border)!important;
+  border-radius:12px!important;
+  background:var(--admin-content-surface)!important;
+  color:var(--admin-text)!important;
+  box-shadow:var(--admin-shadow-stat)!important;
+  font-family:inherit!important;
+  font-size:11px!important;
+  font-weight:750!important;
+  line-height:1.4!important;
+  white-space:nowrap!important;
+  transform:translateY(0) scale(1)!important;
+  transition:transform .22s cubic-bezier(.2,.75,.25,1),box-shadow .22s ease,border-color .22s ease,background-color .22s ease,color .22s ease!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target svg {
+  flex:0 0 auto!important;
+  width:16px!important;
+  height:16px!important;
+  padding:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:var(--admin-accent)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target:hover:not(:disabled) {
+  transform:translateY(-2px) scale(1.01)!important;
+  border-color:var(--admin-accent)!important;
+  box-shadow:var(--admin-shadow-control)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target.is-active {
+  transform:translateY(-1px)!important;
+  border-color:var(--admin-accent)!important;
+  background:var(--admin-accent-soft)!important;
+  color:var(--admin-accent)!important;
+  box-shadow:var(--admin-shadow-stat),0 0 0 1px color-mix(in srgb,var(--admin-accent) 20%,transparent)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target:active:not(:disabled) {
+  transform:translateY(0) scale(.985)!important;
+}
+@media(prefers-reduced-motion:reduce) {
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-notifications-page .notifications-target {
+    transition:none!important;
+  }
+}
