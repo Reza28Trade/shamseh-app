@@ -3224,3 +3224,26 @@
     transition:none!important;
   }
 }
+
+
+/* Final parity with Dashboard top statistics: brighter resting surface and
+   turquoise-tinted hover/selected state in the light theme. */
+.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-stat {
+  background:var(--admin-card)!important;
+  background-color:var(--admin-card)!important;
+  background-image:none!important;
+  border-color:var(--admin-border)!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-stat:hover,
+.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-stat:focus-visible,
+.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-stat.is-active {
+  background:var(--admin-accent-soft)!important;
+  background-color:var(--admin-accent-soft)!important;
+  background-image:none!important;
+  border-color:var(--admin-brand-border)!important;
+  transform:translateY(-1px)!important;
+}
+.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-legacy-page.admin-management-contact-page .messages-stat-icon {
+  background:var(--admin-accent-soft)!important;
+  color:var(--admin-accent)!important;
+}
