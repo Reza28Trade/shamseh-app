@@ -115,7 +115,7 @@ export const ManageNotifications: React.FC = () => {
                 <button
                   key={value as string}
                   type="button"
-                  className={`admin-stat notifications-target ${targetType === value ? 'is-active' : ''}`}
+                  className={`admin-stat admin-stat-card notifications-target ${targetType === value ? 'is-active' : ''}`}
                   onClick={() => setTargetType(value as TargetType)}
                 >
                   <span className="admin-stat-icon">{React.createElement(Icon as React.ElementType, { size: 18 })}</span>
