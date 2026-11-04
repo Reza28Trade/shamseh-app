@@ -64,9 +64,10 @@ export class ManagementContactService {
     const studentId = this.requireStudent(user);
     const ticket = await this.prisma.managementContactTicket.findFirst({
       where: { id: ticketId, studentId },
-      select: { id: true },
+      select: { id: true, status: true },
     });
     if (!ticket) throw new NotFoundException('Ticket not found');
+    if (ticket.status === 'CLOSED') throw new BadRequestException('Closed tickets must be restored before replying');
 
     const [message] = await this.prisma.$transaction([
       this.prisma.managementContactMessage.create({
@@ -84,9 +85,10 @@ export class ManagementContactService {
     this.requireSuperAdmin(user);
     const ticket = await this.prisma.managementContactTicket.findUnique({
       where: { id: ticketId },
-      select: { id: true },
+      select: { id: true, status: true },
     });
     if (!ticket) throw new NotFoundException('Ticket not found');
+    if (ticket.status === 'CLOSED') throw new BadRequestException('Restore the archived ticket before replying');
 
     const message = await this.prisma.managementContactMessage.create({
       data: { ticketId, senderUserId: user.id, content: dto.content.trim() },
