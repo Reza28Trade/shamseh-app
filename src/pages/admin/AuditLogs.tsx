@@ -62,7 +62,7 @@ export const AuditLogs: React.FC = () => {
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
   const [actionFilter, setActionFilter] = useState('all');
-  const [detailsOpen, setDetailsOpen] = useState<string | null>(null);
+  const [selectedLog, setSelectedLog] = useState<AuditLogEntry | null>(null);
 
   const loadLogs = useCallback(async (manual = false) => {
     if (manual) setRefreshing(true);
@@ -178,26 +178,15 @@ export const AuditLogs: React.FC = () => {
                     {log.entityId && <small>{log.entityId}</small>}
                   </span>
                   <time dateTime={log.timestamp}>{formatTimestamp(log.timestamp)}</time>
-                  {log.details != null && (
-                    <button
-                      type="button"
-                      aria-expanded={detailsOpen === log.id}
-                      onClick={() => setDetailsOpen((current) => current === log.id ? null : log.id)}
-                      className="admin-action-button"
-                    >
-                      {detailsOpen === log.id ? 'بستن' : 'مشاهده'}
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    aria-haspopup="dialog"
+                    onClick={() => setSelectedLog(log)}
+                    className="admin-action-button"
+                  >
+                    مشاهده
+                  </button>
                 </div>
-                {detailsOpen === log.id && (
-                  <div className="admin-activity-row">
-                    <span className="admin-activity-mark"><ShieldAlert size={14} /></span>
-                    <span className="admin-activity-copy">
-                      <strong>جزئیات رویداد</strong>
-                      <small><span dir="auto">{formatDetails(log.details)}</span></small>
-                    </span>
-                  </div>
-                )}
               </React.Fragment>
             ))}
           </div>
@@ -208,6 +197,46 @@ export const AuditLogs: React.FC = () => {
           </p>
         )}
       </section>
+      {selectedLog && (
+        <div
+          className="admin-audit-detail-backdrop"
+          role="presentation"
+          onClick={(event) => { if (event.target === event.currentTarget) setSelectedLog(null); }}
+        >
+          <aside
+            className="admin-audit-detail-drawer"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="audit-detail-title"
+            dir="rtl"
+          >
+            <header className="admin-audit-detail-header">
+              <div>
+                <span className="admin-audit-detail-eyebrow">گزارش‌های سیستمی</span>
+                <h2 id="audit-detail-title">جزئیات رویداد</h2>
+              </div>
+              <button type="button" className="admin-action-button" onClick={() => setSelectedLog(null)}>بستن</button>
+            </header>
+            <div className="admin-audit-detail-content">
+              <section className="admin-audit-detail-section">
+                <h3>{formatAction(selectedLog.action)}</h3>
+                <div className="admin-audit-detail-grid">
+                  <div><span>نوع عملیات</span><strong>{selectedLog.action}</strong></div>
+                  <div><span>بخش مرتبط</span><strong>{selectedLog.entityType || '—'}</strong></div>
+                  <div><span>شناسه رکورد</span><strong dir="auto">{selectedLog.entityId || '—'}</strong></div>
+                  <div><span>انجام‌دهنده</span><strong>{selectedLog.performedBy || 'کاربر سامانه'}</strong></div>
+                  <div><span>نشانی IP</span><strong dir="ltr">{selectedLog.ipAddress || '—'}</strong></div>
+                  <div><span>زمان ثبت</span><strong>{formatTimestamp(selectedLog.timestamp)}</strong></div>
+                </div>
+              </section>
+              <section className="admin-audit-detail-section">
+                <h3>جزئیات و داده‌های رویداد</h3>
+                <pre className="admin-audit-detail-json" dir="auto">{formatDetails(selectedLog.details)}</pre>
+              </section>
+            </div>
+          </aside>
+        </div>
+      )}
     </div>
   );
 };
