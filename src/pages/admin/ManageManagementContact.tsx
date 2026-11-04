@@ -7,6 +7,7 @@ interface SupportMessage {
   content: string;
   createdAt: string;
   senderUserId: string;
+  senderRole: 'STUDENT' | 'ADMIN';
 }
 interface SupportTicket {
   id: string;
@@ -202,7 +203,7 @@ export const ManageManagementContact: React.FC = () => {
               <div className="messages-thread-head"><span>تاریخچه گفت‌وگو</span><span>{new Intl.NumberFormat('fa-IR').format(ticket.messages.length)} پیام</span></div>
               <div className="messages-thread">
                 {ticket.messages.map(message => {
-                  const fromStudent = message.senderUserId === ticket.studentId;
+                  const fromStudent = message.senderRole === 'STUDENT';
                   return <div key={message.id} className={`messages-bubble ${fromStudent ? 'messages-bubble-student' : 'messages-bubble-support'}`}>
                     <div className="messages-bubble-meta"><strong>{fromStudent ? 'هنرجو' : 'پاسخ شمسه'}</strong><time>{new Date(message.createdAt).toLocaleString('fa-IR')}</time></div>
                     <p>{message.content}</p>
