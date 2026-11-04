@@ -137,7 +137,7 @@ export const ManageManagementContact: React.FC = () => {
         <div className="messages-section-head">
           <div><h3>فهرست تیکت‌ها</h3><p>برای مشاهده جزئیات و پاسخ‌گویی، روی ردیف تیکت بزنید.</p></div>
           <div className="messages-table-tools">
-            <span className="messages-total">{filteredTickets.length} مورد</span>
+            <span className="messages-total messages-count-pill">{filteredTickets.length} مورد</span>
             <button className="messages-refresh" onClick={() => void loadTickets()} disabled={loading}>
               <RefreshCw size={14} className={loading ? 'messages-spin' : ''} /> بروزرسانی
             </button>
