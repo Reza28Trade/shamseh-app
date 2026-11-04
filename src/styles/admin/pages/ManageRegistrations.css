@@ -523,3 +523,103 @@
   font-size:12px!important;
   font-weight:800!important;
 }
+
+
+/* Final layout correction: use normal vertical document flow inside the drawer.
+   Grid implicit rows were allowing the metadata and following sections to visually collide. */
+.admin-extracted-manageregistrations-105 {
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:flex-start!important;
+  gap:14px!important;
+  height:100vh!important;
+  max-height:100vh!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+}
+.admin-extracted-manageregistrations-105 > * {
+  position:relative!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+}
+.admin-registration-detail-facts {
+  display:flex!important;
+  flex:0 0 auto!important;
+  flex-direction:column!important;
+  gap:10px!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  overflow:visible!important;
+}
+.admin-registration-detail-fact {
+  display:flex!important;
+  flex:0 0 auto!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:stretch!important;
+  gap:6px!important;
+  min-height:76px!important;
+  height:auto!important;
+  padding:11px 13px!important;
+  overflow:visible!important;
+}
+.admin-registration-detail-fact > span,
+.admin-registration-detail-fact > strong {
+  position:static!important;
+  display:block!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  line-height:1.9!important;
+  white-space:normal!important;
+  overflow:visible!important;
+}
+.admin-extracted-manageregistrations-105 > .admin-extracted-manageregistrations-113,
+.admin-extracted-manageregistrations-105 > .admin-extracted-manageregistrations-121,
+.admin-extracted-manageregistrations-105 > .admin-extracted-manageregistrations-127,
+.admin-extracted-manageregistrations-105 > .admin-extracted-manageregistrations-132 {
+  display:flex!important;
+  flex:0 0 auto!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:10px!important;
+  height:auto!important;
+  overflow:visible!important;
+}
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-115,
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-117,
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-118,
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-119,
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-120 {
+  display:flex!important;
+  flex:0 0 auto!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:4px!important;
+  min-height:0!important;
+  height:auto!important;
+  padding:4px 0!important;
+  line-height:1.9!important;
+}
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-123 {
+  display:flex!important;
+  flex:0 0 auto!important;
+  flex-direction:column!important;
+  gap:8px!important;
+  min-height:0!important;
+  height:auto!important;
+  line-height:1.9!important;
+  overflow:visible!important;
+}
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-134 {
+  flex:0 0 auto!important;
+  min-height:0!important;
+  height:auto!important;
+  line-height:1.9!important;
+  overflow-wrap:anywhere!important;
+}
