@@ -31,7 +31,7 @@ const refundStatus:Record<string,string>={REQUESTED:'درخواست جدید',RE
 
 export function ManageRegistrations(){
   const [tab,setTab]=useState<'registrations'|'refunds'>('registrations');
-  const [statusFilter,setStatusFilter]=useState('PENDING_REVIEW');
+  const [statusFilter,setStatusFilter]=useState('ALL');
   const [registrations,setRegistrations]=useState<Registration[]>([]);
   const [mockExams,setMockExams]=useState<Array<{id:string;title:string;level:string;field:string;examDate:string;status:string}>>([]);
   const [refunds,setRefunds]=useState<Refund[]>([]);
@@ -127,7 +127,7 @@ export function ManageRegistrations(){
   const pagedRegistrations=visibleRegistrations.slice((safeListPage-1)*pageSize,safeListPage*pageSize);
   const pagedRefunds=visibleRefunds.slice((safeListPage-1)*pageSize,safeListPage*pageSize);
   const isTabActive=(target:'registrations'|'refunds')=>tab===target;
-  const statusOptionsFor=(currentTab:'registrations'|'refunds')=>currentTab==='registrations'?[['PENDING_REVIEW','در انتظار بررسی'],['NEEDS_CORRECTION','نیازمند اصلاح'],['APPROVED','تأییدشده'],['REJECTED','ردشده'],['ALL','همه']]:[['REQUESTED','درخواست جدید'],['RESERVED','رزروشده'],['PAID','پرداخت‌شده'],['REJECTED','ردشده'],['ALL','همه']];
+  const statusOptionsFor=(currentTab:'registrations'|'refunds')=>currentTab==='registrations'?[['ALL','همه'],['PENDING_REVIEW','در انتظار بررسی'],['NEEDS_CORRECTION','نیازمند اصلاح'],['APPROVED','تأییدشده'],['REJECTED','ردشده']]:[['ALL','همه'],['REQUESTED','درخواست جدید'],['RESERVED','رزروشده'],['PAID','پرداخت‌شده'],['REJECTED','ردشده']];
   const approvedRegistrations=registrations.filter(item=>item.status==='APPROVED');
   const archivedDebtors=approvedRegistrations.filter(item=>item.student?.isArchived && item.balance>0.0001);
   const archivedSettled=approvedRegistrations.filter(item=>item.student?.isArchived && item.manualSettlementAmount>0 && item.balance<=0.0001);
@@ -245,8 +245,8 @@ export function ManageRegistrations(){
 
     {tab==='registrations'?<section className="admin-action-center admin-master-panel admin-finance-registration-list-panel admin-extracted-manageregistrations-64">
     <div className="admin-extracted-manageregistrations-42">
-      <button className={`admin-action-button${isTabActive('registrations') ? ' is-active' : ''}`} onClick={()=>{setTab('registrations');setStatusFilter('PENDING_REVIEW');}}>ثبت‌نام‌ها و رسیدها</button>
-      <button className={`admin-action-button${isTabActive('refunds') ? ' is-active' : ''}`} onClick={()=>{setTab('refunds');setStatusFilter('REQUESTED');}}>درخواست‌های بازپرداخت</button>
+      <button className={`admin-action-button${isTabActive('registrations') ? ' is-active' : ''}`} onClick={()=>{setTab('registrations');setStatusFilter('ALL');}}>ثبت‌نام‌ها و رسیدها</button>
+      <button className={`admin-action-button${isTabActive('refunds') ? ' is-active' : ''}`} onClick={()=>{setTab('refunds');setStatusFilter('ALL');}}>درخواست‌های بازپرداخت</button>
       <button className="admin-action-button" onClick={()=>void load()}>به‌روزرسانی</button>
     </div>
     <div className="admin-extracted-manageregistrations-43">
@@ -255,7 +255,7 @@ export function ManageRegistrations(){
         {statusOptionsFor(tab).map(([value,label])=><option key={value} value={value}>{label}</option>)}
       </select>
     </div>
-      <div className="admin-extracted-manageregistrations-65"><strong>فهرست ثبت‌نام‌ها</strong><span className="admin-extracted-manageregistrations-66">{new Intl.NumberFormat('fa-IR').format(visibleRegistrations.length)} ثبت‌نام</span></div>
+      <div className="admin-extracted-manageregistrations-65"><strong>فهرست ثبت‌نام‌ها</strong><span className="admin-action-summary">{new Intl.NumberFormat('fa-IR').format(visibleRegistrations.length)} ثبت‌نام</span></div>
 
       <div className="admin-extracted-manageregistrations-67 admin-data-table-wrap"><table className="admin-extracted-manageregistrations-68 admin-data-table">
         <thead className="admin-extracted-manageregistrations-69"><tr>{['هنرجو / کد ملی','مقطع و رشته','دوره‌ها','شهریه نهایی','پرداخت‌شده','مانده','وضعیت','جزئیات'].map(label=><th key={label} className="admin-extracted-manageregistrations-70">{label}</th>)}</tr></thead>
@@ -284,7 +284,7 @@ export function ManageRegistrations(){
         {statusOptionsFor(tab).map(([value,label])=><option key={value} value={value}>{label}</option>)}
       </select>
     </div>
-      <div className="admin-extracted-manageregistrations-86"><strong>فهرست درخواست‌های بازپرداخت</strong><span className="admin-extracted-manageregistrations-87">{new Intl.NumberFormat('fa-IR').format(visibleRefunds.length)} درخواست</span></div>
+      <div className="admin-extracted-manageregistrations-86"><strong>فهرست درخواست‌های بازپرداخت</strong><span className="admin-action-summary">{new Intl.NumberFormat('fa-IR').format(visibleRefunds.length)} درخواست</span></div>
       <div className="admin-extracted-manageregistrations-88 admin-data-table-wrap"><table className="admin-extracted-manageregistrations-89 admin-data-table"><thead className="admin-extracted-manageregistrations-90"><tr>{['هنرجو / کد ملی','موبایل','مبلغ درخواستی','مبلغ رزروشده','وضعیت','جزئیات'].map(label=><th key={label} className="admin-extracted-manageregistrations-91">{label}</th>)}</tr></thead><tbody>
         {pagedRefunds.map(item=><tr key={item.id}><td className="admin-extracted-manageregistrations-92"><strong>{item.student.fullName}</strong><div className="admin-extracted-manageregistrations-93">{item.student.nationalId}</div></td><td className="admin-extracted-manageregistrations-94">{item.student.phone}</td><td className="admin-extracted-manageregistrations-95">{money(item.amountRequested)}</td><td className="admin-extracted-manageregistrations-96">{item.amountReserved===null?'—':money(item.amountReserved)}</td><td className="admin-extracted-manageregistrations-97">{refundStatus[item.status]||item.status}</td><td className="admin-extracted-manageregistrations-98"><button type="button" className="admin-action-button" onClick={()=>setSelectedRefund(item)}>مشاهده جزئیات</button></td></tr>)}
         {!loading&&pagedRefunds.length===0&&<tr><td colSpan={6} className="admin-extracted-manageregistrations-99">درخواستی برای نمایش وجود ندارد.</td></tr>}</tbody></table></div>
