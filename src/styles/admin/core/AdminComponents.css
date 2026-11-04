@@ -3139,3 +3139,88 @@
     transition:none!important;
   }
 }
+
+
+/* Feedback statistics: mirror Dashboard's .admin-stat cards exactly.
+   Keep the feedback page's existing four-column geometry and card dimensions. */
+.admin-shell .admin-main .admin-page-content .admin-management-contact-page .messages-stat {
+  min-height:78px!important;
+  padding:13px 16px!important;
+  border:1px solid var(--admin-border)!important;
+  border-top:1px solid var(--admin-border)!important;
+  border-radius:15px!important;
+  background:var(--admin-card)!important;
+  background-image:none!important;
+  box-shadow:var(--admin-shadow)!important;
+  color:var(--admin-text)!important;
+  transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-management-contact-page .messages-stat:hover,
+.admin-shell .admin-main .admin-page-content .admin-management-contact-page .messages-stat:focus-visible {
+  transform:translateY(-2px)!important;
+  border-color:var(--admin-brand-border)!important;
+  background:var(--admin-accent-soft)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-management-contact-page .messages-stat.is-active {
+  border-color:var(--admin-brand-border)!important;
+  background:var(--admin-accent-soft)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-management-contact-page .messages-stat-icon {
+  display:grid!important;
+  place-items:center!important;
+  flex:0 0 36px!important;
+  width:36px!important;
+  height:36px!important;
+  border:1px solid rgba(255,255,255,.62)!important;
+  border-radius:10px!important;
+  background:var(--admin-dashboard-icon-surface)!important;
+  box-shadow:3px 3px 7px rgba(177,169,157,.38),-3px -3px 7px rgba(255,255,255,.86)!important;
+  color:var(--admin-accent)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-management-contact-page .messages-stat-copy {
+  display:flex!important;
+  flex:1 1 auto!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  gap:2px!important;
+  min-width:0!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-management-contact-page .messages-stat-copy strong {
+  margin:0!important;
+  color:var(--admin-text)!important;
+  font-size:clamp(16px,1.6vw,22px)!important;
+  font-weight:850!important;
+  line-height:1.5!important;
+  font-variant-numeric:tabular-nums!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-management-contact-page .messages-stat-copy small {
+  color:var(--admin-sub)!important;
+  font-size:10px!important;
+  font-weight:650!important;
+  line-height:1.7!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-management-contact-page .messages-stat {
+  border:1px solid rgba(255,255,255,.055)!important;
+  border-top:1px solid rgba(255,255,255,.055)!important;
+  background:var(--admin-dashboard-icon-surface)!important;
+  box-shadow:8px 8px 18px rgba(13,12,12,.62),-8px -8px 18px rgba(48,45,45,.58),inset 1px 1px 0 rgba(255,255,255,.035)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-management-contact-page .messages-stat:hover,
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-management-contact-page .messages-stat:focus-visible,
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-management-contact-page .messages-stat.is-active {
+  border-color:var(--admin-brand-border)!important;
+  background:var(--admin-dashboard-icon-surface)!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-management-contact-page .messages-stat-icon {
+  border-color:rgba(255,255,255,.055)!important;
+  background:var(--admin-dashboard-icon-surface)!important;
+  box-shadow:3px 3px 7px rgba(13,12,12,.55),-3px -3px 7px rgba(51,47,47,.48)!important;
+  color:var(--admin-accent)!important;
+}
+@media(prefers-reduced-motion:reduce) {
+  .admin-shell .admin-main .admin-page-content .admin-management-contact-page .messages-stat {
+    transition:none!important;
+  }
+}
