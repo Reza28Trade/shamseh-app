@@ -2432,6 +2432,32 @@
 .admin-shell .admin-main .admin-page-content :is(.admin-legacy-page:not(.admin-accounts-page),.admin-finance-registration-page) table.admin-data-table tbody td:first-child {border-right-width:1px; border-radius:0 12px 12px 0}
 .admin-shell .admin-main .admin-page-content :is(.admin-legacy-page:not(.admin-accounts-page),.admin-finance-registration-page) table.admin-data-table tbody td:last-child {border-left-width:1px; border-radius:12px 0 0 12px}
 
+
+/* Seamless data-table variant: one continuous table surface, no per-cell
+   frames, vertical dividers, or inset cell shadows. */
+.admin-shell .admin-main .admin-page-content :is(.admin-legacy-page:not(.admin-accounts-page),.admin-finance-registration-page) table.admin-data-table--seamless {
+  border-spacing:0;
+}
+.admin-shell .admin-main .admin-page-content :is(.admin-legacy-page:not(.admin-accounts-page),.admin-finance-registration-page) table.admin-data-table--seamless thead th {
+  border:0;
+  border-bottom:1px solid var(--admin-content-border);
+  border-radius:0;
+  background:var(--admin-content-inner);
+}
+.admin-shell .admin-main .admin-page-content :is(.admin-legacy-page:not(.admin-accounts-page),.admin-finance-registration-page) table.admin-data-table--seamless tbody td {
+  border:0;
+  border-bottom:1px solid var(--admin-content-border);
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+.admin-shell .admin-main .admin-page-content :is(.admin-legacy-page:not(.admin-accounts-page),.admin-finance-registration-page) table.admin-data-table--seamless tbody tr:last-child td {
+  border-bottom:0;
+}
+.admin-shell .admin-main .admin-page-content :is(.admin-legacy-page:not(.admin-accounts-page),.admin-finance-registration-page) table.admin-data-table--seamless tbody tr:hover td {
+  background:var(--admin-accent-soft);
+}
+
 /* Finance ledger: remove column seams from cell borders and inset shadows. */
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-ledger-panel table.admin-data-table :is(th,td) {
   border-left: 0 !important;
