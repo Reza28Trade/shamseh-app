@@ -623,3 +623,76 @@
   line-height:1.9!important;
   overflow-wrap:anywhere!important;
 }
+
+
+/* Cascade correction:
+   AdminComponents.css is loaded after this page stylesheet. Scope these rules
+   above the extracted central selectors so the drawer's vertical flow actually wins. */
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 {
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:flex-start!important;
+  grid-template-rows:none!important;
+  grid-auto-rows:auto!important;
+  gap:14px!important;
+  height:100vh!important;
+  max-height:100vh!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 > * {
+  position:relative!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-registration-detail-facts {
+  display:flex!important;
+  flex:0 0 auto!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:10px!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  overflow:visible!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-registration-detail-fact {
+  display:flex!important;
+  flex:0 0 auto!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:center!important;
+  gap:6px!important;
+  width:100%!important;
+  min-height:76px!important;
+  height:auto!important;
+  overflow:visible!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 > section {
+  display:flex!important;
+  flex:0 0 auto!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:10px!important;
+  height:auto!important;
+  min-height:0!important;
+  overflow:visible!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-115,
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-117,
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-118,
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-119,
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-120,
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-123 {
+  display:flex!important;
+  flex:0 0 auto!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:6px!important;
+  height:auto!important;
+  min-height:0!important;
+  overflow:visible!important;
+}
