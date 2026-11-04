@@ -57,7 +57,27 @@ export class ManagementContactService {
         messages: { orderBy: { createdAt: 'asc' } },
       },
     });
-    return tickets.map((ticket) => ({ ...this.publicTicket(ticket, ticket.student.userId), student: { id: ticket.student.id, fullName: ticket.student.fullName, nationalId: ticket.student.nationalId } }));
+    return tickets.map((ticket) => ({ ...this.publicTicket(ticket, ticket.student.userId), student: { id: ticket.student.id, userId: ticket.student.userId, fullName: ticket.student.fullName, nationalId: ticket.student.nationalId } }));
+  }
+
+  async addStudentMessage(user: AuthenticatedUser, ticketId: string, dto: CreateMessageDto) {
+    const studentId = this.requireStudent(user);
+    const ticket = await this.prisma.managementContactTicket.findFirst({
+      where: { id: ticketId, studentId },
+      select: { id: true },
+    });
+    if (!ticket) throw new NotFoundException('Ticket not found');
+
+    const [message] = await this.prisma.$transaction([
+      this.prisma.managementContactMessage.create({
+        data: { ticketId, senderUserId: user.id, content: dto.content.trim() },
+      }),
+      this.prisma.managementContactTicket.update({
+        where: { id: ticketId },
+        data: { status: 'OPEN' },
+      }),
+    ]);
+    return { ...message, senderRole: 'STUDENT' as const };
   }
 
   async addManagementReply(user: AuthenticatedUser, ticketId: string, dto: CreateMessageDto) {
