@@ -376,3 +376,87 @@
 @media(prefers-reduced-motion:reduce) {
   .admin-extracted-manageregistrations-105 { animation:none!important; }
 }
+
+
+/* Registration drawer content: prevent metadata and financial text collisions at drawer width. */
+.admin-extracted-manageregistrations-105,
+.admin-extracted-manageregistrations-105 * {
+  box-sizing:border-box!important;
+  min-width:0!important;
+}
+.admin-extracted-manageregistrations-105 {
+  align-items:start!important;
+  grid-auto-rows:max-content!important;
+}
+.admin-extracted-manageregistrations-105 > .admin-extracted-manageregistrations-106 {
+  width:100%!important;
+  min-height:54px!important;
+  flex-wrap:nowrap!important;
+}
+.admin-extracted-manageregistrations-105 > .admin-extracted-manageregistrations-109 {
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:8px!important;
+  width:100%!important;
+}
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-110 {
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  align-content:start!important;
+  gap:4px!important;
+  width:100%!important;
+  min-height:0!important;
+  padding:10px 12px!important;
+  overflow-wrap:anywhere!important;
+}
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-111 {
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  line-height:1.7!important;
+}
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-112 {
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  line-height:1.8!important;
+  overflow-wrap:anywhere!important;
+  word-break:break-word!important;
+}
+.admin-extracted-manageregistrations-105 > section {
+  width:100%!important;
+  min-width:0!important;
+  align-self:start!important;
+}
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-115,
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-117,
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-118,
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-119,
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-120 {
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:3px!important;
+  width:100%!important;
+  overflow-wrap:anywhere!important;
+  line-height:1.8!important;
+}
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-123 {
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:7px!important;
+  width:100%!important;
+  overflow-wrap:anywhere!important;
+  line-height:1.8!important;
+}
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-125,
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-136 {
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:8px!important;
+  width:100%!important;
+}
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-126 {
+  display:inline-block!important;
+  max-width:100%!important;
+  overflow-wrap:anywhere!important;
+}
