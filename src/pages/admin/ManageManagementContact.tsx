@@ -137,7 +137,7 @@ export const ManageManagementContact: React.FC = () => {
         <div className="messages-section-head">
           <div><h3>فهرست تیکت‌ها</h3><p>برای مشاهده جزئیات و پاسخ‌گویی، روی ردیف تیکت بزنید.</p></div>
           <div className="messages-table-tools">
-            <span className="messages-total admin-action-summary">{new Intl.NumberFormat('fa-IR').format(filteredTickets.length)} مورد</span>
+            <span className="admin-action-summary">{new Intl.NumberFormat('fa-IR').format(filteredTickets.length)} مورد</span>
             <button className="messages-refresh" onClick={() => void loadTickets()} disabled={loading}>
               <RefreshCw size={14} className={loading ? 'messages-spin' : ''} /> بروزرسانی
             </button>
@@ -190,30 +190,36 @@ export const ManageManagementContact: React.FC = () => {
       {selectedTicketId && (() => {
         const ticket = tickets.find(item => item.id === selectedTicketId);
         if (!ticket) return null;
-        return <section className="admin-master-panel messages-detail-section">
-          <div className="messages-detail-head">
-            <div><span className="messages-detail-kicker">پرونده انتخاب‌شده</span><h3>{ticket.subject}</h3><p>{ticket.student.fullName} · کد ملی: {ticket.student.nationalId}</p></div>
-            <button type="button" className="messages-detail-close" onClick={() => setSelectedTicketId(null)}><X size={15}/> بستن جزئیات</button>
+        return (
+          <div className="messages-detail-overlay" role="presentation" onMouseDown={event => {
+            if (event.target === event.currentTarget) setSelectedTicketId(null);
+          }}>
+            <section className="admin-master-panel messages-detail-section messages-detail-drawer" role="dialog" aria-modal="true" aria-labelledby="messages-detail-title">
+              <div className="messages-detail-head">
+                <div><span className="messages-detail-kicker">پرونده انتخاب‌شده</span><h3 id="messages-detail-title">{ticket.subject}</h3><p>{ticket.student.fullName} · کد ملی: {ticket.student.nationalId}</p></div>
+                <button type="button" className="messages-detail-close" onClick={() => setSelectedTicketId(null)}><X size={15}/> بستن جزئیات</button>
+              </div>
+              <div className="messages-thread-head"><span>تاریخچه گفت‌وگو</span><span>{new Intl.NumberFormat('fa-IR').format(ticket.messages.length)} پیام</span></div>
+              <div className="messages-thread">
+                {ticket.messages.map(message => {
+                  const fromStudent = message.senderUserId === ticket.studentId;
+                  return <div key={message.id} className={`messages-bubble ${fromStudent ? 'messages-bubble-student' : 'messages-bubble-support'}`}>
+                    <div className="messages-bubble-meta"><strong>{fromStudent ? 'هنرجو' : 'پاسخ شمسه'}</strong><time>{new Date(message.createdAt).toLocaleString('fa-IR')}</time></div>
+                    <p>{message.content}</p>
+                  </div>;
+                })}
+              </div>
+              <form className="messages-reply-form" onSubmit={event => { event.preventDefault(); void handleReply(ticket.id); }}>
+                <label htmlFor={`reply-${ticket.id}`}>پاسخ</label>
+                <textarea id={`reply-${ticket.id}`} value={replyText[ticket.id] || ''} onChange={event => setReplyText(current => ({ ...current, [ticket.id]: event.target.value }))} placeholder="پاسخ خود را اینجا بنویسید..." rows={3} />
+                <div className="messages-reply-actions">
+                  <button type="submit" className="messages-send" disabled={sendingTicketId === ticket.id || !replyText[ticket.id]?.trim()}><Send size={14} />{sendingTicketId === ticket.id ? 'در حال ارسال...' : 'ارسال پاسخ'}</button>
+                  <button type="button" className="messages-cancel" onClick={() => setSelectedTicketId(null)}><X size={14} /> انصراف</button>
+                </div>
+              </form>
+            </section>
           </div>
-          <div className="messages-thread-head"><span>تاریخچه گفت‌وگو</span><span>{ticket.messages.length} پیام</span></div>
-          <div className="messages-thread">
-            {ticket.messages.map(message => {
-              const fromStudent = message.senderUserId === ticket.studentId;
-              return <div key={message.id} className={`messages-bubble ${fromStudent ? 'messages-bubble-student' : 'messages-bubble-support'}`}>
-                <div className="messages-bubble-meta"><strong>{fromStudent ? 'هنرجو' : 'پاسخ شمسه'}</strong><time>{new Date(message.createdAt).toLocaleString('fa-IR')}</time></div>
-                <p>{message.content}</p>
-              </div>;
-            })}
-          </div>
-          <form className="messages-reply-form" onSubmit={e => { e.preventDefault(); void handleReply(ticket.id); }}>
-            <label htmlFor={`reply-${ticket.id}`}>پاسخ</label>
-            <textarea id={`reply-${ticket.id}`} value={replyText[ticket.id] || ''} onChange={e => setReplyText(current => ({ ...current, [ticket.id]: e.target.value }))} placeholder="پاسخ خود را اینجا بنویسید..." rows={3} />
-            <div className="messages-reply-actions">
-              <button type="submit" className="messages-send" disabled={sendingTicketId === ticket.id || !replyText[ticket.id]?.trim()}><Send size={14} />{sendingTicketId === ticket.id ? 'در حال ارسال...' : 'ارسال پاسخ'}</button>
-              <button type="button" className="messages-cancel" onClick={() => setSelectedTicketId(null)}><X size={14} /> انصراف</button>
-            </div>
-          </form>
-        </section>;
+        );
       })()}
     </div>
   );
