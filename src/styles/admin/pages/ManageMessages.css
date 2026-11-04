@@ -415,3 +415,73 @@
     transition:none!important;
   }
 }
+
+
+/* Ticket list visual language: match Dashboard's "Needs action" action-center. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-ticket-section {
+  padding:19px!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:17px!important;
+  background:var(--admin-card)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-section-head {
+  padding-bottom:12px!important;
+  margin-bottom:2px!important;
+  border-bottom:1px solid var(--admin-border)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table-wrap {
+  max-height:520px!important;
+  overflow:auto!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table {
+  border-collapse:separate!important;
+  border-spacing:0 8px!important;
+  background:transparent!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table thead th {
+  border:0!important;
+  background:transparent!important;
+  color:var(--admin-sub)!important;
+  padding:5px 12px 8px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table tbody tr {
+  outline:0!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table tbody td {
+  background:var(--admin-inner)!important;
+  border-top:1px solid var(--admin-border)!important;
+  border-bottom:1px solid var(--admin-border)!important;
+  padding:12px!important;
+  transition:background .15s ease,border-color .15s ease!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table tbody td:first-child {
+  border-right:1px solid var(--admin-border)!important;
+  border-radius:12px 0 0 12px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table tbody td:last-child {
+  border-left:1px solid var(--admin-border)!important;
+  border-radius:0 12px 12px 0!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table tbody tr:hover td,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table tbody tr.is-selected td {
+  background:var(--admin-accent-soft)!important;
+  border-top-color:var(--admin-brand-border)!important;
+  border-bottom-color:var(--admin-brand-border)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table tbody tr:hover td:first-child,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table tbody tr.is-selected td:first-child {
+  border-right-color:var(--admin-brand-border)!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table tbody tr:hover td:last-child,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-table tbody tr.is-selected td:last-child {
+  border-left-color:var(--admin-brand-border)!important;
+}
+@media(max-width:600px) {
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-messages-page .messages-ticket-section {
+    padding:14px!important;
+  }
+}
