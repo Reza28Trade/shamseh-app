@@ -42,10 +42,10 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     const pageSize = Number.isInteger(requestedSize) ? Math.min(100, Math.max(1, requestedSize)) : 20;
     const search = String(query.search ?? '').trim();
     const status = String(query.status ?? 'ALL');
-    if (!['ALL', 'ACTIVE', 'INACTIVE'].includes(status)) throw new BadRequestException('فیلتر وضعیت کتاب معتبر نیست.');
+    if (!['ALL', 'ACTIVE', 'INACTIVE', 'ARCHIVED'].includes(status)) throw new BadRequestException('فیلتر وضعیت کتاب معتبر نیست.');
     const where: any = {};
-    if (status === 'ACTIVE') where.isActive = true;
-    if (status === 'INACTIVE') where.isActive = false;
+    if (status === 'ARCHIVED') where.archivedAt = { not: null };
+    else { where.archivedAt = null; if (status === 'ACTIVE') where.isActive = true; if (status === 'INACTIVE') where.isActive = false; }
     if (search) where.OR = [
       { title: { contains: search, mode: 'insensitive' } },
       { category: { contains: search, mode: 'insensitive' } },
@@ -69,7 +69,7 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     await this.releaseExpiredReservations();
     const admin = user.role === 'SUPER_ADMIN' || (user.role === 'STAFF' && user.permissions.includes('books'));
     const books = await this.prisma.book.findMany({
-      where: admin ? {} : { isActive: true },
+      where: admin ? {} : { isActive: true, archivedAt: null },
       orderBy: [{ displayOrder: 'asc' }, { title: 'asc' }],
     });
     return books.map(({ stockQuantity, reservedQuantity, ...book }) => ({
@@ -82,7 +82,7 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
 
   async publicBooks() {
     const books = await this.prisma.book.findMany({
-      where: { isActive: true },
+      where: { isActive: true, archivedAt: null },
       orderBy: [{ displayOrder: 'asc' }, { title: 'asc' }],
       select: {
         id: true, title: true, description: true, coverImage: true, academicLevel: true, category: true,
@@ -172,7 +172,7 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
       academicLevel: body.academicLevel == null || body.academicLevel === '' ? null : this.validateAcademicLevel(String(body.academicLevel)),
       category: body.category == null || body.category === '' ? null : String(body.category).trim(),
       price, discountedPrice, stockQuantity,
-      isActive: body.isActive ?? true, displayOrder,
+      isActive: body.isActive ?? true, archivedAt: null, displayOrder,
     } });
   }
   async deleteBook(user: AuthenticatedUser, bookId: string) {
@@ -187,6 +187,38 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     }
     await this.prisma.book.delete({ where: { id: bookId } });
     return { success: true, id: bookId };
+  }
+
+  async archiveBook(user: AuthenticatedUser, bookId: string) {
+    this.requireAdmin(user); const book = await this.prisma.book.findUnique({ where: { id: bookId } });
+    if (!book) throw new NotFoundException('کتاب پیدا نشد.');
+    if (!book.archivedAt) await this.prisma.book.update({ where: { id: bookId }, data: { archivedAt: new Date(), isActive: false } });
+    return { success: true };
+  }
+  async restoreBook(user: AuthenticatedUser, bookId: string) {
+    this.requireAdmin(user); const book = await this.prisma.book.findUnique({ where: { id: bookId } });
+    if (!book) throw new NotFoundException('کتاب پیدا نشد.');
+    if (!book.archivedAt) throw new BadRequestException('این کتاب در آرشیو نیست.');
+    await this.prisma.book.update({ where: { id: bookId }, data: { archivedAt: null, isActive: true } }); return { success: true };
+  }
+  async bookStatistics(user: AuthenticatedUser, bookId: string) {
+    this.requireAdmin(user); const book = await this.prisma.book.findUnique({ where: { id: bookId } });
+    if (!book) throw new NotFoundException('کتاب پیدا نشد.');
+    const items = await this.prisma.bookOrderItem.findMany({ where: { bookId }, select: { orderId: true, quantity: true, unitPrice: true, order: { select: { status: true, refundStatus: true, createdAt: true } } } });
+    const completed = new Set(['PAID','PROCESSING','SHIPPED','DELIVERED']);
+    let soldQuantity=0,grossRevenue=0,refundedQuantity=0,refundedAmount=0,cancelledQuantity=0,pendingQuantity=0;
+    const orderIds=new Set<string>(), monthly=new Map<string,{quantity:number;revenue:number}>(), dates:Date[]=[];
+    for(const item of items){orderIds.add(item.orderId);const st=item.order.status,amount=Number(item.unitPrice)*item.quantity;
+      if(completed.has(st)&&item.order.refundStatus!=='COMPLETED'){soldQuantity+=item.quantity;grossRevenue+=amount;dates.push(item.order.createdAt);const key=item.order.createdAt.toISOString().slice(0,7),v=monthly.get(key)||{quantity:0,revenue:0};v.quantity+=item.quantity;v.revenue+=amount;monthly.set(key,v);}
+      else if(st==='REFUNDED'||item.order.refundStatus==='COMPLETED'){refundedQuantity+=item.quantity;refundedAmount+=amount;}
+      else if(st==='CANCELLED')cancelledQuantity+=item.quantity;else pendingQuantity+=item.quantity;
+    }
+    dates.sort((a,b)=>a.getTime()-b.getTime());
+    return {book:{id:book.id,title:book.title,coverImage:book.coverImage,isActive:book.isActive,archivedAt:book.archivedAt},
+      sales:{soldQuantity,grossRevenue,refundedQuantity,refundedAmount,netRevenue:grossRevenue-refundedAmount,orderCount:orderIds.size,cancelledQuantity,pendingQuantity},
+      inventory:{stockQuantity:book.stockQuantity,reservedQuantity:book.reservedQuantity,availableQuantity:Math.max(0,book.stockQuantity-book.reservedQuantity)},
+      dates:{createdAt:book.createdAt,firstSaleAt:dates[0]||null,lastSaleAt:dates[dates.length-1]||null},
+      monthlySales:[...monthly.entries()].sort(([a],[b])=>a.localeCompare(b)).map(([month,value])=>({month,...value}))};
   }
 
   async updateBook(user: AuthenticatedUser, bookId: string, body: any) {
