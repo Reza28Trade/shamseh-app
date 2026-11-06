@@ -91,3 +91,19 @@
 @media(prefers-reduced-motion:reduce){
  .admin-bookstore-page *{scroll-behavior:auto;}
 }
+
+
+/* Final alignment refinements: page frame, academic-level controls and count badge. */
+.admin-page-content:has(.admin-bookstore-page){max-width:none;}
+.admin-bookstore-page .bookstore-levels{grid-template-rows:auto 38px;gap:5px;align-content:end;}
+.admin-bookstore-page .bookstore-level-options{height:38px;min-height:38px;padding:0 8px;flex-wrap:nowrap;align-content:center;}
+.admin-bookstore-page .bookstore-level-option{flex:0 0 auto;}
+.admin-bookstore-page .bookstore-book-count{margin:0;min-height:26px;padding:4px 10px;font-size:11px;font-weight:800;}
+@media(max-width:650px){
+ .admin-bookstore-page .bookstore-levels{grid-column:1/-1;grid-template-columns:auto minmax(0,1fr);grid-template-rows:38px;align-items:center;gap:8px;}
+ .admin-bookstore-page .bookstore-level-options{justify-content:flex-start;gap:14px;width:100%;}
+}
+@media(max-width:390px){
+ .admin-bookstore-page .bookstore-levels{gap:6px;}
+ .admin-bookstore-page .bookstore-level-options{gap:10px;padding-inline:7px;}
+}
