@@ -207,6 +207,14 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
       : data.discountedPrice;
     if (effectiveDiscount !== null && Number(effectiveDiscount) > effectivePrice) throw new BadRequestException('قیمت تخفیف‌خورده نمی‌تواند از قیمت اصلی بیشتر باشد.');
     if (Object.keys(data).length === 0) throw new BadRequestException('هیچ تغییری برای ذخیره ارسال نشده است.');
+    if (data.stockQuantity !== undefined) {
+      const changed = await this.prisma.book.updateMany({
+        where: { id: bookId, reservedQuantity: { lte: Number(data.stockQuantity) } },
+        data,
+      });
+      if (changed.count !== 1) throw new BadRequestException('موجودی رزروشده در همین لحظه تغییر کرده است؛ فهرست را تازه‌سازی و دوباره تلاش کنید.');
+      return this.prisma.book.findUnique({ where: { id: bookId } });
+    }
     return this.prisma.book.update({ where: { id: bookId }, data });
   }
   async createOrder(user: AuthenticatedUser, body: any) {
@@ -429,13 +437,26 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     const order = await this.prisma.bookOrder.findUnique({ where: { id: orderId } });
     if (!order) throw new NotFoundException('سفارش پیدا نشد.');
     if (body.status === 'PROCESSING' && order.status === 'PAID') {
-      return this.prisma.bookOrder.update({ where: { id: orderId }, data: { status: 'PROCESSING' } });
+      const changed = await this.prisma.bookOrder.updateMany({
+        where: { id: orderId, status: 'PAID' }, data: { status: 'PROCESSING' },
+      });
+      if (changed.count !== 1) throw new BadRequestException('وضعیت سفارش هم‌زمان تغییر کرده است؛ فهرست را تازه‌سازی کنید.');
+      return this.prisma.bookOrder.findUnique({ where: { id: orderId } });
     }
     if (body.status === 'SHIPPED' && ['PAID', 'PROCESSING'].includes(order.status)) {
-      return this.prisma.bookOrder.update({ where: { id: orderId }, data: { status: 'SHIPPED', shippedAt: new Date(), shippedById: user.id, trackingCode: String(body.trackingCode ?? '').trim() || null } });
+      const changed = await this.prisma.bookOrder.updateMany({
+        where: { id: orderId, status: { in: ['PAID', 'PROCESSING'] } },
+        data: { status: 'SHIPPED', shippedAt: new Date(), shippedById: user.id, trackingCode: String(body.trackingCode ?? '').trim() || null },
+      });
+      if (changed.count !== 1) throw new BadRequestException('وضعیت سفارش هم‌زمان تغییر کرده است؛ فهرست را تازه‌سازی کنید.');
+      return this.prisma.bookOrder.findUnique({ where: { id: orderId } });
     }
     if (body.status === 'DELIVERED' && order.status === 'SHIPPED') {
-      return this.prisma.bookOrder.update({ where: { id: orderId }, data: { status: 'DELIVERED', deliveredAt: new Date() } });
+      const changed = await this.prisma.bookOrder.updateMany({
+        where: { id: orderId, status: 'SHIPPED' }, data: { status: 'DELIVERED', deliveredAt: new Date() },
+      });
+      if (changed.count !== 1) throw new BadRequestException('وضعیت سفارش هم‌زمان تغییر کرده است؛ فهرست را تازه‌سازی کنید.');
+      return this.prisma.bookOrder.findUnique({ where: { id: orderId } });
     }
     throw new BadRequestException('تغییر وضعیت ارسال معتبر نیست.');
   }
