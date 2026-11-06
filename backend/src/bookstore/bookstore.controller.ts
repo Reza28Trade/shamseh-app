@@ -38,6 +38,12 @@ export class BookstoreController {
   @Post('admin/books')
   createBook(@Req() req: AuthenticatedRequest, @Body() body: any) { return this.bookstore.createBook(req.user, body); }
 
+  @Get('admin/books/:bookId/statistics')
+  bookStatistics(@Req() req: AuthenticatedRequest, @Param('bookId') id: string) { return this.bookstore.bookStatistics(req.user,id); }
+  @Post('admin/books/:bookId/archive')
+  archiveBook(@Req() req: AuthenticatedRequest, @Param('bookId') id: string) { return this.bookstore.archiveBook(req.user,id); }
+  @Post('admin/books/:bookId/restore')
+  restoreBook(@Req() req: AuthenticatedRequest, @Param('bookId') id: string) { return this.bookstore.restoreBook(req.user,id); }
   @Delete('admin/books/:bookId')
   deleteBook(@Req() req: AuthenticatedRequest, @Param('bookId') bookId: string) {
     return this.bookstore.deleteBook(req.user, bookId);
