@@ -3479,7 +3479,7 @@
     align-items:stretch!important;
     justify-content:flex-start!important;
     gap:3px!important;
-    width:100%!important;
+    width:auto!important;
     min-width:0!important;
     max-width:100%!important;
     overflow:visible!important;
