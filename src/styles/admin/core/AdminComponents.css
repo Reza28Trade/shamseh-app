@@ -3455,15 +3455,15 @@
     display:grid!important;
     grid-template-columns:auto minmax(0,1fr)!important;
     grid-template-areas:"action copy"!important;
-    align-items:start!important;
+    align-items:center!important;
     justify-items:stretch!important;
     column-gap:8px!important;
     row-gap:0!important;
     width:100%!important;
     min-width:0!important;
-    min-height:0!important;
+    min-height:58px!important;
     height:auto!important;
-    padding:9px!important;
+    padding:10px 9px!important;
     overflow:visible!important;
     text-align:right!important;
     direction:rtl!important;
@@ -3477,8 +3477,8 @@
     display:flex!important;
     flex-direction:column!important;
     align-items:stretch!important;
-    justify-content:flex-start!important;
-    gap:3px!important;
+    justify-content:center!important;
+    gap:4px!important;
     width:auto!important;
     min-width:0!important;
     max-width:100%!important;
@@ -3490,7 +3490,8 @@
     margin:0!important;
     font-size:11px!important;
     font-weight:800!important;
-    line-height:1.65!important;
+    line-height:1.55!important;
+    overflow-wrap:anywhere!important;
   }
   .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-audit-log-meta {
     display:flex!important;
@@ -3512,11 +3513,11 @@
   }
   .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-audit-log-action {
     grid-area:action!important;
-    align-self:start!important;
+    align-self:center!important;
     justify-self:end!important;
-    min-width:48px!important;
-    min-height:29px!important;
-    padding:4px 7px!important;
+    min-width:52px!important;
+    min-height:32px!important;
+    padding:5px 7px!important;
     white-space:nowrap!important;
     font-size:9px!important;
   }
@@ -3528,7 +3529,8 @@
 @media(max-width:380px) {
   .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-audit-log-row {
     column-gap:6px!important;
-    padding:8px!important;
+    min-height:56px!important;
+    padding:9px 8px!important;
   }
   .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-audit-log-title {
     font-size:10px!important;
