@@ -2992,6 +2992,94 @@
 }
 
 
+/* Audit log density and mobile layout.
+   Keep the tablet/desktop reference unchanged; use a compact, explicit grid on phones. */
+@media(max-width:600px) {
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-recent-activity {
+    padding:10px!important;
+    gap:9px!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-dashboard-tools {
+    gap:7px!important;
+    margin-bottom:10px!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-dashboard-updated {
+    width:100%;
+    font-size:10px!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-dashboard-tools > input,
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-dashboard-tools > select {
+    flex:1 1 100%!important;
+    width:100%!important;
+    min-width:0!important;
+    min-height:34px!important;
+    max-width:none!important;
+    padding:6px 9px!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-refresh-button {
+    min-height:32px!important;
+    padding:6px 10px!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-activity-list {
+    gap:6px!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-activity-row {
+    display:grid!important;
+    grid-template-columns:28px minmax(0,1fr) auto!important;
+    grid-template-areas:"mark copy action" "mark time action"!important;
+    align-items:center!important;
+    column-gap:8px!important;
+    row-gap:2px!important;
+    min-height:0!important;
+    padding:8px!important;
+    border-radius:10px!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-activity-mark {
+    grid-area:mark!important;
+    width:28px!important;
+    height:28px!important;
+    border-radius:8px!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-activity-copy {
+    grid-area:copy!important;
+    gap:1px!important;
+    align-self:end!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-activity-copy strong {
+    font-size:10.5px!important;
+    line-height:1.5!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-activity-copy small {
+    font-size:9px!important;
+    line-height:1.45!important;
+    overflow-wrap:anywhere!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-activity-row time {
+    grid-area:time!important;
+    justify-self:start!important;
+    align-self:start!important;
+    margin:0!important;
+    font-size:9px!important;
+    line-height:1.4!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-activity-row .admin-action-button {
+    grid-area:action!important;
+    align-self:center!important;
+    min-height:29px!important;
+    padding:5px 8px!important;
+    font-size:9px!important;
+    white-space:nowrap!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-activity-list--scroll {
+    max-height:68vh!important;
+    padding:1px!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page > p {
+    margin:7px 0 0!important;
+    font-size:9px!important;
+  }
+}
+ 
 /* System audit details: left-side panel using the same visual language as registration details. */
 .admin-shell .admin-main .admin-page-content .admin-audit-detail-backdrop {
   position:fixed!important;
