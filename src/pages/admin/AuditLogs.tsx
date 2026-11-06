@@ -110,6 +110,9 @@ export const AuditLogs: React.FC = () => {
   useEffect(() => {
     if (!selectedLog) return;
 
+    const previousBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
     const focusableSelector = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
     const focusableElements = () => Array.from(
       drawerRef.current?.querySelectorAll<HTMLElement>(focusableSelector) ?? [],
@@ -145,6 +148,7 @@ export const AuditLogs: React.FC = () => {
     document.addEventListener('keydown', handleDialogKeyDown);
     return () => {
       document.removeEventListener('keydown', handleDialogKeyDown);
+      document.body.style.overflow = previousBodyOverflow;
       previouslyFocusedRef.current?.focus();
       previouslyFocusedRef.current = null;
     };
@@ -263,6 +267,7 @@ export const AuditLogs: React.FC = () => {
             role="dialog"
             aria-modal="true"
             aria-labelledby="audit-detail-title"
+            tabIndex={-1}
             dir="rtl"
           >
             <header className="admin-audit-detail-header">
