@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Activity, AlertCircle, RefreshCw, ShieldAlert } from 'lucide-react';
 
 type AuditLogEntry = {
@@ -63,6 +63,9 @@ export const AuditLogs: React.FC = () => {
   const [search, setSearch] = useState('');
   const [actionFilter, setActionFilter] = useState('all');
   const [selectedLog, setSelectedLog] = useState<AuditLogEntry | null>(null);
+  const drawerRef = useRef<HTMLElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null);
 
   const loadLogs = useCallback(async (manual = false) => {
     if (manual) setRefreshing(true);
@@ -97,6 +100,56 @@ export const AuditLogs: React.FC = () => {
     void loadLogs();
   }, [loadLogs]);
 
+  const openLogDetails = useCallback((log: AuditLogEntry) => {
+    previouslyFocusedRef.current = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
+    setSelectedLog(log);
+  }, []);
+
+  useEffect(() => {
+    if (!selectedLog) return;
+
+    const focusableSelector = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    const focusableElements = () => Array.from(
+      drawerRef.current?.querySelectorAll<HTMLElement>(focusableSelector) ?? [],
+    ).filter((element) => element.getAttribute('aria-hidden') !== 'true');
+
+    closeButtonRef.current?.focus();
+
+    const handleDialogKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setSelectedLog(null);
+        return;
+      }
+      if (event.key !== 'Tab') return;
+
+      const elements = focusableElements();
+      if (elements.length === 0) {
+        event.preventDefault();
+        drawerRef.current?.focus();
+        return;
+      }
+      const first = elements[0];
+      const last = elements[elements.length - 1];
+      if (event.shiftKey && (document.activeElement === first || !drawerRef.current?.contains(document.activeElement))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (document.activeElement === last || !drawerRef.current?.contains(document.activeElement))) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleDialogKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleDialogKeyDown);
+      previouslyFocusedRef.current?.focus();
+      previouslyFocusedRef.current = null;
+    };
+  }, [selectedLog]);
+
   const actions = useMemo(
     () => Array.from(new Set(logs.map((log) => log.action))).sort((a, b) => formatAction(a).localeCompare(formatAction(b), 'fa')),
     [logs],
@@ -121,18 +174,18 @@ export const AuditLogs: React.FC = () => {
   }, [logs, search, actionFilter]);
 
   return (
-    <div className="admin-legacy-page admin-logs-page admin-extracted-auditlogs-1">
+    <div className="admin-legacy-page admin-logs-page">
       {error && (
-        <section role="alert" className="admin-extracted-auditlogs-6">
+        <section role="alert" >
           <AlertCircle size={20} />
           <div>
             <strong>گزارش‌ها دریافت نشدند</strong>
-            <p className="admin-extracted-auditlogs-7">{error}</p>
+            <p >{error}</p>
           </div>
         </section>
       )}
 
-      <section className="admin-extracted-auditlogs-8 admin-panel-card admin-recent-activity admin-master-panel">
+      <section className="admin-extracted-auditlogs-8 admin-recent-activity admin-master-panel">
         <div className="admin-dashboard-tools">
           <span className="admin-dashboard-updated">
             <ShieldAlert size={17} />
@@ -157,20 +210,19 @@ export const AuditLogs: React.FC = () => {
         </div>
 
         {loading ? (
-          <p role="status" className="admin-extracted-auditlogs-13">در حال دریافت گزارش‌های سیستمی…</p>
+          <p role="status" >در حال دریافت گزارش‌های سیستمی…</p>
         ) : !error && logs.length === 0 ? (
-          <div className="admin-extracted-auditlogs-14">
-            <ShieldAlert size={28} className="admin-extracted-auditlogs-15" />
-            <strong className="admin-extracted-auditlogs-16">هنوز گزارشی ثبت نشده است.</strong>
-            <span className="admin-extracted-auditlogs-17">پس از انجام عملیات مدیریتی، گزارش‌ها در این بخش نمایش داده می‌شوند.</span>
+          <div >
+            <ShieldAlert size={28}  />
+            <strong >هنوز گزارشی ثبت نشده است.</strong>
+            <span >پس از انجام عملیات مدیریتی، گزارش‌ها در این بخش نمایش داده می‌شوند.</span>
           </div>
         ) : !error && filteredLogs.length === 0 ? (
-          <div className="admin-extracted-auditlogs-18">موردی با این عبارت یا فیلتر پیدا نشد.</div>
+          <div >موردی با این عبارت یا فیلتر پیدا نشد.</div>
         ) : (
           <div className="admin-activity-list admin-activity-list--scroll">
             {filteredLogs.map((log) => (
-              <React.Fragment key={log.id}>
-                <div className="admin-activity-row">
+                <div className="admin-activity-row" key={log.id}>
                   <span className="admin-activity-mark"><Activity size={14} /></span>
                   <span className="admin-activity-copy">
                     <strong>{formatAction(log.action)}</strong>
@@ -181,18 +233,17 @@ export const AuditLogs: React.FC = () => {
                   <button
                     type="button"
                     aria-haspopup="dialog"
-                    onClick={() => setSelectedLog(log)}
+                    onClick={() => openLogDetails(log)}
                     className="admin-action-button"
                   >
                     مشاهده
                   </button>
                 </div>
-              </React.Fragment>
             ))}
           </div>
         )}
         {!loading && !error && filteredLogs.length > 0 && (
-          <p className="admin-extracted-auditlogs-34 admin-logs-table-note">
+          <p className="admin-extracted-auditlogs-34">
             حداکثر ۲۰۰ رویداد اخیر نمایش داده می‌شود؛ فهرست پس از نمایش حداکثر ۱۰ ردیف اسکرول می‌شود.
           </p>
         )}
@@ -204,6 +255,7 @@ export const AuditLogs: React.FC = () => {
           onClick={(event) => { if (event.target === event.currentTarget) setSelectedLog(null); }}
         >
           <aside
+            ref={drawerRef}
             className="admin-audit-detail-drawer"
             role="dialog"
             aria-modal="true"
@@ -215,7 +267,7 @@ export const AuditLogs: React.FC = () => {
                 <span className="admin-audit-detail-eyebrow">گزارش‌های سیستمی</span>
                 <h2 id="audit-detail-title">جزئیات رویداد</h2>
               </div>
-              <button type="button" className="admin-action-button" onClick={() => setSelectedLog(null)}>بستن</button>
+              <button ref={closeButtonRef} type="button" className="admin-action-button" onClick={() => setSelectedLog(null)}>بستن</button>
             </header>
             <div className="admin-audit-detail-content">
               <section className="admin-audit-detail-section">
