@@ -274,7 +274,7 @@ export function ManageBookstore() {
     </div>
 
     <div className="bookstore-card admin-master-panel">
-      <div className="bookstore-section-heading"><h3 className="bookstore-section-title">فهرست کتاب‌ها و موجودی</h3><span className="bookstore-book-meta">{bookTotal.toLocaleString('fa-IR')} کتاب</span></div>
+      <div className="bookstore-section-heading"><h3 className="bookstore-section-title">فهرست کتاب‌ها و موجودی</h3><span className="admin-action-summary bookstore-book-count">{bookTotal.toLocaleString('fa-IR')} کتاب</span></div>
       <div className="bookstore-list-tools">
         <input type="search" value={search} onChange={event => setSearch(event.target.value)} onKeyDown={event => { if (event.key === 'Enter') { setBookPage(1); setAppliedSearch(search.trim()); } }} placeholder="جست‌وجوی عنوان، رشته یا توضیحات…" aria-label="جست‌وجوی کتاب‌ها" />
         <select value={statusFilter} onChange={event => { setBookPage(1); setStatusFilter(event.target.value as 'ALL' | 'ACTIVE' | 'INACTIVE'); }} aria-label="فیلتر وضعیت کتاب">
