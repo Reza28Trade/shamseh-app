@@ -34,6 +34,37 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     return user.studentId;
   }
 
+  async adminBookPage(user: AuthenticatedUser, query: { page?: string; pageSize?: string; search?: string; status?: string }) {
+    this.requireAdmin(user);
+    await this.releaseExpiredReservations();
+    const requestedPage = Number(query.page ?? 1);
+    const requestedSize = Number(query.pageSize ?? 20);
+    const pageSize = Number.isInteger(requestedSize) ? Math.min(100, Math.max(1, requestedSize)) : 20;
+    const search = String(query.search ?? '').trim();
+    const status = String(query.status ?? 'ALL');
+    if (!['ALL', 'ACTIVE', 'INACTIVE'].includes(status)) throw new BadRequestException('فیلتر وضعیت کتاب معتبر نیست.');
+    const where: any = {};
+    if (status === 'ACTIVE') where.isActive = true;
+    if (status === 'INACTIVE') where.isActive = false;
+    if (search) where.OR = [
+      { title: { contains: search, mode: 'insensitive' } },
+      { category: { contains: search, mode: 'insensitive' } },
+      { description: { contains: search, mode: 'insensitive' } },
+    ];
+    const total = await this.prisma.book.count({ where });
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
+    const page = Number.isInteger(requestedPage) ? Math.min(totalPages, Math.max(1, requestedPage)) : 1;
+    const records = await this.prisma.book.findMany({
+      where, orderBy: [{ displayOrder: 'asc' }, { title: 'asc' }],
+      skip: (page - 1) * pageSize, take: pageSize,
+    });
+    const items = records.map(({ stockQuantity, reservedQuantity, ...book }) => ({
+      ...book, stockQuantity, reservedQuantity,
+      availableQuantity: Math.max(0, stockQuantity - reservedQuantity),
+    }));
+    return { items, total, page, pageSize, totalPages };
+  }
+
   async listBooks(user: AuthenticatedUser) {
     await this.releaseExpiredReservations();
     const admin = user.role === 'SUPER_ADMIN' || (user.role === 'STAFF' && user.permissions.includes('books'));

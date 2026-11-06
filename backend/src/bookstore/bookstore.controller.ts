@@ -1,6 +1,6 @@
 import {
   BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Req, Res, UploadedFile,
-  UseGuards, UseInterceptors,
+  UseGuards, UseInterceptors, Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request, Response } from 'express';
@@ -14,6 +14,17 @@ type AuthenticatedRequest = Request & { user: AuthenticatedUser };
 @UseGuards(AuthGuard)
 export class BookstoreController {
   constructor(private readonly bookstore: BookstoreService) {}
+
+  @Get('admin/books')
+  adminBookPage(
+    @Req() req: AuthenticatedRequest,
+    @Query('page') page?: string,
+    @Query('pageSize') pageSize?: string,
+    @Query('search') search?: string,
+    @Query('status') status?: string,
+  ) {
+    return this.bookstore.adminBookPage(req.user, { page, pageSize, search, status });
+  }
 
   @Get('books')
   listBooks(@Req() req: AuthenticatedRequest) { return this.bookstore.listBooks(req.user); }

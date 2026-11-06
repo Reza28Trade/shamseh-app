@@ -24,9 +24,11 @@
 .admin-bookstore-page .bookstore-description-field textarea{width:100%;min-height:76px;resize:vertical;}
 .admin-bookstore-page .bookstore-active-toggle{display:flex;align-items:center;gap:8px;min-width:0;}
 .admin-bookstore-page .bookstore-form-actions{display:flex;justify-content:flex-start;gap:8px;flex-wrap:wrap;margin-top:12px;}
-.admin-bookstore-page .bookstore-list-tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(150px,210px);gap:8px;margin:10px 0 12px;min-width:0;}
+.admin-bookstore-page .bookstore-list-tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(150px,190px) auto;gap:8px;margin:10px 0 12px;min-width:0;}
 .admin-bookstore-page .bookstore-list-tools input,.admin-bookstore-page .bookstore-list-tools select{width:100%;min-width:0;}
 .admin-bookstore-page .bookstore-book-list,.admin-bookstore-page .bookstore-order-list{display:grid;gap:10px;min-width:0;}
+.admin-bookstore-page .bookstore-pagination{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:12px;min-width:0;}
+.admin-bookstore-page .bookstore-pagination>span{min-width:100px;text-align:center;}
 .admin-bookstore-page .bookstore-book-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(150px,180px);gap:10px;align-items:center;padding:10px 12px;min-width:0;}
 .admin-bookstore-page .bookstore-book-main{display:flex;align-items:flex-start;gap:11px;min-width:0;}
 .admin-bookstore-page .bookstore-book-cover{width:58px;height:78px;object-fit:contain;flex:0 0 auto;}
@@ -54,7 +56,7 @@
  .admin-bookstore-page{gap:10px;}
  .admin-bookstore-page .bookstore-card{padding:12px;}
  .admin-bookstore-page .bookstore-form-primary,.admin-bookstore-page .bookstore-form-pricing,.admin-bookstore-page .bookstore-cover-fields{grid-template-columns:minmax(0,1fr);}
- .admin-bookstore-page .bookstore-list-tools{grid-template-columns:minmax(0,1fr) minmax(110px,130px);}
+ .admin-bookstore-page .bookstore-list-tools{grid-template-columns:minmax(0,1fr) minmax(110px,130px) auto;}
  .admin-bookstore-page .bookstore-book-main{gap:8px;}
  .admin-bookstore-page .bookstore-book-cover{width:48px;height:66px;}
  .admin-bookstore-page .bookstore-book-actions{grid-template-columns:repeat(3,minmax(0,1fr));}

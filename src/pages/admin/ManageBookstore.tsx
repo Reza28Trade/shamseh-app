@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import '../../styles/admin/pages/ManageBookstore.css';
 
 type Book = {
@@ -46,44 +46,52 @@ export function ManageBookstore() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [busy, setBusy] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loadingBooks, setLoadingBooks] = useState(true);
+  const [loadingOrders, setLoadingOrders] = useState(true);
+  const [bookPage, setBookPage] = useState(1);
+  const [bookTotal, setBookTotal] = useState(0);
+  const [bookTotalPages, setBookTotalPages] = useState(1);
+  const [appliedSearch, setAppliedSearch] = useState('');
   const [form, setForm] = useState<BookForm>(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'ACTIVE' | 'INACTIVE'>('ALL');
 
-  const load = async () => {
-    const [bookResponse, orderResponse] = await Promise.all([
-      fetch('/api/books', { credentials: 'include' }),
-      fetch('/api/admin/book-orders', { credentials: 'include' }),
-    ]);
-    if (!bookResponse.ok || !orderResponse.ok) throw new Error('دریافت اطلاعات فروشگاه ناموفق بود.');
-    const [bookData, orderData] = await Promise.all([bookResponse.json(), orderResponse.json()]);
-    setBooks(bookData);
-    setOrders(orderData);
+  const loadBooks = async (pageNumber = bookPage, query = appliedSearch, status = statusFilter) => {
+    const params = new URLSearchParams({
+      page: String(pageNumber), pageSize: '20', search: query, status,
+    });
+    const response = await fetch('/api/admin/books?' + params.toString(), { credentials: 'include' });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(result.message || 'دریافت فهرست کتاب‌ها ناموفق بود.');
+    setBooks(Array.isArray(result.items) ? result.items : []);
+    setBookTotal(Number(result.total || 0));
+    setBookTotalPages(Math.max(1, Number(result.totalPages || 1)));
+  };
+
+  const loadOrders = async () => {
+    const response = await fetch('/api/admin/book-orders', { credentials: 'include' });
+    const result = await response.json().catch(() => []);
+    if (!response.ok) throw new Error('دریافت سفارش‌های فروشگاه ناموفق بود.');
+    setOrders(result);
   };
 
   useEffect(() => {
     let active = true;
-    void (async () => {
-      setLoading(true);
-      try { await load(); }
-      catch (loadError) { if (active) setError(errorText(loadError)); }
-      finally { if (active) setLoading(false); }
-    })();
+    setLoadingBooks(true);
+    void loadBooks().catch(loadError => { if (active) setError(errorText(loadError)); })
+      .finally(() => { if (active) setLoadingBooks(false); });
+    return () => { active = false; };
+  }, [bookPage, appliedSearch, statusFilter]);
+
+  useEffect(() => {
+    let active = true;
+    setLoadingOrders(true);
+    void loadOrders().catch(loadError => { if (active) setError(errorText(loadError)); })
+      .finally(() => { if (active) setLoadingOrders(false); });
     return () => { active = false; };
   }, []);
-
-  const visibleBooks = useMemo(() => {
-    const query = search.trim().toLocaleLowerCase();
-    return books.filter(book => {
-      const matchesText = !query || [book.title, book.category || '', book.description || '']
-        .some(value => value.toLocaleLowerCase().includes(query));
-      const matchesStatus = statusFilter === 'ALL' || (statusFilter === 'ACTIVE' ? book.isActive : !book.isActive);
-      return matchesText && matchesStatus;
-    });
-  }, [books, search, statusFilter]);
 
   const setField = <K extends keyof BookForm,>(key: K, value: BookForm[K]) =>
     setForm(current => ({ ...current, [key]: value }));
@@ -139,7 +147,8 @@ export function ManageBookstore() {
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.message || 'ذخیره اطلاعات کتاب ناموفق بود.');
-      await load();
+      setBookPage(1); setSearch(''); setAppliedSearch(''); setStatusFilter('ALL');
+      await loadBooks(1, '', 'ALL');
       setSuccess(editingId ? 'اطلاعات کتاب با موفقیت ویرایش شد.' : 'کتاب جدید با موفقیت ثبت شد.');
       resetForm();
     } catch (submitError) { setError(errorText(submitError)); }
@@ -156,7 +165,7 @@ export function ManageBookstore() {
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.message || 'ذخیره تغییرات ناموفق بود.');
-      await load(); setSuccess('تغییرات کتاب ذخیره شد.');
+      await loadBooks(); setSuccess('تغییرات کتاب ذخیره شد.');
     } catch (updateError) { setError(errorText(updateError)); }
     finally { setBusy(false); }
   };
@@ -170,7 +179,9 @@ export function ManageBookstore() {
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.message || 'حذف کتاب ناموفق بود.');
       if (editingId === book.id) resetForm();
-      await load(); setSuccess('کتاب حذف شد.');
+      if (books.length === 1 && bookPage > 1) setBookPage(current => current - 1);
+      else await loadBooks();
+      setSuccess('کتاب حذف شد.');
     } catch (deleteError) { setError(errorText(deleteError)); }
     finally { setBusy(false); }
   };
@@ -185,7 +196,7 @@ export function ManageBookstore() {
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.message || 'عملیات ناموفق بود.');
-      await load(); setSuccess('عملیات سفارش با موفقیت ثبت شد.');
+      await loadOrders(); setSuccess('عملیات سفارش با موفقیت ثبت شد.');
     } catch (actionError) { setError(errorText(actionError)); }
     finally { setBusy(false); }
   };
@@ -250,15 +261,16 @@ export function ManageBookstore() {
     </div>
 
     <div className="bookstore-card admin-master-panel">
-      <div className="bookstore-section-heading"><h3 className="bookstore-section-title">فهرست کتاب‌ها و موجودی</h3><span className="bookstore-book-meta">{visibleBooks.length.toLocaleString('fa-IR')} از {books.length.toLocaleString('fa-IR')} کتاب</span></div>
+      <div className="bookstore-section-heading"><h3 className="bookstore-section-title">فهرست کتاب‌ها و موجودی</h3><span className="bookstore-book-meta">{bookTotal.toLocaleString('fa-IR')} کتاب</span></div>
       <div className="bookstore-list-tools">
-        <input type="search" value={search} onChange={event => setSearch(event.target.value)} placeholder="جست‌وجوی عنوان، رشته یا توضیحات…" aria-label="جست‌وجوی کتاب‌ها" />
-        <select value={statusFilter} onChange={event => setStatusFilter(event.target.value as 'ALL' | 'ACTIVE' | 'INACTIVE')} aria-label="فیلتر وضعیت کتاب">
+        <input type="search" value={search} onChange={event => setSearch(event.target.value)} onKeyDown={event => { if (event.key === 'Enter') { setBookPage(1); setAppliedSearch(search.trim()); } }} placeholder="جست‌وجوی عنوان، رشته یا توضیحات…" aria-label="جست‌وجوی کتاب‌ها" />
+        <select value={statusFilter} onChange={event => { setBookPage(1); setStatusFilter(event.target.value as 'ALL' | 'ACTIVE' | 'INACTIVE'); }} aria-label="فیلتر وضعیت کتاب">
           <option value="ALL">همه کتاب‌ها</option><option value="ACTIVE">فقط فعال‌ها</option><option value="INACTIVE">فقط غیرفعال‌ها</option>
         </select>
+        <button type="button" className="admin-action-button" disabled={loadingBooks} onClick={() => { setBookPage(1); setAppliedSearch(search.trim()); }}>جست‌وجو</button>
       </div>
       <div className="bookstore-book-list">
-        {loading ? <p className="bookstore-empty">در حال دریافت فهرست کتاب‌ها…</p> : visibleBooks.map(book => <article key={book.id} className="bookstore-book-row admin-surface-card">
+        {loadingBooks ? <p className="bookstore-empty">در حال دریافت فهرست کتاب‌ها…</p> : books.map(book => <article key={book.id} className="bookstore-book-row admin-surface-card">
           <div className="bookstore-book-main">
             {book.coverImage && <img className="bookstore-book-cover" src={book.coverImage} alt={'جلد ' + book.title} onError={event => { event.currentTarget.style.visibility = 'hidden'; }} />}
             <div className="bookstore-book-copy">
@@ -279,7 +291,12 @@ export function ManageBookstore() {
             <button type="button" className="admin-action-button bookstore-danger-action" disabled={busy} onClick={() => void deleteBook(book)}>حذف کتاب</button>
           </div>
         </article>)}
-        {!loading && visibleBooks.length === 0 && <p className="bookstore-empty">{books.length ? 'کتابی با این جست‌وجو یا فیلتر پیدا نشد.' : 'هنوز کتابی ثبت نشده است.'}</p>}
+        {!loadingBooks && books.length === 0 && <p className="bookstore-empty">{bookTotal === 0 && (appliedSearch || statusFilter !== 'ALL') ? 'کتابی با این جست‌وجو یا فیلتر پیدا نشد.' : 'هنوز کتابی ثبت نشده است.'}</p>}
+      </div>
+      <div className="bookstore-pagination">
+        <button type="button" className="admin-action-button" disabled={loadingBooks || bookPage <= 1} onClick={() => setBookPage(current => Math.max(1, current - 1))}>صفحه قبل</button>
+        <span>صفحه {bookPage.toLocaleString('fa-IR')} از {bookTotalPages.toLocaleString('fa-IR')}</span>
+        <button type="button" className="admin-action-button" disabled={loadingBooks || bookPage >= bookTotalPages} onClick={() => setBookPage(current => Math.min(bookTotalPages, current + 1))}>صفحه بعد</button>
       </div>
     </div>
 
@@ -304,7 +321,7 @@ export function ManageBookstore() {
             {order.status === 'SHIPPED' && <button type="button" className="admin-action-button" disabled={busy} onClick={() => void action(order, 'shipping', { status: 'DELIVERED' })}>ثبت تحویل</button>}
           </div>
         </article>)}
-        {orders.length === 0 && <p className="bookstore-empty">{loading ? 'در حال دریافت سفارش‌ها…' : 'هنوز سفارشی ثبت نشده است.'}</p>}
+        {orders.length === 0 && <p className="bookstore-empty">{loadingOrders ? 'در حال دریافت سفارش‌ها…' : 'هنوز سفارشی ثبت نشده است.'}</p>}
       </div>
     </div>
   </section>;
