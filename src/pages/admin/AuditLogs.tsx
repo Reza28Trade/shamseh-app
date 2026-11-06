@@ -185,7 +185,7 @@ export const AuditLogs: React.FC = () => {
         </section>
       )}
 
-      <section className=" admin-recent-activity admin-master-panel">
+      <section className="admin-recent-activity admin-master-panel">
         <div className="admin-dashboard-tools">
           <span className="admin-dashboard-updated">
             <ShieldAlert size={17} />
