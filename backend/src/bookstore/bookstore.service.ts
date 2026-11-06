@@ -193,12 +193,15 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     }
     for (const key of ['price', 'discountedPrice'] as const) {
       if (body[key] === undefined) continue;
-      if (key === 'discountedPrice' && (body[key] === null || body[key] === '')) { data.discountedPrice = null; continue; }
+      if ((key === 'price' || key === 'discountedPrice') && (body[key] === null || body[key] === '')) {
+        data[key] = null;
+        continue;
+      }
       const amount = Number(body[key]);
       if (!Number.isFinite(amount) || amount < 0 || amount > 9_999_999_999.99) throw new BadRequestException('قیمت یا قیمت تخفیف‌خورده معتبر نیست.');
       data[key] = amount;
     }
-    const effectivePrice = data.price === undefined ? Number(existing.price ?? 0) : Number(data.price);
+    const effectivePrice = data.price === undefined ? Number(existing.price ?? 0) : Number(data.price ?? 0);
     const effectiveDiscount = data.discountedPrice === undefined
       ? (existing.discountedPrice == null ? null : Number(existing.discountedPrice))
       : data.discountedPrice;

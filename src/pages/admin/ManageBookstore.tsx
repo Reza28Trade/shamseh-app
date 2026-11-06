@@ -130,7 +130,7 @@ export function ManageBookstore() {
       const payload = {
         title: form.title.trim(), description: form.description.trim() || null, coverImage,
         academicLevel: form.academicLevels.join(',') || null, category: form.category.trim() || null,
-        price: Number(form.price), discountedPrice: form.discountedPrice.trim() === '' ? null : Number(form.discountedPrice),
+        price: form.price.trim() === '' ? null : Number(form.price), discountedPrice: form.discountedPrice.trim() === '' ? null : Number(form.discountedPrice),
         stockQuantity: Number(form.stockQuantity), displayOrder: Number(form.displayOrder), isActive: form.isActive,
       };
       const response = await fetch(editingId ? '/api/admin/books/' + encodeURIComponent(editingId) : '/api/admin/books', {
@@ -197,9 +197,9 @@ export function ManageBookstore() {
   };
   const money = (value: string | number | null | undefined) => Number(value || 0).toLocaleString('fa-IR') + ' تومان';
   const validForm = Boolean(form.title.trim() && form.price.trim() !== ''
-    && Number.isFinite(Number(form.price)) && Number(form.price) >= 0
+    && (form.price.trim() === '' ? Boolean(editingId) : (Number.isFinite(Number(form.price)) && Number(form.price) >= 0))
     && Number.isInteger(Number(form.stockQuantity)) && Number(form.stockQuantity) >= 0
-    && Number.isInteger(Number(form.displayOrder)) && form.academicLevels.length > 0
+    && Number.isInteger(Number(form.displayOrder)) && (Boolean(editingId) || form.academicLevels.length > 0)
     && (form.discountedPrice.trim() === '' || (Number.isFinite(Number(form.discountedPrice))
       && Number(form.discountedPrice) >= 0 && Number(form.discountedPrice) <= Number(form.price))));
 
@@ -210,7 +210,7 @@ export function ManageBookstore() {
     <div className="bookstore-card bookstore-form-card admin-master-panel">
       <div className="bookstore-section-heading">
         <h3 className="bookstore-section-title">{editingId ? 'ویرایش کامل اطلاعات کتاب' : 'افزودن کتاب جدید'}</h3>
-        {editingId && <button type="button" className="bookstore-cancel-edit" onClick={resetForm} disabled={busy}>انصراف از ویرایش</button>}
+        {editingId && <button type="button" className="admin-action-button" onClick={resetForm} disabled={busy}>انصراف از ویرایش</button>}
       </div>
       <p className="bookstore-card-description">تمام مشخصات کتاب از همین فرم قابل ثبت و ویرایش است. ثبت عنوان یکسان برای چاپ‌ها و ویرایش‌های متفاوت مجاز است.</p>
       <div className="bookstore-form-grid">
@@ -232,7 +232,7 @@ export function ManageBookstore() {
         </div>
         <div className="bookstore-cover-fields">
           <label className="bookstore-upload-field">بارگذاری جلد از دستگاه (JPG، PNG یا WebP؛ حداکثر ۵ مگابایت)
-            <input type="file" accept="image/jpeg,image/png,image/webp" onChange={event => setCoverFile(event.target.files?.[0] || null)} />
+            <input key={editingId || 'new-book'} type="file" accept="image/jpeg,image/png,image/webp" onChange={event => setCoverFile(event.target.files?.[0] || null)} />
           </label>
           <label className="bookstore-field"><span className="bookstore-field-label">آدرس تصویر جلد (اختیاری)</span>
             <input type="url" value={form.coverImage} onChange={event => { setField('coverImage', event.target.value); setCoverFile(null); }} placeholder="https://… یا مسیر جلد بارگذاری‌شده" />
@@ -250,7 +250,7 @@ export function ManageBookstore() {
     </div>
 
     <div className="bookstore-card admin-master-panel">
-      <div className="bookstore-section-heading"><h3 className="bookstore-section-title">فهرست کتاب‌ها و موجودی</h3><span className="bookstore-count">{visibleBooks.length.toLocaleString('fa-IR')} از {books.length.toLocaleString('fa-IR')} کتاب</span></div>
+      <div className="bookstore-section-heading"><h3 className="bookstore-section-title">فهرست کتاب‌ها و موجودی</h3><span className="bookstore-book-meta">{visibleBooks.length.toLocaleString('fa-IR')} از {books.length.toLocaleString('fa-IR')} کتاب</span></div>
       <div className="bookstore-list-tools">
         <input type="search" value={search} onChange={event => setSearch(event.target.value)} placeholder="جست‌وجوی عنوان، رشته یا توضیحات…" aria-label="جست‌وجوی کتاب‌ها" />
         <select value={statusFilter} onChange={event => setStatusFilter(event.target.value as 'ALL' | 'ACTIVE' | 'INACTIVE')} aria-label="فیلتر وضعیت کتاب">

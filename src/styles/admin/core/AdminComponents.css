@@ -2335,6 +2335,14 @@
   color:var(--admin-danger-text);
   font-size:11px;
 }
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-success {
+  padding:12px;
+  border:1px solid var(--admin-status-success);
+  border-radius:var(--admin-control-radius);
+  background:var(--admin-status-success-soft);
+  color:var(--admin-status-success);
+  font-size:11px;
+}
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-field-label,
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-levels legend { font-size:11px; }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-level-options {
