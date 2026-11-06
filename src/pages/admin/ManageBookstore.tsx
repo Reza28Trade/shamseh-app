@@ -66,6 +66,8 @@ export function ManageBookstore() {
     const response = await fetch('/api/admin/books?' + params.toString(), { credentials: 'include', signal });
     const result = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(result.message || 'دریافت فهرست کتاب‌ها ناموفق بود.');
+    const actualPage = Math.max(1, Number(result.page || pageNumber));
+    if (actualPage !== pageNumber) setBookPage(actualPage);
     setBooks(Array.isArray(result.items) ? result.items : []);
     setBookTotal(Number(result.total || 0));
     setBookTotalPages(Math.max(1, Number(result.totalPages || 1)));
