@@ -185,7 +185,7 @@ export const AuditLogs: React.FC = () => {
         </section>
       )}
 
-      <section className="admin-extracted-auditlogs-8 admin-recent-activity admin-master-panel">
+      <section className=" admin-recent-activity admin-master-panel">
         <div className="admin-dashboard-tools">
           <span className="admin-dashboard-updated">
             <ShieldAlert size={17} />
@@ -243,7 +243,7 @@ export const AuditLogs: React.FC = () => {
           </div>
         )}
         {!loading && !error && filteredLogs.length > 0 && (
-          <p className="admin-extracted-auditlogs-34">
+          <p className="">
             حداکثر ۲۰۰ رویداد اخیر نمایش داده می‌شود؛ فهرست پس از نمایش حداکثر ۱۰ ردیف اسکرول می‌شود.
           </p>
         )}
