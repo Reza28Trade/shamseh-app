@@ -191,7 +191,7 @@ export const AuditLogs: React.FC = () => {
 
       <section className="admin-recent-activity admin-master-panel">
         <div className="admin-dashboard-tools">
-          <span className="admin-dashboard-updated">
+          <span className="admin-dashboard-updated admin-audit-toolbar-count">
             <ShieldAlert size={17} />
             <span>{loading ? 'در حال دریافت…' : `${filteredLogs.length.toLocaleString('fa-IR')} مورد از ${logs.length.toLocaleString('fa-IR')} رویداد`}</span>
           </span>
@@ -207,7 +207,7 @@ export const AuditLogs: React.FC = () => {
             <option value="all">همهٔ نوع رویدادها</option>
             {actions.map((action) => <option key={action} value={action}>{formatAction(action)}</option>)}
           </select>
-          <button type="button" onClick={() => void loadLogs(true)} disabled={loading || refreshing} className="admin-refresh-button admin-action-button">
+          <button type="button" onClick={() => void loadLogs(true)} disabled={loading || refreshing} className="admin-refresh-button admin-action-button admin-audit-toolbar-refresh">
             <RefreshCw size={15} className={refreshing ? 'admin-spinning' : ''} />
             به‌روزرسانی
           </button>
