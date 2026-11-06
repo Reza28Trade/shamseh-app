@@ -55,7 +55,7 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     const totalPages = Math.max(1, Math.ceil(total / pageSize));
     const page = Number.isInteger(requestedPage) ? Math.min(totalPages, Math.max(1, requestedPage)) : 1;
     const records = await this.prisma.book.findMany({
-      where, orderBy: [{ displayOrder: 'asc' }, { title: 'asc' }],
+      where, orderBy: [{ displayOrder: 'asc' }, { title: 'asc' }, { id: 'asc' }],
       skip: (page - 1) * pageSize, take: pageSize,
     });
     const items = records.map(({ stockQuantity, reservedQuantity, ...book }) => ({
