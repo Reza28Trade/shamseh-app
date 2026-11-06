@@ -51,6 +51,7 @@ export function ManageBookstore() {
   const [bookPage, setBookPage] = useState(1);
   const [bookTotal, setBookTotal] = useState(0);
   const [bookTotalPages, setBookTotalPages] = useState(1);
+  const [booksRefresh, setBooksRefresh] = useState(0);
   const [appliedSearch, setAppliedSearch] = useState('');
   const [form, setForm] = useState<BookForm>(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -87,7 +88,7 @@ export function ManageBookstore() {
       })
       .finally(() => { if (active) setLoadingBooks(false); });
     return () => { active = false; controller.abort(); };
-  }, [bookPage, appliedSearch, statusFilter]);
+  }, [bookPage, appliedSearch, statusFilter, booksRefresh]);
 
   useEffect(() => {
     let active = true;
@@ -152,7 +153,7 @@ export function ManageBookstore() {
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.message || 'ذخیره اطلاعات کتاب ناموفق بود.');
       setBookPage(1); setSearch(''); setAppliedSearch(''); setStatusFilter('ALL');
-      await loadBooks(1, '', 'ALL');
+      setBooksRefresh(value => value + 1);
       setSuccess(editingId ? 'اطلاعات کتاب با موفقیت ویرایش شد.' : 'کتاب جدید با موفقیت ثبت شد.');
       resetForm();
     } catch (submitError) { setError(errorText(submitError)); }
