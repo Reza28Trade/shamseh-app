@@ -176,11 +176,11 @@ export const AuditLogs: React.FC = () => {
   return (
     <div className="admin-legacy-page admin-logs-page">
       {error && (
-        <section role="alert" >
+        <section role="alert">
           <AlertCircle size={20} />
           <div>
             <strong>گزارش‌ها دریافت نشدند</strong>
-            <p >{error}</p>
+            <p>{error}</p>
           </div>
         </section>
       )}
@@ -211,14 +211,16 @@ export const AuditLogs: React.FC = () => {
 
         {loading ? (
           <p role="status" >در حال دریافت گزارش‌های سیستمی…</p>
+        ) : error && logs.length === 0 ? (
+          null
         ) : !error && logs.length === 0 ? (
-          <div >
-            <ShieldAlert size={28}  />
-            <strong >هنوز گزارشی ثبت نشده است.</strong>
-            <span >پس از انجام عملیات مدیریتی، گزارش‌ها در این بخش نمایش داده می‌شوند.</span>
+          <div>
+            <ShieldAlert size={28} />
+            <strong>هنوز گزارشی ثبت نشده است.</strong>
+            <span>پس از انجام عملیات مدیریتی، گزارش‌ها در این بخش نمایش داده می‌شوند.</span>
           </div>
-        ) : !error && filteredLogs.length === 0 ? (
-          <div >موردی با این عبارت یا فیلتر پیدا نشد.</div>
+        ) : filteredLogs.length === 0 ? (
+          <div>موردی با این عبارت یا فیلتر پیدا نشد.</div>
         ) : (
           <div className="admin-activity-list admin-activity-list--scroll">
             {filteredLogs.map((log) => (
@@ -233,6 +235,7 @@ export const AuditLogs: React.FC = () => {
                   <button
                     type="button"
                     aria-haspopup="dialog"
+                    aria-label={`مشاهده جزئیات ${formatAction(log.action)}`}
                     onClick={() => openLogDetails(log)}
                     className="admin-action-button"
                   >
