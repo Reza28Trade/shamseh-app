@@ -58,11 +58,11 @@ export function ManageBookstore() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'ACTIVE' | 'INACTIVE'>('ALL');
 
-  const loadBooks = async (pageNumber = bookPage, query = appliedSearch, status = statusFilter) => {
+  const loadBooks = async (pageNumber = bookPage, query = appliedSearch, status = statusFilter, signal?: AbortSignal) => {
     const params = new URLSearchParams({
       page: String(pageNumber), pageSize: '20', search: query, status,
     });
-    const response = await fetch('/api/admin/books?' + params.toString(), { credentials: 'include' });
+    const response = await fetch('/api/admin/books?' + params.toString(), { credentials: 'include', signal });
     const result = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(result.message || 'دریافت فهرست کتاب‌ها ناموفق بود.');
     setBooks(Array.isArray(result.items) ? result.items : []);
@@ -79,10 +79,14 @@ export function ManageBookstore() {
 
   useEffect(() => {
     let active = true;
+    const controller = new AbortController();
     setLoadingBooks(true);
-    void loadBooks().catch(loadError => { if (active) setError(errorText(loadError)); })
+    void loadBooks(bookPage, appliedSearch, statusFilter, controller.signal)
+      .catch(loadError => {
+        if (active && (loadError as Error)?.name !== 'AbortError') setError(errorText(loadError));
+      })
       .finally(() => { if (active) setLoadingBooks(false); });
-    return () => { active = false; };
+    return () => { active = false; controller.abort(); };
   }, [bookPage, appliedSearch, statusFilter]);
 
   useEffect(() => {
