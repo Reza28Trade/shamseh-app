@@ -2831,7 +2831,6 @@
  color:var(--admin-accent)!important;box-shadow:0 12px 24px rgba(0,0,0,.34),0 0 14px rgba(72,209,204,.12),inset 0 1px 0 rgba(255,255,255,.16)!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-bookstore-page .bookstore-form-actions button:disabled{opacity:.45!important;cursor:not-allowed!important;transform:none!important;}
-.admin-shell .admin-main .admin-page-content .admin-bookstore-page .bookstore-danger-action{border-color:var(--admin-border)!important;background:var(--admin-accent-soft)!important;color:var(--admin-warning-text)!important;}
 @media(prefers-reduced-motion:reduce){.admin-shell .admin-main .admin-page-content .admin-bookstore-page :is(.bookstore-book-actions button,.bookstore-order-actions button,.bookstore-form-actions button),.admin-shell .admin-main .admin-page-content .admin-bookstore-page :is(.bookstore-book-actions button,.bookstore-order-actions button,.bookstore-form-actions button)::before{transition:none!important;}}
 .admin-shell .admin-main .admin-page-content .admin-bookstore-page .bookstore-section-title{font-size:13px;font-weight:900;}
 
