@@ -228,12 +228,12 @@ export const AuditLogs: React.FC = () => {
         ) : (
           <div className="admin-activity-list admin-activity-list--scroll">
             {filteredLogs.map((log) => (
-                <div className="admin-activity-row" key={log.id}>
+                <div className="admin-activity-row admin-audit-log-row" key={log.id}>
                   <span className="admin-activity-mark"><Activity size={14} /></span>
-                  <span className="admin-activity-copy">
+                  <span className="admin-activity-copy admin-audit-log-copy">
                     <strong>{formatAction(log.action)}</strong>
                     <small>{log.entityType || 'رویداد سامانه'} · {log.performedBy || 'کاربر سامانه'}</small>
-                    {log.entityId && <small>{log.entityId}</small>}
+                    {log.entityId && <small dir="auto" title={log.entityId}>{log.entityId}</small>}
                   </span>
                   <time dateTime={log.timestamp}>{formatTimestamp(log.timestamp)}</time>
                   <button
