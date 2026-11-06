@@ -216,7 +216,7 @@ export function ManageBookstore() {
       <div className="bookstore-form-grid">
         <div className="bookstore-form-primary">
           <label className="bookstore-field"><span className="bookstore-field-label">عنوان کتاب</span><input value={form.title} onChange={event => setField('title', event.target.value)} placeholder="عنوان کامل کتاب" /></label>
-          <label className="bookstore-field"><span className="bookstore-field-label">رشته / دسته‌بندی / چاپ</span><input value={form.category} onChange={event => setField('category', event.target.value)} placeholder="مثلاً پژوهش هنر، چاپ دوم" /></label>
+          <label className="bookstore-field"><span className="bookstore-field-label">رشته</span><input value={form.category} onChange={event => setField('category', event.target.value)} placeholder="مثلاً پژوهش هنر" /></label>
           <div className="bookstore-levels"><span className="bookstore-field-label">مقطع تحصیلی</span><div className="bookstore-level-options">
             {levels.map(level => <label className="bookstore-level-option" key={level.value}>
               <input type="checkbox" checked={form.academicLevels.includes(level.value)} onChange={event => setField('academicLevels', event.target.checked ? [...form.academicLevels, level.value] : form.academicLevels.filter(value => value !== level.value))} />
