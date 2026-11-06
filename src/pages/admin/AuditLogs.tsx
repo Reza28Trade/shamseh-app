@@ -256,7 +256,6 @@ export const AuditLogs: React.FC = () => {
                       <span>{log.performedBy || 'کاربر سامانه'}</span>
                       <time dateTime={log.timestamp}>{formatTimestamp(log.timestamp)}</time>
                     </div>
-                    {log.entityId && <small className="admin-audit-log-id" dir="auto" title={log.entityId}>{log.entityId}</small>}
                   </div>
                   <button
                     type="button"
