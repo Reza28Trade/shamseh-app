@@ -371,7 +371,10 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
         },
       });
       if (changed.count !== 1) throw new BadRequestException('مهلت رزرو تمام شده یا وضعیت سفارش تغییر کرده است؛ لطفاً وضعیت سفارش را تازه‌سازی کنید.');
-      return this.prisma.bookOrder.findUnique({ where: { id: orderId } });
+      const updatedOrder = await this.prisma.bookOrder.findUnique({ where: { id: orderId } });
+      if (!updatedOrder) throw new NotFoundException('سفارش پس از ثبت رسید پیدا نشد.');
+      // Express JSON cannot serialize JavaScript BigInt values.
+      return { ...updatedOrder, receiptFileSize: updatedOrder.receiptFileSize?.toString() ?? null };
     } catch (error) {
       try { unlinkSync(fullPath); } catch { /* The file may already have been removed. */ }
       throw error;
