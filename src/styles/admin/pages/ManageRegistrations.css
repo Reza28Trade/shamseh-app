@@ -1,103 +1,740 @@
-/* Finance/registration page composition only. Shared appearance is centralized. */
-
+/* Finance page layout only. All surfaces, colors, typography, controls and shadows
+   are inherited from the central admin component system. */
 .admin-finance-registration-page {
+  display: flex;
+  flex-direction: column;
   gap: 16px;
-  max-width: 100%;
-  min-width: 0}
+  width: 100%;
+  min-width: 0;
+}
 
 .admin-finance-registration-page > div:first-child {
   display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(min(100%,190px),1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
-  min-width: 0}
+  min-width: 0;
+}
 
 .admin-finance-registration-page > div:first-child > article {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
   min-width: 0;
-  min-height: 92px;
-  align-content: space-between;
-  padding: 14px 15px;
-  transition: transform .18s ease}
-
-.admin-finance-registration-page > div:first-child > article:hover {
-  transform: translateY(-1px)}
+  min-height: 86px;
+  padding: 13px 15px;
+}
 
 .admin-finance-registration-page > section {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
   min-width: 0;
-  padding: 17px;
-  gap: 13px}
+  padding: 16px;
+}
 
 .admin-finance-registration-page > section p {
-  max-width: 760px}
+  max-width: 760px;
+}
 
-.admin-finance-registration-page > section > div[style*="overflowX"] {
+.admin-finance-registration-page > section > :is(
+  .admin-data-table-wrap,
+  .admin-extracted-manageregistrations-67,
+  .admin-extracted-manageregistrations-88
+) {
+  width: 100%;
   min-width: 0;
   max-width: 100%;
-  overflow-x: auto}
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
+}
+
+.admin-finance-registration-page table {
+  width: 100%;
+  min-width: 760px;
+}
+
+.admin-finance-registration-page .admin-extracted-manageregistrations-68 {
+  min-width: 790px;
+}
+
+.admin-finance-registration-page .admin-extracted-manageregistrations-89 {
+  min-width: 720px;
+}
 
 .admin-finance-registration-page table td {
-  vertical-align: top}
-
-.admin-finance-registration-page table tbody tr {
-  transition: background .15s ease}
+  vertical-align: top;
+}
 
 .admin-finance-registration-page > div:nth-of-type(2) {
   display: flex;
   align-items: center;
-  gap: 7px;
-  padding: 5px;
+  gap: 8px;
+  flex-wrap: wrap;
   width: fit-content;
-  max-width: 100%}
+  max-width: 100%;
+  min-width: 0;
+  padding: 5px;
+}
 
 .admin-finance-registration-page > div:nth-of-type(2) button {
   min-height: 36px;
-  padding: 8px 13px}
+  padding: 8px 13px;
+}
 
 .admin-finance-registration-page > div:nth-of-type(3) {
   display: grid;
-  grid-template-columns: minmax(220px,1fr) minmax(155px,220px);
+  grid-template-columns: minmax(220px, 1fr) minmax(155px, 220px);
+  align-items: center;
   gap: 10px;
+  min-width: 0;
   padding: 12px;
-  min-width: 0}
+}
 
 .admin-finance-registration-page > div[role="dialog"] > form textarea {
-  min-height: 76px}
+  min-height: 76px;
+}
+
+@media (max-width: 1100px) {
+  .admin-finance-registration-page > div:first-child {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
 
 @media (max-width: 720px) {
-  .admin-finance-registration-page { gap: 12px}
+  .admin-finance-registration-page {
+    gap: 12px;
+  }
 
   .admin-finance-registration-page > div:first-child {
-    grid-template-columns: repeat(2,minmax(0,1fr));
-    gap: 8px}
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
 
   .admin-finance-registration-page > div:first-child > article {
-    min-height: 84px;
-    padding: 11px}
+    min-height: 80px;
+    padding: 11px;
+  }
 
-  .admin-finance-registration-page > section { padding: 12px}
+  .admin-finance-registration-page > section {
+    padding: 12px;
+  }
 
   .admin-finance-registration-page > div:nth-of-type(2) {
     width: 100%;
-    flex-wrap: wrap}
+  }
 
   .admin-finance-registration-page > div:nth-of-type(2) button {
-    flex: 1 1 auto}
+    flex: 1 1 auto;
+  }
 
   .admin-finance-registration-page > div:nth-of-type(3) {
-    grid-template-columns: minmax(0,1fr);
-    padding: 9px}
+    grid-template-columns: minmax(0, 1fr);
+    padding: 9px;
+  }
 
-  .admin-finance-registration-page > div[role="dialog"] { padding: 8px}
+  .admin-finance-registration-page > div[role="dialog"] {
+    padding: 8px;
+  }
 
   .admin-finance-registration-page > div[role="dialog"] > form {
+    max-height: 94vh;
     padding: 14px;
-    max-height: 94vh}
+    overflow-y: auto;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .admin-finance-registration-page *,
-  .admin-finance-registration-page *::before,
-  .admin-finance-registration-page *::after {
-    transition-duration: .01ms;
-    animation-duration: .01ms}
+  .admin-finance-registration-page * {
+    scroll-behavior: auto;
+  }
+}
+
+.admin-finance-registration-page > section.is-empty {
+  gap: 8px;
+  padding-block: 11px;
+}
+.admin-finance-registration-page > section.is-empty .admin-extracted-manageregistrations-9 {
+  max-height: none;
+}
+.admin-finance-registration-page > section.is-empty .admin-extracted-manageregistrations-15 {
+  padding: 8px 10px;
+}
+
+/* Archived debt follow-up reuses Dashboard > Management Priorities > Needs Action. */
+.admin-finance-archived-debtors {
+  gap: 10px;
+}
+.admin-finance-archived-debtors-description {
+  margin: -2px 0 2px;
+  max-width: 760px;
+  color: var(--admin-sub);
+  font-size: 11px;
+  line-height: 1.8;
+}
+.admin-finance-archived-debtors .admin-action-row {
+  min-width: 0;
+}
+.admin-finance-archived-debtors .admin-action-copy {
+  overflow-wrap: anywhere;
+}
+.admin-finance-archived-debtors .admin-finance-archived-debt-amount {
+  color: var(--admin-warning-text, var(--admin-sub));
+  font-weight: 800;
+}
+@media (max-width: 720px) {
+  .admin-finance-archived-debtors .admin-action-row {
+    flex-wrap: wrap;
+  }
+  .admin-finance-archived-debtors .admin-action-row .admin-action-button {
+    margin-inline-start: 48px;
+  }
+}
+
+/* Ledger composition only; its surface and table styling come from shared admin components. */
+.admin-finance-ledger-panel {
+  gap: 10px;
+}
+.admin-finance-ledger-description {
+  margin: -2px 0 2px;
+  max-width: 760px;
+  color: var(--admin-sub);
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.admin-finance-ledger-national-id {
+  color: var(--admin-sub);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+/* Registration list controls stay inside their own shared panel. */
+.admin-finance-registration-list-panel {
+  gap: 12px;
+}
+.admin-finance-registration-list-panel > .admin-extracted-manageregistrations-42 {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+}
+.admin-finance-registration-list-panel > .admin-extracted-manageregistrations-42 .admin-action-button {
+  min-height: 34px;
+}
+.admin-finance-registration-list-panel > .admin-extracted-manageregistrations-43 {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(155px, 220px);
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+}
+.admin-finance-registration-list-panel .admin-finance-search-input,
+.admin-finance-registration-list-panel .admin-shared-manageregistrations-input-style {
+  width: 100%;
+  min-width: 0;
+}
+.admin-finance-registration-list-panel .admin-data-table-wrap {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+@media (max-width: 720px) {
+  .admin-finance-registration-list-panel > .admin-extracted-manageregistrations-43 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+
+/* Registration/refund controls share one compact toolbar row. */
+.admin-finance-registration-list-panel {
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+  align-items:center!important;
+  column-gap:14px!important;
+  row-gap:12px!important;
+}
+.admin-finance-registration-list-panel > .admin-extracted-manageregistrations-42 {
+  grid-column:1!important;
+  grid-row:1!important;
+  width:auto!important;
+  flex-wrap:nowrap!important;
+  align-self:center!important;
+  gap:7px!important;
+}
+.admin-finance-registration-list-panel > .admin-extracted-manageregistrations-43 {
+  grid-column:2!important;
+  grid-row:1!important;
+  display:flex!important;
+  align-items:center!important;
+  flex-wrap:nowrap!important;
+  gap:8px!important;
+  width:100%!important;
+}
+.admin-finance-registration-list-panel > .admin-extracted-manageregistrations-43 .admin-finance-search-input {
+  flex:1 1 auto!important;
+  width:100%!important;
+}
+.admin-finance-registration-list-panel > .admin-extracted-manageregistrations-43 .admin-shared-manageregistrations-input-style {
+  flex:0 0 190px!important;
+  width:190px!important;
+}
+.admin-finance-registration-list-panel > .admin-extracted-manageregistrations-65,
+.admin-finance-registration-list-panel > .admin-extracted-manageregistrations-86,
+.admin-finance-registration-list-panel > .admin-data-table-wrap,
+.admin-finance-registration-list-panel > .admin-extracted-manageregistrations-67,
+.admin-finance-registration-list-panel > .admin-extracted-manageregistrations-88,
+.admin-finance-registration-list-panel > .admin-extracted-manageregistrations-81,
+.admin-finance-registration-list-panel > .admin-extracted-manageregistrations-100 {
+  grid-column:1 / -1!important;
+}
+.admin-finance-registration-list-panel .admin-action-summary {
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:max-content!important;
+  min-height:26px!important;
+  padding:4px 10px!important;
+  border:1px solid var(--admin-brand-border)!important;
+  border-radius:999px!important;
+  background:var(--admin-accent-soft)!important;
+  color:var(--admin-accent)!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  line-height:1.5!important;
+  white-space:nowrap!important;
+}
+
+/* Registration details open as a full-height, opaque drawer from the physical left edge. */
+.admin-extracted-manageregistrations-104 {
+  display:flex!important;
+  direction:ltr!important;
+  justify-content:flex-start!important;
+  align-items:stretch!important;
+  padding:0!important;
+  background:rgba(20,18,18,.48)!important;
+}
+.admin-extracted-manageregistrations-105 {
+  display:grid!important;
+  grid-template-rows:auto minmax(0,1fr)!important;
+  align-content:start!important;
+  gap:13px!important;
+  width:min(560px,92vw)!important;
+  height:100vh!important;
+  max-height:100vh!important;
+  min-height:100vh!important;
+  margin:0!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+  padding:18px!important;
+  border:1px solid var(--admin-border)!important;
+  border-left:0!important;
+  border-radius:0 16px 16px 0!important;
+  background:var(--admin-card)!important;
+  color:var(--admin-text)!important;
+  box-shadow:12px 0 36px rgba(0,0,0,.2)!important;
+  direction:rtl!important;
+  animation:admin-registration-drawer-in .28s cubic-bezier(.2,.75,.25,1) both;
+}
+.admin-extracted-manageregistrations-106 {
+  position:sticky!important;
+  top:-18px!important;
+  z-index:2!important;
+  background:var(--admin-card)!important;
+}
+@keyframes admin-registration-drawer-in {
+  from { transform:translateX(-100%); }
+  to { transform:translateX(0); }
+}
+@media(max-width:900px) {
+  .admin-finance-registration-list-panel {
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  .admin-finance-registration-list-panel > .admin-extracted-manageregistrations-42,
+  .admin-finance-registration-list-panel > .admin-extracted-manageregistrations-43 {
+    grid-column:1!important;
+    grid-row:auto!important;
+    width:100%!important;
+  }
+  .admin-finance-registration-list-panel > .admin-extracted-manageregistrations-42 {
+    flex-wrap:wrap!important;
+  }
+}
+@media(max-width:600px) {
+  .admin-extracted-manageregistrations-105 {
+    width:100%!important;
+    padding:14px!important;
+    border-radius:0!important;
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  .admin-extracted-manageregistrations-105 { animation:none!important; }
+}
+
+
+/* Registration drawer content: prevent metadata and financial text collisions at drawer width. */
+.admin-extracted-manageregistrations-105,
+.admin-extracted-manageregistrations-105 * {
+  box-sizing:border-box!important;
+  min-width:0!important;
+}
+.admin-extracted-manageregistrations-105 {
+  align-items:start!important;
+  grid-auto-rows:max-content!important;
+}
+.admin-extracted-manageregistrations-105 > .admin-extracted-manageregistrations-106 {
+  width:100%!important;
+  min-height:54px!important;
+  flex-wrap:nowrap!important;
+}
+.admin-extracted-manageregistrations-105 > .admin-extracted-manageregistrations-109 {
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:8px!important;
+  width:100%!important;
+}
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-110 {
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  align-content:start!important;
+  gap:4px!important;
+  width:100%!important;
+  min-height:0!important;
+  padding:10px 12px!important;
+  overflow-wrap:anywhere!important;
+}
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-111 {
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  line-height:1.7!important;
+}
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-112 {
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  line-height:1.8!important;
+  overflow-wrap:anywhere!important;
+  word-break:break-word!important;
+}
+.admin-extracted-manageregistrations-105 > section {
+  width:100%!important;
+  min-width:0!important;
+  align-self:start!important;
+}
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-115,
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-117,
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-118,
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-119,
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-120 {
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:3px!important;
+  width:100%!important;
+  overflow-wrap:anywhere!important;
+  line-height:1.8!important;
+}
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-123 {
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:7px!important;
+  width:100%!important;
+  overflow-wrap:anywhere!important;
+  line-height:1.8!important;
+}
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-125,
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-136 {
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:8px!important;
+  width:100%!important;
+}
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-126 {
+  display:inline-block!important;
+  max-width:100%!important;
+  overflow-wrap:anywhere!important;
+}
+
+
+/* Semantic, isolated layout for registration drawer facts. */
+.admin-registration-detail-facts {
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:8px!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+}
+.admin-registration-detail-fact {
+  position:relative!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  gap:5px!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  height:auto!important;
+  margin:0!important;
+  padding:10px 12px!important;
+  overflow:visible!important;
+  border:1px solid var(--admin-border)!important;
+  border-radius:10px!important;
+  background:var(--admin-inner)!important;
+  text-align:right!important;
+  direction:rtl!important;
+}
+.admin-registration-detail-fact > span,
+.admin-registration-detail-fact > strong {
+  position:static!important;
+  inset:auto!important;
+  float:none!important;
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  min-width:0!important;
+  max-width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  transform:none!important;
+  text-align:right!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  overflow-wrap:anywhere!important;
+  word-break:break-word!important;
+  line-height:1.8!important;
+}
+.admin-registration-detail-fact > span {
+  color:var(--admin-sub)!important;
+  font-size:10px!important;
+  font-weight:600!important;
+}
+.admin-registration-detail-fact > strong {
+  color:var(--admin-text)!important;
+  font-size:12px!important;
+  font-weight:800!important;
+}
+
+
+/* Final layout correction: use normal vertical document flow inside the drawer.
+   Grid implicit rows were allowing the metadata and following sections to visually collide. */
+.admin-extracted-manageregistrations-105 {
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:flex-start!important;
+  gap:14px!important;
+  height:100vh!important;
+  max-height:100vh!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+}
+.admin-extracted-manageregistrations-105 > * {
+  position:relative!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+}
+.admin-registration-detail-facts {
+  display:flex!important;
+  flex:0 0 auto!important;
+  flex-direction:column!important;
+  gap:10px!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  overflow:visible!important;
+}
+.admin-registration-detail-fact {
+  display:flex!important;
+  flex:0 0 auto!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:stretch!important;
+  gap:6px!important;
+  min-height:76px!important;
+  height:auto!important;
+  padding:11px 13px!important;
+  overflow:visible!important;
+}
+.admin-registration-detail-fact > span,
+.admin-registration-detail-fact > strong {
+  position:static!important;
+  display:block!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  line-height:1.9!important;
+  white-space:normal!important;
+  overflow:visible!important;
+}
+.admin-extracted-manageregistrations-105 > .admin-extracted-manageregistrations-113,
+.admin-extracted-manageregistrations-105 > .admin-extracted-manageregistrations-121,
+.admin-extracted-manageregistrations-105 > .admin-extracted-manageregistrations-127,
+.admin-extracted-manageregistrations-105 > .admin-extracted-manageregistrations-132 {
+  display:flex!important;
+  flex:0 0 auto!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:10px!important;
+  height:auto!important;
+  overflow:visible!important;
+}
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-115,
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-117,
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-118,
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-119,
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-120 {
+  display:flex!important;
+  flex:0 0 auto!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:4px!important;
+  min-height:0!important;
+  height:auto!important;
+  padding:4px 0!important;
+  line-height:1.9!important;
+}
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-123 {
+  display:flex!important;
+  flex:0 0 auto!important;
+  flex-direction:column!important;
+  gap:8px!important;
+  min-height:0!important;
+  height:auto!important;
+  line-height:1.9!important;
+  overflow:visible!important;
+}
+.admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-134 {
+  flex:0 0 auto!important;
+  min-height:0!important;
+  height:auto!important;
+  line-height:1.9!important;
+  overflow-wrap:anywhere!important;
+}
+
+
+/* Cascade correction:
+   AdminComponents.css is loaded after this page stylesheet. Scope these rules
+   above the extracted central selectors so the drawer's vertical flow actually wins. */
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 {
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:flex-start!important;
+  grid-template-rows:none!important;
+  grid-auto-rows:auto!important;
+  gap:14px!important;
+  height:100vh!important;
+  max-height:100vh!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 > * {
+  position:relative!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-registration-detail-facts {
+  display:flex!important;
+  flex:0 0 auto!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:10px!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  overflow:visible!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-registration-detail-fact {
+  display:flex!important;
+  flex:0 0 auto!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:center!important;
+  gap:6px!important;
+  width:100%!important;
+  min-height:76px!important;
+  height:auto!important;
+  overflow:visible!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 > section {
+  display:flex!important;
+  flex:0 0 auto!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:10px!important;
+  height:auto!important;
+  min-height:0!important;
+  overflow:visible!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-115,
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-117,
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-118,
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-119,
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-120,
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-extracted-manageregistrations-123 {
+  display:flex!important;
+  flex:0 0 auto!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:6px!important;
+  height:auto!important;
+  min-height:0!important;
+  overflow:visible!important;
+}
+
+
+/* Compact student identity summary: two balanced columns instead of six tall cards. */
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-registration-detail-facts {
+  display:grid!important;
+  flex:0 0 auto!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-rows:minmax(58px,auto)!important;
+  align-items:stretch!important;
+  gap:7px!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  overflow:visible!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-registration-detail-fact {
+  display:flex!important;
+  flex:initial!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:stretch!important;
+  gap:3px!important;
+  min-width:0!important;
+  min-height:58px!important;
+  height:auto!important;
+  padding:7px 9px!important;
+  border-radius:9px!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-registration-detail-fact > span {
+  font-size:9px!important;
+  line-height:1.5!important;
+}
+.admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-registration-detail-fact > strong {
+  font-size:11px!important;
+  line-height:1.6!important;
+  font-weight:800!important;
+}
+@media(max-width:390px) {
+  .admin-shell .admin-main .admin-page-content .admin-extracted-manageregistrations-105 .admin-registration-detail-facts {
+    grid-template-columns:minmax(0,1fr)!important;
+  }
 }

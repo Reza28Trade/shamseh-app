@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { AlertCircle, FileText, RefreshCw, Search, ShieldAlert } from 'lucide-react';
-import '../../styles/admin/pages/AuditLogs.css';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Activity, AlertCircle, RefreshCw, ShieldAlert } from 'lucide-react';
 
 type AuditLogEntry = {
   id: string;
@@ -35,6 +34,24 @@ function formatAction(action: string): string {
   return `${verb[match[1]] || match[1]} · ${match[2]}`;
 }
 
+function renderActionLabel(action: string): React.ReactNode {
+  if (actionLabels[action]) return actionLabels[action];
+  const match = action.match(/^(POST|PUT|PATCH|DELETE)\s+(.+)$/);
+  if (!match) return <bdi dir="auto">{action}</bdi>;
+  const verb: Record<string, string> = {
+    POST: 'ثبت عملیات',
+    PUT: 'ویرایش اطلاعات',
+    PATCH: 'تغییر اطلاعات',
+    DELETE: 'حذف اطلاعات',
+  };
+  return (
+    <>
+      <span>{verb[match[1]] || match[1]} · </span>
+      <bdi dir="ltr">{match[2]}</bdi>
+    </>
+  );
+}
+
 function formatDetails(value: unknown): string {
   if (value == null) return 'جزئیاتی برای این رویداد ثبت نشده است.';
   if (typeof value === 'string') return value;
@@ -54,19 +71,7 @@ function formatTimestamp(value: string): string {
   }).format(date);
 }
 
-const controlStyle: React.CSSProperties = {
-  minWidth: 170,
-  maxWidth: '100%',
-  padding: '9px 11px',
-  border: '1px solid var(--admin-border, #d8e3e0)',
-  borderRadius: 9,
-  background: 'var(--admin-control, #fbfdfc)',
-  color: 'var(--admin-text, #202a2a)',
-  font: 'inherit',
-  fontSize: 13,
-  outlineOffset: 2,
-  boxSizing: 'border-box',
-};
+
 
 export const AuditLogs: React.FC = () => {
   const [logs, setLogs] = useState<AuditLogEntry[]>([]);
@@ -75,7 +80,10 @@ export const AuditLogs: React.FC = () => {
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
   const [actionFilter, setActionFilter] = useState('all');
-  const [detailsOpen, setDetailsOpen] = useState<string | null>(null);
+  const [selectedLog, setSelectedLog] = useState<AuditLogEntry | null>(null);
+  const drawerRef = useRef<HTMLElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null);
 
   const loadLogs = useCallback(async (manual = false) => {
     if (manual) setRefreshing(true);
@@ -110,6 +118,60 @@ export const AuditLogs: React.FC = () => {
     void loadLogs();
   }, [loadLogs]);
 
+  const openLogDetails = useCallback((log: AuditLogEntry) => {
+    previouslyFocusedRef.current = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
+    setSelectedLog(log);
+  }, []);
+
+  useEffect(() => {
+    if (!selectedLog) return;
+
+    const previousBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const focusableSelector = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    const focusableElements = () => Array.from(
+      drawerRef.current?.querySelectorAll<HTMLElement>(focusableSelector) ?? [],
+    ).filter((element) => element.getAttribute('aria-hidden') !== 'true');
+
+    closeButtonRef.current?.focus();
+
+    const handleDialogKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setSelectedLog(null);
+        return;
+      }
+      if (event.key !== 'Tab') return;
+
+      const elements = focusableElements();
+      if (elements.length === 0) {
+        event.preventDefault();
+        drawerRef.current?.focus();
+        return;
+      }
+      const first = elements[0];
+      const last = elements[elements.length - 1];
+      if (event.shiftKey && (document.activeElement === first || !drawerRef.current?.contains(document.activeElement))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (document.activeElement === last || !drawerRef.current?.contains(document.activeElement))) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleDialogKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleDialogKeyDown);
+      document.body.style.overflow = previousBodyOverflow;
+      previouslyFocusedRef.current?.focus();
+      previouslyFocusedRef.current = null;
+    };
+  }, [selectedLog]);
+
   const actions = useMemo(
     () => Array.from(new Set(logs.map((log) => log.action))).sort((a, b) => formatAction(a).localeCompare(formatAction(b), 'fa')),
     [logs],
@@ -134,120 +196,123 @@ export const AuditLogs: React.FC = () => {
   }, [logs, search, actionFilter]);
 
   return (
-    <div className="admin-legacy-page admin-logs-page" style={{ display: 'flex', flexDirection: 'column', gap: 18, width: '100%', minWidth: 0, boxSizing: 'border-box' }}>
-      <section style={{ background: 'var(--admin-card, #fff)', color: 'var(--admin-text, #202a2a)', border: '1px solid var(--admin-border, #d8e3e0)', padding: '20px 24px', borderRadius: 18, boxShadow: 'var(--admin-shadow, 0 8px 24px rgba(0,0,0,.05))' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-          <div>
-            <h2 style={{ fontSize: 20, fontWeight: 900, margin: '0 0 6px', display: 'flex', alignItems: 'center', gap: 10 }}>
-              <FileText size={21} /> گزارش‌های سیستمی
-            </h2>
-            <p style={{ fontSize: 13, color: 'var(--admin-sub, #667675)', margin: 0, lineHeight: 1.8 }}>
-              مشاهده و جست‌وجوی ۲۰۰ رویداد اخیر؛ برای دیدن جزئیات هر رویداد، ردیف آن را باز کنید.
-            </p>
-          </div>
-          <button type="button" onClick={() => void loadLogs(true)} disabled={loading || refreshing} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, border: '1px solid var(--admin-border, #d8e3e0)', background: 'var(--admin-control, #fbfdfc)', color: 'var(--admin-text, #202a2a)', padding: '9px 13px', borderRadius: 9, cursor: loading || refreshing ? 'wait' : 'pointer', font: 'inherit', fontSize: 13 }}>
-            <RefreshCw size={15} className={refreshing ? 'animate-spin' : ''} />
-            به‌روزرسانی
-          </button>
-        </div>
-      </section>
-
+    <div className="admin-legacy-page admin-logs-page">
       {error && (
-        <section role="alert" style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: 16, borderRadius: 12, border: '1px solid #e8b4b4', background: '#fff1f1', color: '#8b2525' }}>
+        <section role="alert">
           <AlertCircle size={20} />
           <div>
             <strong>گزارش‌ها دریافت نشدند</strong>
-            <p style={{ margin: '6px 0 0', lineHeight: 1.8 }}>{error}</p>
+            <p>{error}</p>
           </div>
         </section>
       )}
 
-      <section style={{ background: 'var(--admin-card, #fff)', color: 'var(--admin-text, #202a2a)', border: '1px solid var(--admin-border, #d8e3e0)', padding: 16, borderRadius: 18, boxShadow: 'var(--admin-shadow, 0 8px 24px rgba(0,0,0,.05))', minWidth: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', marginBottom: 12 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--admin-sub, #667675)', fontSize: 13 }}>
+      <section className="admin-recent-activity admin-master-panel">
+        <div className="admin-dashboard-tools">
+          <span className="admin-dashboard-updated admin-audit-toolbar-count">
             <ShieldAlert size={17} />
             <span>{loading ? 'در حال دریافت…' : `${filteredLogs.length.toLocaleString('fa-IR')} مورد از ${logs.length.toLocaleString('fa-IR')} رویداد`}</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', flex: '1 1 420px', justifyContent: 'flex-end' }}>
-            <label className="audit-search-field">
-              <Search size={16} style={{ position: 'absolute', right: 10, color: 'var(--admin-sub, #667675)', pointerEvents: 'none' }} />
-              <input
-                className="audit-search-input"
-                type="search"
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="جست‌وجوی رویداد، کاربر، شناسه…"
-                aria-label="جست‌وجو در گزارش‌های سیستمی"
-                style={{ ...controlStyle, width: '100%', paddingRight: 34 }}
-              />
-            </label>
-            <select value={actionFilter} onChange={(event) => setActionFilter(event.target.value)} aria-label="فیلتر نوع رویداد" style={{ ...controlStyle, minWidth: 190 }}>
-              <option value="all">همهٔ نوع رویدادها</option>
-              {actions.map((action) => <option key={action} value={action}>{formatAction(action)}</option>)}
-            </select>
-          </div>
+          </span>
+          <input
+            type="search"
+            size={32}
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="جست‌وجوی رویداد، کاربر، شناسه…"
+            aria-label="جست‌وجو در گزارش‌های سیستمی"
+          />
+          <select value={actionFilter} onChange={(event) => setActionFilter(event.target.value)} aria-label="فیلتر نوع رویداد">
+            <option value="all">همهٔ نوع رویدادها</option>
+            {actions.map((action) => <option key={action} value={action}>{formatAction(action)}</option>)}
+          </select>
+          <button type="button" onClick={() => void loadLogs(true)} disabled={loading || refreshing} className="admin-refresh-button admin-action-button admin-audit-toolbar-refresh">
+            <RefreshCw size={15} className={refreshing ? 'admin-spinning' : ''} />
+            به‌روزرسانی
+          </button>
         </div>
 
         {loading ? (
-          <p role="status" style={{ textAlign: 'center', padding: '28px 12px', color: 'var(--admin-sub, #667675)' }}>در حال دریافت گزارش‌های سیستمی…</p>
+          <p role="status" >در حال دریافت گزارش‌های سیستمی…</p>
+        ) : error && logs.length === 0 ? (
+          null
         ) : !error && logs.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '32px 12px', color: 'var(--admin-sub, #667675)' }}>
-            <ShieldAlert size={28} style={{ margin: '0 auto 12px' }} />
-            <strong style={{ display: 'block', marginBottom: 8 }}>هنوز گزارشی ثبت نشده است.</strong>
-            <span style={{ fontSize: 13 }}>پس از انجام عملیات مدیریتی، گزارش‌ها در این بخش نمایش داده می‌شوند.</span>
+          <div>
+            <ShieldAlert size={28} />
+            <strong>هنوز گزارشی ثبت نشده است.</strong>
+            <span>پس از انجام عملیات مدیریتی، گزارش‌ها در این بخش نمایش داده می‌شوند.</span>
           </div>
-        ) : !error && filteredLogs.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '28px 12px', color: 'var(--admin-sub, #667675)' }}>موردی با این عبارت یا فیلتر پیدا نشد.</div>
+        ) : filteredLogs.length === 0 ? (
+          <div>موردی با این عبارت یا فیلتر پیدا نشد.</div>
         ) : (
-          <div style={{ maxWidth: '100%', overflowX: 'auto', overflowY: 'auto', maxHeight: 590, border: '1px solid var(--admin-border, #d8e3e0)', borderRadius: 10 }}>
-            <table style={{ width: '100%', minWidth: 760, borderCollapse: 'separate', borderSpacing: 0, fontSize: 12.5, textAlign: 'right' }}>
-              <thead style={{ position: 'sticky', top: 0, zIndex: 2 }}>
-                <tr style={{ background: 'var(--admin-inner, #e7efed)' }}>
-                  {['زمان', 'نوع عملیات', 'بخش / شناسه', 'انجام‌دهنده', 'جزئیات'].map((heading) => (
-                    <th key={heading} scope="col" style={{ padding: '11px 12px', fontWeight: 800, whiteSpace: 'nowrap', borderBottom: '1px solid var(--admin-border, #d8e3e0)' }}>{heading}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {filteredLogs.map((log) => (
-                  <React.Fragment key={log.id}>
-                    <tr style={{ background: detailsOpen === log.id ? 'var(--admin-inner, #e7efed)' : 'var(--admin-card, #fff)' }}>
-                      <td style={{ padding: '9px 12px', borderBottom: '1px solid var(--admin-border, #e4ebe9)', whiteSpace: 'nowrap', color: 'var(--admin-sub, #667675)' }}>
-                        <time dateTime={log.timestamp}>{formatTimestamp(log.timestamp)}</time>
-                      </td>
-                      <td style={{ padding: '9px 12px', borderBottom: '1px solid var(--admin-border, #e4ebe9)', fontWeight: 750, minWidth: 180 }}>{formatAction(log.action)}</td>
-                      <td style={{ padding: '9px 12px', borderBottom: '1px solid var(--admin-border, #e4ebe9)', minWidth: 150, overflowWrap: 'anywhere' }}>
-                        <span>{log.entityType}</span>
-                        {log.entityId && <span style={{ display: 'block', marginTop: 3, color: 'var(--admin-sub, #667675)', fontSize: 11, direction: 'ltr', textAlign: 'right' }}>{log.entityId}</span>}
-                      </td>
-                      <td style={{ padding: '9px 12px', borderBottom: '1px solid var(--admin-border, #e4ebe9)', whiteSpace: 'nowrap' }}>{log.performedBy}</td>
-                      <td style={{ padding: '7px 12px', borderBottom: '1px solid var(--admin-border, #e4ebe9)', whiteSpace: 'nowrap' }}>
-                        {log.details == null ? <span style={{ color: 'var(--admin-sub, #667675)' }}>—</span> : (
-                          <button type="button" aria-expanded={detailsOpen === log.id} onClick={() => setDetailsOpen((current) => current === log.id ? null : log.id)} style={{ border: '1px solid var(--admin-border, #d8e3e0)', background: 'var(--admin-control, #fbfdfc)', color: 'var(--admin-text, #202a2a)', borderRadius: 7, padding: '5px 9px', font: 'inherit', cursor: 'pointer' }}>
-                            {detailsOpen === log.id ? 'بستن جزئیات' : 'مشاهده'}
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                    {detailsOpen === log.id && (
-                      <tr>
-                        <td colSpan={5} style={{ padding: 12, background: 'var(--admin-control, #fbfdfc)', borderBottom: '1px solid var(--admin-border, #e4ebe9)' }}>
-                          <pre dir="auto" style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', fontSize: 12, lineHeight: 1.8, padding: 12, borderRadius: 8, background: 'var(--admin-inner, #e7efed)', margin: 0 }}>{formatDetails(log.details)}</pre>
-                        </td>
-                      </tr>
-                    )}
-                  </React.Fragment>
-                ))}
-              </tbody>
-            </table>
+          <div className="admin-activity-list admin-activity-list--scroll">
+            {filteredLogs.map((log) => (
+                <article className="admin-activity-row admin-audit-log-row" key={log.id}>
+                  <span className="admin-activity-mark admin-audit-log-mark" aria-hidden="true"><Activity size={14} /></span>
+                  <div className="admin-activity-copy admin-audit-log-copy">
+                    <strong className="admin-audit-log-title">{renderActionLabel(log.action)}</strong>
+                    <div className="admin-audit-log-meta">
+                      <span>{log.entityType || 'رویداد سامانه'}</span>
+                      <span className="admin-audit-log-separator" aria-hidden="true">·</span>
+                      <span>{log.performedBy || 'کاربر سامانه'}</span>
+                      <time dateTime={log.timestamp}>{formatTimestamp(log.timestamp)}</time>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    aria-haspopup="dialog"
+                    aria-label={`مشاهده جزئیات ${formatAction(log.action)}`}
+                    onClick={() => openLogDetails(log)}
+                    className="admin-action-button admin-audit-log-action"
+                  >
+                    مشاهده
+                  </button>
+                </article>
+            ))}
           </div>
-        )}
-        {!loading && !error && filteredLogs.length > 0 && (
-          <p style={{ margin: '10px 2px 0', fontSize: 11.5, color: 'var(--admin-sub, #667675)' }}>
-            حداکثر ۲۰۰ رویداد اخیر نمایش داده می‌شود؛ جدول پس از نمایش حداکثر ۱۰ ردیف اسکرول می‌شود.
-          </p>
         )}
       </section>
+      {selectedLog && (
+        <div
+          className="admin-audit-detail-backdrop"
+          role="presentation"
+          onClick={(event) => { if (event.target === event.currentTarget) setSelectedLog(null); }}
+        >
+          <aside
+            ref={drawerRef}
+            className="admin-audit-detail-drawer"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="audit-detail-title"
+            tabIndex={-1}
+            dir="rtl"
+          >
+            <header className="admin-audit-detail-header">
+              <div>
+                <span className="admin-audit-detail-eyebrow">گزارش‌های سیستمی</span>
+                <h2 id="audit-detail-title">جزئیات رویداد</h2>
+              </div>
+              <button ref={closeButtonRef} type="button" className="admin-action-button" onClick={() => setSelectedLog(null)}>بستن</button>
+            </header>
+            <div className="admin-audit-detail-content">
+              <section className="admin-audit-detail-section">
+                <h3>{formatAction(selectedLog.action)}</h3>
+                <div className="admin-audit-detail-grid">
+                  <div><span>نوع عملیات</span><strong>{selectedLog.action}</strong></div>
+                  <div><span>بخش مرتبط</span><strong>{selectedLog.entityType || '—'}</strong></div>
+                  <div><span>شناسه رکورد</span><strong dir="auto">{selectedLog.entityId || '—'}</strong></div>
+                  <div><span>انجام‌دهنده</span><strong>{selectedLog.performedBy || 'کاربر سامانه'}</strong></div>
+                  <div><span>نشانی IP</span><strong dir="ltr">{selectedLog.ipAddress || '—'}</strong></div>
+                  <div><span>زمان ثبت</span><strong>{formatTimestamp(selectedLog.timestamp)}</strong></div>
+                </div>
+              </section>
+              <section className="admin-audit-detail-section">
+                <h3>جزئیات و داده‌های رویداد</h3>
+                <pre className="admin-audit-detail-json" dir="auto">{formatDetails(selectedLog.details)}</pre>
+              </section>
+            </div>
+          </aside>
+        </div>
+      )}
     </div>
   );
 };

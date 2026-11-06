@@ -34,11 +34,42 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     return user.studentId;
   }
 
+  async adminBookPage(user: AuthenticatedUser, query: { page?: string; pageSize?: string; search?: string; status?: string }) {
+    this.requireAdmin(user);
+    await this.releaseExpiredReservations();
+    const requestedPage = Number(query.page ?? 1);
+    const requestedSize = Number(query.pageSize ?? 20);
+    const pageSize = Number.isInteger(requestedSize) ? Math.min(100, Math.max(1, requestedSize)) : 20;
+    const search = String(query.search ?? '').trim();
+    const status = String(query.status ?? 'ALL');
+    if (!['ALL', 'ACTIVE', 'INACTIVE', 'ARCHIVED'].includes(status)) throw new BadRequestException('فیلتر وضعیت کتاب معتبر نیست.');
+    const where: any = {};
+    if (status === 'ARCHIVED') where.archivedAt = { not: null };
+    else { where.archivedAt = null; if (status === 'ACTIVE') where.isActive = true; if (status === 'INACTIVE') where.isActive = false; }
+    if (search) where.OR = [
+      { title: { contains: search, mode: 'insensitive' } },
+      { category: { contains: search, mode: 'insensitive' } },
+      { description: { contains: search, mode: 'insensitive' } },
+    ];
+    const total = await this.prisma.book.count({ where });
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
+    const page = Number.isInteger(requestedPage) ? Math.min(totalPages, Math.max(1, requestedPage)) : 1;
+    const records = await this.prisma.book.findMany({
+      where, orderBy: [{ displayOrder: 'asc' }, { title: 'asc' }, { id: 'asc' }],
+      skip: (page - 1) * pageSize, take: pageSize,
+    });
+    const items = records.map(({ stockQuantity, reservedQuantity, ...book }) => ({
+      ...book, stockQuantity, reservedQuantity,
+      availableQuantity: Math.max(0, stockQuantity - reservedQuantity),
+    }));
+    return { items, total, page, pageSize, totalPages };
+  }
+
   async listBooks(user: AuthenticatedUser) {
     await this.releaseExpiredReservations();
     const admin = user.role === 'SUPER_ADMIN' || (user.role === 'STAFF' && user.permissions.includes('books'));
     const books = await this.prisma.book.findMany({
-      where: admin ? {} : { isActive: true },
+      where: admin ? {} : { isActive: true, archivedAt: null },
       orderBy: [{ displayOrder: 'asc' }, { title: 'asc' }],
     });
     return books.map(({ stockQuantity, reservedQuantity, ...book }) => ({
@@ -51,7 +82,7 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
 
   async publicBooks() {
     const books = await this.prisma.book.findMany({
-      where: { isActive: true },
+      where: { isActive: true, archivedAt: null },
       orderBy: [{ displayOrder: 'asc' }, { title: 'asc' }],
       select: {
         id: true, title: true, description: true, coverImage: true, academicLevel: true, category: true,
@@ -72,10 +103,10 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
       'image/webp': '.webp',
     };
     const extension = file?.mimetype ? extensionByMime[file.mimetype] : undefined;
-    if (!file?.buffer || !extension) {
-      throw new BadRequestException('جلد کتاب باید تصویر JPG، PNG یا WebP باشد.');
+    if (!file?.buffer || !extension || !this.hasValidImageSignature(file, file.mimetype)) {
+      throw new BadRequestException('محتوای جلد باید یک تصویر معتبر JPG، PNG یا WebP باشد.');
     }
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.buffer.length > 5 * 1024 * 1024) {
       throw new BadRequestException('حجم تصویر جلد نباید بیشتر از ۵ مگابایت باشد.');
     }
     mkdirSync(storageRoot, { recursive: true });
@@ -93,26 +124,57 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     return path;
   }
 
+  private validateAcademicLevel(value: string) {
+    const levels = [...new Set(value.split(',').map(item => item.trim()).filter(Boolean))];
+    if (!levels.length || levels.some(level => !['MASTER', 'DOCTORATE'].includes(level))) {
+      throw new BadRequestException('مقطع تحصیلی کتاب معتبر نیست.');
+    }
+    return levels.join(',');
+  }
+
+  private validateCoverReference(value: string) {
+    const trimmed = value.trim();
+    if (/^\/api\/public\/books\/covers\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(jpg|png|webp)$/i.test(trimmed)) return trimmed;
+    try {
+      const parsed = new URL(trimmed);
+      if (parsed.protocol === 'http:' || parsed.protocol === 'https:') return trimmed;
+    } catch { /* Invalid URL is rejected below. */ }
+    throw new BadRequestException('آدرس جلد کتاب باید یک نشانی HTTP/HTTPS یا مسیر جلد بارگذاری‌شده باشد.');
+  }
+
+  private hasValidImageSignature(file: any, mimeType: string) {
+    const buffer: Buffer | undefined = file?.buffer;
+    if (!buffer?.length) return false;
+    if (mimeType === 'image/jpeg') return buffer.length >= 3 && buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff;
+    if (mimeType === 'image/png') return buffer.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+    if (mimeType === 'image/webp') return buffer.length >= 12 && buffer.toString('ascii', 0, 4) === 'RIFF' && buffer.toString('ascii', 8, 12) === 'WEBP';
+    return false;
+  }
+
   async createBook(user: AuthenticatedUser, body: any) {
     this.requireAdmin(user);
     const title = String(body?.title ?? '').trim();
     const stockQuantity = Number(body?.stockQuantity ?? 0);
     const price = Number(body?.price ?? body?.discountedPrice ?? 0);
     const discountedPrice = body?.discountedPrice == null || body.discountedPrice === '' ? null : Number(body.discountedPrice);
-    if (!title || !Number.isInteger(stockQuantity) || stockQuantity < 0 || !Number.isFinite(price) || price < 0
-      || (discountedPrice !== null && (!Number.isFinite(discountedPrice) || discountedPrice < 0 || discountedPrice > price))) {
-      throw new BadRequestException('عنوان، قیمت، قیمت تخفیف‌خورده و موجودی معتبر الزامی است.');
+    const displayOrder = body?.displayOrder === undefined ? 0 : Number(body.displayOrder);
+    if (!title || !Number.isInteger(stockQuantity) || stockQuantity < 0
+      || !Number.isFinite(price) || price < 0 || price > 9_999_999_999.99
+      || (discountedPrice !== null && (!Number.isFinite(discountedPrice) || discountedPrice < 0 || discountedPrice > price))
+      || !Number.isInteger(displayOrder)
+      || (body?.isActive !== undefined && typeof body.isActive !== 'boolean')) {
+      throw new BadRequestException('عنوان، قیمت، قیمت تخفیف‌خورده، موجودی و ترتیب نمایش باید معتبر باشند.');
     }
     return this.prisma.book.create({ data: {
-      title, description: body.description ? String(body.description) : null,
-      coverImage: body.coverImage ? String(body.coverImage) : null,
-      academicLevel: body.academicLevel ? String(body.academicLevel) : null,
-      category: body.category ? String(body.category) : null,
-      price, discountedPrice,
-      stockQuantity, isActive: body.isActive !== false, displayOrder: Number.isInteger(Number(body.displayOrder)) ? Number(body.displayOrder) : 0,
+      title,
+      description: body.description == null || body.description === '' ? null : String(body.description),
+      coverImage: body.coverImage == null || body.coverImage === '' ? null : this.validateCoverReference(String(body.coverImage)),
+      academicLevel: body.academicLevel == null || body.academicLevel === '' ? null : this.validateAcademicLevel(String(body.academicLevel)),
+      category: body.category == null || body.category === '' ? null : String(body.category).trim(),
+      price, discountedPrice, stockQuantity,
+      isActive: body.isActive ?? true, archivedAt: null, displayOrder,
     } });
   }
-
   async deleteBook(user: AuthenticatedUser, bookId: string) {
     this.requireAdmin(user);
     const existing = await this.prisma.book.findUnique({
@@ -127,34 +189,97 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     return { success: true, id: bookId };
   }
 
+  async archiveBook(user: AuthenticatedUser, bookId: string) {
+    this.requireAdmin(user); const book = await this.prisma.book.findUnique({ where: { id: bookId } });
+    if (!book) throw new NotFoundException('کتاب پیدا نشد.');
+    if (!book.archivedAt) await this.prisma.book.update({ where: { id: bookId }, data: { archivedAt: new Date(), isActive: false } });
+    return { success: true };
+  }
+  async restoreBook(user: AuthenticatedUser, bookId: string) {
+    this.requireAdmin(user); const book = await this.prisma.book.findUnique({ where: { id: bookId } });
+    if (!book) throw new NotFoundException('کتاب پیدا نشد.');
+    if (!book.archivedAt) throw new BadRequestException('این کتاب در آرشیو نیست.');
+    await this.prisma.book.update({ where: { id: bookId }, data: { archivedAt: null, isActive: true } }); return { success: true };
+  }
+  async bookStatistics(user: AuthenticatedUser, bookId: string) {
+    this.requireAdmin(user); const book = await this.prisma.book.findUnique({ where: { id: bookId } });
+    if (!book) throw new NotFoundException('کتاب پیدا نشد.');
+    const items = await this.prisma.bookOrderItem.findMany({ where: { bookId }, select: { orderId: true, quantity: true, unitPrice: true, order: { select: { status: true, refundStatus: true, createdAt: true } } } });
+    const completed = new Set(['PAID','PROCESSING','SHIPPED','DELIVERED']);
+    let soldQuantity=0,grossRevenue=0,refundedQuantity=0,refundedAmount=0,cancelledQuantity=0,pendingQuantity=0;
+    const orderIds=new Set<string>(), monthly=new Map<string,{quantity:number;revenue:number}>(), dates:Date[]=[];
+    for(const item of items){orderIds.add(item.orderId);const st=item.order.status,amount=Number(item.unitPrice)*item.quantity;
+      if(completed.has(st)&&item.order.refundStatus!=='COMPLETED'){soldQuantity+=item.quantity;grossRevenue+=amount;dates.push(item.order.createdAt);const key=item.order.createdAt.toISOString().slice(0,7),v=monthly.get(key)||{quantity:0,revenue:0};v.quantity+=item.quantity;v.revenue+=amount;monthly.set(key,v);}
+      else if(st==='REFUNDED'||item.order.refundStatus==='COMPLETED'){refundedQuantity+=item.quantity;refundedAmount+=amount;}
+      else if(st==='CANCELLED')cancelledQuantity+=item.quantity;else pendingQuantity+=item.quantity;
+    }
+    dates.sort((a,b)=>a.getTime()-b.getTime());
+    return {book:{id:book.id,title:book.title,coverImage:book.coverImage,isActive:book.isActive,archivedAt:book.archivedAt},
+      sales:{soldQuantity,grossRevenue,refundedQuantity,refundedAmount,netRevenue:grossRevenue-refundedAmount,orderCount:orderIds.size,cancelledQuantity,pendingQuantity},
+      inventory:{stockQuantity:book.stockQuantity,reservedQuantity:book.reservedQuantity,availableQuantity:Math.max(0,book.stockQuantity-book.reservedQuantity)},
+      dates:{createdAt:book.createdAt,firstSaleAt:dates[0]||null,lastSaleAt:dates[dates.length-1]||null},
+      monthlySales:[...monthly.entries()].sort(([a],[b])=>a.localeCompare(b)).map(([month,value])=>({month,...value}))};
+  }
+
   async updateBook(user: AuthenticatedUser, bookId: string, body: any) {
     this.requireAdmin(user);
+    if (!body || typeof body !== 'object' || Array.isArray(body)) throw new BadRequestException('اطلاعات ویرایش کتاب معتبر نیست.');
     const existing = await this.prisma.book.findUnique({ where: { id: bookId } });
     if (!existing) throw new NotFoundException('کتاب پیدا نشد.');
     const data: any = {};
-    for (const key of ['title', 'description', 'coverImage', 'academicLevel', 'category', 'isActive', 'displayOrder', 'price', 'discountedPrice']) {
-      if (body[key] !== undefined) data[key] = body[key] === '' && ['description','coverImage','academicLevel','category','discountedPrice'].includes(key) ? null : body[key];
+    const nullableStrings = ['description', 'coverImage', 'academicLevel', 'category'] as const;
+    if (body.title !== undefined) {
+      const title = String(body.title).trim();
+      if (!title) throw new BadRequestException('عنوان کتاب نمی‌تواند خالی باشد.');
+      data.title = title;
+    }
+    for (const key of nullableStrings) {
+      if (body[key] === undefined) continue;
+      if (body[key] === null || body[key] === '') data[key] = null;
+      else if (key === 'coverImage') data[key] = this.validateCoverReference(String(body[key]));
+      else if (key === 'academicLevel') data[key] = this.validateAcademicLevel(String(body[key]));
+      else data[key] = String(body[key]).trim();
+    }
+    if (body.isActive !== undefined) {
+      if (typeof body.isActive !== 'boolean') throw new BadRequestException('وضعیت انتشار کتاب معتبر نیست.');
+      data.isActive = body.isActive;
+    }
+    if (body.displayOrder !== undefined) {
+      const order = Number(body.displayOrder);
+      if (!Number.isInteger(order)) throw new BadRequestException('ترتیب نمایش باید عدد صحیح باشد.');
+      data.displayOrder = order;
     }
     if (body.stockQuantity !== undefined) {
       const stock = Number(body.stockQuantity);
       if (!Number.isInteger(stock) || stock < existing.reservedQuantity) throw new BadRequestException('موجودی کل نمی‌تواند کمتر از تعداد رزروشده باشد.');
       data.stockQuantity = stock;
     }
-    for (const key of ['price', 'discountedPrice']) {
-      if (data[key] !== undefined && data[key] !== null && (!Number.isFinite(Number(data[key])) || Number(data[key]) < 0)) {
-        throw new BadRequestException('قیمت یا قیمت تخفیف‌خورده معتبر نیست.');
+    for (const key of ['price', 'discountedPrice'] as const) {
+      if (body[key] === undefined) continue;
+      if ((key === 'price' || key === 'discountedPrice') && (body[key] === null || body[key] === '')) {
+        data[key] = null;
+        continue;
       }
+      const amount = Number(body[key]);
+      if (!Number.isFinite(amount) || amount < 0 || amount > 9_999_999_999.99) throw new BadRequestException('قیمت یا قیمت تخفیف‌خورده معتبر نیست.');
+      data[key] = amount;
     }
-    const effectivePrice = data.price === undefined ? Number(existing.price ?? 0) : Number(data.price);
-    const effectiveDiscount = data.discountedPrice === undefined ? (existing.discountedPrice == null ? null : Number(existing.discountedPrice)) : data.discountedPrice;
+    const effectivePrice = data.price === undefined ? Number(existing.price ?? 0) : Number(data.price ?? 0);
+    const effectiveDiscount = data.discountedPrice === undefined
+      ? (existing.discountedPrice == null ? null : Number(existing.discountedPrice))
+      : data.discountedPrice;
     if (effectiveDiscount !== null && Number(effectiveDiscount) > effectivePrice) throw new BadRequestException('قیمت تخفیف‌خورده نمی‌تواند از قیمت اصلی بیشتر باشد.');
-    if (data.title !== undefined) {
-      data.title = String(data.title).trim();
-      if (!data.title) throw new BadRequestException('عنوان کتاب نمی‌تواند خالی باشد.');
+    if (Object.keys(data).length === 0) throw new BadRequestException('هیچ تغییری برای ذخیره ارسال نشده است.');
+    if (data.stockQuantity !== undefined) {
+      const changed = await this.prisma.book.updateMany({
+        where: { id: bookId, reservedQuantity: { lte: Number(data.stockQuantity) } },
+        data,
+      });
+      if (changed.count !== 1) throw new BadRequestException('موجودی رزروشده در همین لحظه تغییر کرده است؛ فهرست را تازه‌سازی و دوباره تلاش کنید.');
+      return this.prisma.book.findUnique({ where: { id: bookId } });
     }
     return this.prisma.book.update({ where: { id: bookId }, data });
   }
-
   async createOrder(user: AuthenticatedUser, body: any) {
     const studentId = this.requireStudent(user);
     const recipientName = String(body?.recipientName ?? '').trim();
@@ -205,7 +330,14 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
 
   async uploadReceipt(user: AuthenticatedUser, orderId: string, file: any, paymentReference?: string) {
     const studentId = this.requireStudent(user);
-    if (!['image/jpeg', 'image/png', 'image/webp', 'application/pdf'].includes(file.mimetype)) throw new BadRequestException('فرمت رسید باید تصویر یا PDF باشد.');
+    if (!file?.buffer || !['image/jpeg', 'image/png', 'image/webp', 'application/pdf'].includes(file.mimetype)) {
+      throw new BadRequestException('فرمت رسید باید تصویر یا PDF باشد.');
+    }
+    const validReceipt = file.mimetype === 'application/pdf'
+      ? file.buffer.subarray(0, 5).toString('ascii') === '%PDF-'
+      : this.hasValidImageSignature(file, file.mimetype);
+    if (!validReceipt) throw new BadRequestException('محتوای فایل رسید با فرمت اعلام‌شده مطابقت ندارد.');
+    if (file.buffer.length > 8 * 1024 * 1024) throw new BadRequestException('حجم رسید نباید بیشتر از ۸ مگابایت باشد.');
     const order = await this.prisma.bookOrder.findFirst({ where: { id: orderId, studentId }, include: { items: true } });
     if (!order) throw new NotFoundException('سفارش پیدا نشد.');
     if (!['RESERVED', 'AWAITING_RECEIPT', 'PAYMENT_REJECTED'].includes(order.status)) throw new BadRequestException('در وضعیت فعلی امکان ارسال رسید وجود ندارد.');
@@ -239,7 +371,10 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
         },
       });
       if (changed.count !== 1) throw new BadRequestException('مهلت رزرو تمام شده یا وضعیت سفارش تغییر کرده است؛ لطفاً وضعیت سفارش را تازه‌سازی کنید.');
-      return this.prisma.bookOrder.findUnique({ where: { id: orderId } });
+      const updatedOrder = await this.prisma.bookOrder.findUnique({ where: { id: orderId } });
+      if (!updatedOrder) throw new NotFoundException('سفارش پس از ثبت رسید پیدا نشد.');
+      // Express JSON cannot serialize JavaScript BigInt values.
+      return { ...updatedOrder, receiptFileSize: updatedOrder.receiptFileSize?.toString() ?? null };
     } catch (error) {
       try { unlinkSync(fullPath); } catch { /* The file may already have been removed. */ }
       throw error;
@@ -283,8 +418,12 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
   async receiptPath(user: AuthenticatedUser, orderId: string) {
     this.requireAdmin(user);
     const order = await this.prisma.bookOrder.findUnique({ where: { id: orderId } });
-    if (!order?.receiptStorageKey) throw new NotFoundException('رسید این سفارش پیدا نشد.');
-    return join(storageRoot, order.receiptStorageKey);
+    if (!order?.receiptStorageKey || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(jpg|png|webp|pdf)$/i.test(order.receiptStorageKey)) {
+      throw new NotFoundException('رسید این سفارش پیدا نشد.');
+    }
+    const path = join(storageRoot, order.receiptStorageKey);
+    if (!existsSync(path)) throw new NotFoundException('فایل رسید در فضای ذخیره‌سازی پیدا نشد.');
+    return path;
   }
 
   private async releaseReservation(orderId: string) {
@@ -334,10 +473,15 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
       if (!reason) throw new BadRequestException('علت رد رسید را بنویسید.');
       const reviewedAt = new Date();
       const reservationExpiresAt = new Date(reviewedAt.getTime() + RESERVATION_HOURS * 60 * 60 * 1000);
-      return this.prisma.bookOrder.update({ where: { id: orderId }, data: {
-        status: 'PAYMENT_REJECTED', receiptRejectionReason: reason,
-        reviewedAt, reviewedById: user.id, reservationExpiresAt,
-      } });
+      const changed = await this.prisma.bookOrder.updateMany({
+        where: { id: orderId, status: 'PAYMENT_REVIEW' },
+        data: {
+          status: 'PAYMENT_REJECTED', receiptRejectionReason: reason,
+          reviewedAt, reviewedById: user.id, reservationExpiresAt,
+        },
+      });
+      if (changed.count !== 1) throw new BadRequestException('این رسید قبلاً بررسی شده یا وضعیت سفارش تغییر کرده است.');
+      return this.prisma.bookOrder.findUnique({ where: { id: orderId } });
     }
     if (body.status !== 'APPROVED') throw new BadRequestException('وضعیت بررسی معتبر نیست.');
     return this.prisma.$transaction(async tx => {
@@ -359,13 +503,26 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     const order = await this.prisma.bookOrder.findUnique({ where: { id: orderId } });
     if (!order) throw new NotFoundException('سفارش پیدا نشد.');
     if (body.status === 'PROCESSING' && order.status === 'PAID') {
-      return this.prisma.bookOrder.update({ where: { id: orderId }, data: { status: 'PROCESSING' } });
+      const changed = await this.prisma.bookOrder.updateMany({
+        where: { id: orderId, status: 'PAID' }, data: { status: 'PROCESSING' },
+      });
+      if (changed.count !== 1) throw new BadRequestException('وضعیت سفارش هم‌زمان تغییر کرده است؛ فهرست را تازه‌سازی کنید.');
+      return this.prisma.bookOrder.findUnique({ where: { id: orderId } });
     }
     if (body.status === 'SHIPPED' && ['PAID', 'PROCESSING'].includes(order.status)) {
-      return this.prisma.bookOrder.update({ where: { id: orderId }, data: { status: 'SHIPPED', shippedAt: new Date(), shippedById: user.id, trackingCode: String(body.trackingCode ?? '').trim() || null } });
+      const changed = await this.prisma.bookOrder.updateMany({
+        where: { id: orderId, status: { in: ['PAID', 'PROCESSING'] } },
+        data: { status: 'SHIPPED', shippedAt: new Date(), shippedById: user.id, trackingCode: String(body.trackingCode ?? '').trim() || null },
+      });
+      if (changed.count !== 1) throw new BadRequestException('وضعیت سفارش هم‌زمان تغییر کرده است؛ فهرست را تازه‌سازی کنید.');
+      return this.prisma.bookOrder.findUnique({ where: { id: orderId } });
     }
     if (body.status === 'DELIVERED' && order.status === 'SHIPPED') {
-      return this.prisma.bookOrder.update({ where: { id: orderId }, data: { status: 'DELIVERED', deliveredAt: new Date() } });
+      const changed = await this.prisma.bookOrder.updateMany({
+        where: { id: orderId, status: 'SHIPPED' }, data: { status: 'DELIVERED', deliveredAt: new Date() },
+      });
+      if (changed.count !== 1) throw new BadRequestException('وضعیت سفارش هم‌زمان تغییر کرده است؛ فهرست را تازه‌سازی کنید.');
+      return this.prisma.bookOrder.findUnique({ where: { id: orderId } });
     }
     throw new BadRequestException('تغییر وضعیت ارسال معتبر نیست.');
   }

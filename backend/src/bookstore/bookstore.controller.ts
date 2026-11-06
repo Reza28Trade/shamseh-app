@@ -1,6 +1,6 @@
 import {
   BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Req, Res, UploadedFile,
-  UseGuards, UseInterceptors,
+  UseGuards, UseInterceptors, Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request, Response } from 'express';
@@ -15,6 +15,17 @@ type AuthenticatedRequest = Request & { user: AuthenticatedUser };
 export class BookstoreController {
   constructor(private readonly bookstore: BookstoreService) {}
 
+  @Get('admin/books')
+  adminBookPage(
+    @Req() req: AuthenticatedRequest,
+    @Query('page') page?: string,
+    @Query('pageSize') pageSize?: string,
+    @Query('search') search?: string,
+    @Query('status') status?: string,
+  ) {
+    return this.bookstore.adminBookPage(req.user, { page, pageSize, search, status });
+  }
+
   @Get('books')
   listBooks(@Req() req: AuthenticatedRequest) { return this.bookstore.listBooks(req.user); }
 
@@ -27,6 +38,12 @@ export class BookstoreController {
   @Post('admin/books')
   createBook(@Req() req: AuthenticatedRequest, @Body() body: any) { return this.bookstore.createBook(req.user, body); }
 
+  @Get('admin/books/:bookId/statistics')
+  bookStatistics(@Req() req: AuthenticatedRequest, @Param('bookId') id: string) { return this.bookstore.bookStatistics(req.user,id); }
+  @Post('admin/books/:bookId/archive')
+  archiveBook(@Req() req: AuthenticatedRequest, @Param('bookId') id: string) { return this.bookstore.archiveBook(req.user,id); }
+  @Post('admin/books/:bookId/restore')
+  restoreBook(@Req() req: AuthenticatedRequest, @Param('bookId') id: string) { return this.bookstore.restoreBook(req.user,id); }
   @Delete('admin/books/:bookId')
   deleteBook(@Req() req: AuthenticatedRequest, @Param('bookId') bookId: string) {
     return this.bookstore.deleteBook(req.user, bookId);

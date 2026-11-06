@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { getTehranTodayJalali, jalaliMonthLength, toGregorian } from '../utils/jalali';
 
-type JalaliDatePickerProps = { value: string; onChange: (value: string) => void; style?: React.CSSProperties };
+type JalaliDatePickerProps = { value: string; onChange: (value: string) => void; className?: string; style?: React.CSSProperties };
 const months = ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
 const weekdays = ['ش','ی','د','س','چ','پ','ج'];
 const fa = (value: number) => new Intl.NumberFormat('fa-IR').format(value);
@@ -14,7 +14,7 @@ function parseGregorian(value: string) {
   return { jy: Number(parts.find(p=>p.type==='year')?.value), jm: Number(parts.find(p=>p.type==='month')?.value), jd: Number(parts.find(p=>p.type==='day')?.value) };
 }
 function isoDate(gy:number,gm:number,gd:number) { return [gy, String(gm).padStart(2,'0'), String(gd).padStart(2,'0')].join('-'); }
-export function JalaliDatePicker({ value, onChange, style }: JalaliDatePickerProps) {
+export function JalaliDatePicker({ value, onChange, className, style }: JalaliDatePickerProps) {
   const today = getTehranTodayJalali();
   const selected = parseGregorian(value);
   const [open,setOpen] = useState(false);
@@ -37,7 +37,7 @@ export function JalaliDatePicker({ value, onChange, style }: JalaliDatePickerPro
     onChange(isoDate(g.gy,g.gm,g.gd));setOpen(false);
   };
   return <div style={{position:'relative',minWidth:0}}>
-    <button type="button" onClick={()=>setOpen(v=>!v)} aria-expanded={open} style={{...style,display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'right',cursor:'pointer'}}>
+    <button type="button" className={className} onClick={()=>setOpen(v=>!v)} aria-expanded={open} style={{...style,display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'right',cursor:'pointer'}}>
       <span>{selected ? `${fa(selected.jy)}/${fa(selected.jm).padStart(2,'۰')}/${fa(selected.jd).padStart(2,'۰')}` : 'انتخاب تاریخ شمسی'}</span><span aria-hidden="true">▦</span>
     </button>
     {open&&<div style={{position:'absolute',zIndex:1100,top:'calc(100% + 6px)',right:0,width:280,maxWidth:'90vw',padding:12,border:'1px solid var(--admin-border)',borderRadius:12,background:'var(--admin-card)',boxShadow:'0 12px 35px rgba(0,0,0,.18)'}}>

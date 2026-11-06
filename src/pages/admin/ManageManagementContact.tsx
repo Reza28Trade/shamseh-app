@@ -7,6 +7,7 @@ interface SupportMessage {
   content: string;
   createdAt: string;
   senderUserId: string;
+  senderRole: 'STUDENT' | 'ADMIN';
 }
 interface SupportTicket {
   id: string;
@@ -16,7 +17,7 @@ interface SupportTicket {
   createdAt: string;
   updatedAt: string;
   messages: SupportMessage[];
-  student: { id: string; fullName: string; nationalId: string };
+  student: { id: string; userId: string; fullName: string; nationalId: string };
 }
 
 export const ManageManagementContact: React.FC = () => {
@@ -26,7 +27,7 @@ export const ManageManagementContact: React.FC = () => {
   const [replyText, setReplyText] = useState<Record<string, string>>({});
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
   const [sendingTicketId, setSendingTicketId] = useState<string | null>(null);
-  const [statusFilter, setStatusFilter] = useState<'ALL' | SupportTicket['status']>('ALL');
+  const [statusFilter, setStatusFilter] = useState<'ALL' | 'ARCHIVE' | 'OPEN' | 'ANSWERED'>('ALL');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -47,7 +48,7 @@ export const ManageManagementContact: React.FC = () => {
   useEffect(() => { void loadTickets(); }, []);
 
   const counts = useMemo(() => ({
-    all: tickets.length,
+    all: tickets.filter(ticket => ticket.status !== 'CLOSED').length,
     open: tickets.filter(ticket => ticket.status === 'OPEN').length,
     answered: tickets.filter(ticket => ticket.status === 'ANSWERED').length,
     closed: tickets.filter(ticket => ticket.status === 'CLOSED').length,
@@ -56,7 +57,7 @@ export const ManageManagementContact: React.FC = () => {
   const filteredTickets = useMemo(() => {
     const query = searchTerm.trim().toLocaleLowerCase();
     return tickets.filter(ticket => {
-      const matchesStatus = statusFilter === 'ALL' || ticket.status === statusFilter;
+      const matchesStatus = statusFilter === 'ARCHIVE' ? ticket.status === 'CLOSED' : statusFilter === 'ALL' ? ticket.status !== 'CLOSED' : ticket.status === statusFilter;
       const matchesSearch = !query || [
         ticket.subject,
         ticket.student.fullName,
@@ -113,6 +114,7 @@ export const ManageManagementContact: React.FC = () => {
         body: JSON.stringify({ status }),
       });
       if (!response.ok) throw new Error('تغییر وضعیت تیکت انجام نشد.');
+      if (status === 'OPEN' && statusFilter === 'ARCHIVE') setStatusFilter('ALL');
       await loadTickets();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'تغییر وضعیت تیکت انجام نشد.');
@@ -127,17 +129,17 @@ export const ManageManagementContact: React.FC = () => {
       {error && <div className="messages-error" role="alert">{error}</div>}
 
       <section className="messages-stats" aria-label="فیلتر وضعیت تیکت‌ها">
-        <button type="button" aria-pressed={statusFilter === 'ALL'} className={`messages-stat messages-stat-all ${statusFilter === 'ALL' ? 'is-active' : ''}`} onClick={() => setStatusFilter('ALL')}><span className="messages-stat-icon"><MessagesSquare size={17} /></span><span className="messages-stat-copy"><small>همه تیکت‌ها</small><strong>{counts.all}</strong></span></button>
-        <button type="button" aria-pressed={statusFilter === 'OPEN'} className={`messages-stat messages-stat-open ${statusFilter === 'OPEN' ? 'is-active' : ''}`} onClick={() => setStatusFilter('OPEN')}><span className="messages-stat-icon"><Clock3 size={17} /></span><span className="messages-stat-copy"><small>در انتظار پاسخ</small><strong>{counts.open}</strong></span></button>
-        <button type="button" aria-pressed={statusFilter === 'ANSWERED'} className={`messages-stat messages-stat-answered ${statusFilter === 'ANSWERED' ? 'is-active' : ''}`} onClick={() => setStatusFilter('ANSWERED')}><span className="messages-stat-icon"><CheckCircle2 size={17} /></span><span className="messages-stat-copy"><small>پاسخ داده شده</small><strong>{counts.answered}</strong></span></button>
-        <button type="button" aria-pressed={statusFilter === 'CLOSED'} className={`messages-stat messages-stat-closed ${statusFilter === 'CLOSED' ? 'is-active' : ''}`} onClick={() => setStatusFilter('CLOSED')}><span className="messages-stat-icon"><CircleDot size={17} /></span><span className="messages-stat-copy"><small>بسته شده</small><strong>{counts.closed}</strong></span></button>
+        <button type="button" aria-pressed={statusFilter === 'ALL'} className={`admin-master-panel messages-stat messages-stat-all ${statusFilter === 'ALL' ? 'is-active' : ''}`} onClick={() => setStatusFilter('ALL')}><span className="messages-stat-icon"><MessagesSquare size={17} /></span><span className="messages-stat-copy"><small>همه تیکت‌ها</small><strong>{new Intl.NumberFormat('fa-IR').format(counts.all)}</strong></span></button>
+        <button type="button" aria-pressed={statusFilter === 'OPEN'} className={`admin-master-panel messages-stat messages-stat-open ${statusFilter === 'OPEN' ? 'is-active' : ''}`} onClick={() => setStatusFilter('OPEN')}><span className="messages-stat-icon"><Clock3 size={17} /></span><span className="messages-stat-copy"><small>در انتظار پاسخ</small><strong>{new Intl.NumberFormat('fa-IR').format(counts.open)}</strong></span></button>
+        <button type="button" aria-pressed={statusFilter === 'ANSWERED'} className={`admin-master-panel messages-stat messages-stat-answered ${statusFilter === 'ANSWERED' ? 'is-active' : ''}`} onClick={() => setStatusFilter('ANSWERED')}><span className="messages-stat-icon"><CheckCircle2 size={17} /></span><span className="messages-stat-copy"><small>پاسخ داده شده</small><strong>{new Intl.NumberFormat('fa-IR').format(counts.answered)}</strong></span></button>
+        <button type="button" aria-pressed={statusFilter === 'ARCHIVE'} className={`admin-master-panel messages-stat messages-stat-closed ${statusFilter === 'ARCHIVE' ? 'is-active' : ''}`} onClick={() => setStatusFilter('ARCHIVE')}><span className="messages-stat-icon"><CircleDot size={17} /></span><span className="messages-stat-copy"><small>بایگانی تیکت‌ها</small><strong>{new Intl.NumberFormat('fa-IR').format(counts.closed)}</strong></span></button>
       </section>
 
-      <section className="messages-ticket-section">
+      <section className="admin-master-panel messages-ticket-section">
         <div className="messages-section-head">
           <div><h3>فهرست تیکت‌ها</h3><p>برای مشاهده جزئیات و پاسخ‌گویی، روی ردیف تیکت بزنید.</p></div>
           <div className="messages-table-tools">
-            <span className="messages-total">{filteredTickets.length} مورد</span>
+            <span className="admin-action-summary">{new Intl.NumberFormat('fa-IR').format(filteredTickets.length)} مورد</span>
             <button className="messages-refresh" onClick={() => void loadTickets()} disabled={loading}>
               <RefreshCw size={14} className={loading ? 'messages-spin' : ''} /> بروزرسانی
             </button>
@@ -148,7 +150,7 @@ export const ManageManagementContact: React.FC = () => {
             <Search size={16} />
             <input type="search" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="جست‌وجو بر اساس موضوع، نام هنرجو، کد ملی یا کد تیکت..." aria-label="جست‌وجوی تیکت‌ها" />
           </label>
-          <span className="messages-filter-summary">{statusFilter === 'ALL' ? 'همه وضعیت‌ها' : statusLabel(statusFilter)} · صفحه {currentPage} از {pageCount}</span>
+          <span className="messages-filter-summary">{statusFilter === 'ALL' ? 'تیکت‌های فعال' : statusFilter === 'ARCHIVE' ? 'بایگانی تیکت‌ها' : statusLabel(statusFilter)} · صفحه {currentPage} از {pageCount}</span>
         </div>
         {loading ? (
           <div className="messages-empty"><span className="messages-loading-mark"><RefreshCw size={19} /></span><strong>در حال دریافت تیکت‌ها...</strong></div>
@@ -159,7 +161,7 @@ export const ManageManagementContact: React.FC = () => {
         ) : (
           <>
           <div className="messages-table-wrap">
-            <table className="messages-table">
+            <table className="messages-table admin-data-table admin-data-table--seamless">
               <thead><tr><th>موضوع تیکت</th><th>هنرجو</th><th>تعداد پیام</th><th>آخرین بروزرسانی</th><th>وضعیت</th><th>جزئیات</th></tr></thead>
               <tbody>
                 {visibleTickets.map(ticket => (
@@ -168,7 +170,7 @@ export const ManageManagementContact: React.FC = () => {
                     <td><span className="messages-table-student">{ticket.student.fullName}</span><small className="messages-table-id">{ticket.student.nationalId}</small></td>
                     <td><span className="messages-count-pill">{ticket.messages.length} پیام</span></td>
                     <td><span className="messages-table-date">{new Date(ticket.updatedAt || ticket.createdAt).toLocaleDateString('fa-IR')}</span></td>
-                    <td onClick={e => e.stopPropagation()}><select className="messages-table-status" aria-label={`وضعیت تیکت ${ticket.subject}`} value={ticket.status} onChange={e => void handleStatus(ticket.id, e.target.value as SupportTicket['status'])}><option value="OPEN">{statusLabel('OPEN')}</option><option value="ANSWERED">{statusLabel('ANSWERED')}</option><option value="CLOSED">{statusLabel('CLOSED')}</option></select></td>
+                    <td onClick={e => e.stopPropagation()}><select className="messages-table-status" aria-label={`وضعیت تیکت ${ticket.subject}`} value={ticket.status} onChange={e => void handleStatus(ticket.id, e.target.value as SupportTicket['status'])}><option value="OPEN">{statusLabel('OPEN')}</option><option value="ANSWERED">{statusLabel('ANSWERED')}</option>{statusFilter !== 'ARCHIVE' && <option value="CLOSED">بستن و انتقال به بایگانی</option>}{statusFilter === 'ARCHIVE' && <option value="OPEN">بازگردانی به فهرست فعال</option>}</select></td>
                     <td><button type="button" className="messages-open-ticket" aria-label={`مشاهده تیکت ${ticket.subject}`} onClick={e => { e.stopPropagation(); setSelectedTicketId(current => current === ticket.id ? null : ticket.id); }}>{selectedTicketId === ticket.id ? <X size={15}/> : <MessageSquare size={15}/>}<span>{selectedTicketId === ticket.id ? 'بستن' : 'مشاهده'}</span></button></td>
                   </tr>
                 ))}
@@ -190,30 +192,36 @@ export const ManageManagementContact: React.FC = () => {
       {selectedTicketId && (() => {
         const ticket = tickets.find(item => item.id === selectedTicketId);
         if (!ticket) return null;
-        return <section className="messages-detail-section">
-          <div className="messages-detail-head">
-            <div><span className="messages-detail-kicker">پرونده انتخاب‌شده</span><h3>{ticket.subject}</h3><p>{ticket.student.fullName} · کد ملی: {ticket.student.nationalId}</p></div>
-            <button type="button" className="messages-detail-close" onClick={() => setSelectedTicketId(null)}><X size={15}/> بستن جزئیات</button>
+        return (
+          <div className="messages-detail-overlay" role="presentation" onMouseDown={event => {
+            if (event.target === event.currentTarget) setSelectedTicketId(null);
+          }}>
+            <section className="admin-master-panel messages-detail-section messages-detail-drawer" role="dialog" aria-modal="true" aria-labelledby="messages-detail-title">
+              <div className="messages-detail-head">
+                <div><span className="messages-detail-kicker">پرونده انتخاب‌شده</span><h3 id="messages-detail-title">{ticket.subject}</h3><p>{ticket.student.fullName} · کد ملی: {ticket.student.nationalId}</p></div>
+                <button type="button" className="messages-detail-close" onClick={() => setSelectedTicketId(null)}><X size={15}/> بستن جزئیات</button>
+              </div>
+              <div className="messages-thread-head"><span>تاریخچه گفت‌وگو</span><span>{new Intl.NumberFormat('fa-IR').format(ticket.messages.length)} پیام</span></div>
+              <div className="messages-thread">
+                {ticket.messages.map(message => {
+                  const fromStudent = message.senderUserId === ticket.student.userId;
+                  return <div key={message.id} className={`messages-bubble ${fromStudent ? 'messages-bubble-student' : 'messages-bubble-support'}`}>
+                    <div className="messages-bubble-meta"><strong>{fromStudent ? 'هنرجو' : 'پاسخ شمسه'}</strong><time>{new Date(message.createdAt).toLocaleString('fa-IR')}</time></div>
+                    <p>{message.content}</p>
+                  </div>;
+                })}
+              </div>
+              <form className="messages-reply-form" onSubmit={event => { event.preventDefault(); void handleReply(ticket.id); }}>
+                <label htmlFor={`reply-${ticket.id}`}>پاسخ</label>
+                <textarea id={`reply-${ticket.id}`} value={replyText[ticket.id] || ''} onChange={event => setReplyText(current => ({ ...current, [ticket.id]: event.target.value }))} placeholder="پاسخ خود را اینجا بنویسید..." rows={3} />
+                <div className="messages-reply-actions">
+                  <button type="submit" className="messages-send" disabled={sendingTicketId === ticket.id || !replyText[ticket.id]?.trim()}><Send size={14} />{sendingTicketId === ticket.id ? 'در حال ارسال...' : 'ارسال پاسخ'}</button>
+                  <button type="button" className="messages-cancel" onClick={() => setSelectedTicketId(null)}><X size={14} /> انصراف</button>
+                </div>
+              </form>
+            </section>
           </div>
-          <div className="messages-thread-head"><span>تاریخچه گفت‌وگو</span><span>{ticket.messages.length} پیام</span></div>
-          <div className="messages-thread">
-            {ticket.messages.map(message => {
-              const fromStudent = message.senderUserId === ticket.studentId;
-              return <div key={message.id} className={`messages-bubble ${fromStudent ? 'messages-bubble-student' : 'messages-bubble-support'}`}>
-                <div className="messages-bubble-meta"><strong>{fromStudent ? 'هنرجو' : 'پاسخ شمسه'}</strong><time>{new Date(message.createdAt).toLocaleString('fa-IR')}</time></div>
-                <p>{message.content}</p>
-              </div>;
-            })}
-          </div>
-          <form className="messages-reply-form" onSubmit={e => { e.preventDefault(); void handleReply(ticket.id); }}>
-            <label htmlFor={`reply-${ticket.id}`}>پاسخ</label>
-            <textarea id={`reply-${ticket.id}`} value={replyText[ticket.id] || ''} onChange={e => setReplyText(current => ({ ...current, [ticket.id]: e.target.value }))} placeholder="پاسخ خود را اینجا بنویسید..." rows={3} />
-            <div className="messages-reply-actions">
-              <button type="submit" className="messages-send" disabled={sendingTicketId === ticket.id || !replyText[ticket.id]?.trim()}><Send size={14} />{sendingTicketId === ticket.id ? 'در حال ارسال...' : 'ارسال پاسخ'}</button>
-              <button type="button" className="messages-cancel" onClick={() => setSelectedTicketId(null)}><X size={14} /> انصراف</button>
-            </div>
-          </form>
-        </section>;
+        );
       })()}
     </div>
   );
