@@ -32,6 +32,12 @@ const labels: Record<string, string> = {
 };
 const levels = [{ value: 'MASTER', label: 'کارشناسی ارشد' }, { value: 'DOCTORATE', label: 'دکتری' }];
 const errorText = (error: unknown) => error instanceof Error ? error.message : 'خطای غیرمنتظره رخ داد.';
+function BookCover({ src, title, className = '' }: { src?: string | null; title: string; className?: string }) {
+  const [failed, setFailed] = useState(false);
+  if (!src || failed) return <span className={`bookstore-cover-fallback ${className}`} role="img" aria-label={`تصویر جلد ${title} موجود نیست`}>بدون تصویر</span>;
+  return <img className={className} src={src} alt={`جلد ${title}`} loading="lazy" decoding="async" onError={() => setFailed(true)} />;
+}
+
 const levelText = (value?: string | null) => {
   const selected = String(value || '').split(',').filter(Boolean);
   if (selected.includes('MASTER') && selected.includes('DOCTORATE')) return 'کارشناسی ارشد و دکتری';
@@ -256,7 +262,7 @@ export function ManageBookstore() {
             <input type="url" value={form.coverImage} onChange={event => { setField('coverImage', event.target.value); setCoverFile(null); }} placeholder="https://… یا مسیر جلد بارگذاری‌شده" />
           </label>
           {coverFile && <span className="bookstore-field-label bookstore-selected-file">فایل انتخاب‌شده: {coverFile.name}</span>}
-          {form.coverImage.trim() && <img className="bookstore-cover-preview" src={form.coverImage.trim()} alt="پیش‌نمایش جلد کتاب" onError={event => { event.currentTarget.style.visibility = 'hidden'; }} />}
+          {form.coverImage.trim() && <BookCover className="bookstore-cover-preview" src={form.coverImage.trim()} title={form.title || 'کتاب'} />}
         </div>
         <label className="bookstore-field bookstore-description-field"><span className="bookstore-field-label">توضیحات کتاب</span><textarea value={form.description} onChange={event => setField('description', event.target.value)} placeholder="توضیحات کتاب را وارد کنید" /></label>
         <label className="bookstore-active-toggle"><input type="checkbox" checked={form.isActive} onChange={event => setField('isActive', event.target.checked)} /><span>کتاب فعال و قابل نمایش در فروشگاه باشد</span></label>
@@ -279,7 +285,7 @@ export function ManageBookstore() {
       <div className="bookstore-book-list">
         {loadingBooks ? <p className="bookstore-empty">در حال دریافت فهرست کتاب‌ها…</p> : books.map(book => <article key={book.id} className="bookstore-book-row admin-surface-card">
           <div className="bookstore-book-main">
-            {book.coverImage && <img className="bookstore-book-cover" src={book.coverImage} alt={'جلد ' + book.title} onError={event => { event.currentTarget.style.visibility = 'hidden'; }} />}
+            <BookCover className="bookstore-book-cover" src={book.coverImage} title={book.title} />
             <div className="bookstore-book-copy">
               <strong>{book.title}</strong>
               <div className="bookstore-book-facts">
