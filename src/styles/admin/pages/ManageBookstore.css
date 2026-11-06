@@ -61,7 +61,7 @@
  .admin-bookstore-page .bookstore-cover-fields{grid-template-columns:minmax(0,1fr);gap:7px;}
  .admin-bookstore-page .bookstore-list-tools{grid-template-columns:minmax(0,1fr) minmax(100px,125px);gap:6px;}
  .admin-bookstore-page .bookstore-list-tools button{grid-column:1/-1;min-height:31px;}
- .admin-bookstore-page .bookstore-book-row{grid-template-columns:minmax(0,1fr) auto;gap:7px;padding:7px;}
+ .admin-bookstore-page .bookstore-book-row{grid-template-columns:minmax(0,1fr);gap:7px;padding:8px;}
  .admin-bookstore-page .bookstore-book-main{gap:7px;}
  .admin-bookstore-page .bookstore-book-cover,.admin-bookstore-page .bookstore-cover-fallback{width:42px;height:58px;flex-basis:42px;}
  .admin-bookstore-page .bookstore-book-copy{gap:2px;}
@@ -69,8 +69,8 @@
  .admin-bookstore-page .bookstore-book-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px 6px;}
  .admin-bookstore-page .bookstore-book-facts>*{font-size:9px;line-height:1.5;}
  .admin-bookstore-page .bookstore-book-copy>.bookstore-card-description{font-size:9px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
- .admin-bookstore-page .bookstore-book-actions{grid-template-columns:minmax(0,1fr);width:76px;gap:4px;}
- .admin-bookstore-page .bookstore-book-actions>*{min-height:27px;padding:4px 5px;font-size:9px;line-height:1.35;}
+ .admin-bookstore-page .bookstore-book-actions{grid-template-columns:repeat(3,minmax(0,1fr));width:100%;gap:5px;}
+ .admin-bookstore-page .bookstore-book-actions>*{min-height:29px;padding:5px 6px;font-size:9px;line-height:1.4;}
  .admin-bookstore-page .bookstore-order-card{gap:6px;padding:8px;}
  .admin-bookstore-page .bookstore-order-details{font-size:10px;line-height:1.65;}
  .admin-bookstore-page .bookstore-order-actions{gap:5px;}
@@ -82,11 +82,11 @@
  .admin-bookstore-page .bookstore-card{padding:8px;}
  .admin-bookstore-page .bookstore-form-primary,.admin-bookstore-page .bookstore-form-pricing{gap:6px;}
  .admin-bookstore-page .bookstore-list-tools{grid-template-columns:minmax(0,1fr) minmax(92px,112px);}
- .admin-bookstore-page .bookstore-book-row{grid-template-columns:minmax(0,1fr) 68px;gap:5px;padding:6px;}
+ .admin-bookstore-page .bookstore-book-row{grid-template-columns:minmax(0,1fr);gap:6px;padding:7px;}
  .admin-bookstore-page .bookstore-book-cover,.admin-bookstore-page .bookstore-cover-fallback{width:38px;height:54px;flex-basis:38px;}
- .admin-bookstore-page .bookstore-book-actions{width:68px;}
- .admin-bookstore-page .bookstore-book-actions>*{font-size:8px;padding:4px 3px;}
- .admin-bookstore-page .bookstore-book-facts>*{font-size:8px;}
+ .admin-bookstore-page .bookstore-book-actions{width:100%;grid-template-columns:repeat(3,minmax(0,1fr));}
+ .admin-bookstore-page .bookstore-book-actions>*{font-size:9px;padding:5px 4px;}
+ .admin-bookstore-page .bookstore-book-facts>*{font-size:9px;}
 }
 @media(prefers-reduced-motion:reduce){
  .admin-bookstore-page *{scroll-behavior:auto;}
