@@ -245,7 +245,7 @@ export function ManageBookstore() {
       </div>
       <div className="bookstore-form-actions">
         <button type="button" className="admin-action-button" disabled={busy || !validForm} onClick={() => void submitBook()}>{busy ? 'در حال ذخیره…' : editingId ? 'ذخیره تمام تغییرات' : 'ثبت کتاب'}</button>
-        {editingId && <button type="button" className="bookstore-cancel-edit" disabled={busy} onClick={resetForm}>لغو ویرایش</button>}
+        {editingId && <button type="button" className="admin-action-button" disabled={busy} onClick={resetForm}>لغو ویرایش</button>}
       </div>
     </div>
 

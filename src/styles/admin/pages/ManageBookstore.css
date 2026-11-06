@@ -13,7 +13,7 @@
 .admin-bookstore-page .bookstore-field>input,.admin-bookstore-page .bookstore-field>textarea{width:100%;min-width:0;}
 .admin-bookstore-page .bookstore-field-label{display:block;min-width:0;}
 .admin-bookstore-page .bookstore-level-option{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;line-height:1.5;}
-.admin-bookstore-page .bookstore-level-option input,.admin-bookstore-page .bookstore-active-toggle input{width:auto;min-width:0;min-height:0;margin:0;accent-color:var(--admin-accent);}
+.admin-bookstore-page .bookstore-level-option input,.admin-bookstore-page .bookstore-active-toggle input{width:auto;min-width:0;min-height:0;margin:0;}
 .admin-bookstore-page .bookstore-cover-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:end;min-width:0;}
 .admin-bookstore-page .bookstore-upload-field{display:grid;gap:6px;min-width:0;align-content:start;}
 .admin-bookstore-page .bookstore-upload-field>input{width:100%;min-width:0;}
@@ -22,7 +22,7 @@
 .admin-bookstore-page .bookstore-cover-preview{display:block;grid-column:1/-1;width:auto;max-width:90px;max-height:112px;object-fit:contain;}
 .admin-bookstore-page .bookstore-description-field{display:grid;gap:6px;min-width:0;}
 .admin-bookstore-page .bookstore-description-field textarea{width:100%;min-height:76px;resize:vertical;}
-.admin-bookstore-page .bookstore-active-toggle{display:flex;align-items:center;gap:8px;min-width:0;font-size:11px;}
+.admin-bookstore-page .bookstore-active-toggle{display:flex;align-items:center;gap:8px;min-width:0;}
 .admin-bookstore-page .bookstore-form-actions{display:flex;justify-content:flex-start;gap:8px;flex-wrap:wrap;margin-top:12px;}
 .admin-bookstore-page .bookstore-list-tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(150px,210px);gap:8px;margin:10px 0 12px;min-width:0;}
 .admin-bookstore-page .bookstore-list-tools input,.admin-bookstore-page .bookstore-list-tools select{width:100%;min-width:0;}
@@ -43,7 +43,7 @@
 .admin-bookstore-page .bookstore-order-details{line-height:1.9;overflow-wrap:anywhere;word-break:normal;}
 .admin-bookstore-page .bookstore-order-actions{display:flex;gap:7px;flex-wrap:wrap;}
 .admin-bookstore-page .bookstore-order-actions>*{max-width:100%;white-space:normal;}
-.admin-bookstore-page .bookstore-empty{margin:0;padding:12px;text-align:center;color:var(--admin-sub);}
+.admin-bookstore-page .bookstore-empty{margin:0;padding:12px;text-align:center;}
 .admin-bookstore-page .bookstore-error,.admin-bookstore-page .bookstore-success{overflow-wrap:anywhere;}
 @media(max-width:1000px){
  .admin-bookstore-page .bookstore-form-pricing{grid-template-columns:repeat(2,minmax(0,1fr));}
