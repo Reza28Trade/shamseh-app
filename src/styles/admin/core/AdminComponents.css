@@ -3453,8 +3453,8 @@
   }
   .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-audit-log-row {
     display:grid!important;
-    grid-template-columns:minmax(0,1fr) auto!important;
-    grid-template-areas:"copy action"!important;
+    grid-template-columns:auto minmax(0,1fr)!important;
+    grid-template-areas:"action copy"!important;
     align-items:start!important;
     justify-items:stretch!important;
     column-gap:8px!important;
