@@ -228,24 +228,28 @@ export const AuditLogs: React.FC = () => {
         ) : (
           <div className="admin-activity-list admin-activity-list--scroll">
             {filteredLogs.map((log) => (
-                <div className="admin-activity-row admin-audit-log-row" key={log.id}>
-                  <span className="admin-activity-mark"><Activity size={14} /></span>
-                  <span className="admin-activity-copy admin-audit-log-copy">
-                    <strong>{formatAction(log.action)}</strong>
-                    <small>{log.entityType || 'رویداد سامانه'} · {log.performedBy || 'کاربر سامانه'}</small>
-                    {log.entityId && <small dir="auto" title={log.entityId}>{log.entityId}</small>}
-                  </span>
-                  <time dateTime={log.timestamp}>{formatTimestamp(log.timestamp)}</time>
+                <article className="admin-activity-row admin-audit-log-row" key={log.id}>
+                  <span className="admin-activity-mark admin-audit-log-mark" aria-hidden="true"><Activity size={14} /></span>
+                  <div className="admin-activity-copy admin-audit-log-copy">
+                    <strong className="admin-audit-log-title">{formatAction(log.action)}</strong>
+                    <div className="admin-audit-log-meta">
+                      <span>{log.entityType || 'رویداد سامانه'}</span>
+                      <span className="admin-audit-log-separator" aria-hidden="true">·</span>
+                      <span>{log.performedBy || 'کاربر سامانه'}</span>
+                      <time dateTime={log.timestamp}>{formatTimestamp(log.timestamp)}</time>
+                    </div>
+                    {log.entityId && <small className="admin-audit-log-id" dir="auto" title={log.entityId}>{log.entityId}</small>}
+                  </div>
                   <button
                     type="button"
                     aria-haspopup="dialog"
                     aria-label={`مشاهده جزئیات ${formatAction(log.action)}`}
                     onClick={() => openLogDetails(log)}
-                    className="admin-action-button"
+                    className="admin-action-button admin-audit-log-action"
                   >
                     مشاهده
                   </button>
-                </div>
+                </article>
             ))}
           </div>
         )}
