@@ -253,11 +253,6 @@ export const AuditLogs: React.FC = () => {
             ))}
           </div>
         )}
-        {!loading && !error && filteredLogs.length > 0 && (
-          <p >
-            حداکثر ۲۰۰ رویداد اخیر نمایش داده می‌شود؛ فهرست پس از نمایش حداکثر ۱۰ ردیف اسکرول می‌شود.
-          </p>
-        )}
       </section>
       {selectedLog && (
         <div
