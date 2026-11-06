@@ -3378,32 +3378,62 @@
   }
   .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-dashboard-tools {
     display:grid!important;
-    grid-template-columns:minmax(0,1fr)!important;
-    align-items:stretch!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    grid-template-areas:
+      "count refresh"
+      "search search"
+      "filter filter"!important;
+    align-items:center!important;
     gap:7px!important;
     margin-bottom:10px!important;
     width:100%!important;
     min-width:0!important;
   }
-  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-dashboard-updated,
-  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-dashboard-tools > input,
-  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-dashboard-tools > select {
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-audit-toolbar-count {
+    grid-area:count!important;
     display:flex!important;
+    align-items:center!important;
+    justify-self:stretch!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    min-height:32px!important;
+    font-size:10px!important;
+    line-height:1.5!important;
+    white-space:nowrap!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-audit-toolbar-count > span {
+    min-width:0!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-dashboard-tools > input {
+    grid-area:search!important;
+    display:block!important;
     width:100%!important;
     min-width:0!important;
     max-width:none!important;
     min-height:35px!important;
-    flex:none!important;
-  }
-  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-dashboard-tools > input,
-  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-dashboard-tools > select {
-    display:block!important;
     padding:7px 9px!important;
   }
-  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-refresh-button {
-    justify-self:start!important;
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-dashboard-tools > select {
+    grid-area:filter!important;
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    min-height:35px!important;
+    padding:7px 9px!important;
+  }
+  .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-audit-toolbar-refresh {
+    grid-area:refresh!important;
+    justify-self:end!important;
+    align-self:center!important;
+    min-width:0!important;
     min-height:32px!important;
-    padding:5px 10px!important;
+    padding:5px 9px!important;
+    white-space:nowrap!important;
+    font-size:10px!important;
   }
   .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page .admin-activity-list {
     display:flex!important;
