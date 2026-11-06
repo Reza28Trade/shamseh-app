@@ -34,6 +34,24 @@ function formatAction(action: string): string {
   return `${verb[match[1]] || match[1]} · ${match[2]}`;
 }
 
+function renderActionLabel(action: string): React.ReactNode {
+  if (actionLabels[action]) return actionLabels[action];
+  const match = action.match(/^(POST|PUT|PATCH|DELETE)\s+(.+)$/);
+  if (!match) return <bdi dir="auto">{action}</bdi>;
+  const verb: Record<string, string> = {
+    POST: 'ثبت عملیات',
+    PUT: 'ویرایش اطلاعات',
+    PATCH: 'تغییر اطلاعات',
+    DELETE: 'حذف اطلاعات',
+  };
+  return (
+    <>
+      <span>{verb[match[1]] || match[1]} · </span>
+      <bdi dir="ltr">{match[2]}</bdi>
+    </>
+  );
+}
+
 function formatDetails(value: unknown): string {
   if (value == null) return 'جزئیاتی برای این رویداد ثبت نشده است.';
   if (typeof value === 'string') return value;
@@ -231,7 +249,7 @@ export const AuditLogs: React.FC = () => {
                 <article className="admin-activity-row admin-audit-log-row" key={log.id}>
                   <span className="admin-activity-mark admin-audit-log-mark" aria-hidden="true"><Activity size={14} /></span>
                   <div className="admin-activity-copy admin-audit-log-copy">
-                    <strong className="admin-audit-log-title">{formatAction(log.action)}</strong>
+                    <strong className="admin-audit-log-title">{renderActionLabel(log.action)}</strong>
                     <div className="admin-audit-log-meta">
                       <span>{log.entityType || 'رویداد سامانه'}</span>
                       <span className="admin-audit-log-separator" aria-hidden="true">·</span>
