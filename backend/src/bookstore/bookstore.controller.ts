@@ -73,7 +73,15 @@ export class BookstoreController {
   }
 
   @Get('admin/book-orders')
-  adminOrders(@Req() req: AuthenticatedRequest) { return this.bookstore.adminOrders(req.user); }
+  adminOrders(
+    @Req() req: AuthenticatedRequest,
+    @Query('page') page?: string,
+    @Query('pageSize') pageSize?: string,
+    @Query('search') search?: string,
+    @Query('status') status?: string,
+  ) {
+    return this.bookstore.adminOrders(req.user, { page, pageSize, search, status });
+  }
 
   @Get('admin/book-orders/:orderId/receipt')
   async receipt(@Req() req: AuthenticatedRequest, @Param('orderId') orderId: string, @Res() res: Response) {
