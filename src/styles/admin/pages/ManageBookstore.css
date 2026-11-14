@@ -98,7 +98,7 @@
 .admin-bookstore-page .bookstore-levels{grid-template-rows:auto 38px;gap:5px;align-content:end;}
 .admin-bookstore-page .bookstore-level-options{height:38px;min-height:38px;padding:0 8px;flex-wrap:nowrap;align-content:center;}
 .admin-bookstore-page .bookstore-level-option{flex:0 0 auto;}
-.admin-bookstore-page .bookstore-book-count{margin:0;min-height:26px;padding:4px 10px;font-size:11px;font-weight:800;}
+/* Count badges inherit the shared admin-action-summary style. */
 @media(max-width:650px){
  .admin-bookstore-page .bookstore-levels{grid-column:1/-1;grid-template-columns:auto minmax(0,1fr);grid-template-rows:38px;align-items:center;gap:8px;}
  .admin-bookstore-page .bookstore-level-options{justify-content:flex-start;gap:14px;width:100%;}
