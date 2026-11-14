@@ -98,7 +98,28 @@
 .admin-bookstore-page .bookstore-levels{grid-template-rows:auto 38px;gap:5px;align-content:end;}
 .admin-bookstore-page .bookstore-level-options{height:38px;min-height:38px;padding:0 8px;flex-wrap:nowrap;align-content:center;}
 .admin-bookstore-page .bookstore-level-option{flex:0 0 auto;}
-/* Count badges intentionally inherit the exact shared admin-action-summary treatment. */
+/* Bookstore counts: raised neutral chip matching the Finance ledger's debtor counter. */
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-section-heading > .admin-action-summary.bookstore-book-count{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:max-content!important;
+  min-height:26px!important;
+  margin:0!important;
+  padding:4px 10px!important;
+  border:1px solid var(--admin-content-border)!important;
+  border-radius:10px!important;
+  background:var(--admin-content-surface)!important;
+  color:var(--admin-text)!important;
+  box-shadow:var(--admin-shadow-control-hover)!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  line-height:1.5!important;
+  white-space:nowrap!important;
+}
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page .bookstore-section-heading > .admin-action-summary.bookstore-book-count{
+  box-shadow:0 8px 18px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.12)!important;
+}
 @media(max-width:650px){
  .admin-bookstore-page .bookstore-levels{grid-column:1/-1;grid-template-columns:auto minmax(0,1fr);grid-template-rows:38px;align-items:center;gap:8px;}
  .admin-bookstore-page .bookstore-level-options{justify-content:flex-start;gap:14px;width:100%;}
