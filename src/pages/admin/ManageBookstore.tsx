@@ -67,6 +67,8 @@ export function ManageBookstore() {
   const [orderSearch, setOrderSearch] = useState('');
   const [orderStatusFilter, setOrderStatusFilter] = useState('ALL');
   const [orderPage, setOrderPage] = useState(1);
+  const [orderTotal, setOrderTotal] = useState(0);
+  const [orderTotalPages, setOrderTotalPages] = useState(1);
 
   const loadBooks = async (pageNumber = bookPage, query = appliedSearch, status = statusFilter, signal?: AbortSignal) => {
     const params = new URLSearchParams({
@@ -82,11 +84,15 @@ export function ManageBookstore() {
     setBookTotalPages(Math.max(1, Number(result.totalPages || 1)));
   };
 
-  const loadOrders = async () => {
-    const response = await fetch('/api/admin/book-orders', { credentials: 'include' });
-    const result = await response.json().catch(() => []);
-    if (!response.ok) throw new Error('دریافت سفارش‌های فروشگاه ناموفق بود.');
-    setOrders(result);
+  const loadOrders = async (pageNumber = orderPage, query = orderSearch, status = orderStatusFilter) => {
+    const params = new URLSearchParams({ page: String(pageNumber), pageSize: '20', search: query.trim(), status });
+    const response = await fetch('/api/admin/book-orders?' + params.toString(), { credentials: 'include' });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(result.message || 'دریافت سفارش‌های فروشگاه ناموفق بود.');
+    setOrders(Array.isArray(result.items) ? result.items : []);
+    setOrderTotal(Number(result.total || 0));
+    setOrderTotalPages(Math.max(1, Number(result.totalPages || 1)));
+    if (Number(result.page || pageNumber) !== pageNumber) setOrderPage(Math.max(1, Number(result.page || 1)));
   };
 
   useEffect(() => {
@@ -104,10 +110,10 @@ export function ManageBookstore() {
   useEffect(() => {
     let active = true;
     setLoadingOrders(true);
-    void loadOrders().catch(loadError => { if (active) setError(errorText(loadError)); })
+    void loadOrders(orderPage, orderSearch, orderStatusFilter).catch(loadError => { if (active) setError(errorText(loadError)); })
       .finally(() => { if (active) setLoadingOrders(false); });
     return () => { active = false; };
-  }, []);
+  }, [orderPage, orderSearch, orderStatusFilter]);
 
   const setField = <K extends keyof BookForm,>(key: K, value: BookForm[K]) =>
     setForm(current => ({ ...current, [key]: value }));
@@ -223,15 +229,7 @@ export function ManageBookstore() {
     void action(order, 'review', { status, reason });
   };
   const money = (value: string | number | null | undefined) => Number(value || 0).toLocaleString('fa-IR') + ' تومان';
-  const filteredOrders = orders.filter(order => {
-    const matchesStatus = orderStatusFilter === 'ALL' || order.status === orderStatusFilter;
-    const query = orderSearch.trim().toLocaleLowerCase();
-    const matchesSearch = !query || [order.id, order.student.fullName, order.recipientName, order.recipientPhone, order.postalCode, ...order.items.map(item => item.book.title)].join(' ').toLocaleLowerCase().includes(query);
-    return matchesStatus && matchesSearch;
-  });
-  const orderPageSize = 20;
-  const orderTotalPages = Math.max(1, Math.ceil(filteredOrders.length / orderPageSize));
-  const visibleOrders = filteredOrders.slice((orderPage - 1) * orderPageSize, orderPage * orderPageSize);
+  const visibleOrders = orders;
 
   const validForm = Boolean(form.title.trim() && form.price.trim() !== ''
     && (form.price.trim() === '' ? Boolean(editingId) : (Number.isFinite(Number(form.price)) && Number(form.price) >= 0))
@@ -324,7 +322,7 @@ export function ManageBookstore() {
     </div>
 
     <div className="bookstore-card admin-master-panel">
-      <div className="bookstore-section-heading"><h3 className="bookstore-section-title">سفارش‌ها و رسیدها</h3><span className="admin-action-summary bookstore-book-count">{filteredOrders.length.toLocaleString('fa-IR')} سفارش</span></div>
+      <div className="bookstore-section-heading"><h3 className="bookstore-section-title">سفارش‌ها و رسیدها</h3><span className="admin-action-summary bookstore-book-count">{orderTotal.toLocaleString('fa-IR')} سفارش</span></div>
       <div className="bookstore-order-tools">
         <input type="search" value={orderSearch} onChange={event => { setOrderSearch(event.target.value); setOrderPage(1); }} placeholder="جست‌وجوی شماره سفارش، نام، موبایل یا کتاب…" aria-label="جست‌وجوی سفارش‌ها" />
         <select value={orderStatusFilter} onChange={event => { setOrderStatusFilter(event.target.value); setOrderPage(1); }} aria-label="فیلتر وضعیت سفارش">
@@ -350,14 +348,14 @@ export function ManageBookstore() {
                 {order.status === 'SHIPPED' && <button type="button" className="admin-action-button" disabled={busy} onClick={() => void action(order, 'shipping', { status: 'DELIVERED' })}>ثبت تحویل</button>}
               </div></td>
             </tr>)}
-            {visibleOrders.length === 0 && <tr><td colSpan={6} className="bookstore-empty">{loadingOrders ? 'در حال دریافت سفارش‌ها…' : filteredOrders.length === 0 && (orderSearch || orderStatusFilter !== 'ALL') ? 'سفارشی با این جست‌وجو یا فیلتر پیدا نشد.' : 'هنوز سفارشی ثبت نشده است.'}</td></tr>}
+            {visibleOrders.length === 0 && <tr><td colSpan={6} className="bookstore-empty">{loadingOrders ? 'در حال دریافت سفارش‌ها…' : orderTotal === 0 && (orderSearch || orderStatusFilter !== 'ALL') ? 'سفارشی با این جست‌وجو یا فیلتر پیدا نشد.' : 'هنوز سفارشی ثبت نشده است.'}</td></tr>}
           </tbody>
         </table>
       </div>
       <div className="bookstore-pagination">
-        <button type="button" className="admin-action-button" disabled={orderPage <= 1} onClick={() => setOrderPage(page => Math.max(1, page - 1))}>صفحه قبل</button>
+        <button type="button" className="admin-action-button" disabled={loadingOrders || orderPage <= 1} onClick={() => setOrderPage(page => Math.max(1, page - 1))}>صفحه قبل</button>
         <span>صفحه {orderPage.toLocaleString('fa-IR')} از {orderTotalPages.toLocaleString('fa-IR')}</span>
-        <button type="button" className="admin-action-button" disabled={orderPage >= orderTotalPages} onClick={() => setOrderPage(page => Math.min(orderTotalPages, page + 1))}>صفحه بعد</button>
+        <button type="button" className="admin-action-button" disabled={loadingOrders || orderPage >= orderTotalPages} onClick={() => setOrderPage(page => Math.min(orderTotalPages, page + 1))}>صفحه بعد</button>
       </div>
     </div>
   </section>;
