@@ -128,7 +128,7 @@ export function ManageBookstore() {
     setEditingId(book.id);
     setError('');
     setSuccess('');
-    document.querySelector('.bookstore-form-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
   };
 
   const uploadCover = async (file: File) => {
@@ -231,12 +231,13 @@ export function ManageBookstore() {
     {error && <div role="alert" className="bookstore-error">{error}</div>}
     {success && <div role="status" className="bookstore-success">{success}</div>}
 
-    <div className="bookstore-card bookstore-form-card admin-master-panel">
+    {editingId && <button type="button" className="bookstore-edit-backdrop" aria-label="بستن پنل ویرایش" onClick={resetForm} />}
+    <div className={"bookstore-card bookstore-form-card admin-master-panel" + (editingId ? " is-editing-drawer" : "")}>
       <div className="bookstore-section-heading">
         <h3 className="bookstore-section-title">{editingId ? 'ویرایش کامل اطلاعات کتاب' : 'افزودن کتاب جدید'}</h3>
-        {editingId && <button type="button" className="admin-action-button" onClick={resetForm} disabled={busy}>انصراف از ویرایش</button>}
+        {editingId && <button type="button" className="admin-action-button" onClick={resetForm} disabled={busy}>بستن پنل</button>}
       </div>
-      <p className="bookstore-card-description">تمام مشخصات کتاب از همین فرم قابل ثبت و ویرایش است. ثبت عنوان یکسان برای چاپ‌ها و ویرایش‌های متفاوت مجاز است.</p>
+      {!editingId && <p className="bookstore-card-description">مشخصات کتاب جدید را وارد کنید.</p>}
       <div className="bookstore-form-grid">
         <div className="bookstore-form-primary">
           <label className="bookstore-field"><span className="bookstore-field-label">عنوان کتاب</span><input value={form.title} onChange={event => setField('title', event.target.value)} placeholder="عنوان کامل کتاب" /></label>
@@ -282,29 +283,25 @@ export function ManageBookstore() {
         </select>
         <button type="button" className="admin-action-button" disabled={loadingBooks} onClick={() => { setBookPage(1); setAppliedSearch(search.trim()); }}>جست‌وجو</button>
       </div>
-      <div className="bookstore-book-list">
-        {loadingBooks ? <p className="bookstore-empty">در حال دریافت فهرست کتاب‌ها…</p> : books.map(book => <article key={book.id} className="bookstore-book-row admin-surface-card">
-          <div className="bookstore-book-main">
-            <BookCover className="bookstore-book-cover" src={book.coverImage} title={book.title} />
-            <div className="bookstore-book-copy">
-              <strong>{book.title}</strong>
-              <div className="bookstore-book-facts">
-                <span className="bookstore-book-meta">{levelText(book.academicLevel)}{book.category ? ' · ' + book.category : ''}</span>
-                <span className="bookstore-book-data">قیمت پشت جلد: {money(book.price)}</span>
-                {book.discountedPrice != null && book.discountedPrice !== '' && <span className="bookstore-book-discount">قیمت با تخفیف: {money(book.discountedPrice)}</span>}
-                <span className="bookstore-book-data">موجودی: {book.stockQuantity.toLocaleString('fa-IR')} · رزروشده: {book.reservedQuantity.toLocaleString('fa-IR')} · قابل فروش: {(book.availableQuantity ?? Math.max(0, book.stockQuantity - book.reservedQuantity)).toLocaleString('fa-IR')}</span>
-                <span className="bookstore-book-meta">ترتیب نمایش: {Number(book.displayOrder ?? 0).toLocaleString('fa-IR')} · {book.isActive ? 'فعال' : 'غیرفعال'}</span>
-              </div>
-              {book.description && <p className="bookstore-card-description">{book.description}</p>}
-            </div>
-          </div>
-          <div className="bookstore-book-actions">
-            <button type="button" className="admin-action-button" disabled={busy} onClick={() => startEdit(book)}>ویرایش اطلاعات</button>
-            <button type="button" className="admin-action-button" disabled={busy} onClick={() => void update(book, { isActive: !book.isActive })}>{book.isActive ? 'غیرفعال‌سازی' : 'فعال‌سازی'}</button>
-            <button type="button" className="admin-action-button bookstore-danger-action" disabled={busy} onClick={() => void deleteBook(book)}>حذف کتاب</button>
-          </div>
-        </article>)}
-        {!loadingBooks && books.length === 0 && <p className="bookstore-empty">{bookTotal === 0 && (appliedSearch || statusFilter !== 'ALL') ? 'کتابی با این جست‌وجو یا فیلتر پیدا نشد.' : 'هنوز کتابی ثبت نشده است.'}</p>}
+      <div className="bookstore-table-wrap" role="region" aria-label="جدول فهرست کتاب‌ها" tabIndex={0}>
+        <table className="bookstore-data-table bookstore-books-table">
+          <thead><tr><th>کتاب</th><th>مقطع و رشته</th><th>قیمت</th><th>موجودی</th><th>وضعیت</th><th>عملیات</th></tr></thead>
+          <tbody>
+            {loadingBooks ? <tr><td colSpan={6} className="bookstore-empty">در حال دریافت فهرست کتاب‌ها…</td></tr> : books.map(book => <tr key={book.id}>
+              <td><div className="bookstore-table-book"><BookCover className="bookstore-book-cover" src={book.coverImage} title={book.title} /><div><strong>{book.title}</strong>{book.description && <small>{book.description}</small>}</div></div></td>
+              <td>{levelText(book.academicLevel)}<small>{book.category || '—'}</small></td>
+              <td>{money(book.discountedPrice ?? book.price)}{book.discountedPrice != null && book.discountedPrice !== '' && <small className="bookstore-old-price">{money(book.price)}</small>}</td>
+              <td><span>کل: {book.stockQuantity.toLocaleString('fa-IR')}</span><small>رزرو: {book.reservedQuantity.toLocaleString('fa-IR')} · قابل فروش: {(book.availableQuantity ?? Math.max(0, book.stockQuantity - book.reservedQuantity)).toLocaleString('fa-IR')}</small></td>
+              <td><span className={"bookstore-status " + (book.isActive ? "is-active" : "is-inactive")}>{book.isActive ? 'فعال' : 'غیرفعال'}</span></td>
+              <td><div className="bookstore-table-actions">
+                <button type="button" className="admin-action-button" disabled={busy} onClick={() => startEdit(book)}>ویرایش</button>
+                <button type="button" className="admin-action-button" disabled={busy} onClick={() => void update(book, { isActive: !book.isActive })}>{book.isActive ? 'غیرفعال' : 'فعال‌سازی'}</button>
+                <button type="button" className="admin-action-button bookstore-danger-action" disabled={busy} onClick={() => void deleteBook(book)}>حذف</button>
+              </div></td>
+            </tr>)}
+            {!loadingBooks && books.length === 0 && <tr><td colSpan={6} className="bookstore-empty">{bookTotal === 0 && (appliedSearch || statusFilter !== 'ALL') ? 'کتابی با این جست‌وجو یا فیلتر پیدا نشد.' : 'هنوز کتابی ثبت نشده است.'}</td></tr>}
+          </tbody>
+        </table>
       </div>
       <div className="bookstore-pagination">
         <button type="button" className="admin-action-button" disabled={loadingBooks || bookPage <= 1} onClick={() => setBookPage(current => Math.max(1, current - 1))}>صفحه قبل</button>
@@ -315,26 +312,28 @@ export function ManageBookstore() {
 
     <div className="bookstore-card admin-master-panel">
       <h3 className="bookstore-section-title">سفارش‌ها و رسیدها</h3>
-      <div className="bookstore-order-list">
-        {orders.map(order => <article key={order.id} className="bookstore-order-card admin-surface-card">
-          <div className="bookstore-order-head"><strong>سفارش {order.id.slice(-7)} · {order.student.fullName}</strong><span>{labels[order.status] || order.status}</span></div>
-          <div className="bookstore-order-details">
-            {order.items.map(item => item.book.title + ' × ' + item.quantity).join('، ')} · {money(order.subtotal)}<br />
-            گیرنده: {order.recipientName} · {order.recipientPhone} · کد پستی: {order.postalCode}<br />
-            نشانی: {order.shippingAddress}<br />
-            {order.trackingCode ? 'کد رهگیری: ' + order.trackingCode : ''}{order.receiptRejectionReason ? ' · علت رد رسید: ' + order.receiptRejectionReason : ''}
-          </div>
-          {order.receiptStorageKey && <a className="bookstore-receipt-link" href={'/api/admin/book-orders/' + encodeURIComponent(order.id) + '/receipt'} target="_blank" rel="noreferrer">مشاهده رسید ارسالی</a>}
-          <div className="bookstore-order-actions">
-            {order.status === 'PAYMENT_REVIEW' && <><button type="button" className="admin-action-button" disabled={busy} onClick={() => review(order, 'APPROVED')}>تأیید رسید</button><button type="button" className="admin-action-button" disabled={busy} onClick={() => review(order, 'REJECTED')}>رد رسید</button></>}
-            {['PAYMENT_REJECTED', 'PAYMENT_REVIEW', 'PAID', 'PROCESSING'].includes(order.status) && <button type="button" className="admin-action-button" disabled={busy} onClick={() => { if (window.confirm('برای این سفارش بازپرداخت ثبت شود؟')) void action(order, 'refund', { action: 'REQUEST', note: 'بازپرداخت به درخواست مدیر' }); }}>ثبت بازپرداخت</button>}
-            {order.status === 'REFUND_PENDING' && <button type="button" className="admin-action-button" disabled={busy} onClick={() => { if (window.confirm('آیا بازپرداخت وجه واقعاً انجام شده است؟')) void action(order, 'refund', { action: 'COMPLETE' }); }}>تأیید انجام بازپرداخت</button>}
-            {order.status === 'PAID' && <button type="button" className="admin-action-button" disabled={busy} onClick={() => void action(order, 'shipping', { status: 'PROCESSING' })}>شروع آماده‌سازی</button>}
-            {['PAID', 'PROCESSING'].includes(order.status) && <button type="button" className="admin-action-button" disabled={busy} onClick={() => { const trackingCode = window.prompt('کد رهگیری مرسوله (اختیاری)') || ''; void action(order, 'shipping', { status: 'SHIPPED', trackingCode }); }}>ثبت ارسال</button>}
-            {order.status === 'SHIPPED' && <button type="button" className="admin-action-button" disabled={busy} onClick={() => void action(order, 'shipping', { status: 'DELIVERED' })}>ثبت تحویل</button>}
-          </div>
-        </article>)}
-        {orders.length === 0 && <p className="bookstore-empty">{loadingOrders ? 'در حال دریافت سفارش‌ها…' : 'هنوز سفارشی ثبت نشده است.'}</p>}
+      <div className="bookstore-table-wrap bookstore-orders-wrap" role="region" aria-label="جدول سفارش‌ها و رسیدها" tabIndex={0}>
+        <table className="bookstore-data-table bookstore-orders-table">
+          <thead><tr><th>شماره و تاریخ</th><th>خریدار و گیرنده</th><th>اقلام سفارش</th><th>مبلغ</th><th>وضعیت و رسید</th><th>عملیات</th></tr></thead>
+          <tbody>
+            {orders.map(order => <tr key={order.id}>
+              <td><strong>#{order.id.slice(-7)}</strong><small>{new Date(order.createdAt).toLocaleDateString('fa-IR')}</small></td>
+              <td><strong>{order.student.fullName}</strong><small>{order.recipientName} · {order.recipientPhone}</small><small>کد پستی: {order.postalCode}</small></td>
+              <td>{order.items.map(item => <small key={item.book.title}>{item.book.title} × {item.quantity}</small>)}{order.trackingCode && <small>رهگیری: {order.trackingCode}</small>}{order.receiptRejectionReason && <small>علت رد: {order.receiptRejectionReason}</small>}</td>
+              <td>{money(order.subtotal)}</td>
+              <td><span className="bookstore-status">{labels[order.status] || order.status}</span>{order.receiptStorageKey && <a className="bookstore-receipt-link" href={'/api/admin/book-orders/' + encodeURIComponent(order.id) + '/receipt'} target="_blank" rel="noreferrer">مشاهده رسید</a>}</td>
+              <td><div className="bookstore-table-actions">
+                {order.status === 'PAYMENT_REVIEW' && <><button type="button" className="admin-action-button" disabled={busy} onClick={() => review(order, 'APPROVED')}>تأیید رسید</button><button type="button" className="admin-action-button" disabled={busy} onClick={() => review(order, 'REJECTED')}>رد رسید</button></>}
+                {['PAYMENT_REJECTED', 'PAYMENT_REVIEW', 'PAID', 'PROCESSING'].includes(order.status) && <button type="button" className="admin-action-button" disabled={busy} onClick={() => { if (window.confirm('برای این سفارش بازپرداخت ثبت شود؟')) void action(order, 'refund', { action: 'REQUEST', note: 'بازپرداخت به درخواست مدیر' }); }}>بازپرداخت</button>}
+                {order.status === 'REFUND_PENDING' && <button type="button" className="admin-action-button" disabled={busy} onClick={() => { if (window.confirm('آیا بازپرداخت وجه واقعاً انجام شده است؟')) void action(order, 'refund', { action: 'COMPLETE' }); }}>تأیید بازپرداخت</button>}
+                {order.status === 'PAID' && <button type="button" className="admin-action-button" disabled={busy} onClick={() => void action(order, 'shipping', { status: 'PROCESSING' })}>آماده‌سازی</button>}
+                {['PAID', 'PROCESSING'].includes(order.status) && <button type="button" className="admin-action-button" disabled={busy} onClick={() => { const trackingCode = window.prompt('کد رهگیری مرسوله (اختیاری)') || ''; void action(order, 'shipping', { status: 'SHIPPED', trackingCode }); }}>ثبت ارسال</button>}
+                {order.status === 'SHIPPED' && <button type="button" className="admin-action-button" disabled={busy} onClick={() => void action(order, 'shipping', { status: 'DELIVERED' })}>ثبت تحویل</button>}
+              </div></td>
+            </tr>)}
+            {orders.length === 0 && <tr><td colSpan={6} className="bookstore-empty">{loadingOrders ? 'در حال دریافت سفارش‌ها…' : 'هنوز سفارشی ثبت نشده است.'}</td></tr>}
+          </tbody>
+        </table>
       </div>
     </div>
   </section>;
