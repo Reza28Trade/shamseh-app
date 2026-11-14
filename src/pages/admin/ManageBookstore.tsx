@@ -64,6 +64,9 @@ export function ManageBookstore() {
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'ACTIVE' | 'INACTIVE'>('ALL');
+  const [orderSearch, setOrderSearch] = useState('');
+  const [orderStatusFilter, setOrderStatusFilter] = useState('ALL');
+  const [orderPage, setOrderPage] = useState(1);
 
   const loadBooks = async (pageNumber = bookPage, query = appliedSearch, status = statusFilter, signal?: AbortSignal) => {
     const params = new URLSearchParams({
@@ -220,6 +223,16 @@ export function ManageBookstore() {
     void action(order, 'review', { status, reason });
   };
   const money = (value: string | number | null | undefined) => Number(value || 0).toLocaleString('fa-IR') + ' تومان';
+  const filteredOrders = orders.filter(order => {
+    const matchesStatus = orderStatusFilter === 'ALL' || order.status === orderStatusFilter;
+    const query = orderSearch.trim().toLocaleLowerCase();
+    const matchesSearch = !query || [order.id, order.student.fullName, order.recipientName, order.recipientPhone, order.postalCode, ...order.items.map(item => item.book.title)].join(' ').toLocaleLowerCase().includes(query);
+    return matchesStatus && matchesSearch;
+  });
+  const orderPageSize = 20;
+  const orderTotalPages = Math.max(1, Math.ceil(filteredOrders.length / orderPageSize));
+  const visibleOrders = filteredOrders.slice((orderPage - 1) * orderPageSize, orderPage * orderPageSize);
+
   const validForm = Boolean(form.title.trim() && form.price.trim() !== ''
     && (form.price.trim() === '' ? Boolean(editingId) : (Number.isFinite(Number(form.price)) && Number(form.price) >= 0))
     && Number.isInteger(Number(form.stockQuantity)) && Number(form.stockQuantity) >= 0
@@ -311,12 +324,18 @@ export function ManageBookstore() {
     </div>
 
     <div className="bookstore-card admin-master-panel">
-      <h3 className="bookstore-section-title">سفارش‌ها و رسیدها</h3>
+      <div className="bookstore-section-heading"><h3 className="bookstore-section-title">سفارش‌ها و رسیدها</h3><span className="admin-action-summary bookstore-book-count">{filteredOrders.length.toLocaleString('fa-IR')} سفارش</span></div>
+      <div className="bookstore-order-tools">
+        <input type="search" value={orderSearch} onChange={event => { setOrderSearch(event.target.value); setOrderPage(1); }} placeholder="جست‌وجوی شماره سفارش، نام، موبایل یا کتاب…" aria-label="جست‌وجوی سفارش‌ها" />
+        <select value={orderStatusFilter} onChange={event => { setOrderStatusFilter(event.target.value); setOrderPage(1); }} aria-label="فیلتر وضعیت سفارش">
+          <option value="ALL">همه وضعیت‌ها</option>{Object.entries(labels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+        </select>
+      </div>
       <div className="bookstore-table-wrap bookstore-orders-wrap" role="region" aria-label="جدول سفارش‌ها و رسیدها" tabIndex={0}>
         <table className="bookstore-data-table bookstore-orders-table">
           <thead><tr><th>شماره و تاریخ</th><th>خریدار و گیرنده</th><th>اقلام سفارش</th><th>مبلغ</th><th>وضعیت و رسید</th><th>عملیات</th></tr></thead>
           <tbody>
-            {orders.map(order => <tr key={order.id}>
+            {visibleOrders.map(order => <tr key={order.id}>
               <td><strong>#{order.id.slice(-7)}</strong><small>{new Date(order.createdAt).toLocaleDateString('fa-IR')}</small></td>
               <td><strong>{order.student.fullName}</strong><small>{order.recipientName} · {order.recipientPhone}</small><small>کد پستی: {order.postalCode}</small></td>
               <td>{order.items.map(item => <small key={item.book.title}>{item.book.title} × {item.quantity}</small>)}{order.trackingCode && <small>رهگیری: {order.trackingCode}</small>}{order.receiptRejectionReason && <small>علت رد: {order.receiptRejectionReason}</small>}</td>
@@ -331,9 +350,14 @@ export function ManageBookstore() {
                 {order.status === 'SHIPPED' && <button type="button" className="admin-action-button" disabled={busy} onClick={() => void action(order, 'shipping', { status: 'DELIVERED' })}>ثبت تحویل</button>}
               </div></td>
             </tr>)}
-            {orders.length === 0 && <tr><td colSpan={6} className="bookstore-empty">{loadingOrders ? 'در حال دریافت سفارش‌ها…' : 'هنوز سفارشی ثبت نشده است.'}</td></tr>}
+            {visibleOrders.length === 0 && <tr><td colSpan={6} className="bookstore-empty">{loadingOrders ? 'در حال دریافت سفارش‌ها…' : filteredOrders.length === 0 && (orderSearch || orderStatusFilter !== 'ALL') ? 'سفارشی با این جست‌وجو یا فیلتر پیدا نشد.' : 'هنوز سفارشی ثبت نشده است.'}</td></tr>}
           </tbody>
         </table>
+      </div>
+      <div className="bookstore-pagination">
+        <button type="button" className="admin-action-button" disabled={orderPage <= 1} onClick={() => setOrderPage(page => Math.max(1, page - 1))}>صفحه قبل</button>
+        <span>صفحه {orderPage.toLocaleString('fa-IR')} از {orderTotalPages.toLocaleString('fa-IR')}</span>
+        <button type="button" className="admin-action-button" disabled={orderPage >= orderTotalPages} onClick={() => setOrderPage(page => Math.min(orderTotalPages, page + 1))}>صفحه بعد</button>
       </div>
     </div>
   </section>;
