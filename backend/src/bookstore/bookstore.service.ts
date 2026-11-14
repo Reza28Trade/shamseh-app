@@ -24,6 +24,11 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     if (this.expiryTimer) clearInterval(this.expiryTimer);
   }
 
+  private serializeOrder(order: any) {
+    if (!order) return order;
+    return { ...order, receiptFileSize: order.receiptFileSize?.toString() ?? null };
+  }
+
   private requireAdmin(user: AuthenticatedUser) {
     if (user.role !== 'SUPER_ADMIN' && user.role !== 'STAFF') throw new ForbiddenException('Admin access required');
     if (user.role === 'STAFF' && !user.permissions.includes('books')) throw new ForbiddenException('Bookstore permission required');
@@ -298,7 +303,7 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     }
     await this.releaseExpiredReservations();
     const expiresAt = new Date(Date.now() + RESERVATION_HOURS * 60 * 60 * 1000);
-    return this.prisma.$transaction(async tx => {
+    const order = await this.prisma.$transaction(async tx => {
       const books = [];
       let subtotal = 0;
       for (const [bookId, quantity] of normalized.entries()) {
@@ -318,14 +323,16 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
       for (const { book, quantity } of books) await tx.book.update({ where: { id: book.id }, data: { reservedQuantity: { increment: quantity } } });
       return order;
     }, { isolationLevel: 'Serializable' });
+    return this.serializeOrder(order);
   }
 
   async studentOrders(user: AuthenticatedUser) {
     await this.releaseExpiredReservations();
     const studentId = this.requireStudent(user);
-    return this.prisma.bookOrder.findMany({
+    const orders = await this.prisma.bookOrder.findMany({
       where: { studentId }, orderBy: { createdAt: 'desc' }, include: { items: { include: { book: true } } },
     });
+    return orders.map(order => this.serializeOrder(order));
   }
 
   async uploadReceipt(user: AuthenticatedUser, orderId: string, file: any, paymentReference?: string) {
@@ -457,10 +464,11 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
   async adminOrders(user: AuthenticatedUser) {
     this.requireAdmin(user);
     await this.releaseExpiredReservations();
-    return this.prisma.bookOrder.findMany({
+    const orders = await this.prisma.bookOrder.findMany({
       orderBy: { createdAt: 'desc' },
       include: { student: { select: { id: true, fullName: true, phone: true } }, items: { include: { book: true } }, reviewer: { select: { username: true } }, shipper: { select: { username: true } } },
     });
+    return orders.map(order => this.serializeOrder(order));
   }
 
   async reviewReceipt(user: AuthenticatedUser, orderId: string, body: any) {
@@ -481,10 +489,10 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
         },
       });
       if (changed.count !== 1) throw new BadRequestException('این رسید قبلاً بررسی شده یا وضعیت سفارش تغییر کرده است.');
-      return this.prisma.bookOrder.findUnique({ where: { id: orderId } });
+      return this.serializeOrder(await this.prisma.bookOrder.findUnique({ where: { id: orderId } }));
     }
     if (body.status !== 'APPROVED') throw new BadRequestException('وضعیت بررسی معتبر نیست.');
-    return this.prisma.$transaction(async tx => {
+    const updated = await this.prisma.$transaction(async tx => {
       const current = await tx.bookOrder.findUnique({ where: { id: orderId }, include: { items: true } });
       if (!current || current.status !== 'PAYMENT_REVIEW') throw new BadRequestException('وضعیت سفارش تغییر کرده است.');
       for (const item of current.items) {
@@ -496,6 +504,7 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
       }
       return tx.bookOrder.update({ where: { id: orderId }, data: { status: 'PAID', reviewedAt: new Date(), reviewedById: user.id } });
     }, { isolationLevel: 'Serializable' });
+    return this.serializeOrder(updated);
   }
 
   async updateShipping(user: AuthenticatedUser, orderId: string, body: any) {
@@ -544,7 +553,7 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     }
     if (body.action !== 'COMPLETE') throw new BadRequestException('عملیات بازپرداخت معتبر نیست.');
     if (order.status !== 'REFUND_PENDING' || order.refundStatus !== 'REQUESTED') throw new BadRequestException('ابتدا بازپرداخت را در وضعیت انتظار قرار دهید.');
-    return this.prisma.$transaction(async tx => {
+    const updated = await this.prisma.$transaction(async tx => {
       const completedAt = new Date();
       // Claim the refund before changing inventory; a repeated/concurrent request must not return stock twice.
       const claimed = await tx.bookOrder.updateMany({
@@ -563,5 +572,6 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
       }
       return tx.bookOrder.findUnique({ where: { id: orderId } });
     }, { isolationLevel: 'Serializable' });
+    return this.serializeOrder(updated);
   }
 }
