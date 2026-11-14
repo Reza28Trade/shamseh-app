@@ -516,7 +516,7 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
         where: { id: orderId, status: 'PAID' }, data: { status: 'PROCESSING' },
       });
       if (changed.count !== 1) throw new BadRequestException('وضعیت سفارش هم‌زمان تغییر کرده است؛ فهرست را تازه‌سازی کنید.');
-      return this.prisma.bookOrder.findUnique({ where: { id: orderId } });
+      return this.serializeOrder(await this.prisma.bookOrder.findUnique({ where: { id: orderId } }));
     }
     if (body.status === 'SHIPPED' && ['PAID', 'PROCESSING'].includes(order.status)) {
       const changed = await this.prisma.bookOrder.updateMany({
@@ -524,14 +524,14 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
         data: { status: 'SHIPPED', shippedAt: new Date(), shippedById: user.id, trackingCode: String(body.trackingCode ?? '').trim() || null },
       });
       if (changed.count !== 1) throw new BadRequestException('وضعیت سفارش هم‌زمان تغییر کرده است؛ فهرست را تازه‌سازی کنید.');
-      return this.prisma.bookOrder.findUnique({ where: { id: orderId } });
+      return this.serializeOrder(await this.prisma.bookOrder.findUnique({ where: { id: orderId } }));
     }
     if (body.status === 'DELIVERED' && order.status === 'SHIPPED') {
       const changed = await this.prisma.bookOrder.updateMany({
         where: { id: orderId, status: 'SHIPPED' }, data: { status: 'DELIVERED', deliveredAt: new Date() },
       });
       if (changed.count !== 1) throw new BadRequestException('وضعیت سفارش هم‌زمان تغییر کرده است؛ فهرست را تازه‌سازی کنید.');
-      return this.prisma.bookOrder.findUnique({ where: { id: orderId } });
+      return this.serializeOrder(await this.prisma.bookOrder.findUnique({ where: { id: orderId } }));
     }
     throw new BadRequestException('تغییر وضعیت ارسال معتبر نیست.');
   }
@@ -549,7 +549,7 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
         data: { status: 'REFUND_PENDING', refundStatus: 'REQUESTED', refundFromStatus: order.status, refundRequestedAt: now, refundNote: String(body.note ?? '').trim() || null },
       });
       if (changed.count !== 1) throw new BadRequestException('وضعیت سفارش تغییر کرده است؛ فهرست را تازه‌سازی کنید.');
-      return this.prisma.bookOrder.findUnique({ where: { id: orderId } });
+      return this.serializeOrder(await this.prisma.bookOrder.findUnique({ where: { id: orderId } }));
     }
     if (body.action !== 'COMPLETE') throw new BadRequestException('عملیات بازپرداخت معتبر نیست.');
     if (order.status !== 'REFUND_PENDING' || order.refundStatus !== 'REQUESTED') throw new BadRequestException('ابتدا بازپرداخت را در وضعیت انتظار قرار دهید.');
