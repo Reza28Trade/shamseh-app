@@ -461,14 +461,38 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     return { success: true };
   }
 
-  async adminOrders(user: AuthenticatedUser) {
+  async adminOrders(user: AuthenticatedUser, query: { page?: string; pageSize?: string; search?: string; status?: string } = {}) {
     this.requireAdmin(user);
     await this.releaseExpiredReservations();
+    const requestedPage = Number(query.page ?? 1);
+    const requestedSize = Number(query.pageSize ?? 20);
+    const pageSize = Number.isInteger(requestedSize) ? Math.min(100, Math.max(1, requestedSize)) : 20;
+    const search = String(query.search ?? '').trim();
+    const status = String(query.status ?? 'ALL');
+    const knownStatuses = ['RESERVED', 'AWAITING_RECEIPT', 'PAYMENT_REVIEW', 'PAYMENT_REJECTED', 'PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'REFUND_PENDING', 'REFUNDED', 'CANCELLED'];
+    if (status !== 'ALL' && !knownStatuses.includes(status)) throw new BadRequestException('فیلتر وضعیت سفارش معتبر نیست.');
+    const where: any = {};
+    if (status !== 'ALL') where.status = status;
+    if (search) where.OR = [
+      { id: { contains: search, mode: 'insensitive' } },
+      { recipientName: { contains: search, mode: 'insensitive' } },
+      { recipientPhone: { contains: search, mode: 'insensitive' } },
+      { postalCode: { contains: search, mode: 'insensitive' } },
+      { student: { is: { OR: [
+        { fullName: { contains: search, mode: 'insensitive' } },
+        { phone: { contains: search, mode: 'insensitive' } },
+      ] } } },
+      { items: { some: { book: { is: { title: { contains: search, mode: 'insensitive' } } } } } },
+    ];
+    const total = await this.prisma.bookOrder.count({ where });
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
+    const page = Number.isInteger(requestedPage) ? Math.min(totalPages, Math.max(1, requestedPage)) : 1;
     const orders = await this.prisma.bookOrder.findMany({
-      orderBy: { createdAt: 'desc' },
+      where, orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+      skip: (page - 1) * pageSize, take: pageSize,
       include: { student: { select: { id: true, fullName: true, phone: true } }, items: { include: { book: true } }, reviewer: { select: { username: true } }, shipper: { select: { username: true } } },
     });
-    return orders.map(order => this.serializeOrder(order));
+    return { items: orders.map(order => this.serializeOrder(order)), total, page, pageSize, totalPages };
   }
 
   async reviewReceipt(user: AuthenticatedUser, orderId: string, body: any) {
