@@ -89,6 +89,16 @@ export class BookstoreController {
     return res.sendFile(path);
   }
 
+  @Patch('admin/book-orders/:orderId/details')
+  updateOrderDetails(@Req() req: AuthenticatedRequest, @Param('orderId') orderId: string, @Body() body: any) {
+    return this.bookstore.updateOrderDetails(req.user, orderId, body);
+  }
+
+  @Patch('admin/book-orders/:orderId/correction')
+  correctOrderStatus(@Req() req: AuthenticatedRequest, @Param('orderId') orderId: string, @Body() body: any) {
+    return this.bookstore.correctOrderStatus(req.user, orderId, body);
+  }
+
   @Patch('admin/book-orders/:orderId/review')
   reviewReceipt(@Req() req: AuthenticatedRequest, @Param('orderId') orderId: string, @Body() body: any) {
     return this.bookstore.reviewReceipt(req.user, orderId, body);
