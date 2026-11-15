@@ -280,8 +280,8 @@ export function ManageRegistrations(){
       <button className="admin-action-button" onClick={()=>void load()}>به‌روزرسانی</button>
     </div>
     <div className="admin-extracted-manageregistrations-43">
-      <input className="admin-finance-search-input" placeholder="جست‌وجو بر اساس نام، کد ملی، موبایل یا کد رشته" value={search} onChange={e=>setSearch(e.target.value)}/>
-      <select className="admin-shared-manageregistrations-input-style" value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}>
+      <input className="admin-finance-search-input" placeholder="جست‌وجو بر اساس نام، کد ملی، موبایل یا کد رشته" value={search} onChange={e=>{setSearch(e.target.value);setListPage(1);}}/>
+      <select className="admin-shared-manageregistrations-input-style" value={statusFilter} onChange={e=>{setStatusFilter(e.target.value);setListPage(1);}}>
         {statusOptionsFor(tab).map(([value,label])=><option key={value} value={value}>{label}</option>)}
       </select>
     </div>
