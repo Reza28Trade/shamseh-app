@@ -186,3 +186,29 @@
 .admin-bookstore-page .bookstore-order-tools input,.admin-bookstore-page .bookstore-order-tools select{width:100%;min-width:0}
 @media(max-width:650px){.admin-bookstore-page .bookstore-order-tools{grid-template-columns:minmax(0,1fr) minmax(115px,140px);gap:6px}}
 @media(max-width:390px){.admin-bookstore-page .bookstore-order-tools{grid-template-columns:minmax(0,1fr) minmax(105px,120px)}}
+
+
+/* Final review: align bookstore count pills with the finance ledger summary. */
+.admin-shell .admin-main .admin-page-content .admin-bookstore-page .bookstore-section-heading > .bookstore-book-count {
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:max-content!important;
+  min-height:26px!important;
+  padding:4px 10px!important;
+  border:1px solid var(--admin-brand-border)!important;
+  border-radius:999px!important;
+  background:var(--admin-accent-soft)!important;
+  color:var(--admin-accent)!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  line-height:1.5!important;
+  white-space:nowrap!important;
+}
+
+/* Keep the real bookstore page visible behind the left editor drawer. */
+.admin-bookstore-page .bookstore-edit-backdrop {
+  background:rgba(15,17,16,.18)!important;
+  -webkit-backdrop-filter:blur(0.5px)!important;
+  backdrop-filter:blur(0.5px)!important;
+}
