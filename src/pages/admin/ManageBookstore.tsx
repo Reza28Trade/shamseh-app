@@ -55,6 +55,7 @@ export function ManageBookstore() {
   const [loadingBooks, setLoadingBooks] = useState(true);
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [bookPage, setBookPage] = useState(1);
+  const [bookPageSize, setBookPageSize] = useState(20);
   const [bookTotal, setBookTotal] = useState(0);
   const [bookTotalPages, setBookTotalPages] = useState(1);
   const [booksRefresh, setBooksRefresh] = useState(0);
@@ -67,12 +68,13 @@ export function ManageBookstore() {
   const [orderSearch, setOrderSearch] = useState('');
   const [orderStatusFilter, setOrderStatusFilter] = useState('ALL');
   const [orderPage, setOrderPage] = useState(1);
+  const [orderPageSize, setOrderPageSize] = useState(20);
   const [orderTotal, setOrderTotal] = useState(0);
   const [orderTotalPages, setOrderTotalPages] = useState(1);
 
   const loadBooks = async (pageNumber = bookPage, query = appliedSearch, status = statusFilter, signal?: AbortSignal) => {
     const params = new URLSearchParams({
-      page: String(pageNumber), pageSize: '20', search: query, status,
+      page: String(pageNumber), pageSize: String(bookPageSize), search: query, status,
     });
     const response = await fetch('/api/admin/books?' + params.toString(), { credentials: 'include', signal });
     const result = await response.json().catch(() => ({}));
@@ -85,7 +87,7 @@ export function ManageBookstore() {
   };
 
   const loadOrders = async (pageNumber = orderPage, query = orderSearch, status = orderStatusFilter) => {
-    const params = new URLSearchParams({ page: String(pageNumber), pageSize: '20', search: query.trim(), status });
+    const params = new URLSearchParams({ page: String(pageNumber), pageSize: String(orderPageSize), search: query.trim(), status });
     const response = await fetch('/api/admin/book-orders?' + params.toString(), { credentials: 'include' });
     const result = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(result.message || 'دریافت سفارش‌های فروشگاه ناموفق بود.');
@@ -105,7 +107,7 @@ export function ManageBookstore() {
       })
       .finally(() => { if (active) setLoadingBooks(false); });
     return () => { active = false; controller.abort(); };
-  }, [bookPage, appliedSearch, statusFilter, booksRefresh]);
+  }, [bookPage, bookPageSize, appliedSearch, statusFilter, booksRefresh]);
 
   useEffect(() => {
     let active = true;
@@ -113,7 +115,7 @@ export function ManageBookstore() {
     void loadOrders(orderPage, orderSearch, orderStatusFilter).catch(loadError => { if (active) setError(errorText(loadError)); })
       .finally(() => { if (active) setLoadingOrders(false); });
     return () => { active = false; };
-  }, [orderPage, orderSearch, orderStatusFilter]);
+  }, [orderPage, orderPageSize, orderSearch, orderStatusFilter]);
 
   const setField = <K extends keyof BookForm,>(key: K, value: BookForm[K]) =>
     setForm(current => ({ ...current, [key]: value }));
@@ -315,6 +317,8 @@ export function ManageBookstore() {
         </table>
       </div>
       <div className="bookstore-pagination">
+        <label>تعداد در صفحه <select value={bookPageSize} onChange={event => { setBookPageSize(Number(event.target.value)); setBookPage(1); }}><option value={10}>۱۰</option><option value={20}>۲۰</option><option value={50}>۵۰</option><option value={100}>۱۰۰</option></select></label>
+        <span>نمایش {bookTotal ? ((bookPage-1)*bookPageSize+1).toLocaleString("fa-IR") : 0} تا {Math.min(bookPage*bookPageSize,bookTotal).toLocaleString("fa-IR")} از {bookTotal.toLocaleString("fa-IR")}</span>
         <button type="button" className="admin-action-button" disabled={loadingBooks || bookPage <= 1} onClick={() => setBookPage(current => Math.max(1, current - 1))}>صفحه قبل</button>
         <span>صفحه {bookPage.toLocaleString('fa-IR')} از {bookTotalPages.toLocaleString('fa-IR')}</span>
         <button type="button" className="admin-action-button" disabled={loadingBooks || bookPage >= bookTotalPages} onClick={() => setBookPage(current => Math.min(bookTotalPages, current + 1))}>صفحه بعد</button>
@@ -353,6 +357,8 @@ export function ManageBookstore() {
         </table>
       </div>
       <div className="bookstore-pagination">
+        <label>تعداد در صفحه <select value={orderPageSize} onChange={event => { setOrderPageSize(Number(event.target.value)); setOrderPage(1); }}><option value={10}>۱۰</option><option value={20}>۲۰</option><option value={50}>۵۰</option><option value={100}>۱۰۰</option></select></label>
+        <span>نمایش {orderTotal ? ((orderPage-1)*orderPageSize+1).toLocaleString("fa-IR") : 0} تا {Math.min(orderPage*orderPageSize,orderTotal).toLocaleString("fa-IR")} از {orderTotal.toLocaleString("fa-IR")}</span>
         <button type="button" className="admin-action-button" disabled={loadingOrders || orderPage <= 1} onClick={() => setOrderPage(page => Math.max(1, page - 1))}>صفحه قبل</button>
         <span>صفحه {orderPage.toLocaleString('fa-IR')} از {orderTotalPages.toLocaleString('fa-IR')}</span>
         <button type="button" className="admin-action-button" disabled={loadingOrders || orderPage >= orderTotalPages} onClick={() => setOrderPage(page => Math.min(orderTotalPages, page + 1))}>صفحه بعد</button>
