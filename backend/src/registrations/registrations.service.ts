@@ -363,7 +363,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         },
         reviewHistory: { orderBy: { createdAt: 'desc' }, take: 20 },
       },
-      orderBy: { createdAt: 'asc' },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
     }).then((rows) => rows.map((row) => {
       const initialPaid = row.payments.reduce((sum, payment) =>
         payment.status === 'APPROVED' && payment.purpose === 'INITIAL' ? sum + Number(payment.approvedAmount ?? 0) : sum, 0);
@@ -970,7 +970,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         student: { select: { fullName: true, nationalId: true, phone: true } },
         registration: { select: { finalTuition: true, status: true } },
       },
-      orderBy: { requestedAt: 'asc' },
+      orderBy: [{ requestedAt: 'desc' }, { id: 'desc' }],
     }).then((rows) => rows.map((row) => ({
       ...row,
       amountRequested: Number(row.amountRequested),
