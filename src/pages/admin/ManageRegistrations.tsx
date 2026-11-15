@@ -43,6 +43,7 @@ export function ManageRegistrations(){
   const [selectedRegistration,setSelectedRegistration]=useState<Registration|null>(null);
   const [selectedRefund,setSelectedRefund]=useState<Refund|null>(null);
   const [listPage,setListPage]=useState(1);
+  const [listPageSize,setListPageSize]=useState(20);
   const [approvalMode,setApprovalMode]=useState<'NORMAL'|'DISCOUNT'|'PAYMENT_EXCEPTION'>('NORMAL');
   const [discountAmount,setDiscountAmount]=useState('0');
   const [discountReason,setDiscountReason]=useState('');
@@ -120,7 +121,7 @@ export function ManageRegistrations(){
   };
   const visibleRegistrations=registrations.filter(x=>(statusFilter==='ALL'||x.status===statusFilter)&&[x.applicantFullName,x.nationalId,x.phone,x.fieldCode].some(v=>v.toLowerCase().includes(search.toLowerCase())));
   const visibleRefunds=refunds.filter(x=>(statusFilter==='ALL'||x.status===statusFilter)&&[x.student.fullName,x.student.nationalId,x.student.phone].some(v=>v.toLowerCase().includes(search.toLowerCase())));
-  const pageSize=10;
+  const pageSize=listPageSize;
   const activeListCount=tab==='registrations'?visibleRegistrations.length:visibleRefunds.length;
   const pageCount=Math.max(1,Math.ceil(activeListCount/pageSize));
   const safeListPage=Math.min(listPage,pageCount);
@@ -245,13 +246,13 @@ export function ManageRegistrations(){
 
     {tab==='registrations'?<section className="admin-action-center admin-master-panel admin-finance-registration-list-panel admin-extracted-manageregistrations-64">
     <div className="admin-extracted-manageregistrations-42">
-      <button className={`admin-action-button${isTabActive('registrations') ? ' is-active' : ''}`} onClick={()=>{setTab('registrations');setStatusFilter('ALL');}}>ثبت‌نام‌ها و رسیدها</button>
-      <button className={`admin-action-button${isTabActive('refunds') ? ' is-active' : ''}`} onClick={()=>{setTab('refunds');setStatusFilter('ALL');}}>درخواست‌های بازپرداخت</button>
+      <button className={`admin-action-button${isTabActive('registrations') ? ' is-active' : ''}`} onClick={()=>{setTab('registrations');setStatusFilter('ALL');setListPage(1);}}>ثبت‌نام‌ها و رسیدها</button>
+      <button className={`admin-action-button${isTabActive('refunds') ? ' is-active' : ''}`} onClick={()=>{setTab('refunds');setStatusFilter('ALL');setListPage(1);}}>درخواست‌های بازپرداخت</button>
       <button className="admin-action-button" onClick={()=>void load()}>به‌روزرسانی</button>
     </div>
     <div className="admin-extracted-manageregistrations-43">
-      <input className="admin-finance-search-input" placeholder="جست‌وجو بر اساس نام، کد ملی، موبایل یا کد رشته" value={search} onChange={e=>setSearch(e.target.value)}/>
-      <select className="admin-shared-manageregistrations-input-style" value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}>
+      <input className="admin-finance-search-input" placeholder="جست‌وجو بر اساس نام، کد ملی، موبایل یا کد رشته" value={search} onChange={e=>{setSearch(e.target.value);setListPage(1);}}/>
+      <select className="admin-shared-manageregistrations-input-style" value={statusFilter} onChange={e=>{setStatusFilter(e.target.value);setListPage(1);}}>
         {statusOptionsFor(tab).map(([value,label])=><option key={value} value={value}>{label}</option>)}
       </select>
     </div>
@@ -271,11 +272,11 @@ export function ManageRegistrations(){
         </tr>;})}
         {!loading&&pagedRegistrations.length===0&&<tr><td colSpan={8} className="admin-extracted-manageregistrations-80">موردی برای نمایش وجود ندارد.</td></tr>}</tbody>
       </table></div>
-      <div className="admin-extracted-manageregistrations-81"><span className="admin-extracted-manageregistrations-82">نمایش {new Intl.NumberFormat('fa-IR').format(activeListCount?(safeListPage-1)*pageSize+1:0)} تا {new Intl.NumberFormat('fa-IR').format(Math.min(safeListPage*pageSize,activeListCount))} از {new Intl.NumberFormat('fa-IR').format(activeListCount)}</span><div className="admin-extracted-manageregistrations-83"><button type="button" className="admin-action-button" disabled={safeListPage<=1} onClick={()=>setListPage(p=>Math.max(1,p-1))}>قبلی</button><span className="admin-extracted-manageregistrations-84">صفحه {new Intl.NumberFormat('fa-IR').format(safeListPage)} از {new Intl.NumberFormat('fa-IR').format(pageCount)}</span><button type="button" className="admin-action-button" disabled={safeListPage>=pageCount} onClick={()=>setListPage(p=>Math.min(pageCount,p+1))}>بعدی</button></div></div>
+      <div className="admin-extracted-manageregistrations-81"><label>تعداد در صفحه <select value={listPageSize} onChange={e=>{setListPageSize(Number(e.target.value));setListPage(1);}}><option value={10}>۱۰</option><option value={20}>۲۰</option><option value={50}>۵۰</option><option value={100}>۱۰۰</option></select></label><span className="admin-extracted-manageregistrations-82">نمایش {new Intl.NumberFormat('fa-IR').format(activeListCount?(safeListPage-1)*pageSize+1:0)} تا {new Intl.NumberFormat('fa-IR').format(Math.min(safeListPage*pageSize,activeListCount))} از {new Intl.NumberFormat('fa-IR').format(activeListCount)}</span><div className="admin-extracted-manageregistrations-83"><button type="button" className="admin-action-button" disabled={safeListPage<=1} onClick={()=>setListPage(p=>Math.max(1,p-1))}>قبلی</button><span className="admin-extracted-manageregistrations-84">صفحه {new Intl.NumberFormat('fa-IR').format(safeListPage)} از {new Intl.NumberFormat('fa-IR').format(pageCount)}</span><button type="button" className="admin-action-button" disabled={safeListPage>=pageCount} onClick={()=>setListPage(p=>Math.min(pageCount,p+1))}>بعدی</button></div></div>
     </section>:<section className="admin-action-center admin-master-panel admin-finance-registration-list-panel admin-extracted-manageregistrations-85">
     <div className="admin-extracted-manageregistrations-42">
-      <button className={`admin-action-button${isTabActive('registrations') ? ' is-active' : ''}`} onClick={()=>{setTab('registrations');setStatusFilter('PENDING_REVIEW');}}>ثبت‌نام‌ها و رسیدها</button>
-      <button className={`admin-action-button${isTabActive('refunds') ? ' is-active' : ''}`} onClick={()=>{setTab('refunds');setStatusFilter('REQUESTED');}}>درخواست‌های بازپرداخت</button>
+      <button className={`admin-action-button${isTabActive('registrations') ? ' is-active' : ''}`} onClick={()=>{setTab('registrations');setStatusFilter('PENDING_REVIEW');setListPage(1);}}>ثبت‌نام‌ها و رسیدها</button>
+      <button className={`admin-action-button${isTabActive('refunds') ? ' is-active' : ''}`} onClick={()=>{setTab('refunds');setStatusFilter('REQUESTED');setListPage(1);}}>درخواست‌های بازپرداخت</button>
       <button className="admin-action-button" onClick={()=>void load()}>به‌روزرسانی</button>
     </div>
     <div className="admin-extracted-manageregistrations-43">
@@ -288,7 +289,7 @@ export function ManageRegistrations(){
       <div className="admin-extracted-manageregistrations-88 admin-data-table-wrap"><table className="admin-extracted-manageregistrations-89 admin-data-table"><thead className="admin-extracted-manageregistrations-90"><tr>{['هنرجو / کد ملی','موبایل','مبلغ درخواستی','مبلغ رزروشده','وضعیت','جزئیات'].map(label=><th key={label} className="admin-extracted-manageregistrations-91">{label}</th>)}</tr></thead><tbody>
         {pagedRefunds.map(item=><tr key={item.id}><td className="admin-extracted-manageregistrations-92"><strong>{item.student.fullName}</strong><div className="admin-extracted-manageregistrations-93">{item.student.nationalId}</div></td><td className="admin-extracted-manageregistrations-94">{item.student.phone}</td><td className="admin-extracted-manageregistrations-95">{money(item.amountRequested)}</td><td className="admin-extracted-manageregistrations-96">{item.amountReserved===null?'—':money(item.amountReserved)}</td><td className="admin-extracted-manageregistrations-97">{refundStatus[item.status]||item.status}</td><td className="admin-extracted-manageregistrations-98"><button type="button" className="admin-action-button" onClick={()=>setSelectedRefund(item)}>مشاهده جزئیات</button></td></tr>)}
         {!loading&&pagedRefunds.length===0&&<tr><td colSpan={6} className="admin-extracted-manageregistrations-99">درخواستی برای نمایش وجود ندارد.</td></tr>}</tbody></table></div>
-      <div className="admin-extracted-manageregistrations-100"><span className="admin-extracted-manageregistrations-101">نمایش {new Intl.NumberFormat('fa-IR').format(activeListCount?(safeListPage-1)*pageSize+1:0)} تا {new Intl.NumberFormat('fa-IR').format(Math.min(safeListPage*pageSize,activeListCount))} از {new Intl.NumberFormat('fa-IR').format(activeListCount)}</span><div className="admin-extracted-manageregistrations-102"><button type="button" className="admin-action-button" disabled={safeListPage<=1} onClick={()=>setListPage(p=>Math.max(1,p-1))}>قبلی</button><span className="admin-extracted-manageregistrations-103">صفحه {new Intl.NumberFormat('fa-IR').format(safeListPage)} از {new Intl.NumberFormat('fa-IR').format(pageCount)}</span><button type="button" className="admin-action-button" disabled={safeListPage>=pageCount} onClick={()=>setListPage(p=>Math.min(pageCount,p+1))}>بعدی</button></div></div>
+      <div className="admin-extracted-manageregistrations-100"><label>تعداد در صفحه <select value={listPageSize} onChange={e=>{setListPageSize(Number(e.target.value));setListPage(1);}}><option value={10}>۱۰</option><option value={20}>۲۰</option><option value={50}>۵۰</option><option value={100}>۱۰۰</option></select></label><span className="admin-extracted-manageregistrations-101">نمایش {new Intl.NumberFormat('fa-IR').format(activeListCount?(safeListPage-1)*pageSize+1:0)} تا {new Intl.NumberFormat('fa-IR').format(Math.min(safeListPage*pageSize,activeListCount))} از {new Intl.NumberFormat('fa-IR').format(activeListCount)}</span><div className="admin-extracted-manageregistrations-102"><button type="button" className="admin-action-button" disabled={safeListPage<=1} onClick={()=>setListPage(p=>Math.max(1,p-1))}>قبلی</button><span className="admin-extracted-manageregistrations-103">صفحه {new Intl.NumberFormat('fa-IR').format(safeListPage)} از {new Intl.NumberFormat('fa-IR').format(pageCount)}</span><button type="button" className="admin-action-button" disabled={safeListPage>=pageCount} onClick={()=>setListPage(p=>Math.min(pageCount,p+1))}>بعدی</button></div></div>
     </section>}
     {selectedRegistration&&<div role="dialog" aria-modal="true" aria-labelledby="registration-detail-title" onClick={e=>{if(e.target===e.currentTarget)setSelectedRegistration(null);}} className="admin-extracted-manageregistrations-104">
       <section className="admin-extracted-manageregistrations-105">
