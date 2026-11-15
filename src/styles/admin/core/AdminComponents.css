@@ -3334,10 +3334,12 @@
 /* Audit logs: explicit responsive row composition.
    The shared activity feed remains unchanged for Dashboard and other modules.
    Audit rows own their mobile geometry and never inherit flex-wrap behavior. */
-.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page {
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page,
+.admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page {
   width:100%!important;
   max-width:none!important;
   min-width:0!important;
+  margin-inline:0!important;
 }
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-logs-page > .admin-recent-activity {
   width:100%!important;
