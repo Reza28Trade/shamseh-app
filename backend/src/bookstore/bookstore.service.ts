@@ -531,6 +531,53 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
     return this.serializeOrder(updated);
   }
 
+  async updateOrderDetails(user: AuthenticatedUser, orderId: string, body: any) {
+    this.requireAdmin(user);
+    const recipientName = String(body?.recipientName ?? '').trim();
+    const recipientPhone = String(body?.recipientPhone ?? '').trim();
+    const postalCode = String(body?.postalCode ?? '').trim();
+    const shippingAddress = String(body?.shippingAddress ?? '').trim();
+    if (!recipientName || !recipientPhone || !postalCode || !shippingAddress) {
+      throw new BadRequestException('نام گیرنده، شماره تماس، کد پستی و نشانی الزامی هستند.');
+    }
+    const changed = await this.prisma.bookOrder.updateMany({
+      where: { id: orderId },
+      data: { recipientName, recipientPhone, postalCode, shippingAddress },
+    });
+    if (changed.count !== 1) throw new NotFoundException('سفارش پیدا نشد.');
+    return this.serializeOrder(await this.prisma.bookOrder.findUnique({ where: { id: orderId } }));
+  }
+
+  async correctOrderStatus(user: AuthenticatedUser, orderId: string, body: any) {
+    this.requireAdmin(user);
+    const reason = String(body?.reason ?? '').trim();
+    if (!reason) throw new BadRequestException('علت اصلاح وضعیت الزامی است.');
+    const targetStatus = String(body?.targetStatus ?? '');
+    return this.prisma.$transaction(async tx => {
+      const order = await tx.bookOrder.findUnique({ where: { id: orderId }, include: { items: true } });
+      if (!order) throw new NotFoundException('سفارش پیدا نشد.');
+      let data: any = {};
+      if (order.status === 'PROCESSING' && targetStatus === 'PAID') {
+        data = { status: 'PAID' };
+      } else if (order.status === 'SHIPPED' && targetStatus === 'PROCESSING') {
+        data = { status: 'PROCESSING', shippedAt: null, shippedById: null, trackingCode: null, deliveredAt: null };
+      } else if (order.status === 'PAID' && targetStatus === 'PAYMENT_REVIEW') {
+        for (const item of order.items) {
+          await tx.book.update({ where: { id: item.bookId }, data: { stockQuantity: { increment: item.quantity }, reservedQuantity: { increment: item.quantity } } });
+        }
+        data = {
+          status: 'PAYMENT_REVIEW', reviewedAt: null, reviewedById: null,
+          reservationExpiresAt: new Date(Date.now() + RESERVATION_HOURS * 60 * 60 * 1000),
+        };
+      } else {
+        throw new BadRequestException('اصلاح این انتقال وضعیت مجاز نیست.');
+      }
+      const changed = await tx.bookOrder.updateMany({ where: { id: orderId, status: order.status }, data });
+      if (changed.count !== 1) throw new BadRequestException('وضعیت سفارش هم‌زمان تغییر کرده است؛ فهرست را تازه‌سازی کنید.');
+      return this.serializeOrder(await tx.bookOrder.findUnique({ where: { id: orderId }, include: { items: true } }));
+    }, { isolationLevel: 'Serializable' });
+  }
+
   async updateShipping(user: AuthenticatedUser, orderId: string, body: any) {
     this.requireAdmin(user);
     const order = await this.prisma.bookOrder.findUnique({ where: { id: orderId } });
