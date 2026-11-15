@@ -71,6 +71,8 @@ export function ManageBookstore() {
   const [orderPageSize, setOrderPageSize] = useState(20);
   const [orderTotal, setOrderTotal] = useState(0);
   const [orderTotalPages, setOrderTotalPages] = useState(1);
+  const [editingOrder, setEditingOrder] = useState<Order | null>(null);
+  const [orderForm, setOrderForm] = useState({ recipientName: '', recipientPhone: '', postalCode: '', shippingAddress: '' });
 
   const loadBooks = async (pageNumber = bookPage, query = appliedSearch, status = statusFilter, signal?: AbortSignal) => {
     const params = new URLSearchParams({
@@ -225,6 +227,36 @@ export function ManageBookstore() {
     finally { setBusy(false); }
   };
 
+  const startOrderEdit = (order: Order) => {
+    setEditingOrder(order);
+    setOrderForm({ recipientName: order.recipientName, recipientPhone: order.recipientPhone, postalCode: order.postalCode, shippingAddress: order.shippingAddress });
+    setError(''); setSuccess('');
+  };
+
+  const saveOrderEdit = async () => {
+    if (!editingOrder || busy) return;
+    if (!orderForm.recipientName.trim() || !orderForm.recipientPhone.trim() || !orderForm.postalCode.trim() || !orderForm.shippingAddress.trim()) {
+      setError('نام گیرنده، شماره تماس، کد پستی و نشانی الزامی هستند.'); return;
+    }
+    setBusy(true); setError(''); setSuccess('');
+    try {
+      const response = await fetch('/api/admin/book-orders/' + encodeURIComponent(editingOrder.id) + '/details', {
+        method: 'PATCH', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderForm),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.message || 'ویرایش اطلاعات سفارش ناموفق بود.');
+      setEditingOrder(null); await loadOrders(); setSuccess('اطلاعات گیرنده سفارش اصلاح شد.');
+    } catch (e) { setError(errorText(e)); }
+    finally { setBusy(false); }
+  };
+
+  const correctOrderStatus = async (order: Order, targetStatus: string, label: string) => {
+    const reason = window.prompt('علت اصلاح وضعیت سفارش را بنویسید:');
+    if (!reason?.trim()) return;
+    if (!window.confirm('وضعیت سفارش به «' + label + '» برگردد؟')) return;
+    await action(order, 'correction', { targetStatus, reason: reason.trim() });
+  };
+
   const review = (order: Order, status: 'APPROVED' | 'REJECTED') => {
     const reason = status === 'REJECTED' ? window.prompt('علت رد رسید را وارد کنید:') : '';
     if (status === 'REJECTED' && !reason?.trim()) return;
@@ -244,6 +276,16 @@ export function ManageBookstore() {
     {error && <div role="alert" className="bookstore-error">{error}</div>}
     {success && <div role="status" className="bookstore-success">{success}</div>}
 
+    {editingOrder && <div className="bookstore-order-edit-overlay" role="presentation" onMouseDown={event => { if (event.target === event.currentTarget && !busy) setEditingOrder(null); }}>
+      <section className="bookstore-order-edit-dialog" role="dialog" aria-modal="true" aria-labelledby="bookstore-order-edit-title">
+        <div className="bookstore-section-heading"><h3 id="bookstore-order-edit-title">ویرایش اطلاعات گیرنده سفارش</h3><button type="button" className="admin-action-button" disabled={busy} onClick={() => setEditingOrder(null)}>بستن</button></div>
+        <label className="bookstore-field"><span className="bookstore-field-label">نام گیرنده</span><input value={orderForm.recipientName} onChange={event => setOrderForm(v => ({ ...v, recipientName: event.target.value }))} /></label>
+        <label className="bookstore-field"><span className="bookstore-field-label">شماره تماس</span><input value={orderForm.recipientPhone} onChange={event => setOrderForm(v => ({ ...v, recipientPhone: event.target.value }))} /></label>
+        <label className="bookstore-field"><span className="bookstore-field-label">کد پستی</span><input value={orderForm.postalCode} onChange={event => setOrderForm(v => ({ ...v, postalCode: event.target.value }))} /></label>
+        <label className="bookstore-field"><span className="bookstore-field-label">نشانی کامل</span><textarea rows={3} value={orderForm.shippingAddress} onChange={event => setOrderForm(v => ({ ...v, shippingAddress: event.target.value }))} /></label>
+        <div className="bookstore-form-actions"><button type="button" className="admin-action-button" disabled={busy} onClick={() => void saveOrderEdit()}>{busy ? 'در حال ذخیره…' : 'ذخیره اطلاعات'}</button></div>
+      </section>
+    </div>}
     {editingId && <button type="button" className="bookstore-edit-backdrop" aria-label="بستن پنل ویرایش" onClick={resetForm} />}
     <div className={"bookstore-card bookstore-form-card admin-master-panel" + (editingId ? " is-editing-drawer" : "")}>
       <div className="bookstore-section-heading">
@@ -344,6 +386,10 @@ export function ManageBookstore() {
               <td>{money(order.subtotal)}</td>
               <td><span className="bookstore-status">{labels[order.status] || order.status}</span>{order.receiptStorageKey && <a className="bookstore-receipt-link" href={'/api/admin/book-orders/' + encodeURIComponent(order.id) + '/receipt'} target="_blank" rel="noreferrer">مشاهده رسید</a>}</td>
               <td><div className="bookstore-table-actions">
+                <button type="button" className="admin-action-button" disabled={busy} onClick={() => startOrderEdit(order)}>ویرایش اطلاعات</button>
+                {order.status === 'PROCESSING' && <button type="button" className="admin-action-button" disabled={busy} onClick={() => correctOrderStatus(order, 'PAID', 'پرداخت تأیید شد')}>اصلاح به پرداخت تأیید شد</button>}
+                {order.status === 'SHIPPED' && <button type="button" className="admin-action-button" disabled={busy} onClick={() => correctOrderStatus(order, 'PROCESSING', 'در حال آماده‌سازی')}>اصلاح به آماده‌سازی</button>}
+                {order.status === 'PAID' && <button type="button" className="admin-action-button" disabled={busy} onClick={() => correctOrderStatus(order, 'PAYMENT_REVIEW', 'در انتظار بررسی رسید')}>اصلاح تأیید رسید</button>}
                 {order.status === 'PAYMENT_REVIEW' && <><button type="button" className="admin-action-button" disabled={busy} onClick={() => review(order, 'APPROVED')}>تأیید رسید</button><button type="button" className="admin-action-button" disabled={busy} onClick={() => review(order, 'REJECTED')}>رد رسید</button></>}
                 {['PAYMENT_REJECTED', 'PAYMENT_REVIEW', 'PAID', 'PROCESSING'].includes(order.status) && <button type="button" className="admin-action-button" disabled={busy} onClick={() => { if (window.confirm('برای این سفارش بازپرداخت ثبت شود؟')) void action(order, 'refund', { action: 'REQUEST', note: 'بازپرداخت به درخواست مدیر' }); }}>بازپرداخت</button>}
                 {order.status === 'REFUND_PENDING' && <button type="button" className="admin-action-button" disabled={busy} onClick={() => { if (window.confirm('آیا بازپرداخت وجه واقعاً انجام شده است؟')) void action(order, 'refund', { action: 'COMPLETE' }); }}>تأیید بازپرداخت</button>}
