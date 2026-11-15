@@ -545,6 +545,10 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
       data: { recipientName, recipientPhone, postalCode, shippingAddress },
     });
     if (changed.count !== 1) throw new NotFoundException('سفارش پیدا نشد.');
+    await this.prisma.auditLog.create({ data: {
+      actorUserId: user.id, action: 'BOOK_ORDER_RECIPIENT_UPDATED', entityType: 'BookOrder', entityId: orderId,
+      metadata: { recipientName, recipientPhone, postalCode, shippingAddress },
+    } });
     return this.serializeOrder(await this.prisma.bookOrder.findUnique({ where: { id: orderId } }));
   }
 
@@ -574,6 +578,10 @@ export class BookstoreService implements OnModuleInit, OnModuleDestroy {
       }
       const changed = await tx.bookOrder.updateMany({ where: { id: orderId, status: order.status }, data });
       if (changed.count !== 1) throw new BadRequestException('وضعیت سفارش هم‌زمان تغییر کرده است؛ فهرست را تازه‌سازی کنید.');
+      await tx.auditLog.create({ data: {
+        actorUserId: user.id, action: 'BOOK_ORDER_STATUS_CORRECTED', entityType: 'BookOrder', entityId: orderId,
+        metadata: { fromStatus: order.status, toStatus: targetStatus, reason },
+      } });
       return this.serializeOrder(await tx.bookOrder.findUnique({ where: { id: orderId }, include: { items: true } }));
     }, { isolationLevel: 'Serializable' });
   }
