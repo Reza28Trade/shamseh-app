@@ -228,3 +228,18 @@
 .admin-bookstore-page .bookstore-order-edit-drawer .bookstore-field textarea{
   min-height:112px;resize:vertical;
 }
+
+/* Remove only the tinted vertical seams between bookstore table columns. */
+.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-bookstore-page table.bookstore-data-table tbody td,
+.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-bookstore-page table.bookstore-data-table tbody td,
+.admin-shell .admin-main .admin-page-content .admin-bookstore-page table.bookstore-data-table thead th {
+  border-left: 0 !important;
+  border-right: 0 !important;
+  border-inline: 0 !important;
+  box-shadow: none !important;
+}
+.admin-shell .admin-main .admin-page-content .admin-bookstore-page table.bookstore-data-table tbody td:first-child,
+.admin-shell .admin-main .admin-page-content .admin-bookstore-page table.bookstore-data-table tbody td:last-child {
+  border-left: 0 !important;
+  border-right: 0 !important;
+}
