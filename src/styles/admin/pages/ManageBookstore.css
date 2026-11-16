@@ -127,6 +127,7 @@
 @media(max-width:390px){.bookstore-statistics-overlay{padding:8px}.bookstore-statistics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 .admin-bookstore-page .bookstore-data-table{min-width:880px}
+.admin-bookstore-page .bookstore-orders-table{min-width:1050px}
 
 .admin-bookstore-page .bookstore-data-table td small{display:block;margin-top:2px;line-height:1.45}
 .admin-bookstore-page .bookstore-table-book{display:flex;align-items:center;gap:8px;min-width:180px}
@@ -205,12 +206,5 @@
 }
 .admin-bookstore-page .bookstore-order-edit-drawer .bookstore-field textarea{
   min-height:112px;resize:vertical;
-}
-
-/* Match the Finance Ledger's column treatment without affecting other tables. */
-.admin-shell .admin-main .admin-page-content .admin-bookstore-page table.bookstore-data-table :is(th,td) {
-  border-left:0!important;
-  border-right:0!important;
-  box-shadow:none!important;
 }
 
