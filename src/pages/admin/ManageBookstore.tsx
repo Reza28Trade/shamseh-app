@@ -365,8 +365,8 @@ export function ManageBookstore() {
         </select>
         <button type="button" className="admin-action-button" disabled={loadingBooks} onClick={() => { setBookPage(1); setAppliedSearch(search.trim()); }}>جست‌وجو</button>
       </div>
-      <div className="bookstore-table-wrap" role="region" aria-label="جدول فهرست کتاب‌ها" tabIndex={0}>
-        <table className="bookstore-data-table admin-data-table admin-data-table--seamless bookstore-books-table">
+      <div className="admin-data-table-wrap bookstore-table-wrap" role="region" aria-label="جدول فهرست کتاب‌ها" tabIndex={0}>
+        <table className="bookstore-data-table admin-data-table bookstore-books-table">
           <thead><tr><th>کتاب</th><th>مقطع و رشته</th><th>قیمت</th><th>موجودی</th><th>وضعیت</th><th>عملیات</th></tr></thead>
           <tbody>
             {loadingBooks ? <tr><td colSpan={6} className="bookstore-empty">در حال دریافت فهرست کتاب‌ها…</td></tr> : books.map(book => <tr key={book.id}>
@@ -402,8 +402,8 @@ export function ManageBookstore() {
           <option value="ALL">همه وضعیت‌ها</option>{Object.entries(labels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
         </select>
       </div>
-      <div className="bookstore-table-wrap bookstore-orders-wrap" role="region" aria-label="جدول سفارش‌ها و رسیدها" tabIndex={0}>
-        <table className="bookstore-data-table admin-data-table admin-data-table--seamless bookstore-orders-table">
+      <div className="admin-data-table-wrap bookstore-table-wrap bookstore-orders-wrap" role="region" aria-label="جدول سفارش‌ها و رسیدها" tabIndex={0}>
+        <table className="bookstore-data-table admin-data-table bookstore-orders-table">
           <thead><tr><th>شماره و تاریخ</th><th>خریدار و گیرنده</th><th>اقلام سفارش</th><th>مبلغ</th><th>وضعیت و رسید</th><th>عملیات</th></tr></thead>
           <tbody>
             {visibleOrders.map(order => <tr key={order.id}>
