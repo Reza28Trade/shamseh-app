@@ -132,7 +132,7 @@
 /* Dense operational tables and left-side book editor drawer */
 .admin-bookstore-page .bookstore-table-wrap{
   width:100%;min-width:0;max-width:100%;max-height:560px;overflow:auto;
-  border:1px solid var(--admin-border,var(--border-color));border-radius:10px;
+  border:0;border-radius:0;background:transparent;box-shadow:none;
   scrollbar-width:thin;
 }
 .admin-bookstore-page .bookstore-data-table{width:100%;min-width:880px;border-collapse:separate;border-spacing:0;table-layout:auto;font-size:11px;line-height:1.5}
