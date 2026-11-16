@@ -1,8 +1,8 @@
 /* Bookstore page layout only. Visual language is inherited from the central admin system. */
-.admin-bookstore-page{display:grid;gap:12px;min-width:0;width:100%;max-width:none;margin-inline:0;direction:rtl;}
+.admin-bookstore-page{display:grid;gap:16px;min-width:0;width:100%;max-width:none;margin-inline:0;direction:rtl;}
 .admin-shell .admin-main .admin-page-content .admin-legacy-page.admin-bookstore-page{width:100%;max-width:none;margin-inline:0;}
-.admin-bookstore-page .bookstore-card{min-width:0;padding:14px;}
-.admin-bookstore-page .bookstore-section-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:9px;}
+.admin-bookstore-page .bookstore-card{min-width:0;padding:16px;}
+.admin-bookstore-page .bookstore-section-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:0;}
 .admin-bookstore-page .bookstore-section-title{margin:0;}
 .admin-bookstore-page .bookstore-card-description{margin:0;overflow-wrap:anywhere;}
 .admin-bookstore-page .bookstore-form-grid{display:grid;gap:10px;min-width:0;margin-top:10px;}
@@ -55,8 +55,8 @@
  .admin-bookstore-page .bookstore-book-actions{grid-template-columns:repeat(3,minmax(0,1fr));}
 }
 @media(max-width:650px){
- .admin-bookstore-page{gap:8px;}
- .admin-bookstore-page .bookstore-card{padding:9px;}
+ .admin-bookstore-page{gap:12px;}
+ .admin-bookstore-page .bookstore-card{padding:12px;}
  .admin-bookstore-page .bookstore-form-primary,.admin-bookstore-page .bookstore-form-pricing{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;}
  .admin-bookstore-page .bookstore-cover-fields{grid-template-columns:minmax(0,1fr);gap:7px;}
  .admin-bookstore-page .bookstore-list-tools{grid-template-columns:minmax(0,1fr) minmax(100px,125px);gap:6px;}
@@ -79,7 +79,7 @@
  .admin-bookstore-page .bookstore-pagination>*{font-size:9px;min-height:29px;padding:4px 7px;}
 }
 @media(max-width:390px){
- .admin-bookstore-page .bookstore-card{padding:8px;}
+ .admin-bookstore-page .bookstore-card{padding:12px;}
  .admin-bookstore-page .bookstore-form-primary,.admin-bookstore-page .bookstore-form-pricing{gap:6px;}
  .admin-bookstore-page .bookstore-list-tools{grid-template-columns:minmax(0,1fr) minmax(92px,112px);}
  .admin-bookstore-page .bookstore-book-row{grid-template-columns:minmax(0,1fr);gap:6px;padding:7px;}
@@ -130,23 +130,13 @@
 
 
 /* Dense operational tables and left-side book editor drawer */
+/* Table frame and cell appearance are inherited from the exact Finance Ledger component. */
 .admin-bookstore-page .bookstore-table-wrap{
-  width:100%;min-width:0;max-width:100%;max-height:560px;overflow:auto;
-  border:0;border-radius:0;background:transparent;box-shadow:none;
-  scrollbar-width:thin;
+  width:100%;min-width:0;max-width:100%;max-height:690px;overflow:auto;
+  overscroll-behavior-inline:contain;scrollbar-width:thin;
 }
-.admin-bookstore-page .bookstore-data-table{width:100%;min-width:880px;border-collapse:separate;border-spacing:0;table-layout:auto;font-size:11px;line-height:1.5}
-.admin-bookstore-page .bookstore-data-table th{
-  position:sticky;top:0;z-index:2;padding:8px 9px;text-align:right;white-space:nowrap;
-  background:var(--admin-panel,var(--surface));border-bottom:1px solid var(--admin-border,var(--border-color));
-  font-weight:800;
-}
-.admin-bookstore-page .bookstore-data-table td{
-  padding:7px 9px;vertical-align:middle;border-bottom:1px solid var(--admin-border,var(--border-color));
-  min-width:0;overflow-wrap:anywhere;
-}
-.admin-bookstore-page .bookstore-data-table tbody tr:last-child td{border-bottom:0}
-.admin-bookstore-page .bookstore-data-table tbody tr:hover td{background:var(--admin-hover,rgba(0,0,0,.025))}
+.admin-bookstore-page .bookstore-data-table{width:100%;min-width:880px;table-layout:auto}
+.admin-bookstore-page .bookstore-orders-table{min-width:1050px}
 .admin-bookstore-page .bookstore-data-table td small{display:block;margin-top:2px;color:var(--admin-muted,var(--text-secondary));font-size:10px;line-height:1.45}
 .admin-bookstore-page .bookstore-table-book{display:flex;align-items:center;gap:8px;min-width:180px}
 .admin-bookstore-page .bookstore-table-book>div{display:grid;gap:2px;min-width:0}
@@ -229,17 +219,9 @@
   min-height:112px;resize:vertical;
 }
 
-/* Remove only the tinted vertical seams between bookstore table columns. */
-.admin-shell.admin-theme-light .admin-main .admin-page-content .admin-bookstore-page table.bookstore-data-table tbody td,
-.admin-shell.admin-theme-dark .admin-main .admin-page-content .admin-bookstore-page table.bookstore-data-table tbody td,
-.admin-shell .admin-main .admin-page-content .admin-bookstore-page table.bookstore-data-table thead th {
-  border-left: 0 !important;
-  border-right: 0 !important;
-  border-inline: 0 !important;
-  box-shadow: none !important;
-}
-.admin-shell .admin-main .admin-page-content .admin-bookstore-page table.bookstore-data-table tbody td:first-child,
-.admin-shell .admin-main .admin-page-content .admin-bookstore-page table.bookstore-data-table tbody td:last-child {
-  border-left: 0 !important;
-  border-right: 0 !important;
+/* Match the Finance Ledger's column treatment without affecting other tables. */
+.admin-shell .admin-main .admin-page-content .admin-bookstore-page table.bookstore-data-table :is(th,td) {
+  border-left:0!important;
+  border-right:0!important;
+  box-shadow:none!important;
 }
