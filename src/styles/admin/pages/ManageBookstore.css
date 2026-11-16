@@ -225,3 +225,23 @@
   border-right:0!important;
   box-shadow:none!important;
 }
+
+
+/* Keep the sticky order-table header above scrolling rows and fully opaque. */
+.admin-shell .admin-main .admin-page-content .admin-bookstore-page .bookstore-orders-wrap table.bookstore-orders-table thead {
+  position:relative;
+  z-index:30;
+}
+.admin-shell .admin-main .admin-page-content .admin-bookstore-page .bookstore-orders-wrap table.bookstore-orders-table thead th {
+  position:sticky!important;
+  top:0!important;
+  z-index:31!important;
+  opacity:1!important;
+  background-color:var(--admin-content-inner)!important;
+  background-image:none!important;
+  isolation:isolate;
+}
+.admin-shell .admin-main .admin-page-content .admin-bookstore-page .bookstore-orders-wrap table.bookstore-orders-table tbody {
+  position:relative;
+  z-index:1;
+}
