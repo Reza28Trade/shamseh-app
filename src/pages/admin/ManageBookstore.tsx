@@ -342,7 +342,24 @@ export function ManageBookstore() {
     <div className="bookstore-card admin-master-panel">
       <div className="bookstore-section-heading"><h3 className="bookstore-section-title">فهرست کتاب‌ها و موجودی</h3><span className="admin-action-summary bookstore-book-count">{bookTotal.toLocaleString('fa-IR')} کتاب</span></div>
       <div className="bookstore-list-tools">
-        <input type="search" value={search} onChange={event => setSearch(event.target.value)} onKeyDown={event => { if (event.key === 'Enter') { setBookPage(1); setAppliedSearch(search.trim()); } }} placeholder="جست‌وجوی عنوان، رشته یا توضیحات…" aria-label="جست‌وجوی کتاب‌ها" />
+        <input type="search" value={search} onChange={event => {
+          const value = event.target.value;
+          setSearch(value);
+          // Clearing the native search field (×) must also clear the applied server-side query.
+          if (!value.trim()) {
+            setBookPage(1);
+            setAppliedSearch('');
+          }
+        }} onKeyDown={event => {
+          if (event.key === 'Enter') {
+            setBookPage(1);
+            setAppliedSearch(search.trim());
+          } else if (event.key === 'Escape') {
+            setSearch('');
+            setAppliedSearch('');
+            setBookPage(1);
+          }
+        }} placeholder="جست‌وجوی عنوان، رشته یا توضیحات…" aria-label="جست‌وجوی کتاب‌ها" />
         <select value={statusFilter} onChange={event => { setBookPage(1); setStatusFilter(event.target.value as 'ALL' | 'ACTIVE' | 'INACTIVE'); }} aria-label="فیلتر وضعیت کتاب">
           <option value="ALL">همه کتاب‌ها</option><option value="ACTIVE">فقط فعال‌ها</option><option value="INACTIVE">فقط غیرفعال‌ها</option>
         </select>
