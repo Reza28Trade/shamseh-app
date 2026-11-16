@@ -245,3 +245,25 @@
   position:relative;
   z-index:1;
 }
+
+
+/* Book inventory table: keep the complete header layer above vertically scrolling rows. */
+.admin-shell .admin-main .admin-page-content .admin-bookstore-page .bookstore-table-wrap table.bookstore-books-table thead {
+  position:sticky!important;
+  top:0!important;
+  z-index:50!important;
+  isolation:isolate;
+}
+.admin-shell .admin-main .admin-page-content .admin-bookstore-page .bookstore-table-wrap table.bookstore-books-table thead th {
+  position:sticky!important;
+  top:0!important;
+  z-index:51!important;
+  opacity:1!important;
+  background:var(--admin-content-inner)!important;
+  background-image:none!important;
+  isolation:isolate;
+}
+.admin-shell .admin-main .admin-page-content .admin-bookstore-page .bookstore-table-wrap table.bookstore-books-table tbody {
+  position:relative;
+  z-index:0;
+}
