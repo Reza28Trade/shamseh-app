@@ -92,7 +92,6 @@
  .admin-bookstore-page *{scroll-behavior:auto;}
 }
 
-
 /* Final alignment refinements: page frame, academic-level controls and count badge. */
 .admin-page-content:has(.admin-bookstore-page){max-width:none;}
 .admin-bookstore-page .bookstore-levels{grid-template-rows:auto 38px;gap:5px;align-content:end;}
@@ -106,7 +105,6 @@
  .admin-bookstore-page .bookstore-levels{gap:6px;}
  .admin-bookstore-page .bookstore-level-options{gap:10px;padding-inline:7px;}
 }
-
 
 /* Bookstore: compact archive and per-book reporting */
 .bookstore-statistics-overlay{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;padding:16px;background:rgba(12,14,13,.58);backdrop-filter:blur(3px)}
@@ -128,16 +126,9 @@
 }
 @media(max-width:390px){.bookstore-statistics-overlay{padding:8px}.bookstore-statistics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+.admin-bookstore-page .bookstore-data-table{min-width:880px}
 
-/* Dense operational tables and left-side book editor drawer */
-/* Table frame and cell appearance are inherited from the exact Finance Ledger component. */
-.admin-bookstore-page .bookstore-table-wrap{
-  width:100%;min-width:0;max-width:100%;max-height:690px;overflow:auto;
-  overscroll-behavior-inline:contain;scrollbar-width:thin;
-}
-.admin-bookstore-page .bookstore-data-table{width:100%;min-width:880px;table-layout:auto}
-.admin-bookstore-page .bookstore-orders-table{min-width:1050px}
-.admin-bookstore-page .bookstore-data-table td small{display:block;margin-top:2px;color:var(--admin-muted,var(--text-secondary));font-size:10px;line-height:1.45}
+.admin-bookstore-page .bookstore-data-table td small{display:block;margin-top:2px;line-height:1.45}
 .admin-bookstore-page .bookstore-table-book{display:flex;align-items:center;gap:8px;min-width:180px}
 .admin-bookstore-page .bookstore-table-book>div{display:grid;gap:2px;min-width:0}
 .admin-bookstore-page .bookstore-table-book strong{font-size:11px;line-height:1.5}
@@ -149,7 +140,7 @@
 .admin-bookstore-page .bookstore-status.is-inactive{color:var(--admin-muted,var(--text-secondary))}
 .admin-bookstore-page .bookstore-table-actions{display:flex;align-items:center;gap:4px;flex-wrap:wrap;min-width:150px}
 .admin-bookstore-page .bookstore-table-actions .admin-action-button{min-height:27px;padding:4px 7px;font-size:10px;white-space:nowrap}
-.admin-bookstore-page .bookstore-orders-table{min-width:1050px}
+
 .admin-bookstore-page .bookstore-orders-table td:nth-child(3){min-width:155px}
 .admin-bookstore-page .bookstore-orders-table td:nth-child(6){min-width:190px}
 .admin-bookstore-page .bookstore-receipt-link{display:inline-block;margin-top:4px;white-space:nowrap}
@@ -165,8 +156,7 @@
 .admin-bookstore-page .bookstore-form-card.is-editing-drawer .bookstore-cover-fields{grid-template-columns:minmax(0,1fr)}
 @media(max-width:650px){
  .admin-bookstore-page .bookstore-table-wrap{max-height:64vh}
- .admin-bookstore-page .bookstore-data-table{font-size:10px}
- .admin-bookstore-page .bookstore-data-table th,.admin-bookstore-page .bookstore-data-table td{padding:6px 7px}
+
  .admin-bookstore-page .bookstore-form-card.is-editing-drawer{width:min(480px,96vw);max-width:96vw;padding:12px}
  .admin-bookstore-page .bookstore-form-card.is-editing-drawer .bookstore-form-primary,
  .admin-bookstore-page .bookstore-form-card.is-editing-drawer .bookstore-form-pricing{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -176,7 +166,6 @@
 .admin-bookstore-page .bookstore-order-tools input,.admin-bookstore-page .bookstore-order-tools select{width:100%;min-width:0}
 @media(max-width:650px){.admin-bookstore-page .bookstore-order-tools{grid-template-columns:minmax(0,1fr) minmax(115px,140px);gap:6px}}
 @media(max-width:390px){.admin-bookstore-page .bookstore-order-tools{grid-template-columns:minmax(0,1fr) minmax(105px,120px)}}
-
 
 /* Final review: align bookstore count pills with the finance ledger summary. */
 .admin-shell .admin-main .admin-page-content .admin-bookstore-page .bookstore-section-heading > .bookstore-book-count {
@@ -203,7 +192,6 @@
   backdrop-filter:blur(0.5px)!important;
 }
 
-
 /* Order recipient editor reuses the exact left drawer frame of the book editor. */
 .admin-bookstore-page .bookstore-order-edit-drawer{
   display:block;
@@ -226,14 +214,3 @@
   box-shadow:none!important;
 }
 
-
-/* Both bookstore tables: sticky positioning belongs to header cells only.
-   Avoid sticky row-group and tbody stacking contexts that let body rows paint over the header. */
-.admin-shell .admin-main .admin-page-content .admin-bookstore-page .bookstore-table-wrap table.admin-data-table thead th {
-  position:sticky!important;
-  top:0!important;
-  z-index:10!important;
-  opacity:1!important;
-  background-color:var(--admin-content-inner)!important;
-  background-image:none!important;
-}
