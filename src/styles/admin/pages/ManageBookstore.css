@@ -214,20 +214,17 @@
 }
 
 
-/* Order recipient editor dialog */
-.admin-bookstore-page .bookstore-order-edit-overlay{
-  position:fixed;inset:0;z-index:1500;display:grid;place-items:center;
-  padding:16px;background:rgba(15,17,16,.42);backdrop-filter:blur(2px);
+/* Order recipient editor reuses the exact left drawer frame of the book editor. */
+.admin-bookstore-page .bookstore-order-edit-drawer{
+  display:block;
 }
-.admin-bookstore-page .bookstore-order-edit-dialog{
-  display:grid;gap:11px;width:min(520px,100%);max-height:90dvh;overflow:auto;
-  padding:18px;border:1px solid var(--admin-border,var(--border-color));
-  border-radius:14px;background:var(--admin-panel,var(--surface));
-  box-shadow:0 18px 54px rgba(0,0,0,.22);
+.admin-bookstore-page .bookstore-order-edit-drawer .bookstore-order-edit-fields{
+  display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin-top:14px;
 }
-.admin-bookstore-page .bookstore-order-edit-dialog .bookstore-section-heading{margin-bottom:2px}
-.admin-bookstore-page .bookstore-order-edit-dialog .bookstore-field textarea{width:100%;min-height:78px;resize:vertical}
-@media(max-width:650px){
- .admin-bookstore-page .bookstore-order-edit-overlay{padding:9px}
- .admin-bookstore-page .bookstore-order-edit-dialog{padding:12px;gap:9px;max-height:94dvh}
+.admin-bookstore-page .bookstore-order-edit-drawer .bookstore-field input,
+.admin-bookstore-page .bookstore-order-edit-drawer .bookstore-field textarea{
+  width:100%;min-width:0;
+}
+.admin-bookstore-page .bookstore-order-edit-drawer .bookstore-field textarea{
+  min-height:112px;resize:vertical;
 }
