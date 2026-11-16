@@ -276,16 +276,26 @@ export function ManageBookstore() {
     {error && <div role="alert" className="bookstore-error">{error}</div>}
     {success && <div role="status" className="bookstore-success">{success}</div>}
 
-    {editingOrder && <div className="bookstore-order-edit-overlay" role="presentation" onMouseDown={event => { if (event.target === event.currentTarget && !busy) setEditingOrder(null); }}>
-      <section className="bookstore-order-edit-dialog" role="dialog" aria-modal="true" aria-labelledby="bookstore-order-edit-title">
-        <div className="bookstore-section-heading"><h3 id="bookstore-order-edit-title">ویرایش اطلاعات گیرنده سفارش</h3><button type="button" className="admin-action-button" disabled={busy} onClick={() => setEditingOrder(null)}>بستن</button></div>
-        <label className="bookstore-field"><span className="bookstore-field-label">نام گیرنده</span><input value={orderForm.recipientName} onChange={event => setOrderForm(v => ({ ...v, recipientName: event.target.value }))} /></label>
-        <label className="bookstore-field"><span className="bookstore-field-label">شماره تماس</span><input value={orderForm.recipientPhone} onChange={event => setOrderForm(v => ({ ...v, recipientPhone: event.target.value }))} /></label>
-        <label className="bookstore-field"><span className="bookstore-field-label">کد پستی</span><input value={orderForm.postalCode} onChange={event => setOrderForm(v => ({ ...v, postalCode: event.target.value }))} /></label>
-        <label className="bookstore-field"><span className="bookstore-field-label">نشانی کامل</span><textarea rows={3} value={orderForm.shippingAddress} onChange={event => setOrderForm(v => ({ ...v, shippingAddress: event.target.value }))} /></label>
-        <div className="bookstore-form-actions"><button type="button" className="admin-action-button" disabled={busy} onClick={() => void saveOrderEdit()}>{busy ? 'در حال ذخیره…' : 'ذخیره اطلاعات'}</button></div>
+    {editingOrder && <>
+      <button type="button" className="bookstore-edit-backdrop" aria-label="بستن پنل ویرایش سفارش" disabled={busy} onClick={() => setEditingOrder(null)} />
+      <section className="bookstore-card bookstore-form-card bookstore-order-edit-drawer admin-master-panel is-editing-drawer" role="dialog" aria-modal="true" aria-labelledby="bookstore-order-edit-title">
+        <div className="bookstore-section-heading">
+          <h3 id="bookstore-order-edit-title" className="bookstore-section-title">ویرایش اطلاعات گیرنده سفارش</h3>
+          <button type="button" className="admin-action-button" disabled={busy} onClick={() => setEditingOrder(null)}>بستن پنل</button>
+        </div>
+        <p className="bookstore-card-description">اطلاعات گیرنده و نشانی ارسال این سفارش را اصلاح کنید.</p>
+        <div className="bookstore-form-grid bookstore-order-edit-fields">
+          <label className="bookstore-field"><span className="bookstore-field-label">نام گیرنده</span><input value={orderForm.recipientName} onChange={event => setOrderForm(v => ({ ...v, recipientName: event.target.value }))} /></label>
+          <label className="bookstore-field"><span className="bookstore-field-label">شماره تماس</span><input value={orderForm.recipientPhone} onChange={event => setOrderForm(v => ({ ...v, recipientPhone: event.target.value }))} /></label>
+          <label className="bookstore-field"><span className="bookstore-field-label">کد پستی</span><input value={orderForm.postalCode} onChange={event => setOrderForm(v => ({ ...v, postalCode: event.target.value }))} /></label>
+          <label className="bookstore-field bookstore-description-field"><span className="bookstore-field-label">نشانی کامل</span><textarea rows={4} value={orderForm.shippingAddress} onChange={event => setOrderForm(v => ({ ...v, shippingAddress: event.target.value }))} /></label>
+        </div>
+        <div className="bookstore-form-actions">
+          <button type="button" className="admin-action-button" disabled={busy} onClick={() => void saveOrderEdit()}>{busy ? 'در حال ذخیره…' : 'ذخیره اطلاعات'}</button>
+          <button type="button" className="admin-action-button" disabled={busy} onClick={() => setEditingOrder(null)}>لغو ویرایش</button>
+        </div>
       </section>
-    </div>}
+    </>}
     {editingId && <button type="button" className="bookstore-edit-backdrop" aria-label="بستن پنل ویرایش" onClick={resetForm} />}
     <div className={"bookstore-card bookstore-form-card admin-master-panel" + (editingId ? " is-editing-drawer" : "")}>
       <div className="bookstore-section-heading">
