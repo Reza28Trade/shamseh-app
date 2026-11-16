@@ -2513,11 +2513,11 @@
   background:var(--admin-accent-soft);
 }
 
-/* Finance ledger: remove column seams from cell borders and inset shadows. */
-.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-ledger-panel table.admin-data-table :is(th,td) {
-  border-left: 0 !important;
-  border-right: 0 !important;
-  box-shadow: none !important;
+/* Ledger-style table modifier: shared by the finance ledger and bookstore tables. */
+.admin-shell .admin-main .admin-page-content table.admin-data-table--ledger :is(th,td) {
+  border-left: 0;
+  border-right: 0;
+  box-shadow: none;
 }
 
 /* Registration list follows the same borderless ledger table treatment. */
