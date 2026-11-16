@@ -229,7 +229,13 @@
   min-height:112px;resize:vertical;
 }
 
-/* Bookstore tables: flat ticket-list treatment with horizontal separators only. */
+/* Bookstore tables: keep the outer table frame, remove only inner vertical dividers. */
+.admin-bookstore-page .bookstore-table-wrap {
+  border: 1px solid var(--admin-content-border, var(--admin-border, var(--border-color))) !important;
+  border-radius: var(--admin-radius-md, 8px) !important;
+  background: var(--admin-content-inner, var(--admin-panel, var(--surface))) !important;
+  box-shadow: none !important;
+}
 .admin-bookstore-page table.bookstore-data-table,
 .admin-bookstore-page table.bookstore-data-table thead,
 .admin-bookstore-page table.bookstore-data-table tbody,
