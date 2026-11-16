@@ -228,3 +228,37 @@
 .admin-bookstore-page .bookstore-order-edit-drawer .bookstore-field textarea{
   min-height:112px;resize:vertical;
 }
+
+/* Bookstore tables: flat ticket-list treatment with horizontal separators only. */
+.admin-bookstore-page table.bookstore-data-table,
+.admin-bookstore-page table.bookstore-data-table thead,
+.admin-bookstore-page table.bookstore-data-table tbody,
+.admin-bookstore-page table.bookstore-data-table tr {
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+.admin-bookstore-page table.bookstore-data-table th,
+.admin-bookstore-page table.bookstore-data-table td {
+  border-inline: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+.admin-bookstore-page table.bookstore-data-table thead th {
+  background: var(--admin-content-inner, var(--admin-panel, var(--surface))) !important;
+  border-top: 0 !important;
+  border-bottom: 1px solid var(--admin-content-border, var(--admin-border, var(--border-color))) !important;
+}
+.admin-bookstore-page table.bookstore-data-table tbody td {
+  background: transparent !important;
+  border-top: 0 !important;
+  border-bottom: 1px solid var(--admin-content-border, var(--admin-border, var(--border-color))) !important;
+}
+.admin-bookstore-page table.bookstore-data-table tbody tr:last-child td {
+  border-bottom: 0 !important;
+}
+.admin-bookstore-page table.bookstore-data-table tbody tr:hover td {
+  background: var(--admin-accent-soft, var(--admin-hover, rgba(0,0,0,.025))) !important;
+}
