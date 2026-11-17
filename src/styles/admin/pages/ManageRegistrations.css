@@ -466,3 +466,105 @@
     animation: none;
   }
 }
+
+
+/* Small semantic content hooks; shared colors and typography remain centralized. */
+.admin-finance-section-title,
+.admin-finance-approval-title,
+.admin-finance-drawer-title {
+  margin: 0;
+  min-width: 0;
+}
+
+.admin-finance-section-count,
+.admin-finance-settled-status {
+  align-self: center;
+  white-space: nowrap;
+}
+
+.admin-finance-secondary-meta,
+.admin-finance-secondary-note,
+.admin-finance-field-hint,
+.admin-finance-cell-meta,
+.admin-finance-drawer-subtitle,
+.admin-finance-drawer-note {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.admin-finance-loading {
+  margin: 0;
+}
+
+.admin-finance-approval-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.admin-finance-checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.admin-finance-cell-meta {
+  margin-top: 3px;
+}
+
+.admin-finance-empty-cell {
+  text-align: center;
+}
+
+.admin-finance-pagination-summary,
+.admin-finance-pagination-page {
+  min-width: 0;
+}
+
+.admin-finance-pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.admin-finance-course-row,
+.admin-finance-tuition-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+  padding-block: 4px;
+  overflow-wrap: anywhere;
+}
+
+.admin-finance-rejection-reason,
+.admin-finance-refund-details {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.8;
+}
+
+.admin-finance-receipt-link {
+  display: inline-flex;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.admin-finance-history-row {
+  min-width: 0;
+  padding-block: 7px;
+  border-bottom: 1px solid var(--admin-border);
+  overflow-wrap: anywhere;
+}
+
+.admin-finance-drawer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
