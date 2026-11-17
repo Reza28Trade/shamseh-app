@@ -68,6 +68,7 @@ async function main() {
     examId = mockExam.id;
 
     const jpeg = { buffer: Buffer.from([0xff, 0xd8, 0xff]), mimetype: 'image/jpeg', size: 3 };
+    const twoJpegs = [jpeg, { ...jpeg }];
     const submitted = await service.createPublicRegistration({
       applicantFullName: 'CI Finance Student',
       nationalId,
@@ -77,7 +78,7 @@ async function main() {
       courseIds: JSON.stringify([firstCourse.id]),
       claimedAmount: 1200,
       trackingCode: 'CI-INITIAL-OVERPAYMENT',
-    }, jpeg);
+    }, twoJpegs);
     registrationId = submitted.id;
     assert.equal(submitted.status, 'PENDING_REVIEW');
     assert.ok(submitted.paymentId);
@@ -110,6 +111,7 @@ async function main() {
     assert.equal(initialPayment.status, 'APPROVED');
     assert.equal(typeof initialPayment.receipts[0].fileSize, 'number', 'receipt BigInt must be JSON-safe');
     assert.equal(initialPayment.receipts[0].fileSize, 3);
+    assert.equal(initialPayment.receipts.length, 2, 'service should persist both initial receipt images');
 
     const student = await prisma.student.findUniqueOrThrow({
       where: { id: studentId },
@@ -235,8 +237,12 @@ async function main() {
       studentActor,
       secondInstallments[0].id,
       { claimedAmount: 200, trackingCode: 'CI-INSTALLMENT-1' },
-      jpeg,
+      twoJpegs,
     );
+    const installmentReceipts = await prisma.registrationPayment.findUniqueOrThrow({
+      where: { id: installmentPayment.id }, include: { receipts: true },
+    });
+    assert.equal(installmentReceipts.receipts.length, 2, 'installment payment should preserve both receipt images');
     const installmentReview = await service.reviewInstallmentPayment(actor, installmentPayment.id, {
       status: 'APPROVED',
       approvedAmount: 200,
@@ -275,7 +281,7 @@ async function main() {
       phone,
       claimedAmount: 300,
       trackingCode: 'CI-CORRECTED-RECEIPT',
-    }, jpeg);
+    }, twoJpegs);
     assert.equal(correctedPayment.status, 'PENDING');
     const correctedRegistration = await prisma.registration.findUniqueOrThrow({
       where: { id: thirdRegistrationId },
@@ -284,7 +290,7 @@ async function main() {
     assert.equal(correctedRegistration.status, 'PENDING_REVIEW');
     assert.equal(correctedRegistration.payments.length, 2);
     assert.equal(correctedRegistration.payments.find((item) => item.id === thirdSubmitted.paymentId).status, 'REJECTED');
-    assert.equal(correctedRegistration.payments.find((item) => item.id === correctedPayment.id).receipts.length, 1);
+    assert.equal(correctedRegistration.payments.find((item) => item.id === correctedPayment.id).receipts.length, 2, 'correction upload should persist both receipt images');
     assert.equal(correctedRegistration.payments.find((item) => item.id === thirdSubmitted.paymentId).receipts.length, 1);
     console.log('Registration finance service integration test passed.');
   } finally {
