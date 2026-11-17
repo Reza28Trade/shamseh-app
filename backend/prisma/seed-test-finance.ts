@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { access, mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { PrismaClient } from '@prisma/client';
 
@@ -37,8 +37,12 @@ async function ensureReceiptFile() {
   await mkdir(RECEIPT_DIR, { recursive: true });
   const path = join(RECEIPT_DIR, RECEIPT_KEY);
   try {
-    await access(path);
-  } catch {
+    const existing = await readFile(path);
+    if (!existing.equals(PNG_BYTES)) {
+      throw new Error('فایل رسید آزمایشی با همین نام وجود دارد اما محتوای آن متعلق به این Fixture نیست؛ فایل موجود تغییر داده نشد.');
+    }
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
     await writeFile(path, PNG_BYTES, { flag: 'wx', mode: 0o640 });
   }
 }
