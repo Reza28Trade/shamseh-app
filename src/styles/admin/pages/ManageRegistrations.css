@@ -174,33 +174,36 @@
   inset: 0;
   z-index: 1000;
   display: flex;
-  align-items: stretch;
-  justify-content: flex-start;
-  padding: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
   overflow: auto;
-  direction: ltr;
+  direction: rtl;
+}
+
+.admin-finance-drawer-overlay,
+.admin-finance-refund-overlay {
+  z-index: 1100;
 }
 
 .admin-finance-drawer,
 .admin-finance-refund-drawer {
   display: flex;
-  flex: 0 0 auto;
+  flex: 0 1 auto;
   flex-direction: column;
   align-items: stretch;
   gap: 12px;
-  width: min(560px, 92vw);
-  height: 100vh;
-  height: 100dvh;
-  max-height: 100vh;
-  max-height: 100dvh;
+  width: min(900px, 96vw);
+  max-height: 90vh;
+  max-height: 90dvh;
   min-width: 0;
-  margin: 0;
+  margin: auto;
   padding: 16px;
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
   direction: rtl;
-  animation: admin-finance-drawer-enter 220ms ease-out both;
+  animation: admin-finance-dialog-enter 180ms ease-out both;
 }
 
 .admin-finance-drawer-header {
@@ -349,12 +352,12 @@
 }
 
 .admin-finance-refund-drawer {
-  width: min(520px, 92vw);
+  width: min(600px, 96vw);
 }
 
-@keyframes admin-finance-drawer-enter {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(0); }
+@keyframes admin-finance-dialog-enter {
+  from { opacity: 0; transform: translateY(6px) scale(.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @media (max-width: 1100px) {
@@ -421,7 +424,9 @@
 
   .admin-finance-drawer,
   .admin-finance-refund-drawer {
-    width: min(520px, 96vw);
+    width: 96vw;
+    max-height: 94vh;
+    max-height: 94dvh;
     padding: 13px;
   }
 
