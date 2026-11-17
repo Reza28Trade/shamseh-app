@@ -1485,6 +1485,108 @@
 }
 
 
+/* Finance page semantic component states and content typography. */
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-stat-value {
+  display: block;
+  min-width: 0;
+  color: var(--admin-text);
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-stat-label {
+  color: var(--admin-sub);
+  font-size: 11px;
+  line-height: 1.7;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-section-count {
+  color: var(--admin-accent);
+  font-size: 11px;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page :is(
+  .admin-finance-secondary-meta,
+  .admin-finance-secondary-note,
+  .admin-finance-field-hint,
+  .admin-finance-cell-meta,
+  .admin-finance-drawer-subtitle,
+  .admin-finance-drawer-note
+) {
+  color: var(--admin-sub);
+  font-size: 11px;
+  line-height: 1.8;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-settled-status {
+  color: var(--admin-accent);
+  font-size: 12px;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-stat-value.is-accent,
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-balance-cell.is-settled,
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-balance-summary.is-settled {
+  color: var(--admin-accent);
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-stat-value.is-warning,
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-debtor-count.has-debtors,
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-balance-cell.is-due,
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-balance-summary.is-due {
+  color: var(--admin-warning-text, var(--admin-sub));
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-debtor-count {
+  color: var(--admin-sub);
+  font-size: 11px;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-search-input {
+  flex: 1 1 220px;
+  min-width: 0;
+  min-height: var(--admin-control-height);
+  padding: 9px 11px;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-control-radius);
+  background: var(--admin-control);
+  color: var(--admin-text);
+  font: inherit;
+  font-size: 11px;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-balance-cell {
+  padding: 10px;
+  border-bottom: 1px solid var(--admin-border);
+  white-space: nowrap;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-balance-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-approval-field {
+  color: var(--admin-text);
+  font-size: 11px;
+  font-weight: 700;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-rejection-reason {
+  color: var(--admin-warning-text, var(--admin-sub));
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-receipt-link {
+  color: var(--admin-accent);
+  font-size: 11px;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page :is(
+  .admin-finance-course-row,
+  .admin-finance-tuition-row,
+  .admin-finance-history-row,
+  .admin-finance-refund-details,
+  .admin-finance-installment-row
+) {
+  color: var(--admin-text);
+  font-size: 11px;
+  line-height: 1.8;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-installment-row {
+  border-bottom: 1px solid var(--admin-border);
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-empty-cell {
+  color: var(--admin-sub);
+}
+
+
 /* Registration page shared buttons and filters. */
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-shared-manageregistrations-button-style {
   min-height:35px;
