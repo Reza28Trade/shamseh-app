@@ -27,8 +27,8 @@ function assertConfiguration() {
   if (process.env.CONFIRM_FINANCE_FIXTURES !== 'YES') {
     throw new Error('برای اجرای کنترل‌شده، CONFIRM_FINANCE_FIXTURES=YES را صریحاً تنظیم کنید.');
   }
-  if (nationalIds.length !== 8 || nationalIds.some((id) => !/^TEST\d{3,}$/.test(id))) {
-    throw new Error('TEST_FINANCE_NATIONAL_IDS باید دقیقاً شامل ۸ کد ملی آزمایشی موجود با قالب TEST001 باشد.');
+  if (nationalIds.length !== 9 || nationalIds.some((id) => !/^TEST\d{3,}$/.test(id))) {
+    throw new Error('TEST_FINANCE_NATIONAL_IDS باید دقیقاً شامل ۹ کد ملی آزمایشی موجود با قالب TEST001 باشد.');
   }
   if (!courseId) throw new Error('TEST_FINANCE_COURSE_ID باید شناسه یک دوره فعال موجود باشد.');
 }
@@ -332,7 +332,7 @@ async function main() {
     select: { id: true, nationalId: true, fullName: true, phone: true, academicLevel: true, fieldCode: true },
   });
   if (studentRows.length !== nationalIds.length) {
-    throw new Error('همه ۸ هنرجوی آزمایشی موجود پیدا نشدند؛ هیچ هنرجویی ساخته یا اصلاح نمی‌شود.');
+    throw new Error('همه ۹ هنرجوی آزمایشی موجود پیدا نشدند؛ هیچ هنرجویی ساخته یا اصلاح نمی‌شود.');
   }
   const studentsByNationalId = new Map(studentRows.map((student) => [student.nationalId, student]));
   const students = nationalIds.map((nationalId) => studentsByNationalId.get(nationalId)!);
@@ -346,6 +346,7 @@ async function main() {
     { scenario: 'PENDING_RECEIPT', status: 'PENDING_REVIEW', initialRatio: 0.6, paymentStatus: 'PENDING' },
     { scenario: 'NEEDS_CORRECTION_REJECTED_RECEIPT', status: 'NEEDS_CORRECTION', initialRatio: 0.6, paymentStatus: 'REJECTED', rejectionReason: 'رسید آزمایشی نیازمند ارسال مجدد است.' },
     { scenario: 'REJECTED_REGISTRATION', status: 'REJECTED', initialRatio: 0.6, paymentStatus: 'REJECTED', rejectionReason: 'رد آزمایشی ثبت‌نام.' },
+    { scenario: 'OLDEST_DEBT_OVERPAYMENT', status: 'APPROVED', initialRatio: 0.6, installmentRatios: [0.2, 0.2], paymentStatus: 'APPROVED' },
   ] as const;
 
   // Complete read-only preflight before creating the receipt file or any database rows.
@@ -384,14 +385,14 @@ async function main() {
     }));
   }
 
-  const sixtyPercentRegistration = await prisma.registration.findFirstOrThrow({
+  const overpaymentRegistration = await prisma.registration.findFirstOrThrow({
     where: {
-      studentId: students[1].id,
-      reviewHistory: { some: { action: FIXTURE_ACTION, note: 'SIXTY_PERCENT_TWO_INSTALLMENTS' } },
+      studentId: students[8].id,
+      reviewHistory: { some: { action: FIXTURE_ACTION, note: 'OLDEST_DEBT_OVERPAYMENT' } },
     },
     select: { id: true },
   });
-  const allocation = await addOldestDebtAllocation(students[1].id, sixtyPercentRegistration.id, course.price);
+  const allocation = await addOldestDebtAllocation(students[8].id, overpaymentRegistration.id, course.price);
 
   process.stdout.write(JSON.stringify(results, null, 2) + '\n');
   process.stdout.write(JSON.stringify({ scenario: 'OLDEST_DEBT_FIRST_ALLOCATION', ...allocation }, null, 2) + '\n');
