@@ -55,7 +55,7 @@ async function hasFixture(studentId: string, scenario: string) {
 
 async function createFixture(input: {
   student: {
-    id: string; nationalId: string; fullName: string; phone: string | null;
+    id: string; nationalId: string; fullName: string; phone: string;
     academicLevel: 'MASTER' | 'DOCTORATE' | null; fieldCode: string | null;
   };
   course: { id: string; title: string; price: number };
@@ -118,7 +118,7 @@ async function createFixture(input: {
       data: {
         applicantFullName: student.fullName,
         nationalId: student.nationalId,
-        phone: student.phone || '09120000000',
+        phone: student.phone,
         academicLevel: student.academicLevel || 'MASTER',
         fieldCode: student.fieldCode || 'TEST',
         studentId: student.id,
