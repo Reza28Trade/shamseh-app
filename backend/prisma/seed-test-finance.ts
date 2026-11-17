@@ -213,7 +213,7 @@ async function addOldestDebtAllocation(studentId: string, registrationId: string
 
   return prisma.$transaction(async (tx) => {
     const installments = await tx.installment.findMany({
-      where: { registration: { studentId, status: 'APPROVED' } },
+      where: { registrationId, registration: { studentId, status: 'APPROVED' } },
       include: { allocations: { select: { amount: true } } },
       orderBy: [{ dueDate: 'asc' }, { sequence: 'asc' }],
     });
