@@ -355,7 +355,14 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         courses: { select: { id: true, courseTitleSnapshot: true, coursePriceSnapshot: true } },
         payments: {
           orderBy: { createdAt: 'desc' },
-          include: { receipts: { orderBy: { uploadedAt: 'desc' }, select: { id: true, mimeType: true, fileSize: true, uploadedAt: true } } },
+          include: {
+            receipts: { orderBy: { uploadedAt: 'desc' }, select: { id: true, mimeType: true, fileSize: true, uploadedAt: true } },
+            allocations: {
+              include: {
+                installment: { select: { id: true, registrationId: true, sequence: true, dueDate: true } },
+              },
+            },
+          },
         },
         installments: {
           include: { allocations: { select: { amount: true, payment: { select: { status: true } } } } },
@@ -394,6 +401,10 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
             // Prisma BigInt values cannot be JSON-serialized by Nest/Express.
             // Receipt uploads are capped at 8 MiB, so Number is exact and safe here.
             fileSize: receipt.fileSize === null ? null : Number(receipt.fileSize),
+          })),
+          allocations: payment.allocations.map((allocation) => ({
+            ...allocation,
+            amount: Number(allocation.amount),
           })),
         })),
       };
