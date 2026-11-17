@@ -11,7 +11,7 @@ export function StudentRegistrationFinance(){
   const dark=theme==='dark';
   const [registrations,setRegistrations]=useState<Registration[]>([]);
   const [refunds,setRefunds]=useState<Refund[]>([]);
-  const [files,setFiles]=useState<Record<string,File|null>>({});
+  const [files,setFiles]=useState<Record<string,File[]>>({});
   const [amounts,setAmounts]=useState<Record<string,string>>({});
   const [tracking,setTracking]=useState<Record<string,string>>({});
   const [refundAmounts,setRefundAmounts]=useState<Record<string,string>>({});
@@ -40,15 +40,15 @@ export function StudentRegistrationFinance(){
   useEffect(()=>{void load();},[load]);
   const submitPayment=async(event:FormEvent,inst:Installment)=>{
     event.preventDefault();setError('');setNotice('');
-    const file=files[inst.id], amount=Number(amounts[inst.id]);
-    if(!file||!Number.isFinite(amount)||amount<=0){setError('مبلغ و تصویر رسید را برای قسط انتخاب کنید.');return;}
-    const form=new FormData();form.set('claimedAmount',String(amount));form.set('trackingCode',tracking[inst.id]||'');form.set('receipt',file);
+    const receiptFiles=files[inst.id]||[], amount=Number(amounts[inst.id]);
+    if(receiptFiles.length<1||receiptFiles.length>2||!Number.isFinite(amount)||amount<=0){setError('مبلغ و یک یا دو تصویر رسید را برای قسط انتخاب کنید.');return;}
+    const form=new FormData();form.set('claimedAmount',String(amount));form.set('trackingCode',tracking[inst.id]||'');receiptFiles.forEach(file=>form.append('receipt',file));
     try{
       const response=await fetch('/api/student/installments/'+encodeURIComponent(inst.id)+'/payments',{method:'POST',credentials:'include',body:form});
       const data=await response.json().catch(()=>({}));
       if(!response.ok)throw new Error(data.message||'ارسال رسید ناموفق بود.');
       setNotice('رسید قسط برای بررسی مدیریت ارسال شد. تا تأیید رسید، بدهی تسویه‌شده محسوب نمی‌شود.');
-      setFiles(prev=>({...prev,[inst.id]:null}));await load();
+      setFiles(prev=>({...prev,[inst.id]:[]}));await load();
     }catch(e){setError(e instanceof Error?e.message:'ارسال رسید ناموفق بود.');}
   };
   const submitRefund=async(event:FormEvent,registrationId:string)=>{
@@ -86,7 +86,7 @@ export function StudentRegistrationFinance(){
         {inst.balance>0&&<form onSubmit={e=>void submitPayment(e,inst)} style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,180px),1fr))',gap:9}}>
           <input style={field} type="number" min="1" max={inst.balance} step="1" placeholder="مبلغ پرداخت (تومان)" value={amounts[inst.id]||''} onChange={e=>setAmounts(p=>({...p,[inst.id]:e.target.value}))} required/>
           <input style={field} placeholder="شماره پیگیری (اختیاری)" value={tracking[inst.id]||''} onChange={e=>setTracking(p=>({...p,[inst.id]:e.target.value}))}/>
-          <input style={field} type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>setFiles(p=>({...p,[inst.id]:e.target.files?.[0]??null}))} required/>
+          <input style={field} type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={e=>setFiles(p=>({...p,[inst.id]:Array.from(e.target.files??[])}))} required/>
           <button style={button} type="submit">ارسال رسید قسط</button>
         </form>}
       </div>)}
