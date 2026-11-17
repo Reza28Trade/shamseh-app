@@ -2215,6 +2215,10 @@
 
 
 
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-drawer-header {
+  background: var(--admin-card);
+}
+
 /* Additional semantic finance hooks: layout remains in the page module. */
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-stat-label {
   color: var(--admin-sub);
