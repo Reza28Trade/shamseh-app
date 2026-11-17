@@ -245,8 +245,8 @@ async function main() {
     assert.equal(installmentReceipts.receipts.length, 2, 'installment payment should preserve both receipt images');
     const installmentReview = await service.reviewInstallmentPayment(actor, installmentPayment.id, {
       status: 'APPROVED',
-      approvedAmount: 200,
-      reviewNote: 'CI installment approval',
+      approvedAmount: 250,
+      reviewNote: 'CI installment overpayment approval',
     });
     assert.equal(installmentReview.status, 'APPROVED');
     const updatedOldestInstallment = await prisma.installment.findUniqueOrThrow({ where: { id: secondInstallments[0].id } });
