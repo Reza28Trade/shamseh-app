@@ -279,7 +279,6 @@ async function addOldestDebtAllocation(studentId: string, registrationId: string
 
 async function main() {
   assertConfiguration();
-  await ensureReceiptFile();
 
   const courseRow = await prisma.course.findFirst({
     where: { id: courseId, status: 'ACTIVE', price: { not: null } },
@@ -309,6 +308,33 @@ async function main() {
     { scenario: 'NEEDS_CORRECTION_REJECTED_RECEIPT', status: 'NEEDS_CORRECTION', initialRatio: 0.6, paymentStatus: 'REJECTED', rejectionReason: 'رسید آزمایشی نیازمند ارسال مجدد است.' },
     { scenario: 'REJECTED_REGISTRATION', status: 'REJECTED', initialRatio: 0.6, paymentStatus: 'REJECTED', rejectionReason: 'رد آزمایشی ثبت‌نام.' },
   ] as const;
+
+  // Complete read-only preflight before creating the receipt file or any database rows.
+  for (let index = 0; index < scenarios.length; index += 1) {
+    const scenario = scenarios[index];
+    const student = students[index];
+    if (await hasFixture(student.id, scenario.scenario)) continue;
+
+    if (scenario.status === 'APPROVED') {
+      const enrollment = await prisma.enrollment.findUnique({
+        where: { studentId_courseId: { studentId: student.id, courseId: course.id } },
+        select: { status: true },
+      });
+      if (enrollment && enrollment.status !== 'ACTIVE') {
+        throw new Error(`وضعیت ثبت‌نام دوره برای ${student.nationalId} فعال نیست؛ هیچ داده‌ای تغییر نکرد.`);
+      }
+    } else if (scenario.status === 'PENDING_REVIEW' || scenario.status === 'NEEDS_CORRECTION') {
+      const openRegistration = await prisma.registration.findFirst({
+        where: { nationalId: student.nationalId, status: { in: ['PENDING_REVIEW', 'NEEDS_CORRECTION'] } },
+        select: { id: true },
+      });
+      if (openRegistration) {
+        throw new Error(`برای ${student.nationalId} یک ثبت‌نام باز موجود است؛ هیچ داده‌ای ساخته نشد.`);
+      }
+    }
+  }
+
+  await ensureReceiptFile();
 
   const results = [];
   for (let index = 0; index < scenarios.length; index += 1) {
