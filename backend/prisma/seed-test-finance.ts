@@ -293,9 +293,20 @@ async function main() {
         take: 50,
       }),
     ]);
+    const openRegistrations = students.length ? await prisma.registration.findMany({
+      where: {
+        nationalId: { in: students.map((student) => student.nationalId) },
+        status: { in: ['PENDING_REVIEW', 'NEEDS_CORRECTION'] },
+      },
+      select: { nationalId: true },
+    }) : [];
+    const openNationalIds = new Set(openRegistrations.map((item) => item.nationalId));
     process.stdout.write(JSON.stringify({
       mode: 'READ_ONLY_CANDIDATE_LIST',
-      students,
+      students: students.map((student) => ({
+        ...student,
+        hasOpenRegistration: openNationalIds.has(student.nationalId),
+      })),
       courses: courses.map((course) => ({ ...course, price: Number(course.price) })),
     }, null, 2) + '\\n');
     return;
@@ -312,14 +323,15 @@ async function main() {
   }
   const course = { ...courseRow, price: Number(courseRow.price) };
 
-  const students = await prisma.student.findMany({
+  const studentRows = await prisma.student.findMany({
     where: { nationalId: { in: nationalIds }, user: { role: 'STUDENT' } },
     select: { id: true, nationalId: true, fullName: true, phone: true, academicLevel: true, fieldCode: true },
-    orderBy: { nationalId: 'asc' },
   });
-  if (students.length !== nationalIds.length) {
+  if (studentRows.length !== nationalIds.length) {
     throw new Error('همه ۸ هنرجوی آزمایشی موجود پیدا نشدند؛ هیچ هنرجویی ساخته یا اصلاح نمی‌شود.');
   }
+  const studentsByNationalId = new Map(studentRows.map((student) => [student.nationalId, student]));
+  const students = nationalIds.map((nationalId) => studentsByNationalId.get(nationalId)!);
 
   const scenarios = [
     { scenario: 'FULLY_PAID', status: 'APPROVED', initialRatio: 1, paymentStatus: 'APPROVED' },
