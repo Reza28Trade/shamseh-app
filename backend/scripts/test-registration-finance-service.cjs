@@ -235,8 +235,8 @@ async function main() {
 
     const installmentPayment = await service.submitInstallmentPayment(
       studentActor,
-      secondInstallments[0].id,
-      { claimedAmount: 200, trackingCode: 'CI-INSTALLMENT-1' },
+      secondInstallments[1].id,
+      { claimedAmount: 250, trackingCode: 'CI-INSTALLMENT-OVERPAY-OLDEST-FIRST' },
       twoJpegs,
     );
     const installmentReceipts = await prisma.registrationPayment.findUniqueOrThrow({
@@ -249,8 +249,16 @@ async function main() {
       reviewNote: 'CI installment approval',
     });
     assert.equal(installmentReview.status, 'APPROVED');
-    const updatedInstallment = await prisma.installment.findUniqueOrThrow({ where: { id: secondInstallments[0].id } });
-    assert.equal(updatedInstallment.status, 'PAID');
+    const updatedOldestInstallment = await prisma.installment.findUniqueOrThrow({ where: { id: secondInstallments[0].id } });
+    const updatedSelectedInstallment = await prisma.installment.findUniqueOrThrow({ where: { id: secondInstallments[1].id } });
+    assert.equal(updatedOldestInstallment.status, 'PAID', 'the oldest installment must be settled first even when the later installment was selected');
+    assert.equal(updatedSelectedInstallment.status, 'PARTIALLY_PAID', 'the remainder must flow to the next oldest installment');
+    const installmentAllocations = await prisma.paymentAllocation.findMany({
+      where: { paymentId: installmentPayment.id },
+      include: { installment: { select: { sequence: true } } },
+      orderBy: { installment: { sequence: 'asc' } },
+    });
+    assert.deepEqual(installmentAllocations.map(item => [item.installment.sequence, Number(item.amount)]), [[1, 200], [2, 50]]);
 
     const paid = await service.markRefundPaid(actor, refund.id, { transferReference: 'CI-TRANSFER-001' });
     assert.equal(paid.status, 'PAID');
