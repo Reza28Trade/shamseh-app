@@ -80,7 +80,8 @@ async function createFixture(input: {
   if (await hasFixture(student.id, scenario)) {
     return { scenario, result: 'already exists' };
   }
-  if (!student.phone?.trim()) {
+  const studentPhone = student.phone;
+  if (!studentPhone?.trim()) {
     throw new Error(`شماره همراه هنرجوی ${student.nationalId} ثبت نشده است؛ برای حفظ اطلاعات واقعی، هیچ شماره‌ای جایگزین نمی‌شود و سناریو ساخته نخواهد شد.`);
   }
 
@@ -125,7 +126,7 @@ async function createFixture(input: {
       data: {
         applicantFullName: student.fullName,
         nationalId: student.nationalId,
-        phone: student.phone,
+        phone: studentPhone,
         academicLevel: student.academicLevel || 'MASTER',
         fieldCode: student.fieldCode || 'TEST',
         studentId: student.id,
