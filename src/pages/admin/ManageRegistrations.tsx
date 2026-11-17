@@ -169,7 +169,7 @@ export function ManageRegistrations(){
       detail:item.transferReference?'شناسه انتقال: '+item.transferReference+' · '+item.reason:item.reason,
     })),
   ].sort((a,b)=>new Date(b.date).getTime()-new Date(a.date).getTime());
-  return <section className="admin-finance-registration-page admin-extracted-manageregistrations-1">
+  return <section className="admin-finance-registration-page">
     <div className="admin-finance-stat-grid">
       {[
         {label:'ثبت‌نام تأییدشده',value:new Intl.NumberFormat('fa-IR').format(approvedRegistrations.length),tone:'var(--admin-text)'},
@@ -259,7 +259,7 @@ export function ManageRegistrations(){
       </form>
     </div>}
 
-    {tab==='registrations'?<section className="admin-action-center admin-master-panel admin-finance-registration-list-panel admin-extracted-manageregistrations-64">
+    {tab==='registrations'?<section className="admin-action-center admin-master-panel admin-finance-registration-list-panel">
     <div className="admin-finance-tabs">
       <button className={`admin-action-button${isTabActive('registrations') ? ' is-active' : ''}`} onClick={()=>{setTab('registrations');setStatusFilter('ALL');setListPage(1);}}>ثبت‌نام‌ها و رسیدها</button>
       <button className={`admin-action-button${isTabActive('refunds') ? ' is-active' : ''}`} onClick={()=>{setTab('refunds');setStatusFilter('ALL');setListPage(1);}}>درخواست‌های بازپرداخت</button>
@@ -280,7 +280,7 @@ export function ManageRegistrations(){
           <td>{item.academicLevel==='MASTER'?'ارشد':'دکتری'}<div className="admin-finance-cell-meta">کد رشته: {item.fieldCode}</div></td>
           <td>{new Intl.NumberFormat('fa-IR').format(item.courses.length)} دوره</td>
           <td>{money(item.finalTuition)}</td>
-          <td className="admin-extracted-manageregistrations-77">{money(settled)}</td>
+          <td >{money(settled)}</td>
           <td className={`admin-finance-balance-cell${balance > 0 ? ' is-due' : ' is-settled'}`}>{money(balance)}</td>
           <td>{regStatus[item.status]||item.status}</td>
           <td><button type="button" className="admin-action-button" onClick={()=>setSelectedRegistration(item)}>مشاهده جزئیات</button></td>
@@ -288,7 +288,7 @@ export function ManageRegistrations(){
         {!loading&&pagedRegistrations.length===0&&<tr><td colSpan={8} className="admin-finance-empty-cell">موردی برای نمایش وجود ندارد.</td></tr>}</tbody>
       </table></div>
       <div className="admin-finance-pagination"><label>تعداد در صفحه <select value={listPageSize} onChange={e=>{setListPageSize(Number(e.target.value));setListPage(1);}}><option value={10}>۱۰</option><option value={20}>۲۰</option><option value={50}>۵۰</option><option value={100}>۱۰۰</option></select></label><span className="admin-finance-pagination-summary">نمایش {new Intl.NumberFormat('fa-IR').format(activeListCount?(safeListPage-1)*pageSize+1:0)} تا {new Intl.NumberFormat('fa-IR').format(Math.min(safeListPage*pageSize,activeListCount))} از {new Intl.NumberFormat('fa-IR').format(activeListCount)}</span><div className="admin-finance-pagination-controls"><button type="button" className="admin-action-button" disabled={safeListPage<=1} onClick={()=>setListPage(p=>Math.max(1,p-1))}>قبلی</button><span className="admin-finance-pagination-page">صفحه {new Intl.NumberFormat('fa-IR').format(safeListPage)} از {new Intl.NumberFormat('fa-IR').format(pageCount)}</span><button type="button" className="admin-action-button" disabled={safeListPage>=pageCount} onClick={()=>setListPage(p=>Math.min(pageCount,p+1))}>بعدی</button></div></div>
-    </section>:<section className="admin-action-center admin-master-panel admin-finance-registration-list-panel admin-extracted-manageregistrations-85">
+    </section>:<section className="admin-action-center admin-master-panel admin-finance-registration-list-panel">
     <div className="admin-finance-tabs">
       <button className={`admin-action-button${isTabActive('registrations') ? ' is-active' : ''}`} onClick={()=>{setTab('registrations');setStatusFilter('PENDING_REVIEW');setListPage(1);}}>ثبت‌نام‌ها و رسیدها</button>
       <button className={`admin-action-button${isTabActive('refunds') ? ' is-active' : ''}`} onClick={()=>{setTab('refunds');setStatusFilter('REQUESTED');setListPage(1);}}>درخواست‌های بازپرداخت</button>
