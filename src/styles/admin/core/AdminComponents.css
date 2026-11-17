@@ -1587,6 +1587,20 @@
 }
 
 
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-archived-debt-amount {
+  font-weight: 800;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-history-row {
+  border-bottom: 1px solid var(--admin-border);
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page :is(
+  .admin-finance-drawer-overlay,
+  .admin-finance-refund-overlay,
+  .admin-finance-approval-overlay
+) {
+  background: color-mix(in srgb, var(--admin-text) 44%, transparent);
+}
+
 /* Registration page shared buttons and filters. */
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-shared-manageregistrations-button-style {
   min-height:35px;
