@@ -233,10 +233,45 @@ async function main() {
       'refund reservations must not exceed the remaining overpayment for that registration',
     );
 
+    // The next payment is submitted against a later registration, but must
+    // settle the oldest outstanding installment from the earlier registration first.
+    const crossCourse = await prisma.course.create({
+      data: { title: 'CI finance cross-registration course ' + nationalId, professor: 'CI Test', price: 1000, status: 'ACTIVE' },
+      select: { id: true },
+    });
+    courseIds.push(crossCourse.id);
+    const crossSubmitted = await service.createPublicRegistration({
+      applicantFullName: 'CI Finance Student',
+      nationalId,
+      phone,
+      academicLevel: 'MASTER',
+      fieldCode: 'CI',
+      courseIds: JSON.stringify([crossCourse.id]),
+      claimedAmount: 600,
+      trackingCode: 'CI-CROSS-REGISTRATION-INITIAL',
+    }, jpeg);
+    const crossDue = new Date();
+    crossDue.setDate(crossDue.getDate() + 30);
+    const crossApproved = await service.reviewAndApprove(actor, crossSubmitted.id, {
+      mode: 'NORMAL',
+      discountAmount: 0,
+      paymentId: crossSubmitted.paymentId,
+      approvedAmount: 600,
+      firstDueDate: crossDue.toISOString().slice(0, 10),
+      mockExamEligible: false,
+      reviewNote: 'CI cross-registration installment test',
+    });
+    assert.equal(crossApproved.installmentCount, 2);
+    const crossInstallments = await prisma.installment.findMany({
+      where: { registrationId: crossSubmitted.id },
+      orderBy: { sequence: 'asc' },
+    });
+    assert.equal(crossInstallments.length, 2);
+
     const installmentPayment = await service.submitInstallmentPayment(
       studentActor,
-      secondInstallments[1].id,
-      { claimedAmount: 250, trackingCode: 'CI-INSTALLMENT-OVERPAY-OLDEST-FIRST' },
+      crossInstallments[1].id,
+      { claimedAmount: 250, trackingCode: 'CI-INSTALLMENT-CROSS-REGISTRATION-OLDEST-FIRST' },
       twoJpegs,
     );
     const installmentReceipts = await prisma.registrationPayment.findUniqueOrThrow({
@@ -250,15 +285,20 @@ async function main() {
     });
     assert.equal(installmentReview.status, 'APPROVED');
     const updatedOldestInstallment = await prisma.installment.findUniqueOrThrow({ where: { id: secondInstallments[0].id } });
-    const updatedSelectedInstallment = await prisma.installment.findUniqueOrThrow({ where: { id: secondInstallments[1].id } });
-    assert.equal(updatedOldestInstallment.status, 'PAID', 'the oldest installment must be settled first even when the later installment was selected');
-    assert.equal(updatedSelectedInstallment.status, 'PARTIALLY_PAID', 'the remainder must flow to the next oldest installment');
+    const updatedNextOldestInstallment = await prisma.installment.findUniqueOrThrow({ where: { id: crossInstallments[0].id } });
+    const untouchedSelectedInstallment = await prisma.installment.findUniqueOrThrow({ where: { id: crossInstallments[1].id } });
+    assert.equal(updatedOldestInstallment.status, 'PAID', 'the oldest installment in the earlier registration must be settled first');
+    assert.equal(updatedNextOldestInstallment.status, 'PARTIALLY_PAID', 'the remainder must flow to the next oldest debt across registrations');
+    assert.equal(untouchedSelectedInstallment.status, 'PENDING', 'the later selected installment must remain untouched until older debts are covered');
     const installmentAllocations = await prisma.paymentAllocation.findMany({
       where: { paymentId: installmentPayment.id },
-      include: { installment: { select: { sequence: true } } },
-      orderBy: { installment: { sequence: 'asc' } },
+      include: { installment: { select: { sequence: true, registrationId: true } } },
+      orderBy: [{ installment: { dueDate: 'asc' } }, { installment: { sequence: 'asc' } }],
     });
-    assert.deepEqual(installmentAllocations.map(item => [item.installment.sequence, Number(item.amount)]), [[1, 200], [2, 50]]);
+    assert.deepEqual(
+      installmentAllocations.map(item => [item.installment.registrationId, item.installment.sequence, Number(item.amount)]),
+      [[secondRegistrationId, 1, 200], [crossSubmitted.id, 1, 50]],
+    );
 
     const paid = await service.markRefundPaid(actor, refund.id, { transferReference: 'CI-TRANSFER-001' });
     assert.equal(paid.status, 'PAID');
