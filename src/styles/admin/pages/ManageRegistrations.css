@@ -78,10 +78,6 @@
   overflow-wrap: anywhere;
 }
 
-.admin-finance-archived-debtors .admin-finance-archived-debt-amount {
-  font-weight: 800;
-}
-
 .admin-finance-subsection-heading,
 .admin-finance-list-heading {
   display: flex;
@@ -183,7 +179,6 @@
   padding: 0;
   overflow: auto;
   direction: ltr;
-  background: color-mix(in srgb, var(--admin-text) 44%, transparent);
 }
 
 .admin-finance-drawer,
@@ -562,7 +557,6 @@
 .admin-finance-history-row {
   min-width: 0;
   padding-block: 7px;
-  border-bottom: 1px solid var(--admin-border);
   overflow-wrap: anywhere;
 }
 
