@@ -38,6 +38,11 @@ export function StudentRegistrationFinance(){
     finally{setLoading(false);}
   },[]);
   useEffect(()=>{void load();},[load]);
+  const totalOutstanding=registrations.reduce((sum,registration)=>sum+registration.balance,0);
+  const pendingInstallmentPayments=registrations.flatMap(registration=>registration.payments)
+    .filter(payment=>payment.purpose==='INSTALLMENT'&&payment.status==='PENDING')
+    .reduce((sum,payment)=>sum+payment.claimedAmount,0);
+  const availablePaymentAmount=Math.max(0,totalOutstanding-pendingInstallmentPayments);
   const submitPayment=async(event:FormEvent,inst:Installment)=>{
     event.preventDefault();setError('');setNotice('');
     const receiptFiles=files[inst.id]||[], amount=Number(amounts[inst.id]);
@@ -83,12 +88,13 @@ export function StudentRegistrationFinance(){
       {reg.installments.length===0?<p style={{fontSize:12,color:'#1d9a72',margin:0}}>برای این ثبت‌نام قسط باقی نمانده است.</p>:reg.installments.map(inst=><div key={inst.id} className="finance-installment-card" style={{border:'1px solid '+(dark?'rgba(72,209,204,.25)':'rgba(0,128,128,.22)'),borderRadius:13,padding:14,display:'grid',gap:11,background:dark?'rgba(48,45,45,.55)':'rgba(247,241,232,.72)'}}>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:10,flexWrap:'wrap',paddingBottom:9,borderBottom:'1px solid '+(dark?'rgba(238,229,218,.12)':'rgba(38,36,36,.10)')}}><strong style={{fontSize:13}}>قسط {new Intl.NumberFormat('fa-IR').format(inst.sequence)} · {money(inst.amount)}</strong><span style={{fontSize:11,color:inst.status==='PAID'?'#1d9a72':inst.status==='OVERDUE'?'#dc6863':sub}}>{statusText[inst.status]||inst.status}</span></div>
         <div style={{display:'flex',justifyContent:'space-between',gap:10,flexWrap:'wrap',fontSize:11,color:sub}}><span>سررسید: {new Date(inst.dueDate).toLocaleDateString('fa-IR')}</span><span>مانده: {money(inst.balance)}</span></div>
-        {inst.balance>0&&<form onSubmit={e=>void submitPayment(e,inst)} style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,180px),1fr))',gap:9}}>
-          <input style={field} type="number" min="1" max={inst.balance} step="1" placeholder="مبلغ پرداخت (تومان)" value={amounts[inst.id]||''} onChange={e=>setAmounts(p=>({...p,[inst.id]:e.target.value}))} required/>
+        {inst.balance>0&&availablePaymentAmount>0&&<form onSubmit={e=>void submitPayment(e,inst)} style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,180px),1fr))',gap:9}}>
+          <input style={field} type="number" min="1" max={availablePaymentAmount} step="1" placeholder="مبلغ پرداخت (تا سقف بدهی کل)" value={amounts[inst.id]||''} onChange={e=>setAmounts(p=>({...p,[inst.id]:e.target.value}))} required/>
           <input style={field} placeholder="شماره پیگیری (اختیاری)" value={tracking[inst.id]||''} onChange={e=>setTracking(p=>({...p,[inst.id]:e.target.value}))}/>
           <input style={field} type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={e=>setFiles(p=>({...p,[inst.id]:Array.from(e.target.files??[])}))} required/>
           <button style={button} type="submit">ارسال رسید قسط</button>
         </form>}
+        {inst.balance>0&&availablePaymentAmount<=0&&<p style={{fontSize:11,color:sub,margin:0}}>رسیدهای اقساط در انتظار بررسی، سقف پرداخت جدید را پر کرده‌اند.</p>}
       </div>)}
       {reg.payments.length>0&&<div style={{borderTop:'1px solid '+(dark?'rgba(238,229,218,.13)':'rgba(38,36,36,.14)'),paddingTop:10,display:'grid',gap:7}}><strong style={{fontSize:12}}>سوابق پرداخت و رسیدها</strong>{reg.payments.map(p=><div key={p.id} style={{display:'grid',gridTemplateColumns:'minmax(0,1fr) auto',alignItems:'start',gap:10,padding:'10px 11px',borderRadius:10,background:dark?'#302D2D':'#E5D9CB',fontSize:11}}><span style={{color:sub,lineHeight:1.8}}>{new Date(p.paymentDate).toLocaleDateString('fa-IR')} · {statusText[p.purpose]||p.purpose} · {statusText[p.status]||p.status}{p.rejectionReason?' · علت رد: '+p.rejectionReason:''}</span><strong>{money(p.approvedAmount??p.claimedAmount)}</strong></div>)}</div>}
       <form onSubmit={e=>void submitRefund(e,reg.id)} style={{borderTop:'1px solid '+(dark?'rgba(238,229,218,.13)':'rgba(38,36,36,.14)'),paddingTop:14,display:'grid',gap:10}}>
