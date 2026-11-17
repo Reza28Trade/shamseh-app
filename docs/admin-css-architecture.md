@@ -40,6 +40,7 @@ All admin module styles live under `src/styles/admin/pages/`.
 - `Dashboard.css`: approved dashboard composition and appearance.
 - `ManageAdmins.css`: approved manager-account composition and appearance.
 - `ManageCourses.css`, `ManageStudents.css`, `ManageOfflineRequests.css`, `ManageCounseling.css`, `ManageMessages.css`, `ManageNotifications.css`, `ManageManagementContact.css`, `ManageMockExams.css`, `ManageRegistrations.css`, `ManagePublicContent.css`, and `AuditLogs.css`: page composition and domain-specific visualizations/status states only; shared cards, controls, typography, tables and component appearance are centralized.
+- `ManageRegistrations.css` is composition-only and uses semantic finance hooks. Its former generated `admin-extracted-manageregistrations-*` presentation block has been removed from `AdminComponents.css`; finance typography, surfaces, table treatment, status colors and overlay appearance remain in the central component layer.
 
 The messages inbox and management-feedback inbox remain separate modules with distinct page roots: `.admin-messages-page` and `.admin-management-contact-page`.
 
