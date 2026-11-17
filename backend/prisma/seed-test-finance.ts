@@ -278,6 +278,29 @@ async function addOldestDebtAllocation(studentId: string, registrationId: string
 }
 
 async function main() {
+  if (process.argv.includes('--list')) {
+    const [students, courses] = await Promise.all([
+      prisma.student.findMany({
+        where: { nationalId: { startsWith: 'TEST' }, user: { role: 'STUDENT' } },
+        select: { id: true, nationalId: true, fullName: true, phone: true, academicLevel: true },
+        orderBy: { nationalId: 'asc' },
+        take: 50,
+      }),
+      prisma.course.findMany({
+        where: { status: 'ACTIVE', price: { not: null } },
+        select: { id: true, title: true, price: true },
+        orderBy: { title: 'asc' },
+        take: 50,
+      }),
+    ]);
+    process.stdout.write(JSON.stringify({
+      mode: 'READ_ONLY_CANDIDATE_LIST',
+      students,
+      courses: courses.map((course) => ({ ...course, price: Number(course.price) })),
+    }, null, 2) + '\\n');
+    return;
+  }
+
   assertConfiguration();
 
   const courseRow = await prisma.course.findFirst({
