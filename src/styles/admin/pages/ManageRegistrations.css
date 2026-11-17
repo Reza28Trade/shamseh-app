@@ -412,7 +412,7 @@
   }
 
   .admin-finance-filters {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 140px;
   }
 
   .admin-finance-pagination {
@@ -442,6 +442,10 @@
 }
 
 @media (max-width: 390px) {
+  .admin-finance-filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .admin-registration-detail-facts {
     grid-template-columns: minmax(0, 1fr);
   }
