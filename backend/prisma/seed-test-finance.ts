@@ -59,7 +59,7 @@ async function hasFixture(studentId: string, scenario: string) {
 
 async function createFixture(input: {
   student: {
-    id: string; nationalId: string; fullName: string; phone: string;
+    id: string; nationalId: string; fullName: string; phone: string | null;
     academicLevel: 'MASTER' | 'DOCTORATE' | null; fieldCode: string | null;
   };
   course: { id: string; title: string; price: number };
@@ -79,6 +79,9 @@ async function createFixture(input: {
   } = input;
   if (await hasFixture(student.id, scenario)) {
     return { scenario, result: 'already exists' };
+  }
+  if (!student.phone?.trim()) {
+    throw new Error(`شماره همراه هنرجوی ${student.nationalId} ثبت نشده است؛ برای حفظ اطلاعات واقعی، هیچ شماره‌ای جایگزین نمی‌شود و سناریو ساخته نخواهد شد.`);
   }
 
   const openRegistration = await prisma.registration.findFirst({
