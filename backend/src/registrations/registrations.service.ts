@@ -320,7 +320,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
           include: {
             receipts: { orderBy: { uploadedAt: 'desc' }, select: { id: true, mimeType: true, fileSize: true, uploadedAt: true } },
             allocations: {
-              include: { installment: { select: { sequence: true } } },
+              include: { installment: true },
               orderBy: { createdAt: 'asc' },
             },
           },
@@ -360,7 +360,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
           allocations: payment.allocations.map((allocation) => ({
             ...allocation,
             amount: Number(allocation.amount),
-            installment: { sequence: allocation.installment.sequence },
+            installment: allocation.installment,
           })),
           receipts: payment.receipts.map((receipt) => ({
             ...receipt,
