@@ -355,6 +355,34 @@
   font-size: 12px;
   line-height: 1.8}
 
+/* Finance statistic cards reuse the shared admin statistic-card surface. */
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-stat-card {
+  border: 1px solid var(--admin-content-border);
+  border-radius: 12px;
+  background: var(--admin-content-surface);
+  color: var(--admin-text);
+  box-shadow: var(--admin-shadow-stat);
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-stat-label {
+  color: var(--admin-sub);
+  font-size: 10px;
+  font-weight: 650;
+  line-height: 1.7;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-stat-value {
+  color: var(--admin-text);
+  font-size: 21px;
+  font-weight: 900;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-stat-value.is-accent {
+  color: var(--admin-accent);
+}
+.admin-shell .admin-main .admin-page-content .admin-finance-registration-page .admin-finance-stat-value.is-warning {
+  color: var(--admin-warning-text, var(--admin-sub));
+}
+
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page > section,
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page > article,
 .admin-shell .admin-main .admin-page-content .admin-finance-registration-page > div > article,
