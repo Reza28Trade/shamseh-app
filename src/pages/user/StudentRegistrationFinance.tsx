@@ -11,7 +11,7 @@ export function StudentRegistrationFinance(){
   const dark=theme==='dark';
   const [registrations,setRegistrations]=useState<Registration[]>([]);
   const [refunds,setRefunds]=useState<Refund[]>([]);
-  const [files,setFiles]=useState<Record<string,File|null>>({});
+  const [files,setFiles]=useState<Record<string,File[]>>({});
   const [amounts,setAmounts]=useState<Record<string,string>>({});
   const [tracking,setTracking]=useState<Record<string,string>>({});
   const [refundAmounts,setRefundAmounts]=useState<Record<string,string>>({});
@@ -38,17 +38,22 @@ export function StudentRegistrationFinance(){
     finally{setLoading(false);}
   },[]);
   useEffect(()=>{void load();},[load]);
+  const totalOutstanding=registrations.reduce((sum,registration)=>sum+registration.balance,0);
+  const pendingInstallmentPayments=registrations.flatMap(registration=>registration.payments)
+    .filter(payment=>payment.purpose==='INSTALLMENT'&&payment.status==='PENDING')
+    .reduce((sum,payment)=>sum+payment.claimedAmount,0);
+  const availablePaymentAmount=Math.max(0,totalOutstanding-pendingInstallmentPayments);
   const submitPayment=async(event:FormEvent,inst:Installment)=>{
     event.preventDefault();setError('');setNotice('');
-    const file=files[inst.id], amount=Number(amounts[inst.id]);
-    if(!file||!Number.isFinite(amount)||amount<=0){setError('مبلغ و تصویر رسید را برای قسط انتخاب کنید.');return;}
-    const form=new FormData();form.set('claimedAmount',String(amount));form.set('trackingCode',tracking[inst.id]||'');form.set('receipt',file);
+    const receiptFiles=files[inst.id]||[], amount=Number(amounts[inst.id]);
+    if(receiptFiles.length<1||receiptFiles.length>2||!Number.isFinite(amount)||amount<=0){setError('مبلغ و یک یا دو تصویر رسید را برای قسط انتخاب کنید.');return;}
+    const form=new FormData();form.set('claimedAmount',String(amount));form.set('trackingCode',tracking[inst.id]||'');receiptFiles.forEach(file=>form.append('receipt',file));
     try{
       const response=await fetch('/api/student/installments/'+encodeURIComponent(inst.id)+'/payments',{method:'POST',credentials:'include',body:form});
       const data=await response.json().catch(()=>({}));
       if(!response.ok)throw new Error(data.message||'ارسال رسید ناموفق بود.');
       setNotice('رسید قسط برای بررسی مدیریت ارسال شد. تا تأیید رسید، بدهی تسویه‌شده محسوب نمی‌شود.');
-      setFiles(prev=>({...prev,[inst.id]:null}));await load();
+      setFiles(prev=>({...prev,[inst.id]:[]}));await load();
     }catch(e){setError(e instanceof Error?e.message:'ارسال رسید ناموفق بود.');}
   };
   const submitRefund=async(event:FormEvent,registrationId:string)=>{
@@ -67,7 +72,7 @@ export function StudentRegistrationFinance(){
     <style>{`.student-finance-section input,.student-finance-section textarea,.student-finance-section button{font-family:inherit}.student-finance-section button{transition:opacity .15s ease}.student-finance-section button:hover{opacity:.9}.student-finance-section .finance-summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.student-finance-section input[type=file]{padding:8px;font-size:11px}.student-finance-section .finance-installment-card form{align-items:stretch}.student-finance-section .finance-installment-card input{min-height:42px}@media(max-width:640px){.student-finance-section{gap:12px!important}.student-finance-section article{padding:12px!important}.student-finance-section .finance-summary-grid{grid-template-columns:1fr}.student-finance-section form{grid-template-columns:minmax(0,1fr)!important}.student-finance-section input[type=file]{font-size:10px!important}.student-finance-section button{width:100%}.student-finance-section .finance-summary-grid>div{padding:11px!important}}`}</style>
     <div style={card}>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:10,flexWrap:'wrap'}}><h3 style={{margin:0,fontSize:14}}>ثبت‌نام‌های تأییدشده و اقساط</h3><button style={button} onClick={()=>void load()}>به‌روزرسانی</button></div>
-      <p style={{margin:'8px 0 0',fontSize:11,lineHeight:1.8,color:sub}}>پرداخت فقط بعد از تأیید مدیریت در محاسبه بدهی اعمال می‌شود. رسید را از بخش قسط مربوط ثبت کنید؛ پس از تأیید، مبلغ پرداختی ابتدا به قدیمی‌ترین بدهی تسویه‌نشده شما تخصیص می‌یابد. اگر رسید رد شود، علت آن نمایش داده می‌شود و می‌توانید رسید جدید ارسال کنید.</p>
+      <p style={{margin:'8px 0 0',fontSize:11,lineHeight:1.8,color:sub}}>پرداخت فقط بعد از تأیید مدیریت در محاسبه بدهی اعمال می‌شود. می‌توانید مبلغی بیشتر از مانده همان قسط هم پرداخت کنید؛ پس از تأیید، مبلغ به ترتیب سررسید به قدیمی‌ترین بدهی‌های شما تخصیص می‌یابد. اگر رسید رد شود، علت آن نمایش داده می‌شود و می‌توانید رسید جدید ارسال کنید.</p>
     </div>
     {error&&<div role="alert" style={{...card,background:dark?'#321d1d':'#fff0ef',color:'#b33e37',fontSize:12}}>{error}</div>}
     {notice&&<div role="status" style={{...card,background:dark?'#183229':'#eaf6ef',color:dark?'#a5e3bf':'#216743',fontSize:12}}>{notice}</div>}
@@ -83,12 +88,13 @@ export function StudentRegistrationFinance(){
       {reg.installments.length===0?<p style={{fontSize:12,color:'#1d9a72',margin:0}}>برای این ثبت‌نام قسط باقی نمانده است.</p>:reg.installments.map(inst=><div key={inst.id} className="finance-installment-card" style={{border:'1px solid '+(dark?'rgba(72,209,204,.25)':'rgba(0,128,128,.22)'),borderRadius:13,padding:14,display:'grid',gap:11,background:dark?'rgba(48,45,45,.55)':'rgba(247,241,232,.72)'}}>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:10,flexWrap:'wrap',paddingBottom:9,borderBottom:'1px solid '+(dark?'rgba(238,229,218,.12)':'rgba(38,36,36,.10)')}}><strong style={{fontSize:13}}>قسط {new Intl.NumberFormat('fa-IR').format(inst.sequence)} · {money(inst.amount)}</strong><span style={{fontSize:11,color:inst.status==='PAID'?'#1d9a72':inst.status==='OVERDUE'?'#dc6863':sub}}>{statusText[inst.status]||inst.status}</span></div>
         <div style={{display:'flex',justifyContent:'space-between',gap:10,flexWrap:'wrap',fontSize:11,color:sub}}><span>سررسید: {new Date(inst.dueDate).toLocaleDateString('fa-IR')}</span><span>مانده: {money(inst.balance)}</span></div>
-        {inst.balance>0&&<form onSubmit={e=>void submitPayment(e,inst)} style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,180px),1fr))',gap:9}}>
-          <input style={field} type="number" min="1" max={inst.balance} step="1" placeholder="مبلغ پرداخت (تومان)" value={amounts[inst.id]||''} onChange={e=>setAmounts(p=>({...p,[inst.id]:e.target.value}))} required/>
+        {inst.balance>0&&availablePaymentAmount>0&&<form onSubmit={e=>void submitPayment(e,inst)} style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,180px),1fr))',gap:9}}>
+          <input style={field} type="number" min="1" max={availablePaymentAmount} step="1" placeholder="مبلغ پرداخت (تا سقف بدهی کل)" value={amounts[inst.id]||''} onChange={e=>setAmounts(p=>({...p,[inst.id]:e.target.value}))} required/>
           <input style={field} placeholder="شماره پیگیری (اختیاری)" value={tracking[inst.id]||''} onChange={e=>setTracking(p=>({...p,[inst.id]:e.target.value}))}/>
-          <input style={field} type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>setFiles(p=>({...p,[inst.id]:e.target.files?.[0]??null}))} required/>
+          <input style={field} type="file" accept="image/jpeg,image/png,image/webp" multiple title="حداکثر دو فایل، هرکدام تا ۸ مگابایت" aria-label="انتخاب یک یا دو تصویر رسید" onChange={e=>setFiles(p=>({...p,[inst.id]:Array.from(e.target.files??[])}))} required/>
           <button style={button} type="submit">ارسال رسید قسط</button>
         </form>}
+        {inst.balance>0&&availablePaymentAmount<=0&&<p style={{fontSize:11,color:sub,margin:0}}>رسیدهای اقساط در انتظار بررسی، سقف پرداخت جدید را پر کرده‌اند.</p>}
       </div>)}
       {reg.payments.length>0&&<div style={{borderTop:'1px solid '+(dark?'rgba(238,229,218,.13)':'rgba(38,36,36,.14)'),paddingTop:10,display:'grid',gap:7}}><strong style={{fontSize:12}}>سوابق پرداخت و رسیدها</strong>{reg.payments.map(p=><div key={p.id} style={{display:'grid',gridTemplateColumns:'minmax(0,1fr) auto',alignItems:'start',gap:10,padding:'10px 11px',borderRadius:10,background:dark?'#302D2D':'#E5D9CB',fontSize:11}}><span style={{color:sub,lineHeight:1.8}}>{new Date(p.paymentDate).toLocaleDateString('fa-IR')} · {statusText[p.purpose]||p.purpose} · {statusText[p.status]||p.status}{p.rejectionReason?' · علت رد: '+p.rejectionReason:''}</span><strong>{money(p.approvedAmount??p.claimedAmount)}</strong></div>)}</div>}
       <form onSubmit={e=>void submitRefund(e,reg.id)} style={{borderTop:'1px solid '+(dark?'rgba(238,229,218,.13)':'rgba(38,36,36,.14)'),paddingTop:14,display:'grid',gap:10}}>

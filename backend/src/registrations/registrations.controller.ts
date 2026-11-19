@@ -1,8 +1,8 @@
 import {
-  Body, Controller, ForbiddenException, Get, Param, Patch, Post, Query, Req, Res, UploadedFile,
+  Body, Controller, ForbiddenException, Get, Param, Patch, Post, Query, Req, Res, UploadedFiles,
   UseGuards, UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { Request, Response } from 'express';
 import { createReadStream } from 'node:fs';
 const { memoryStorage } = require('multer');
@@ -33,12 +33,12 @@ export class RegistrationsController {
   }
 
   @Post('public/registrations')
-  @UseInterceptors(FileInterceptor('receipt', {
+  @UseInterceptors(FilesInterceptor('receipt', 2, {
     storage: memoryStorage(),
-    limits: { fileSize: 8 * 1024 * 1024, files: 1 },
+    limits: { fileSize: 8 * 1024 * 1024, files: 2 },
   }))
-  createPublicRegistration(@Body() dto: CreateRegistrationDto, @UploadedFile() file: any) {
-    return this.registrationsService.createPublicRegistration(dto, file);
+  createPublicRegistration(@Body() dto: CreateRegistrationDto, @UploadedFiles() files: any[]) {
+    return this.registrationsService.createPublicRegistration(dto, files);
   }
 
   @Post('public/registrations/lookup')
@@ -56,9 +56,9 @@ export class RegistrationsController {
   }
 
   @Post('public/registrations/:registrationId/receipts')
-  @UseInterceptors(FileInterceptor('receipt', {
+  @UseInterceptors(FilesInterceptor('receipt', 2, {
     storage: memoryStorage(),
-    limits: { fileSize: 8 * 1024 * 1024, files: 1 },
+    limits: { fileSize: 8 * 1024 * 1024, files: 2 },
   }))
   uploadCorrectionReceipt(
     @Param('registrationId') registrationId: string,
@@ -67,28 +67,28 @@ export class RegistrationsController {
     @Body('claimedAmount') claimedAmount: string,
     @Body('paymentDate') paymentDate: string,
     @Body('trackingCode') trackingCode: string,
-    @UploadedFile() file: any,
+    @UploadedFiles() files: any[],
   ) {
     return this.registrationsService.uploadCorrectionReceipt(
       registrationId,
       { nationalId, phone, claimedAmount: Number(claimedAmount), paymentDate, trackingCode },
-      file,
+      files,
     );
   }
 
   @Post('student/installments/:installmentId/payments')
   @UseGuards(AuthGuard)
-  @UseInterceptors(FileInterceptor('receipt', {
+  @UseInterceptors(FilesInterceptor('receipt', 2, {
     storage: memoryStorage(),
-    limits: { fileSize: 8 * 1024 * 1024, files: 1 },
+    limits: { fileSize: 8 * 1024 * 1024, files: 2 },
   }))
   submitInstallmentPayment(
     @Req() req: AuthenticatedRequest,
     @Param('installmentId') installmentId: string,
     @Body() dto: SubmitInstallmentPaymentDto,
-    @UploadedFile() file: any,
+    @UploadedFiles() files: any[],
   ) {
-    return this.registrationsService.submitInstallmentPayment(req.user, installmentId, dto, file);
+    return this.registrationsService.submitInstallmentPayment(req.user, installmentId, dto, files);
   }
 
   @Patch('admin/registration-payments/:paymentId/review')

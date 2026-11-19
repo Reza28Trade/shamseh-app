@@ -33,7 +33,7 @@ export function RegistrationPage() {
   const [level, setLevel] = useState<'MASTER' | 'DOCTORATE'>('MASTER');
   const [fieldCode, setFieldCode] = useState('');
   const [amount, setAmount] = useState('');
-  const [receipt, setReceipt] = useState<File | null>(null);
+  const [receipts, setReceipts] = useState<File[]>([]);
   const [registrationId, setRegistrationId] = useState('');
   const [statusNationalId, setStatusNationalId] = useState('');
   const [statusPhone, setStatusPhone] = useState('');
@@ -41,7 +41,7 @@ export function RegistrationPage() {
   const [recoveredRegistrations, setRecoveredRegistrations] = useState<Array<{id:string;status:string;createdAt:string;applicantFullName:string}>>([]);
   const [lookupLoading, setLookupLoading] = useState(false);
   const [correctionAmount, setCorrectionAmount] = useState('');
-  const [correctionReceipt, setCorrectionReceipt] = useState<File | null>(null);
+  const [correctionReceipts, setCorrectionReceipts] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
@@ -101,7 +101,7 @@ export function RegistrationPage() {
     event.preventDefault(); setLoading(true); setError(''); setNotice('');
     try {
       if (!selected.length) throw new Error('حداقل یک دوره انتخاب کنید.');
-      if (!receipt) throw new Error('تصویر رسید پرداخت را انتخاب کنید.');
+      if (receipts.length < 1 || receipts.length > 2) throw new Error('برای پرداخت باید یک یا دو تصویر رسید انتخاب کنید.');
       const form = new FormData();
       form.set('applicantFullName', fullName.trim());
       form.set('nationalId', toEnglishDigits(nationalId.trim()));
@@ -110,7 +110,7 @@ export function RegistrationPage() {
       form.set('fieldCode', fieldCode.trim());
       form.set('courseIds', JSON.stringify(selected));
       form.set('claimedAmount', amount);
-      form.set('receipt', receipt);
+      receipts.forEach(file => form.append('receipt', file));
       const data = await request('/api/public/registrations', { method: 'POST', body: form });
       setRegistrationId(data.id);
       setStatusNationalId(toEnglishDigits(nationalId.trim()));
@@ -124,14 +124,14 @@ export function RegistrationPage() {
   const submitCorrection = async (event: FormEvent) => {
     event.preventDefault(); setLoading(true); setError(''); setNotice('');
     try {
-      if (!correctionReceipt) throw new Error('رسید اصلاح‌شده را انتخاب کنید.');
+      if (correctionReceipts.length < 1 || correctionReceipts.length > 2) throw new Error('برای اصلاح پرداخت باید یک یا دو تصویر رسید انتخاب کنید.');
       const form = new FormData();
       form.set('nationalId', toEnglishDigits(statusNationalId.trim()));
       form.set('phone', toEnglishDigits(statusPhone.trim()));
       form.set('claimedAmount', toEnglishDigits(correctionAmount));
-      form.set('receipt', correctionReceipt);
+      correctionReceipts.forEach(file => form.append('receipt', file));
       await request('/api/public/registrations/' + encodeURIComponent(registrationId) + '/receipts', { method: 'POST', body: form });
-      setCorrectionReceipt(null);
+      setCorrectionReceipts([]);
       await loadStatus(registrationId, statusNationalId, statusPhone);
       setNotice('رسید جدید ثبت شد و برای بررسی دوباره ارسال شد.');
     } catch (e) { setError(e instanceof Error ? e.message : 'ارسال رسید اصلاحی ناموفق بود.'); }
@@ -168,7 +168,7 @@ export function RegistrationPage() {
           {courses.length === 0 ? <p className="reg-muted">دوره فعال قیمت‌گذاری‌شده‌ای پیدا نشد.</p> : <div className="reg-course-list">{courses.map(course=><label className="reg-course" key={course.id}><input type="checkbox" checked={selected.includes(course.id)} onChange={e=>setSelected(prev=>e.target.checked?[...prev,course.id]:prev.filter(id=>id!==course.id))}/><span><strong>{course.title}</strong><small>{course.professor}{course.level ? ' · '+(({FARDI:'کارشناسی ارشد',MASTER:'کارشناسی ارشد',MASTERS:'کارشناسی ارشد',DOCTORATE:'دکتری',DOCTORAL:'دکتری'} as Record<string,string>)[course.level.trim().toUpperCase()] || course.level) : ''}</small><small>{money(course.price)}</small></span></label>)}</div>}
           <div className="reg-total"><span>جمع شهریه دوره‌های انتخاب‌شده</span><strong>{money(total)}</strong></div>
           <div className="reg-total" style={{display:'grid',gap:8,alignItems:'stretch',background:'#E5D9CB',border:'1px solid #B7C8BE'}}><div style={{display:'flex',justifyContent:'space-between',gap:12,alignItems:'center'}}><span>پیش‌پرداخت پیشنهادی (۶۰٪ شهریه)</span><strong>{money(suggestedPrepayment)}</strong></div><p className="reg-small" style={{margin:0}}>این مبلغ فقط پیشنهاد است؛ مبلغ واقعی پرداخت‌شده مطابق رسید بانکی را وارد کنید. در صورت پرداخت کمتر، بررسی استثنا فقط توسط مدیر ارشد انجام می‌شود.</p><button type="button" className="reg-button" disabled={total<=0} onClick={()=>setAmount(String(suggestedPrepayment))}>استفاده از مبلغ پیشنهادی</button></div>
-          <label className="reg-field" style={{marginBottom:16}}>تصویر رسید بانکی (JPG، PNG یا WEBP؛ حداکثر ۸ مگابایت)<input required type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>setReceipt(e.target.files?.[0] ?? null)}/></label>
+          <label className="reg-field" style={{marginBottom:16}}>یک یا دو تصویر رسید بانکی (JPG، PNG یا WEBP؛ حداکثر ۸ مگابایت برای هر تصویر)<input required type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={e=>setReceipts(Array.from(e.target.files ?? []))}/></label>
           <button className="reg-button" disabled={loading || !courses.length} type="submit">{loading?'در حال ارسال…':'ثبت درخواست و ارسال رسید'}</button>
         </form>
         <div className="reg-card">
@@ -202,7 +202,7 @@ export function RegistrationPage() {
             {status.status === 'NEEDS_CORRECTION' && <form onSubmit={submitCorrection} className="reg-status-form" style={{marginTop:16}}>
               <h3>ارسال رسید اصلاح‌شده</h3>
               <label className="reg-field">مبلغ پرداخت (تومان)<input required type="number" min="1" value={correctionAmount} onChange={e=>setCorrectionAmount(e.target.value)}/></label>
-              <label className="reg-field">رسید جدید<input required type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>setCorrectionReceipt(e.target.files?.[0] ?? null)}/></label>
+              <label className="reg-field">یک یا دو رسید جدید<input required multiple type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>setCorrectionReceipts(Array.from(e.target.files ?? []))}/></label>
               <button className="reg-button" disabled={loading} type="submit">ارسال برای بررسی مجدد</button>
             </form>}
           </div>}

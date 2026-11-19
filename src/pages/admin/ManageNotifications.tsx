@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Bell, Send, Users, BookOpen, Globe, CalendarDays } from 'lucide-react';
+import { Send, Users, BookOpen, Globe, CalendarDays } from 'lucide-react';
 import '../../styles/admin/pages/ManageNotifications.css';
 
 type TargetType = 'GLOBAL' | 'COURSE' | 'STUDENT' | 'MOCK_EXAM';
@@ -98,18 +98,13 @@ export const ManageNotifications: React.FC = () => {
 
   return (
     <div className="admin-legacy-page admin-notifications-page">
-      <header className="notifications-page-head">
-        <div>
-          <span className="notifications-eyebrow"><Bell size={14} /> مرکز مدیریت شمسه</span>
-          <h2><Bell size={20} /> ارسال اطلاعیه</h2>
-          <p>ارسال پیام عمومی، مخصوص یک دوره یا مخصوص یک هنرجو</p>
-        </div>
-      </header>
-
-      <section className="notifications-form-card">
+      <section className="notifications-form-card accounts-card accounts-create-card admin-panel-card admin-master-panel">
+        <header className="accounts-card-head">
+          <div><span className="accounts-eyebrow">تنظیم پیام</span><h3>مشخصات و محتوای اطلاعیه</h3></div>
+        </header>
         {message && <div className={`notifications-feedback ${message.ok ? 'is-success' : 'is-error'}`} role="status">{message.text}</div>}
         <form onSubmit={sendNotification} className="notifications-form">
-          <div className="notifications-field">
+          <div className="notifications-field notifications-field--target">
             <label>گیرندگان اطلاعیه</label>
             <div className="notifications-target-grid">
               {[
@@ -120,7 +115,7 @@ export const ManageNotifications: React.FC = () => {
                 <button
                   key={value as string}
                   type="button"
-                  className={`notifications-target ${targetType === value ? 'is-active' : ''}`}
+                  className={`admin-action-button notifications-target ${targetType === value ? 'is-active' : ''}`}
                   onClick={() => setTargetType(value as TargetType)}
                 >
                   {React.createElement(Icon as React.ElementType, { size: 16 })}
@@ -131,7 +126,7 @@ export const ManageNotifications: React.FC = () => {
           </div>
 
           {targetType === 'COURSE' && (
-            <div className="notifications-field">
+            <div className="notifications-field notifications-field--recipient">
               <label htmlFor="notification-course">دورهٔ موردنظر</label>
               <select id="notification-course" value={courseId} onChange={e => setCourseId(e.target.value)} required>
                 <option value="">انتخاب دوره...</option>
@@ -140,7 +135,7 @@ export const ManageNotifications: React.FC = () => {
             </div>
           )}
           {targetType === 'MOCK_EXAM' && (
-            <div className="notifications-field">
+            <div className="notifications-field notifications-field--recipient">
               <label htmlFor="notification-mock-exam">آزمون آزمایشی</label>
               <select id="notification-mock-exam" value={mockExamId} onChange={e => setMockExamId(e.target.value)} required>
                 <option value="">انتخاب آزمون...</option>
@@ -150,7 +145,7 @@ export const ManageNotifications: React.FC = () => {
             </div>
           )}
           {targetType === 'STUDENT' && (
-            <div className="notifications-field">
+            <div className="notifications-field notifications-field--recipient">
               <label htmlFor="notification-student">هنرجوی موردنظر</label>
               <select id="notification-student" value={studentId} onChange={e => setStudentId(e.target.value)} required>
                 <option value="">انتخاب هنرجو...</option>
@@ -159,23 +154,23 @@ export const ManageNotifications: React.FC = () => {
             </div>
           )}
 
-          <div className="notifications-field">
+          <div className="notifications-field notifications-field--type">
             <label htmlFor="notification-type">نوع اطلاعیه</label>
             <select id="notification-type" value={type} onChange={e => setType(e.target.value as NotificationType)}>
               {types.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
             </select>
           </div>
-          <div className="notifications-field">
+          <div className="notifications-field notifications-field--title">
             <label htmlFor="notification-title">عنوان اطلاعیه</label>
             <input id="notification-title" value={title} onChange={e => setTitle(e.target.value)} placeholder="عنوان اطلاعیه را بنویسید..." required />
           </div>
-          <div className="notifications-field">
+          <div className="notifications-field notifications-field--content">
             <label htmlFor="notification-content">متن اطلاعیه</label>
             <textarea id="notification-content" value={content} onChange={e => setContent(e.target.value)} placeholder="متن اطلاعیه را بنویسید..." rows={5} required />
           </div>
           <div className="notifications-form-footer">
             <span>پیش از ارسال، گیرنده و متن اطلاعیه را بررسی کنید.</span>
-            <button type="submit" className="notifications-submit" disabled={sending || loading}>
+            <button type="submit" className="admin-action-button notifications-submit" disabled={sending || loading}>
               <Send size={15} /> {sending ? 'در حال ارسال...' : 'ارسال اطلاعیه'}
             </button>
           </div>

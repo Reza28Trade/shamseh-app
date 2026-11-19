@@ -118,9 +118,9 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     }).then((courses) => courses.map((course) => ({ ...course, price: Number(course.price) })));
   }
 
-  async createPublicRegistration(dto: CreateRegistrationDto, file: any) {
+  async createPublicRegistration(dto: CreateRegistrationDto, files: any) {
     const courseIds = this.parseCourseIds(dto.courseIds);
-    this.validateReceipt(file);
+    const receiptFiles = this.validateReceipts(files);
     const nationalId = dto.nationalId.trim();
     const phone = dto.phone.trim();
     const existingStudent = await this.prisma.student.findUnique({
@@ -160,7 +160,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       throw new BadRequestException('مبلغ رسید باید بیشتر از صفر باشد.');
     }
 
-    const storageKey = await this.storeReceipt(file);
+    const storedReceipts = await this.storeReceipts(receiptFiles);
     try {
       const registration = await this.prisma.$transaction(async (tx) => {
         const created = await tx.registration.create({
@@ -191,11 +191,11 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
             paymentDate: dto.paymentDate ? new Date(dto.paymentDate) : new Date(),
             trackingCode: dto.trackingCode?.trim() || null,
             receipts: {
-              create: {
+              create: storedReceipts.map(({ storageKey, file }) => ({
                 storageKey,
                 mimeType: file.mimetype,
                 fileSize: BigInt(file.size),
-              },
+              })),
             },
           },
           select: { id: true },
@@ -218,7 +218,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
           : 'درخواست ثبت‌نام با موفقیت ثبت شد. اطلاعات ورود پس از تأیید مدیریت ایجاد می‌شود.',
       };
     } catch (error) {
-      await unlink(join(RECEIPT_DIR, storageKey)).catch(() => undefined);
+      await Promise.all(storedReceipts.map(({ storageKey }) => unlink(join(RECEIPT_DIR, storageKey)).catch(() => undefined)));
       if (typeof error === 'object' && error !== null && 'code' in error && error.code === 'P2002') {
         const meta = 'meta' in error && typeof error.meta === 'object' && error.meta !== null
           ? error.meta as { target?: unknown }
@@ -291,8 +291,8 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     };
   }
 
-  async uploadCorrectionReceipt(registrationId: string, body: { nationalId: string; phone: string; claimedAmount: number; paymentDate?: string; trackingCode?: string }, file: any) {
-    this.validateReceipt(file);
+  async uploadCorrectionReceipt(registrationId: string, body: { nationalId: string; phone: string; claimedAmount: number; paymentDate?: string; trackingCode?: string }, files: any) {
+    const receiptFiles = this.validateReceipts(files);
     if (!Number.isFinite(Number(body.claimedAmount)) || Number(body.claimedAmount) <= 0) {
       throw new BadRequestException('مبلغ پرداخت باید بیشتر از صفر باشد.');
     }
@@ -304,7 +304,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       || registration.phone !== body.phone?.trim()) {
       throw new NotFoundException('ثبت‌نامی با این مشخصات برای اصلاح رسید پیدا نشد.');
     }
-    const storageKey = await this.storeReceipt(file);
+    const storedReceipts = await this.storeReceipts(receiptFiles);
     try {
       const payment = await this.prisma.$transaction(async (tx) => {
         await tx.$queryRaw`SELECT "id" FROM "Registration" WHERE "id" = ${registrationId} FOR UPDATE`;
@@ -323,7 +323,11 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
             claimedAmount: Number(body.claimedAmount),
             paymentDate: body.paymentDate ? new Date(body.paymentDate) : new Date(),
             trackingCode: body.trackingCode?.trim() || null,
-            receipts: { create: { storageKey, mimeType: file.mimetype, fileSize: BigInt(file.size) } },
+            receipts: {
+              create: storedReceipts.map(({ storageKey, file }) => ({
+                storageKey, mimeType: file.mimetype, fileSize: BigInt(file.size),
+              })),
+            },
           },
           select: { id: true, claimedAmount: true, status: true },
         });
@@ -339,7 +343,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       });
       return payment;
     } catch (error) {
-      await unlink(join(RECEIPT_DIR, storageKey)).catch(() => undefined);
+      await Promise.all(storedReceipts.map(({ storageKey }) => unlink(join(RECEIPT_DIR, storageKey)).catch(() => undefined)));
       throw error;
     }
   }
@@ -355,7 +359,14 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         courses: { select: { id: true, courseTitleSnapshot: true, coursePriceSnapshot: true } },
         payments: {
           orderBy: { createdAt: 'desc' },
-          include: { receipts: { orderBy: { uploadedAt: 'desc' }, select: { id: true, mimeType: true, fileSize: true, uploadedAt: true } } },
+          include: {
+            receipts: { orderBy: { uploadedAt: 'desc' }, select: { id: true, mimeType: true, fileSize: true, uploadedAt: true } },
+            allocations: {
+              include: {
+                installment: { select: { id: true, registrationId: true, sequence: true, dueDate: true } },
+              },
+            },
+          },
         },
         installments: {
           include: { allocations: { select: { amount: true, payment: { select: { status: true } } } } },
@@ -363,7 +374,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         },
         reviewHistory: { orderBy: { createdAt: 'desc' }, take: 20 },
       },
-      orderBy: { createdAt: 'asc' },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
     }).then((rows) => rows.map((row) => {
       const initialPaid = row.payments.reduce((sum, payment) =>
         payment.status === 'APPROVED' && payment.purpose === 'INITIAL' ? sum + Number(payment.approvedAmount ?? 0) : sum, 0);
@@ -394,6 +405,10 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
             // Prisma BigInt values cannot be JSON-serialized by Nest/Express.
             // Receipt uploads are capped at 8 MiB, so Number is exact and safe here.
             fileSize: receipt.fileSize === null ? null : Number(receipt.fileSize),
+          })),
+          allocations: payment.allocations.map((allocation) => ({
+            ...allocation,
+            amount: Number(allocation.amount),
           })),
         })),
       };
@@ -703,9 +718,9 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     });
   }
 
-  async submitInstallmentPayment(actor: AuthenticatedUser, installmentId: string, dto: SubmitInstallmentPaymentDto, file: any) {
+  async submitInstallmentPayment(actor: AuthenticatedUser, installmentId: string, dto: SubmitInstallmentPaymentDto, files: any) {
     if (actor.role !== 'STUDENT' || !actor.studentId) throw new ForbiddenException('Student access required');
-    this.validateReceipt(file);
+    const receiptFiles = this.validateReceipts(files);
     if (!Number.isFinite(dto.claimedAmount) || dto.claimedAmount <= 0) throw new BadRequestException('مبلغ پرداخت باید بیشتر از صفر باشد.');
     const installment = await this.prisma.installment.findUnique({
       where: { id: installmentId },
@@ -721,7 +736,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     if (Number(installment.amount) - installmentPaid <= 0.0001) {
       throw new ConflictException('این قسط قبلاً تسویه شده است.');
     }
-    const storageKey = await this.storeReceipt(file);
+    const storedReceipts = await this.storeReceipts(receiptFiles);
     try {
       return await this.prisma.$transaction(async (tx) => {
         // Serialize payment submissions for one student so simultaneous requests cannot over-claim the same balance.
@@ -773,7 +788,11 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
             claimedAmount: dto.claimedAmount,
             paymentDate: dto.paymentDate ? new Date(dto.paymentDate) : new Date(),
             trackingCode: dto.trackingCode?.trim() || null,
-            receipts: { create: { storageKey, mimeType: file.mimetype, fileSize: BigInt(file.size), uploaderUserId: actor.id } },
+            receipts: {
+              create: storedReceipts.map(({ storageKey, file }) => ({
+                storageKey, mimeType: file.mimetype, fileSize: BigInt(file.size), uploaderUserId: actor.id,
+              })),
+            },
           },
           select: { id: true, registrationId: true, status: true, claimedAmount: true },
         });
@@ -787,7 +806,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         return payment;
       }, { isolationLevel: 'Serializable' });
     } catch (error) {
-      await unlink(join(RECEIPT_DIR, storageKey)).catch(() => undefined);
+      await Promise.all(storedReceipts.map(({ storageKey }) => unlink(join(RECEIPT_DIR, storageKey)).catch(() => undefined)));
       throw error;
     }
   }
@@ -970,7 +989,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         student: { select: { fullName: true, nationalId: true, phone: true } },
         registration: { select: { finalTuition: true, status: true } },
       },
-      orderBy: { requestedAt: 'asc' },
+      orderBy: [{ requestedAt: 'desc' }, { id: 'desc' }],
     }).then((rows) => rows.map((row) => ({
       ...row,
       amountRequested: Number(row.amountRequested),
@@ -1128,12 +1147,36 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  private validateReceipts(input: any): any[] {
+    const files = Array.isArray(input) ? input : input ? [input] : [];
+    if (files.length < 1 || files.length > 2) {
+      throw new BadRequestException('برای هر پرداخت باید یک یا دو تصویر رسید ارسال شود.');
+    }
+    files.forEach((file) => this.validateReceipt(file));
+    return files;
+  }
+
   private async storeReceipt(file: any): Promise<string> {
     const extension = ALLOWED_RECEIPT_TYPES[file.mimetype];
     const key = randomUUID() + extension;
     await mkdir(RECEIPT_DIR, { recursive: true });
     await writeFile(join(RECEIPT_DIR, key), file.buffer, { flag: 'wx', mode: 0o640 });
     return key;
+  }
+
+  private async storeReceipts(files: any[]): Promise<Array<{ storageKey: string; file: any }>> {
+    const stored: Array<{ storageKey: string; file: any }> = [];
+    try {
+      for (const file of files) {
+        const storageKey = await this.storeReceipt(file);
+        stored.push({ storageKey, file });
+      }
+      return stored;
+    } catch (error) {
+      await Promise.all(stored.map(({ storageKey }) =>
+        unlink(join(RECEIPT_DIR, storageKey)).catch(() => undefined)));
+      throw error;
+    }
   }
 
   private requireFinanceAccess(actor: AuthenticatedUser) {

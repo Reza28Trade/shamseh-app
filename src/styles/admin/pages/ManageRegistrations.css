@@ -1,103 +1,576 @@
-/* Finance/registration page composition only. Shared appearance is centralized. */
-
+/* Finance module composition only. Shared surfaces, typography, controls and table
+   appearance are owned by the central admin component system. */
 .admin-finance-registration-page {
-  gap: 16px;
-  max-width: 100%;
-  min-width: 0}
-
-.admin-finance-registration-page > div:first-child {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(min(100%,190px),1fr));
-  gap: 12px;
-  min-width: 0}
-
-.admin-finance-registration-page > div:first-child > article {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
   min-width: 0;
-  min-height: 92px;
-  align-content: space-between;
-  padding: 14px 15px;
-  transition: transform .18s ease}
+}
 
-.admin-finance-registration-page > div:first-child > article:hover {
-  transform: translateY(-1px)}
+.admin-finance-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  min-width: 0;
+}
+
+.admin-finance-stat-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  min-height: 78px;
+  padding: 15px 18px;
+  direction: rtl;
+  text-align: right;
+}
 
 .admin-finance-registration-page > section {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
   min-width: 0;
-  padding: 17px;
-  gap: 13px}
+  padding: 14px;
+}
 
-.admin-finance-registration-page > section p {
-  max-width: 760px}
-
-.admin-finance-registration-page > section > div[style*="overflowX"] {
+.admin-finance-registration-page .admin-data-table-wrap {
+  width: 100%;
   min-width: 0;
   max-width: 100%;
-  overflow-x: auto}
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
+}
+
+.admin-finance-registration-page table {
+  width: 100%;
+  min-width: 760px;
+}
+
+.admin-finance-registration-table {
+  min-width: 860px;
+}
+
+.admin-finance-refund-table {
+  min-width: 720px;
+}
 
 .admin-finance-registration-page table td {
-  vertical-align: top}
+  vertical-align: top;
+}
 
-.admin-finance-registration-page table tbody tr {
-  transition: background .15s ease}
+.admin-finance-archived-debtors,
+.admin-finance-ledger-panel {
+  gap: 10px;
+}
 
-.admin-finance-registration-page > div:nth-of-type(2) {
+.admin-finance-archived-debtors-description,
+.admin-finance-ledger-description {
+  max-width: 760px;
+  margin: -2px 0 2px;
+}
+
+.admin-finance-archived-debtors .admin-action-row {
+  min-width: 0;
+}
+
+.admin-finance-archived-debtors .admin-action-copy {
+  overflow-wrap: anywhere;
+}
+
+.admin-finance-subsection-heading,
+.admin-finance-list-heading {
   display: flex;
   align-items: center;
-  gap: 7px;
-  padding: 5px;
-  width: fit-content;
-  max-width: 100%}
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
 
-.admin-finance-registration-page > div:nth-of-type(2) button {
-  min-height: 36px;
-  padding: 8px 13px}
+.admin-finance-archived-settled-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
 
-.admin-finance-registration-page > div:nth-of-type(3) {
+.admin-finance-archived-settled-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+}
+
+.admin-finance-ledger-national-id {
+  white-space: nowrap;
+}
+
+.admin-finance-registration-list-panel {
   display: grid;
-  grid-template-columns: minmax(220px,1fr) minmax(155px,220px);
-  gap: 10px;
-  padding: 12px;
-  min-width: 0}
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 12px;
+  row-gap: 10px;
+}
 
-.admin-finance-registration-page > div[role="dialog"] > form textarea {
-  min-height: 76px}
+.admin-finance-tabs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  min-width: 0;
+}
+
+.admin-finance-tabs .admin-action-button {
+  min-height: 34px;
+}
+
+.admin-finance-filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 190px;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.admin-finance-filters > * {
+  width: 100%;
+  min-width: 0;
+}
+
+.admin-finance-registration-list-panel > .admin-finance-list-heading,
+.admin-finance-registration-list-panel > .admin-finance-table-wrap,
+.admin-finance-registration-list-panel > .admin-finance-pagination {
+  grid-column: 1 / -1;
+}
+
+.admin-finance-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-width: 0;
+}
+
+.admin-finance-pagination > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-finance-pagination label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.admin-finance-drawer-overlay,
+.admin-finance-refund-overlay,
+.admin-finance-approval-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  overflow: auto;
+  direction: rtl;
+}
+
+.admin-finance-drawer-overlay,
+.admin-finance-refund-overlay {
+  z-index: 1100;
+}
+
+.admin-finance-drawer,
+.admin-finance-refund-drawer {
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  width: min(900px, 96vw);
+  max-height: 90vh;
+  max-height: 90dvh;
+  min-width: 0;
+  margin: auto;
+  padding: 16px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  direction: rtl;
+  animation: admin-finance-dialog-enter 180ms ease-out both;
+}
+
+.admin-finance-drawer-header {
+  position: sticky;
+  top: -16px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+  padding-block: 4px 10px;
+}
+
+.admin-finance-drawer-header > * {
+  min-width: 0;
+}
+
+.admin-registration-detail-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+  width: 100%;
+  min-width: 0;
+}
+
+.admin-registration-detail-fact {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  min-width: 0;
+  min-height: 58px;
+  padding: 7px 9px;
+  overflow-wrap: anywhere;
+}
+
+.admin-finance-drawer-section {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 9px;
+  width: 100%;
+  min-width: 0;
+}
+
+.admin-finance-installment-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+  padding-block: 7px;
+}
+
+.admin-finance-installment-row > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.admin-finance-installment-row > div:last-child {
+  text-align: left;
+}
+
+.admin-finance-payment-row {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.admin-finance-receipt-actions,
+.admin-finance-refund-actions,
+.admin-finance-approval-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.admin-finance-allocation-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 10px;
+  min-width: 0;
+}
+
+.admin-finance-manual-settlement {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.admin-finance-approval-overlay {
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.admin-finance-approval-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(620px, 100%);
+  max-height: 92vh;
+  max-height: 92dvh;
+  margin: auto;
+  padding: 16px;
+  overflow-y: auto;
+  direction: rtl;
+}
+
+.admin-finance-approval-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+
+.admin-finance-approval-summary {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.admin-finance-approval-dialog > label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.admin-finance-approval-dialog input,
+.admin-finance-approval-dialog select,
+.admin-finance-approval-dialog textarea {
+  width: 100%;
+  min-width: 0;
+}
+
+.admin-finance-refund-drawer {
+  width: min(600px, 96vw);
+}
+
+@keyframes admin-finance-dialog-enter {
+  from { opacity: 0; transform: translateY(6px) scale(.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 1100px) {
+  .admin-finance-stat-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .admin-finance-registration-list-panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-finance-registration-list-panel > .admin-finance-tabs,
+  .admin-finance-registration-list-panel > .admin-finance-filters {
+    grid-column: 1;
+    width: 100%;
+  }
+
+  .admin-finance-filters {
+    grid-template-columns: minmax(0, 1fr) 180px;
+  }
+}
 
 @media (max-width: 720px) {
-  .admin-finance-registration-page { gap: 12px}
+  .admin-finance-registration-page {
+    gap: 11px;
+  }
 
-  .admin-finance-registration-page > div:first-child {
-    grid-template-columns: repeat(2,minmax(0,1fr));
-    gap: 8px}
+  .admin-finance-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
 
-  .admin-finance-registration-page > div:first-child > article {
-    min-height: 84px;
-    padding: 11px}
+  .admin-finance-stat-card {
+    min-height: 72px;
+    padding: 9px;
+  }
 
-  .admin-finance-registration-page > section { padding: 12px}
+  .admin-finance-registration-page > section {
+    padding: 11px;
+  }
 
-  .admin-finance-registration-page > div:nth-of-type(2) {
+  .admin-finance-tabs {
     width: 100%;
-    flex-wrap: wrap}
+  }
 
-  .admin-finance-registration-page > div:nth-of-type(2) button {
-    flex: 1 1 auto}
+  .admin-finance-tabs .admin-action-button {
+    flex: 1 1 auto;
+  }
 
-  .admin-finance-registration-page > div:nth-of-type(3) {
-    grid-template-columns: minmax(0,1fr);
-    padding: 9px}
+  .admin-finance-filters {
+    grid-template-columns: minmax(0, 1fr) 140px;
+  }
 
-  .admin-finance-registration-page > div[role="dialog"] { padding: 8px}
+  .admin-finance-pagination {
+    align-items: flex-start;
+  }
 
-  .admin-finance-registration-page > div[role="dialog"] > form {
-    padding: 14px;
-    max-height: 94vh}
+  .admin-finance-pagination > div {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .admin-finance-drawer,
+  .admin-finance-refund-drawer {
+    width: 96vw;
+    max-height: 94vh;
+    max-height: 94dvh;
+    padding: 13px;
+  }
+
+  .admin-finance-approval-overlay {
+    padding: 8px;
+  }
+
+  .admin-finance-approval-dialog {
+    max-height: 94vh;
+    max-height: 94dvh;
+    padding: 13px;
+  }
+}
+
+@media (max-width: 390px) {
+  .admin-finance-filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-registration-detail-facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-finance-installment-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-finance-installment-row > div:last-child {
+    text-align: right;
+  }
+
+  .admin-finance-archived-settled-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .admin-finance-registration-page *,
-  .admin-finance-registration-page *::before,
-  .admin-finance-registration-page *::after {
-    transition-duration: .01ms;
-    animation-duration: .01ms}
+  .admin-finance-drawer,
+  .admin-finance-refund-drawer {
+    animation: none;
+  }
+}
+
+
+/* Small semantic content hooks; shared colors and typography remain centralized. */
+.admin-finance-section-title,
+.admin-finance-approval-title,
+.admin-finance-drawer-title {
+  margin: 0;
+  min-width: 0;
+}
+
+.admin-finance-section-count,
+.admin-finance-settled-status {
+  align-self: center;
+  white-space: nowrap;
+}
+
+.admin-finance-secondary-meta,
+.admin-finance-secondary-note,
+.admin-finance-field-hint,
+.admin-finance-cell-meta,
+.admin-finance-drawer-subtitle,
+.admin-finance-drawer-note {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.admin-finance-loading {
+  margin: 0;
+}
+
+.admin-finance-approval-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.admin-finance-checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.admin-finance-cell-meta {
+  margin-top: 3px;
+}
+
+.admin-finance-empty-cell {
+  text-align: center;
+}
+
+.admin-finance-pagination-summary,
+.admin-finance-pagination-page {
+  min-width: 0;
+}
+
+.admin-finance-pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.admin-finance-course-row,
+.admin-finance-tuition-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+  padding-block: 4px;
+  overflow-wrap: anywhere;
+}
+
+.admin-finance-rejection-reason,
+.admin-finance-refund-details {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.8;
+}
+
+.admin-finance-receipt-link {
+  display: inline-flex;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.admin-finance-history-row {
+  min-width: 0;
+  padding-block: 7px;
+  overflow-wrap: anywhere;
+}
+
+.admin-finance-drawer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
 }

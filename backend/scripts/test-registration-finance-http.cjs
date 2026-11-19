@@ -102,7 +102,8 @@ async function main() {
     form.set('courseIds', JSON.stringify([course.id]));
     form.set('claimedAmount', '1200');
     form.set('trackingCode', 'CI-HTTP-INITIAL');
-    form.set('receipt', new Blob([Buffer.from([0xff, 0xd8, 0xff])], { type: 'image/jpeg' }), 'receipt.jpg');
+    form.append('receipt', new Blob([Buffer.from([0xff, 0xd8, 0xff])], { type: 'image/jpeg' }), 'receipt-1.jpg');
+    form.append('receipt', new Blob([Buffer.from([0xff, 0xd8, 0xff])], { type: 'image/jpeg' }), 'receipt-2.jpg');
 
     const submitted = await request('/api/public/registrations', { method: 'POST', body: form });
     registrationId = submitted.id;
@@ -114,6 +115,7 @@ async function main() {
     assert.ok(row, 'HTTP admin list should return submitted registration');
     const receipt = row.payments.find((payment) => payment.id === submitted.paymentId).receipts[0];
     assert.equal(typeof receipt.fileSize, 'number', 'HTTP JSON must serialize receipt file size');
+    assert.equal(row.payments.find((payment) => payment.id === submitted.paymentId).receipts.length, 2, 'HTTP upload should persist both receipt images');
 
     const today = new Date().toISOString().slice(0, 10);
     const approved = await request('/api/admin/registrations/' + encodeURIComponent(registrationId) + '/approve', {

@@ -68,6 +68,7 @@ async function main() {
     examId = mockExam.id;
 
     const jpeg = { buffer: Buffer.from([0xff, 0xd8, 0xff]), mimetype: 'image/jpeg', size: 3 };
+    const twoJpegs = [jpeg, { ...jpeg }];
     const submitted = await service.createPublicRegistration({
       applicantFullName: 'CI Finance Student',
       nationalId,
@@ -77,7 +78,7 @@ async function main() {
       courseIds: JSON.stringify([firstCourse.id]),
       claimedAmount: 1200,
       trackingCode: 'CI-INITIAL-OVERPAYMENT',
-    }, jpeg);
+    }, twoJpegs);
     registrationId = submitted.id;
     assert.equal(submitted.status, 'PENDING_REVIEW');
     assert.ok(submitted.paymentId);
@@ -110,6 +111,7 @@ async function main() {
     assert.equal(initialPayment.status, 'APPROVED');
     assert.equal(typeof initialPayment.receipts[0].fileSize, 'number', 'receipt BigInt must be JSON-safe');
     assert.equal(initialPayment.receipts[0].fileSize, 3);
+    assert.equal(initialPayment.receipts.length, 2, 'service should persist both initial receipt images');
 
     const student = await prisma.student.findUniqueOrThrow({
       where: { id: studentId },
@@ -231,20 +233,72 @@ async function main() {
       'refund reservations must not exceed the remaining overpayment for that registration',
     );
 
+    // The next payment is submitted against a later registration, but must
+    // settle the oldest outstanding installment from the earlier registration first.
+    const crossCourse = await prisma.course.create({
+      data: { title: 'CI finance cross-registration course ' + nationalId, professor: 'CI Test', price: 1000, status: 'ACTIVE' },
+      select: { id: true },
+    });
+    courseIds.push(crossCourse.id);
+    const crossSubmitted = await service.createPublicRegistration({
+      applicantFullName: 'CI Finance Student',
+      nationalId,
+      phone,
+      academicLevel: 'MASTER',
+      fieldCode: 'CI',
+      courseIds: JSON.stringify([crossCourse.id]),
+      claimedAmount: 600,
+      trackingCode: 'CI-CROSS-REGISTRATION-INITIAL',
+    }, jpeg);
+    const crossDue = new Date();
+    crossDue.setDate(crossDue.getDate() + 30);
+    const crossApproved = await service.reviewAndApprove(actor, crossSubmitted.id, {
+      mode: 'NORMAL',
+      discountAmount: 0,
+      paymentId: crossSubmitted.paymentId,
+      approvedAmount: 600,
+      firstDueDate: crossDue.toISOString().slice(0, 10),
+      mockExamEligible: false,
+      reviewNote: 'CI cross-registration installment test',
+    });
+    assert.equal(crossApproved.installmentCount, 2);
+    const crossInstallments = await prisma.installment.findMany({
+      where: { registrationId: crossSubmitted.id },
+      orderBy: { sequence: 'asc' },
+    });
+    assert.equal(crossInstallments.length, 2);
+
     const installmentPayment = await service.submitInstallmentPayment(
       studentActor,
-      secondInstallments[0].id,
-      { claimedAmount: 200, trackingCode: 'CI-INSTALLMENT-1' },
-      jpeg,
+      crossInstallments[1].id,
+      { claimedAmount: 250, trackingCode: 'CI-INSTALLMENT-CROSS-REGISTRATION-OLDEST-FIRST' },
+      twoJpegs,
     );
+    const installmentReceipts = await prisma.registrationPayment.findUniqueOrThrow({
+      where: { id: installmentPayment.id }, include: { receipts: true },
+    });
+    assert.equal(installmentReceipts.receipts.length, 2, 'installment payment should preserve both receipt images');
     const installmentReview = await service.reviewInstallmentPayment(actor, installmentPayment.id, {
       status: 'APPROVED',
-      approvedAmount: 200,
-      reviewNote: 'CI installment approval',
+      approvedAmount: 250,
+      reviewNote: 'CI installment overpayment approval',
     });
     assert.equal(installmentReview.status, 'APPROVED');
-    const updatedInstallment = await prisma.installment.findUniqueOrThrow({ where: { id: secondInstallments[0].id } });
-    assert.equal(updatedInstallment.status, 'PAID');
+    const updatedOldestInstallment = await prisma.installment.findUniqueOrThrow({ where: { id: secondInstallments[0].id } });
+    const updatedNextOldestInstallment = await prisma.installment.findUniqueOrThrow({ where: { id: crossInstallments[0].id } });
+    const untouchedSelectedInstallment = await prisma.installment.findUniqueOrThrow({ where: { id: crossInstallments[1].id } });
+    assert.equal(updatedOldestInstallment.status, 'PAID', 'the oldest installment in the earlier registration must be settled first');
+    assert.equal(updatedNextOldestInstallment.status, 'PARTIALLY_PAID', 'the remainder must flow to the next oldest debt across registrations');
+    assert.equal(untouchedSelectedInstallment.status, 'PENDING', 'the later selected installment must remain untouched until older debts are covered');
+    const installmentAllocations = await prisma.paymentAllocation.findMany({
+      where: { paymentId: installmentPayment.id },
+      include: { installment: { select: { sequence: true, registrationId: true } } },
+      orderBy: [{ installment: { dueDate: 'asc' } }, { installment: { sequence: 'asc' } }],
+    });
+    assert.deepEqual(
+      installmentAllocations.map(item => [item.installment.registrationId, item.installment.sequence, Number(item.amount)]),
+      [[secondRegistrationId, 1, 200], [crossSubmitted.id, 1, 50]],
+    );
 
     const paid = await service.markRefundPaid(actor, refund.id, { transferReference: 'CI-TRANSFER-001' });
     assert.equal(paid.status, 'PAID');
@@ -275,7 +329,7 @@ async function main() {
       phone,
       claimedAmount: 300,
       trackingCode: 'CI-CORRECTED-RECEIPT',
-    }, jpeg);
+    }, twoJpegs);
     assert.equal(correctedPayment.status, 'PENDING');
     const correctedRegistration = await prisma.registration.findUniqueOrThrow({
       where: { id: thirdRegistrationId },
@@ -284,7 +338,7 @@ async function main() {
     assert.equal(correctedRegistration.status, 'PENDING_REVIEW');
     assert.equal(correctedRegistration.payments.length, 2);
     assert.equal(correctedRegistration.payments.find((item) => item.id === thirdSubmitted.paymentId).status, 'REJECTED');
-    assert.equal(correctedRegistration.payments.find((item) => item.id === correctedPayment.id).receipts.length, 1);
+    assert.equal(correctedRegistration.payments.find((item) => item.id === correctedPayment.id).receipts.length, 2, 'correction upload should persist both receipt images');
     assert.equal(correctedRegistration.payments.find((item) => item.id === thirdSubmitted.paymentId).receipts.length, 1);
     console.log('Registration finance service integration test passed.');
   } finally {

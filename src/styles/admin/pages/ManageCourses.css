@@ -334,7 +334,7 @@
   .admin-courses-page .course-form-grid,
   .admin-courses-page .course-filters { grid-template-columns: minmax(0,1fr)}
   .admin-courses-page .course-field.span-2,
-  .admin-courses-page .course-field.full { grid-column: 1/-1}
+  
   .admin-courses-page .course-filters input { grid-column: auto}
   .admin-courses-page .cover-picker { grid-template-columns: 60px minmax(0,1fr)}
   .admin-courses-page .cover-thumb { width: 60px; height: 60px}
