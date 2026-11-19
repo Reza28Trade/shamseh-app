@@ -601,7 +601,7 @@ async function main() {
       })),
       checkedStudents: preflight.checkedStudents,
       writesPerformed: false,
-    }, null, 2) + '\\n');
+    }, null, 2) + '\n');
     return;
   }
 
