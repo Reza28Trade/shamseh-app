@@ -317,7 +317,13 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         courses: { select: { id: true, courseTitleSnapshot: true, coursePriceSnapshot: true } },
         payments: {
           orderBy: { createdAt: 'desc' },
-          include: { receipts: { orderBy: { uploadedAt: 'desc' }, select: { id: true, mimeType: true, fileSize: true, uploadedAt: true } } },
+          include: {
+            receipts: { orderBy: { uploadedAt: 'desc' }, select: { id: true, mimeType: true, fileSize: true, uploadedAt: true } },
+            allocations: {
+              include: { installment: { select: { sequence: true } } },
+              orderBy: { createdAt: 'asc' },
+            },
+          },
         },
         installments: {
           include: { allocations: { select: { amount: true, payment: { select: { status: true } } } } },
@@ -351,6 +357,11 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
           ...payment,
           claimedAmount: Number(payment.claimedAmount),
           approvedAmount: payment.approvedAmount === null ? null : Number(payment.approvedAmount),
+          allocations: payment.allocations.map((allocation) => ({
+            ...allocation,
+            amount: Number(allocation.amount),
+            installment: { sequence: allocation.installment.sequence },
+          })),
           receipts: payment.receipts.map((receipt) => ({
             ...receipt,
             // Prisma BigInt values cannot be JSON-serialized by Nest/Express.
