@@ -21,8 +21,8 @@ export class ReviewRegistrationDto {
   @Type(() => Number) @IsNumber() @Min(1)
   approvedAmount!: number;
 
-  @IsDateString()
-  firstDueDate!: string;
+  @IsOptional() @IsDateString()
+  firstDueDate?: string;
 
   @IsOptional() @IsBoolean()
   mockExamEligible?: boolean;
