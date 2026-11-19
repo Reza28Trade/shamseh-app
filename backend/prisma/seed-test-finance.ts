@@ -495,7 +495,6 @@ async function main() {
 
   // Complete read-only preflight for the entire batch before creating or updating
   // any user, registration, enrollment, or receipt file.
-  const inspected = [];
   for (let index = 1; index <= studentCount; index += 1) {
     const student = await inspectTestStudent(index);
     const scenario = scenarios[(index - 1) % scenarios.length];
@@ -527,15 +526,14 @@ async function main() {
         throw new Error('برای ' + student.nationalId + ' ثبت‌نامی بدون حساب آزمایشی متناظر وجود دارد؛ پیش‌بررسی متوقف شد و هیچ داده‌ای ایجاد نشد.');
       }
     }
-    inspected.push(student);
   }
+
+  await ensureReceiptFile();
 
   const students: TestStudent[] = [];
   for (let index = 1; index <= studentCount; index += 1) {
     students.push(await ensureTestStudent(index, passwordHash));
   }
-
-  await ensureReceiptFile();
 
   const results = [];
   for (let index = 0; index < students.length; index += 1) {
