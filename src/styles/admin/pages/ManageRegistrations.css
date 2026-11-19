@@ -17,12 +17,15 @@
 
 .admin-finance-stat-card {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   justify-content: space-between;
-  gap: 6px;
+  gap: 12px;
   min-width: 0;
   min-height: 78px;
-  padding: 10px 12px;
+  padding: 15px 18px;
+  direction: rtl;
+  text-align: right;
 }
 
 .admin-finance-registration-page > section {
