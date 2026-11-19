@@ -33,7 +33,7 @@ export interface RegistrationApprovalPlanInput {
   exceptionReason?: string;
   approvedAmount: number;
   previouslyApprovedAmount?: number;
-  firstDueDate: string | Date;
+  firstDueDate?: string | Date;
   now?: Date;
 }
 
@@ -43,7 +43,7 @@ export interface RegistrationApprovalPlan {
   ratio: number;
   remaining: number;
   installmentAmounts: number[];
-  firstDueDate: Date;
+  firstDueDate: Date | null;
 }
 
 /** Pure business-rule calculation shared by approval logic and regression tests. */
@@ -96,23 +96,25 @@ export function calculateRegistrationApprovalPlan(input: RegistrationApprovalPla
     throw new BadRequestException('حالت استثنا فقط برای پرداخت کمتر از ۶۰٪ است.');
   }
 
-  const firstDueDate = new Date(input.firstDueDate instanceof Date ? input.firstDueDate.getTime() : input.firstDueDate);
-  if (Number.isNaN(firstDueDate.getTime())) throw new BadRequestException('تاریخ سررسید معتبر نیست.');
   // Tuition and payment amounts are currency values; normalize the remaining
   // balance to cents before deriving installment amounts.
   const remaining = Math.round(Math.max(0, finalTuition - totalPaid) * 100) / 100;
-  const now = input.now ?? new Date();
-  // HTML date inputs submit YYYY-MM-DD. Compare those as calendar dates so "today"
-  // is valid even though JavaScript parses it as midnight and the current time is later.
-  const isDateOnly = typeof input.firstDueDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(input.firstDueDate);
-  const dueDay = isDateOnly
-    ? Date.UTC(firstDueDate.getUTCFullYear(), firstDueDate.getUTCMonth(), firstDueDate.getUTCDate())
-    : firstDueDate.getTime();
-  const nowDay = isDateOnly
-    ? Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
-    : now.getTime();
-  if (remaining > 0 && dueDay < nowDay) {
-    throw new BadRequestException('تاریخ اولین قسط نباید در گذشته باشد.');
+  let firstDueDate: Date | null = null;
+  if (remaining > 0) {
+    if (!input.firstDueDate) throw new BadRequestException('تاریخ اولین قسط الزامی است.');
+    firstDueDate = new Date(input.firstDueDate instanceof Date ? input.firstDueDate.getTime() : input.firstDueDate);
+    if (Number.isNaN(firstDueDate.getTime())) throw new BadRequestException('تاریخ سررسید معتبر نیست.');
+    const now = input.now ?? new Date();
+    // HTML date inputs submit YYYY-MM-DD. Compare those as calendar dates so "today"
+    // is valid even though JavaScript parses it as midnight and the current time is later.
+    const isDateOnly = typeof input.firstDueDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(input.firstDueDate);
+    const dueDay = isDateOnly
+      ? Date.UTC(firstDueDate.getUTCFullYear(), firstDueDate.getUTCMonth(), firstDueDate.getUTCDate())
+      : firstDueDate.getTime();
+    const nowDay = isDateOnly
+      ? Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+      : now.getTime();
+    if (dueDay < nowDay) throw new BadRequestException('تاریخ اولین قسط نباید در گذشته باشد.');
   }
 
   let installmentAmounts: number[] = [];
