@@ -1,6 +1,5 @@
 import 'dotenv/config';
 import * as argon2 from 'argon2';
-import { randomBytes } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { PrismaClient } from '@prisma/client';
@@ -17,6 +16,7 @@ const PNG_BYTES = Buffer.from(
 const batch = (process.env.TEST_FINANCE_BATCH || 'FINANCE-QA-20261119').trim();
 const studentCount = Number(process.env.TEST_FINANCE_STUDENT_COUNT || 100);
 const courseId = process.env.TEST_FINANCE_COURSE_ID;
+const testPassword = process.env.TEST_FINANCE_PASSWORD || '';
 
 type TestStudent = {
   id: string;
@@ -112,72 +112,95 @@ function assertConfiguration() {
   if (!courseId) {
     throw new Error('TEST_FINANCE_COURSE_ID باید شناسه یک دوره فعال با شهریه معتبر باشد.');
   }
+  if (testPassword.length < 12) {
+    throw new Error('TEST_FINANCE_PASSWORD باید حداقل ۱۲ نویسه داشته باشد؛ رمز در خروجی چاپ نمی‌شود.');
+  }
 }
 
 function nationalIdFor(index: number) {
   return batch + '-' + String(index).padStart(3, '0');
 }
 
-async function ensureTestStudent(index: number): Promise<TestStudent> {
+function getStudentDetails(index: number) {
   const suffix = String(index).padStart(3, '0');
-  const nationalId = nationalIdFor(index);
-  const username = nationalId;
-  const fullName = 'هنرجوی آزمایشی مالی ' + suffix + ' (' + batch + ')';
-  const phone = '0900000' + suffix.padStart(4, '0');
-  const academicLevel = index % 2 === 0 ? 'DOCTORATE' : 'MASTER';
-  const fieldCode = 'FINQA-' + String(((index - 1) % 5) + 1).padStart(2, '0');
+  return {
+    nationalId: nationalIdFor(index),
+    username: nationalIdFor(index),
+    fullName: 'هنرجوی آزمایشی مالی ' + suffix + ' (' + batch + ')',
+    phone: '0900000' + suffix.padStart(4, '0'),
+    academicLevel: (index % 2 === 0 ? 'DOCTORATE' : 'MASTER') as 'MASTER' | 'DOCTORATE',
+    fieldCode: 'FINQA-' + String(((index - 1) % 5) + 1).padStart(2, '0'),
+  };
+}
 
+async function inspectTestStudent(index: number) {
+  const expected = getStudentDetails(index);
   const existing = await prisma.student.findUnique({
-    where: { nationalId },
-    include: { user: { select: { username: true, role: true, status: true } } },
+    where: { nationalId: expected.nationalId },
+    include: { user: { select: { id: true, username: true, role: true, status: true } } },
   });
 
   if (existing) {
     if (
-      existing.user.username !== username
+      existing.user.username !== expected.username
       || existing.user.role !== 'STUDENT'
-      || existing.user.status !== 'INACTIVE'
-      || existing.fullName !== fullName
-      || existing.phone !== phone
-      || existing.academicLevel !== academicLevel
-      || existing.fieldCode !== fieldCode
+      || !['ACTIVE', 'INACTIVE'].includes(existing.user.status)
+      || existing.fullName !== expected.fullName
+      || existing.phone !== expected.phone
+      || existing.academicLevel !== expected.academicLevel
+      || existing.fieldCode !== expected.fieldCode
     ) {
-      throw new Error('رکوردی با شناسه ' + nationalId + ' وجود دارد اما متعلق به این مجموعه آزمایشی نیست؛ هیچ اطلاعاتی تغییر نکرد.');
+      throw new Error('رکوردی با شناسه ' + expected.nationalId + ' وجود دارد اما متعلق به این مجموعه آزمایشی نیست؛ هیچ اطلاعاتی تغییر نکرد.');
     }
+    return { ...expected, existingUserId: existing.user.id, existingStudentId: existing.id };
+  }
+
+  const usernameCollision = await prisma.user.findUnique({
+    where: { username: expected.username },
+    select: { id: true },
+  });
+  if (usernameCollision) {
+    throw new Error('نام کاربری ' + expected.username + ' قبلاً استفاده شده اما هنرجوی متناظر پیدا نشد؛ هیچ رکوردی تغییر نکرد.');
+  }
+
+  return { ...expected, existingUserId: null, existingStudentId: null };
+}
+
+async function ensureTestStudent(index: number, passwordHash: string): Promise<TestStudent> {
+  const expected = await inspectTestStudent(index);
+  if (expected.existingStudentId && expected.existingUserId) {
+    await prisma.user.update({
+      where: { id: expected.existingUserId },
+      data: { status: 'ACTIVE', passwordHash },
+    });
     return {
-      id: existing.id,
-      nationalId: existing.nationalId,
-      fullName: existing.fullName,
-      phone: existing.phone || phone,
-      academicLevel,
-      fieldCode,
+      id: expected.existingStudentId,
+      nationalId: expected.nationalId,
+      fullName: expected.fullName,
+      phone: expected.phone,
+      academicLevel: expected.academicLevel,
+      fieldCode: expected.fieldCode,
     };
   }
 
-  const usernameCollision = await prisma.user.findUnique({ where: { username }, select: { id: true } });
-  if (usernameCollision) {
-    throw new Error('نام کاربری ' + username + ' قبلاً استفاده شده اما هنرجوی متناظر پیدا نشد؛ هیچ رکوردی تغییر نکرد.');
-  }
-
-  const passwordHash = await argon2.hash(randomBytes(32));
   return prisma.$transaction(async (tx) => {
     const user = await tx.user.create({
       data: {
-        username,
+        username: expected.username,
         passwordHash,
         role: 'STUDENT',
-        status: 'INACTIVE',
+        status: 'ACTIVE',
       },
       select: { id: true },
     });
     const student = await tx.student.create({
       data: {
         userId: user.id,
-        fullName,
-        nationalId,
-        phone,
-        academicLevel,
-        fieldCode,
+        fullName: expected.fullName,
+        nationalId: expected.nationalId,
+        phone: expected.phone,
+        academicLevel: expected.academicLevel,
+        fieldCode: expected.fieldCode,
       },
       select: { id: true, nationalId: true, fullName: true, phone: true },
     });
@@ -185,9 +208,9 @@ async function ensureTestStudent(index: number): Promise<TestStudent> {
       id: student.id,
       nationalId: student.nationalId,
       fullName: student.fullName,
-      phone: student.phone || phone,
-      academicLevel,
-      fieldCode,
+      phone: student.phone || expected.phone,
+      academicLevel: expected.academicLevel,
+      fieldCode: expected.fieldCode,
     };
   });
 }
@@ -468,28 +491,48 @@ async function main() {
   }
   const course = { id: courseRow.id, title: courseRow.title, price: Number(courseRow.price) };
 
-  const students: TestStudent[] = [];
+  const passwordHash = await argon2.hash(testPassword);
+
+  // Complete read-only preflight for the entire batch before creating or updating
+  // any user, registration, enrollment, or receipt file.
+  const inspected = [];
   for (let index = 1; index <= studentCount; index += 1) {
-    students.push(await ensureTestStudent(index));
+    const student = await inspectTestStudent(index);
+    const scenario = scenarios[(index - 1) % scenarios.length];
+    const scenarioKey = scenario.key + '-' + String(index).padStart(3, '0');
+
+    if (student.existingStudentId) {
+      const fixtureExists = await hasFixture(student.existingStudentId, scenarioKey);
+      if (!fixtureExists) {
+        const [otherRegistration, existingEnrollment] = await Promise.all([
+          prisma.registration.findFirst({
+            where: { nationalId: student.nationalId },
+            select: { id: true },
+          }),
+          prisma.enrollment.findFirst({
+            where: { studentId: student.existingStudentId },
+            select: { id: true },
+          }),
+        ]);
+        if (otherRegistration || existingEnrollment) {
+          throw new Error('برای ' + student.nationalId + ' ثبت‌نام یا عضویت خارج از Fixture پیدا شد؛ پیش‌بررسی متوقف شد و هیچ داده‌ای ایجاد یا ویرایش نشد.');
+        }
+      }
+    } else {
+      const conflictingRegistration = await prisma.registration.findFirst({
+        where: { nationalId: student.nationalId },
+        select: { id: true },
+      });
+      if (conflictingRegistration) {
+        throw new Error('برای ' + student.nationalId + ' ثبت‌نامی بدون حساب آزمایشی متناظر وجود دارد؛ پیش‌بررسی متوقف شد و هیچ داده‌ای ایجاد نشد.');
+      }
+    }
+    inspected.push(student);
   }
 
-  // Read-only preflight: detect collisions before creating receipt files or finance rows.
-  for (let index = 0; index < students.length; index += 1) {
-    const student = students[index];
-    const scenario = scenarios[index % scenarios.length];
-    const scenarioKey = scenario.key + '-' + String(index + 1).padStart(3, '0');
-    if (await hasFixture(student.id, scenarioKey)) continue;
-
-    const conflictingRegistration = await prisma.registration.findFirst({
-      where: {
-        nationalId: student.nationalId,
-        reviewHistory: { none: { action: FIXTURE_ACTION, note: scenarioKey } },
-      },
-      select: { id: true },
-    });
-    if (conflictingRegistration) {
-      throw new Error('برای ' + student.nationalId + ' ثبت‌نامی خارج از این مجموعه وجود دارد؛ هیچ داده مالی ساخته نشد.');
-    }
+  const students: TestStudent[] = [];
+  for (let index = 1; index <= studentCount; index += 1) {
+    students.push(await ensureTestStudent(index, passwordHash));
   }
 
   await ensureReceiptFile();
@@ -504,6 +547,9 @@ async function main() {
   const skipped = results.length - created;
   process.stdout.write(JSON.stringify({
     mode: 'FINANCE_LOAD_FIXTURE_COMPLETE',
+    loginUsernamePattern: batch + '-001 ... ' + batch + '-' + String(studentCount).padStart(3, '0'),
+    loginPasswordConfigured: true,
+    accountStatus: 'ACTIVE',
     batch,
     studentCount: students.length,
     registrationCount: results.length,
