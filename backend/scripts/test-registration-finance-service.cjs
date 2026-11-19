@@ -88,7 +88,7 @@ async function main() {
       discountAmount: 0,
       paymentId: submitted.paymentId,
       approvedAmount: 1200,
-      firstDueDate: new Date().toISOString().slice(0, 10),
+      // Full payment creates no installments, so no first due date is required.
       mockExamEligible: true,
       mockExamId: examId,
       reviewNote: 'CI service integration approval',
@@ -305,6 +305,22 @@ async function main() {
     assert.equal(Number(paid.amountPaid), 150);
     const visibleRefunds = await service.listStudentRefundRequests(studentActor);
     assert.equal(visibleRefunds.find((item) => item.id === refund.id).status, 'PAID');
+
+    // Manual settlement must close the registration's installments and be
+    // reflected in the student's balance without creating a fake payment.
+    const manualSettlement = await service.settleRegistrationDebt(actor, crossSubmitted.id, 'CI manual settlement test');
+    assert.equal(manualSettlement.success, true);
+    assert.equal(Number(manualSettlement.settledAmount), 350);
+    const manuallySettledInstallments = await prisma.installment.findMany({
+      where: { registrationId: crossSubmitted.id },
+      orderBy: { sequence: 'asc' },
+    });
+    assert.ok(manuallySettledInstallments.every((item) => item.status === 'PAID'));
+    const studentRowsAfterSettlement = await service.listStudentRegistrations(studentActor);
+    const manuallySettledStudentRow = studentRowsAfterSettlement.find((item) => item.id === crossSubmitted.id);
+    assert.equal(manuallySettledStudentRow.balance, 0);
+    assert.equal(manuallySettledStudentRow.manualSettlementAmount, 350);
+    assert.ok(manuallySettledStudentRow.installments.every((item) => item.balance === 0 && item.paid === item.amount));
 
     // Corrected receipts must be appended as a new payment and preserve the old receipt.
     const thirdCourse = await prisma.course.create({
