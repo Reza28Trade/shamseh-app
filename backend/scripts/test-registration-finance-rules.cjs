@@ -76,6 +76,8 @@ assert.throws(() => plan({
   exceptionReason: 'استثنا',
 }), /بدون تخفیف/);
 assert.deepEqual(plan({ approvedAmount: 100000 }).installmentAmounts, []);
+assert.deepEqual(plan({ approvedAmount: 100000, firstDueDate: undefined }).installmentAmounts, []);
+assert.throws(() => plan({ approvedAmount: 60000, firstDueDate: undefined }), /تاریخ اولین قسط/);
 const overpaid = plan({ approvedAmount: 110000 });
 assert.equal(overpaid.remaining, 0);
 assert.deepEqual(overpaid.installmentAmounts, []);
