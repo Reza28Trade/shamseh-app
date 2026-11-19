@@ -100,10 +100,7 @@ function money(value: number): number {
   return Math.round(value * 100) / 100;
 }
 
-function assertConfiguration() {
-  if (process.env.CONFIRM_FINANCE_FIXTURES !== 'YES') {
-    throw new Error('برای ایجاد داده، CONFIRM_FINANCE_FIXTURES=YES را صریحاً تنظیم کنید.');
-  }
+function assertBaseConfiguration() {
   if (!/^[A-Z0-9-]{6,48}$/.test(batch)) {
     throw new Error('TEST_FINANCE_BATCH باید فقط شامل حروف بزرگ انگلیسی، عدد و خط تیره باشد.');
   }
@@ -113,6 +110,13 @@ function assertConfiguration() {
   if (!courseId) {
     throw new Error('TEST_FINANCE_COURSE_ID باید شناسه یک دوره فعال با شهریه معتبر باشد.');
   }
+}
+
+function assertConfiguration() {
+  if (process.env.CONFIRM_FINANCE_FIXTURES !== 'YES') {
+    throw new Error('برای ایجاد داده، CONFIRM_FINANCE_FIXTURES=YES را صریحاً تنظیم کنید.');
+  }
+  assertBaseConfiguration();
   if (testPassword.length < 12) {
     throw new Error('TEST_FINANCE_PASSWORD باید حداقل ۱۲ نویسه داشته باشد؛ رمز در خروجی چاپ نمی‌شود.');
   }
@@ -490,14 +494,7 @@ async function listCandidates() {
   }, null, 2) + '\n');
 }
 
-async function main() {
-  if (process.argv.includes('--list')) {
-    await listCandidates();
-    return;
-  }
-
-  assertConfiguration();
-
+async function loadSelectedCourse() {
   const courseRow = await prisma.course.findFirst({
     where: { id: courseId, status: 'ACTIVE', price: { not: null } },
     select: { id: true, title: true, price: true },
@@ -505,19 +502,20 @@ async function main() {
   if (!courseRow?.price || Number(courseRow.price) <= 0) {
     throw new Error('دوره فعال با قیمت معتبر و شناسه TEST_FINANCE_COURSE_ID پیدا نشد.');
   }
-  const course = { id: courseRow.id, title: courseRow.title, price: Number(courseRow.price) };
+  return { id: courseRow.id, title: courseRow.title, price: Number(courseRow.price) };
+}
 
-  const passwordHash = await argon2.hash(testPassword);
+async function runReadOnlyPreflight() {
+  const checkedStudents: Array<{ nationalId: string; scenario: string; account: 'NEW' | 'EXISTING_FIXTURE'; fixture: 'NEW' | 'EXISTS' }> = [];
 
-  // Complete read-only preflight for the entire batch before creating or updating
-  // any user, registration, enrollment, or receipt file.
   for (let index = 1; index <= studentCount; index += 1) {
     const student = await inspectTestStudent(index);
     const scenario = scenarios[(index - 1) % scenarios.length];
     const scenarioKey = scenario.key + '-' + String(index).padStart(3, '0');
+    let fixtureExists = false;
 
     if (student.existingStudentId) {
-      const fixtureExists = await hasFixture(student.existingStudentId, scenarioKey);
+      fixtureExists = await hasFixture(student.existingStudentId, scenarioKey);
       if (!fixtureExists) {
         const [otherRegistration, existingEnrollment] = await Promise.all([
           prisma.registration.findFirst({
@@ -542,8 +540,72 @@ async function main() {
         throw new Error('برای ' + student.nationalId + ' ثبت‌نامی بدون حساب آزمایشی متناظر وجود دارد؛ پیش‌بررسی متوقف شد و هیچ داده‌ای ایجاد نشد.');
       }
     }
+
+    checkedStudents.push({
+      nationalId: student.nationalId,
+      scenario: scenarioKey,
+      account: student.existingStudentId ? 'EXISTING_FIXTURE' : 'NEW',
+      fixture: fixtureExists ? 'EXISTS' : 'NEW',
+    });
   }
 
+  const receiptPath = join(RECEIPT_DIR, RECEIPT_KEY);
+  let receiptFile = 'MISSING_WILL_BE_CREATED_ON_APPROVED_RUN';
+  try {
+    const existing = await readFile(receiptPath);
+    if (!existing.equals(PNG_BYTES)) {
+      throw new Error('فایل رسید آزمایشی هم‌نام وجود دارد اما متعلق به این مجموعه نیست؛ فایل موجود تغییر داده نشد.');
+    }
+    receiptFile = 'EXISTS_MATCHES_FIXTURE';
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+  }
+
+  return { checkedStudents, receiptFile };
+}
+
+async function main() {
+  if (process.argv.includes('--list')) {
+    await listCandidates();
+    return;
+  }
+
+  const preflightOnly = process.argv.includes('--preflight');
+  if (preflightOnly) {
+    assertBaseConfiguration();
+  } else {
+    assertConfiguration();
+  }
+
+  const course = await loadSelectedCourse();
+  const preflight = await runReadOnlyPreflight();
+
+  if (preflightOnly) {
+    process.stdout.write(JSON.stringify({
+      mode: 'READ_ONLY_FINANCE_LOAD_PREFLIGHT',
+      batch,
+      expectedStudentCount: studentCount,
+      course,
+      receiptFile: preflight.receiptFile,
+      accountPlan: {
+        newAccounts: preflight.checkedStudents.filter((item) => item.account === 'NEW').length,
+        existingFixtureAccounts: preflight.checkedStudents.filter((item) => item.account === 'EXISTING_FIXTURE').length,
+      },
+      fixturePlan: {
+        newFixtures: preflight.checkedStudents.filter((item) => item.fixture === 'NEW').length,
+        existingFixtures: preflight.checkedStudents.filter((item) => item.fixture === 'EXISTS').length,
+      },
+      scenarioDistribution: scenarios.map((scenario) => ({
+        scenario: scenario.key,
+        count: preflight.checkedStudents.filter((item) => item.scenario.startsWith(scenario.key + '-')).length,
+      })),
+      checkedStudents: preflight.checkedStudents,
+      writesPerformed: false,
+    }, null, 2) + '\\n');
+    return;
+  }
+
+  const passwordHash = await argon2.hash(testPassword);
   await ensureReceiptFile();
 
   const students: TestStudent[] = [];
