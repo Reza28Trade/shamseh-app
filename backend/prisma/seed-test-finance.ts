@@ -39,10 +39,11 @@ type Scenario = {
   receiptCount?: number;
   rejectionReason?: string;
   exceptionReason?: string;
+  refundRequest?: boolean;
 };
 
 const scenarios: Scenario[] = [
-  { key: 'FULLY_PAID', status: 'APPROVED', initialRatio: 1, paymentStatus: 'APPROVED', receiptCount: 2 },
+  { key: 'FULLY_PAID', status: 'APPROVED', initialRatio: 1, paymentStatus: 'APPROVED', receiptCount: 2, refundRequest: true },
   { key: 'SIXTY_PERCENT_TWO_INSTALLMENTS', status: 'APPROVED', initialRatio: 0.6, installmentRatios: [0.2, 0.2], paymentStatus: 'APPROVED' },
   { key: 'EIGHTY_PERCENT_ONE_INSTALLMENT', status: 'APPROVED', initialRatio: 0.8, installmentRatios: [0.2], paymentStatus: 'APPROVED' },
   {
@@ -382,6 +383,20 @@ async function createFixture(
       },
     });
 
+    let refundRequestId: string | null = null;
+    if (scenario.refundRequest && scenario.status === 'APPROVED') {
+      const refund = await tx.refundRequest.create({
+        data: {
+          registrationId: registration.id,
+          studentId: student.id,
+          amountRequested: Math.max(1, money(tuition * 0.05)),
+          reason: 'درخواست بازپرداخت آزمایشی برای بررسی گردش کار پنل هنرجو و مدیریت',
+        },
+        select: { id: true },
+      });
+      refundRequestId = refund.id;
+    }
+
     if (scenario.installmentPayment && installments.length) {
       const firstInstallment = installments[0];
       const claimedAmount = money(firstInstallment.amount * 0.5);
@@ -436,6 +451,7 @@ async function createFixture(
       registrationId: registration.id,
       initialPaymentId: initialPayment.id,
       installmentCount: installments.length,
+      refundRequestId,
     };
   });
 }
