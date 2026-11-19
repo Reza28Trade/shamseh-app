@@ -392,7 +392,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         balance,
         installments: row.installments.map((item) => ({
           ...item, amount: Number(item.amount),
-          paid: item.allocations.filter((allocation) => allocation.payment.status === 'APPROVED')
+          paid: item.status === 'PAID' ? Number(item.amount) : item.allocations.filter((allocation) => allocation.payment.status === 'APPROVED')
             .reduce((sum, allocation) => sum + Number(allocation.amount), 0),
         })),
         courses: row.courses.map((course) => ({ ...course, coursePriceSnapshot: Number(course.coursePriceSnapshot) })),
@@ -450,6 +450,25 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         .reduce((itemSum, allocation) => itemSum + Number(allocation.amount), 0), 0);
       const balance = Math.max(0, Number(latest.finalTuition) - initialPaid - installmentPaid - Number(latest.manualSettlementAmount));
       if (balance <= 0.0001) throw new ConflictException('برای این ثبت‌نام بدهی بازی باقی نمانده است.');
+
+      // Pending installment receipts can later be allocated across the student's
+      // oldest debts. Block manual settlement until all of them are reviewed.
+      const approvedRegistrations = await tx.registration.findMany({
+        where: { studentId: latest.studentId, status: 'APPROVED' },
+        select: { id: true },
+      });
+      const pendingInstallmentPayment = await tx.registrationPayment.findFirst({
+        where: {
+          registrationId: { in: approvedRegistrations.map((item) => item.id) },
+          purpose: 'INSTALLMENT',
+          status: 'PENDING',
+        },
+        select: { id: true },
+      });
+      if (pendingInstallmentPayment) {
+        throw new ConflictException('تا زمان بررسی رسیدهای اقساط در انتظار تأیید، تسویه دستی امکان‌پذیر نیست.');
+      }
+
       const now = new Date();
       const updated = await tx.registration.update({
         where: { id: registrationId },
@@ -460,6 +479,12 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
           manualSettledById: actor.id,
         },
         select: { id: true, manualSettlementAmount: true, manualSettledAt: true, manualSettlementNote: true },
+      });
+      // The manual settlement covers the full remaining balance of this
+      // registration. Close its installments so they cannot trigger reminders.
+      await tx.installment.updateMany({
+        where: { registrationId, status: { not: 'PAID' } },
+        data: { status: 'PAID' },
       });
       await tx.registrationReviewHistory.create({
         data: {
@@ -629,7 +654,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
         await tx.installment.createMany({
           data: plan.installmentAmounts.map((amount, index) => ({
             registrationId, sequence: index + 1, amount,
-            dueDate: addMonthsClamped(firstDueDate, index),
+            dueDate: addMonthsClamped(firstDueDate!, index),
           })),
         });
       }
@@ -655,7 +680,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
             discountAmount: discount, finalTuition,
             claimedPayment: Number(payment.claimedAmount), approvedPayment: Number(dto.approvedAmount),
             paymentAdjustment: Number(dto.approvedAmount) - Number(payment.claimedAmount),
-            firstDueDate: firstDueDate.toISOString(), installmentCount: installments,
+            firstDueDate: firstDueDate?.toISOString() ?? null, installmentCount: installments,
             mockExamEligible: dto.mockExamEligible ?? false, mockExamId: dto.mockExamEligible ? dto.mockExamId : null,
           },
         },
@@ -915,12 +940,13 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
     return rows.map((row) => ({
       id: row.id, status: row.status, approvalMode: row.approvalMode,
       originalTuition: Number(row.originalTuition), discountAmount: Number(row.discountAmount),
-      finalTuition: Number(row.finalTuition), discountReason: row.discountReason,
+      finalTuition: Number(row.finalTuition), manualSettlementAmount: Number(row.manualSettlementAmount), discountReason: row.discountReason,
       exceptionReason: row.exceptionReason, approvedAt: row.approvedAt,
       courses: row.courses.map((course) => ({ ...course, coursePriceSnapshot: Number(course.coursePriceSnapshot) })),
       installments: row.installments.map((item) => {
         const paid = item.allocations.filter((a) => a.payment.status === 'APPROVED').reduce((sum, a) => sum + Number(a.amount), 0);
-        return { id: item.id, sequence: item.sequence, amount: Number(item.amount), paid, balance: Math.max(0, Number(item.amount) - paid), dueDate: item.dueDate, status: item.status };
+        const effectivePaid = item.status === 'PAID' ? Number(item.amount) : paid;
+        return { id: item.id, sequence: item.sequence, amount: Number(item.amount), paid: effectivePaid, balance: Math.max(0, Number(item.amount) - effectivePaid), dueDate: item.dueDate, status: item.status };
       }),
       paidTotal: row.payments.reduce((sum, payment) => {
         if (payment.status !== 'APPROVED') return sum;
@@ -929,7 +955,7 @@ export class RegistrationsService implements OnModuleInit, OnModuleDestroy {
       }, 0) + row.installments.reduce((sum, item) => sum + item.allocations
         .filter((allocation) => allocation.payment.status === 'APPROVED')
         .reduce((itemSum, allocation) => itemSum + Number(allocation.amount), 0), 0),
-      balance: Math.max(0, Number(row.finalTuition) - (
+      balance: Math.max(0, Number(row.finalTuition) - Number(row.manualSettlementAmount) - (
         row.payments.reduce((sum, payment) => payment.status === 'APPROVED' && payment.purpose === 'INITIAL'
           ? sum + Number(payment.approvedAmount ?? 0) : sum, 0)
         + row.installments.reduce((sum, item) => sum + item.allocations
