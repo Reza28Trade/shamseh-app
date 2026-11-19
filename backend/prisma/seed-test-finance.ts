@@ -557,7 +557,7 @@ async function main() {
     results.push(await createFixture(students[index], course, scenario, index + 1));
   }
 
-  const created = results.filter((item) => item.result !== 'already exists').length;
+  const created = results.filter((item) => !('result' in item && item.result === 'already exists')).length;
   const skipped = results.length - created;
   process.stdout.write(JSON.stringify({
     mode: 'FINANCE_LOAD_FIXTURE_COMPLETE',
