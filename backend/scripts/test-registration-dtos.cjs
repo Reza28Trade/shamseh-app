@@ -79,6 +79,8 @@ async function main() {
   assert.equal(review.discountAmount, 0);
   assert.equal(review.approvedAmount, 60000);
   assert.deepEqual(await errorsFor(ReviewRegistrationDto, validReview), []);
+  // A fully paid registration has no installments and must not require a due date.
+  assert.deepEqual(await errorsFor(ReviewRegistrationDto, { ...validReview, firstDueDate: undefined }), []);
   assert.ok((await errorsFor(ReviewRegistrationDto, { ...validReview, mode: 'INVALID_MODE' }))
     .some((error) => error.property === 'mode'));
   assert.ok((await errorsFor(ReviewRegistrationDto, { ...validReview, discountAmount: '-1' }))
